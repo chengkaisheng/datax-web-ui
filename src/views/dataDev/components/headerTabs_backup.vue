@@ -81,11 +81,11 @@ import DataDevContent from './content';
 import * as jobProjectApi from '@/api/datax-job-project';
 import * as datasourceApi from '@/api/datax-jdbcDatasource';
 import {
-  getTables,
-  getColumns,
+  // getTables,
+  // getColumns,
   getTableListWithComment,
   getTableSchema,
-  getTableList,
+  // getTableList,
   getTableColumns
 } from '@/api/metadata-query';
 export default {
@@ -117,7 +117,7 @@ export default {
         children: 'children',
         label: 'name',
         isLeaf: (data, node) => {
-          if (node.level == 4) {
+          if (node.level === 4) {
             return true
           }
         }
@@ -167,7 +167,7 @@ export default {
   methods: {
     handleNodeClick(data, node, nodeComp) {
       console.log(node, 'node')
-      if (node.level == 2) {
+      if (node.level === 2) {
         this.selectedDbName = node.data.name
         this.selectedDsName = node.parent.data.name
         this.selectedDatasource.jdbcUrl = node.parent.data.jdbcUrl
@@ -181,7 +181,7 @@ export default {
         }
       }
 
-      if (node.level == 3) {
+      if (node.level === 3) {
         for (let i = 0; i < this.editableTabs.length; i++) {
           if (this.editableTabs[i].name === this.editableTabsValue) {
             this.$refs.content[i].previewData(node)
@@ -214,7 +214,7 @@ export default {
     handleNodeExpand(data, node) {
       console.log(data, 'data')
       console.log(node.level, 'level')
-      if (node.level == 1) {
+      if (node.level === 1) {
         getTableSchema({
           datasourceId: data.id
         }).then((res) => {
@@ -231,7 +231,7 @@ export default {
         }).catch(err => {
           console.log(err);
         })
-      } else if (node.level == 2) {
+      } else if (node.level === 2) {
         getTableListWithComment({
           id: data.dsid,
           schema: data.name
@@ -250,7 +250,7 @@ export default {
           }
           this.$refs.tree.updateKeyChildren(data.id, arr);
         })
-      } else if (node.level == 3) {
+      } else if (node.level === 3) {
         getTableColumns({
           datasourceId: data.dsid,
           tableName: data.tableName,

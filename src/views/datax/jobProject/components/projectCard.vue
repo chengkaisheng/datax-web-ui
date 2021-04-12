@@ -10,19 +10,29 @@
   <el-card shadow="hover" class="box-card" :body-style="{ padding: '0px' }">
     <div slot="header" class="clearfix">
       <!-- <span class="title">项目: </span> -->
-      <el-avatar style="float: left;background-color: #3972e6">{{ content.name[0].toUpperCase() }}</el-avatar>
+      <el-avatar style="float: left; background-color: #3972e6">{{
+        content.name[0].toUpperCase()
+      }}</el-avatar>
       <span class="content-name">{{ content.name }}</span>
-      <span style="line-height: 40px; float: right;">
+      <span style="line-height: 40px; float: right">
         <slot name="top" />
       </span>
     </div>
     <el-form class="forms">
-      <el-form-item label="项目描述" :label-width="labelWidth" :label-position="'left'">
+      <el-form-item
+        label="项目描述"
+        :label-width="labelWidth"
+        :label-position="'left'"
+      >
         <el-tooltip :content="content.description" placement="top">
           <span class="texts">{{ content.description }}</span>
         </el-tooltip>
       </el-form-item>
-      <el-form-item :label="content.note + '用户'" :label-width="labelWidth" :label-position="'left'">
+      <el-form-item
+        :label="content.note + '用户'"
+        :label-width="labelWidth"
+        :label-position="'left'"
+      >
         <span class="texts">{{ content.userName }}</span>
       </el-form-item>
     </el-form>
@@ -34,6 +44,7 @@
 </template>
 
 <script>
+import { ContextMenuTool } from 'gojs';
 export default {
   name: 'ProjectCard',
   props: {
@@ -50,12 +61,13 @@ export default {
     return {
       labelWidth: '90px',
       users: []
-    }
+    };
   },
   created() {
-    this.users = this.allUsers
+    this.users = this.allUsers;
+    console.log('222222222222222222222' + this.content.name);
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -89,15 +101,15 @@ export default {
   >>> .el-form-item__content {
     line-height: 30px !important;
     overflow: hidden;
-    text-overflow:ellipsis;
+    text-overflow: ellipsis;
     white-space: nowrap;
   }
   .texts {
     color: #333333;
-    display:block;
-    text-overflow:ellipsis;
-    overflow:hidden;
-    white-space:nowrap;
+    display: block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 }
 

@@ -19,10 +19,18 @@
             </el-select> -->
             <el-dropdown v-show="showAdmin" @command="handleCommand">
               <span>
-                {{ dropdownText }}<i class="el-icon-arrow-down el-icon--right" />
+                {{ dropdownText
+                }}<i class="el-icon-arrow-down el-icon--right" />
               </span>
-              <el-dropdown-menu slot="dropdown" style="max-height: calc(100vh - 200px); overflow: auto;">
-                <el-dropdown-item v-for="item in options" :key="item.id" :command="item.id + '/' + item.name">{{ item.name }}</el-dropdown-item>
+              <el-dropdown-menu
+                slot="dropdown"
+                style="max-height: calc(100vh - 200px); overflow: auto"
+              >
+                <el-dropdown-item
+                  v-for="item in options"
+                  :key="item.id"
+                  :command="item.id + '/' + item.name"
+                >{{ item.name }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
             <!-- <el-dropdown-menu slot="dropdown" placeholder="请选择">
@@ -127,10 +135,25 @@
               @node-drop="handleDrop"
               @node-click="handleNodeClick"
             >
-              <span slot-scope="{ node, data }" class="custom-tree-node" style="height: 26px;line-height: 26px;position: relative;display: block;width: 100%;font-size: 14px;">
+              <span
+                slot-scope="{ node, data }"
+                class="custom-tree-node"
+                style="
+                  height: 26px;
+                  line-height: 26px;
+                  position: relative;
+                  display: block;
+                  width: 100%;
+                  font-size: 14px;
+                "
+              >
                 <!-- @dblclick="resetName(folderName)" -->
-                <p style="height: 26px;line-height: 26px;">
-                  <svg-icon v-if="data.jobType && data.jobType !== 'IMPORT'" :icon-class="data.jobType" style="font-size: 15px;margin-right: 3px;" />
+                <p style="height: 26px; line-height: 26px">
+                  <svg-icon
+                    v-if="data.jobType && data.jobType !== 'IMPORT'"
+                    :icon-class="data.jobType"
+                    style="font-size: 15px; margin-right: 3px"
+                  />
                   <svg
                     v-else
                     id="Layer_1"
@@ -141,69 +164,12 @@
                     y="3px"
                     width="15px"
                     height="15px"
-                    style="margin-right: 3px;"
+                    style="margin-right: 3px"
                     viewBox="0 3 15 15"
                     enable-background="new 0 3 15 15"
                     xml:space="preserve"
-                  >  <image
-                    id="image0"
-                    width="15"
-                    height="15"
-                    x="0"
-                    y="6"
-                    href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
-AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAXVBMVEX/////kUj/kkj/kUj/
-lUr/i0b/k0b/kkf/kkf/kEf/k0f/k0b/kkf/kkf/kUj/kkf/kEj/lEf/kUf/kUf/kUj/j0f/kUb/
-k0j/kkf/lkv/kUj/kUf//wD/kUf///+LAJe9AAAAHXRSTlMAw9mjGAtQcP7pYUnnto7pYzLrQaQZ
-smrwEeTaAcB/ix4AAAABYktHRACIBR1IAAAAB3RJTUUH5QIFADcDzk1yTQAAAE1JREFUGNNjYCAD
-MMoiAUaggCyyrCw2ASYQg5kFIcDAwMrGzsHJhRDg5uHlk+UXgAsICgkzMIiIIrSIiaMZKiGJJiDF
-wCCN4jAZUr0GALWzBTkD4ue4AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIxLTAyLTA0VDE2OjU1OjAz
-KzA4OjAw5fkjmwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMS0wMi0wNFQxNjo1NTowMyswODowMJSk
-mycAAAAgdEVYdHNvZnR3YXJlAGh0dHBzOi8vaW1hZ2VtYWdpY2sub3JnvM8dnQAAABh0RVh0VGh1
-bWI6OkRvY3VtZW50OjpQYWdlcwAxp/+7LwAAABd0RVh0VGh1bWI6OkltYWdlOjpIZWlnaHQAMTYd
-r15vAAAAFnRFWHRUaHVtYjo6SW1hZ2U6OldpZHRoADE25QCe4gAAABl0RVh0VGh1bWI6Ok1pbWV0
-eXBlAGltYWdlL3BuZz+yVk4AAAAXdEVYdFRodW1iOjpNVGltZQAxNjEyNDI4OTAz6wc9eAAAABF0
-RVh0VGh1bWI6OlNpemUAMjk4QkK3drNWAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8vYXBwL3Rt
-cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
-rkJggg=="
-                  />
-                  </svg>
-                  {{ data.name }}
-                </p>
-              </span>
-            </el-tree>
-            <vue-context-menu
-              class="right-menu"
-              :target="contextMenuTarget"
-              :show="contextMenuVisible"
-              @update:show="(show) => contextMenuVisible = show"
-            >
-              <a href="javascript:" @click="showAllName">新建文件夹</a>
-              <a id="newFile" href="javascript:">新建任务<i class="el-icon-arrow-right" />
-                <vue-context-menu
-                  class="right-menu1"
-                  :target="contextMenu1Target"
-                  :show.sync="contextMenu1Visible"
-                  style="display: none;"
-                >
-                  <a href="javascript:" @click="showAllName('NORMAL')">
-                    <svg-icon class="svg_icon" icon-class="NORMAL" /> 普通任务
-                  </a>
-                  <a href="javascript:" @click="showAllName('IMPORT')">
-                    <svg
-                      id="Layer_1"
-                      version="1.1"
-                      xmlns="http://www.w3.org/2000/svg"
-                      xmlns:xlink="http://www.w3.org/1999/xlink"
-                      x="0px"
-                      y="3px"
-                      style="margin-right: 3px"
-                      width="15px"
-                      height="15px"
-                      viewBox="0 3 15 15"
-                      enable-background="new 0 3 15 15"
-                      xml:space="preserve"
-                    >  <image
+                  >
+                    <image
                       id="image0"
                       width="15"
                       height="15"
@@ -225,6 +191,68 @@ RVh0VGh1bWI6OlNpemUAMjk4QkK3drNWAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8vYXBwL3Rt
 cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
 rkJggg=="
                     />
+                  </svg>
+                  {{ data.name }}
+                </p>
+              </span>
+            </el-tree>
+            <vue-context-menu
+              class="right-menu"
+              :target="contextMenuTarget"
+              :show="contextMenuVisible"
+              @update:show="(show) => (contextMenuVisible = show)"
+            >
+              <a href="javascript:" @click="showAllName">新建文件夹</a>
+              <a
+                id="newFile"
+                href="javascript:"
+              >新建任务<i class="el-icon-arrow-right" />
+                <vue-context-menu
+                  class="right-menu1"
+                  :target="contextMenu1Target"
+                  :show.sync="contextMenu1Visible"
+                  style="display: none"
+                >
+                  <a href="javascript:" @click="showAllName('NORMAL')">
+                    <svg-icon class="svg_icon" icon-class="NORMAL" /> 普通任务
+                  </a>
+                  <a href="javascript:" @click="showAllName('IMPORT')">
+                    <svg
+                      id="Layer_1"
+                      version="1.1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                      x="0px"
+                      y="3px"
+                      style="margin-right: 3px"
+                      width="15px"
+                      height="15px"
+                      viewBox="0 3 15 15"
+                      enable-background="new 0 3 15 15"
+                      xml:space="preserve"
+                    >
+                      <image
+                        id="image0"
+                        width="15"
+                        height="15"
+                        x="0"
+                        y="6"
+                        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
+AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAXVBMVEX/////kUj/kkj/kUj/
+lUr/i0b/k0b/kkf/kkf/kEf/k0f/k0b/kkf/kkf/kUj/kkf/kEj/lEf/kUf/kUf/kUj/j0f/kUb/
+k0j/kkf/lkv/kUj/kUf//wD/kUf///+LAJe9AAAAHXRSTlMAw9mjGAtQcP7pYUnnto7pYzLrQaQZ
+smrwEeTaAcB/ix4AAAABYktHRACIBR1IAAAAB3RJTUUH5QIFADcDzk1yTQAAAE1JREFUGNNjYCAD
+MMoiAUaggCyyrCw2ASYQg5kFIcDAwMrGzsHJhRDg5uHlk+UXgAsICgkzMIiIIrSIiaMZKiGJJiDF
+wCCN4jAZUr0GALWzBTkD4ue4AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIxLTAyLTA0VDE2OjU1OjAz
+KzA4OjAw5fkjmwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMS0wMi0wNFQxNjo1NTowMyswODowMJSk
+mycAAAAgdEVYdHNvZnR3YXJlAGh0dHBzOi8vaW1hZ2VtYWdpY2sub3JnvM8dnQAAABh0RVh0VGh1
+bWI6OkRvY3VtZW50OjpQYWdlcwAxp/+7LwAAABd0RVh0VGh1bWI6OkltYWdlOjpIZWlnaHQAMTYd
+r15vAAAAFnRFWHRUaHVtYjo6SW1hZ2U6OldpZHRoADE25QCe4gAAABl0RVh0VGh1bWI6Ok1pbWV0
+eXBlAGltYWdlL3BuZz+yVk4AAAAXdEVYdFRodW1iOjpNVGltZQAxNjEyNDI4OTAz6wc9eAAAABF0
+RVh0VGh1bWI6OlNpemUAMjk4QkK3drNWAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8vYXBwL3Rt
+cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
+rkJggg=="
+                      />
                     </svg>
                     引入任务
                   </a>
@@ -243,7 +271,7 @@ rkJggg=="
                   <a href="javascript:" @click="showAllName('DQCJOB')">
                     <svg-icon class="svg_icon" icon-class="DQCJOB" />质量任务
                   </a>
-                  <hr style="padding: 0;margin: 0;">
+                  <hr style="padding: 0; margin: 0">
                   <a href="javascript:" @click="showAllName('METACOLLECT')">
                     <svg-icon
                       class="svg_icon"
@@ -256,7 +284,7 @@ rkJggg=="
                       icon-class="METACOMPARE"
                     />元数据比较任务
                   </a>
-                  <hr style="padding: 0;margin: 0;">
+                  <hr style="padding: 0; margin: 0">
                   <a href="javascript:" @click="showAllName('SHELL')">
                     <svg-icon class="svg_icon" icon-class="SHELL" />SHELL任务
                   </a>
@@ -269,7 +297,7 @@ rkJggg=="
                   <a href="javascript:" @click="showAllName('PYTHON')">
                     <svg-icon class="svg_icon" icon-class="PYTHON" />PYTHON任务
                   </a>
-                  <hr style="padding: 0;margin: 0;">
+                  <hr style="padding: 0; margin: 0">
                   <a href="javascript:" @click="showAllName('VJOB')">
                     <svg-icon class="svg_icon" icon-class="VJOB" />虚任务
                   </a>
@@ -280,7 +308,10 @@ rkJggg=="
                     <svg-icon class="svg_icon" icon-class="SCALA" />Scala任务
                   </a>
                   <a href="javascript:" @click="showAllName('PYSPARK')">
-                    <svg-icon class="svg_icon" icon-class="PYSPARK" />PySpark任务
+                    <svg-icon
+                      class="svg_icon"
+                      icon-class="PYSPARK"
+                    />PySpark任务
                   </a>
                   <a href="javascript:" @click="showAllName('R')">
                     <svg-icon class="svg_icon" icon-class="R" />R任务
@@ -296,13 +327,25 @@ rkJggg=="
                   </a>
                 </vue-context-menu>
               </a>
-              <a v-show="selectRow.jobType !== 'wenjianjia'" href="javascript:" @click="ViewFile">查看文件信息</a>
-              <a v-show="selectRow.jobType !== 'wenjianjia'" href="javascript:" @click="ViewVersion">查看文件版本</a>
+              <a
+                v-show="selectRow.jobType !== 'wenjianjia'"
+                href="javascript:"
+                @click="ViewFile"
+              >查看文件信息</a>
+              <a
+                v-show="selectRow.jobType !== 'wenjianjia'"
+                href="javascript:"
+                @click="ViewVersion"
+              >查看文件版本</a>
               <a href="javascript:" @click="resetName">重命名</a>
-              <hr style="padding: 0;margin: 0;">
+              <hr style="padding: 0; margin: 0">
               <a href="javascript:" @click="copyFile">复制(C)</a>
               <a href="javascript:" @click="pasteFile">粘贴(P)</a>
-              <a v-show="selectRow.parentId !== 0" href="javascript:" @click="delFolder">删除(D)</a>
+              <a
+                v-show="selectRow.parentId !== 0"
+                href="javascript:"
+                @click="delFolder"
+              >删除(D)</a>
             </vue-context-menu>
           </el-scrollbar>
         </div>
@@ -323,10 +366,11 @@ rkJggg=="
           label="欢迎"
           name="欢迎"
         >
-          <div class="title_h3">
-            一站式数据开发解决方案
-          </div>
-          <svg-icon style="width: 100%; height: 90%;margin-top: 25px" icon-class="fengdie" />
+          <div class="title_h3">一站式数据开发解决方案</div>
+          <svg-icon
+            style="width: 100%; height: 90%; margin-top: 25px"
+            icon-class="fengdie"
+          />
         </el-tab-pane>
 
         <el-tab-pane
@@ -336,7 +380,11 @@ rkJggg=="
           :name="item.content.id + ''"
         >
           <span slot="label">
-            <svg-icon v-if="item.content.jobType && item.content.jobType !== 'IMPORT'" :icon-class="item.content.jobType" style="font-size: 15px;margin-right: 3px;" />
+            <svg-icon
+              v-if="item.content.jobType && item.content.jobType !== 'IMPORT'"
+              :icon-class="item.content.jobType"
+              style="font-size: 15px; margin-right: 3px"
+            />
             <svg
               v-else
               id="Layer_1"
@@ -347,17 +395,18 @@ rkJggg=="
               y="3px"
               width="15px"
               height="15px"
-              style="margin-right: 3px;"
+              style="margin-right: 3px"
               viewBox="0 3 15 15"
               enable-background="new 0 3 15 15"
               xml:space="preserve"
-            >  <image
-              id="image0"
-              width="15"
-              height="15"
-              x="0"
-              y="6"
-              href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
+            >
+              <image
+                id="image0"
+                width="15"
+                height="15"
+                x="0"
+                y="6"
+                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
 AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAXVBMVEX/////kUj/kkj/kUj/
 lUr/i0b/k0b/kkf/kkf/kEf/k0f/k0b/kkf/kkf/kUj/kkf/kEj/lEf/kUf/kUf/kUj/j0f/kUb/
 k0j/kkf/lkv/kUj/kUf//wD/kUf///+LAJe9AAAAHXRSTlMAw9mjGAtQcP7pYUnnto7pYzLrQaQZ
@@ -372,7 +421,7 @@ eXBlAGltYWdlL3BuZz+yVk4AAAAXdEVYdFRodW1iOjpNVGltZQAxNjEyNDI4OTAz6wc9eAAAABF0
 RVh0VGh1bWI6OlNpemUAMjk4QkK3drNWAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8vYXBwL3Rt
 cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
 rkJggg=="
-            />
+              />
             </svg>
             {{ item.title }}
           </span>
@@ -397,7 +446,11 @@ rkJggg=="
           :name="$store.state.taskAdmin.tabType"
         >
           <span slot="label">
-            <svg-icon v-if="jobType && jobType !== 'IMPORT'" :icon-class="jobType" style="font-size: 15px;margin-right: 3px;" />
+            <svg-icon
+              v-if="jobType && jobType !== 'IMPORT'"
+              :icon-class="jobType"
+              style="font-size: 15px; margin-right: 3px"
+            />
             <svg
               v-else
               id="Layer_1"
@@ -408,17 +461,18 @@ rkJggg=="
               y="3px"
               width="15px"
               height="15px"
-              style="margin-right: 3px;"
+              style="margin-right: 3px"
               viewBox="0 3 15 15"
               enable-background="new 0 3 15 15"
               xml:space="preserve"
-            >  <image
-              id="image0"
-              width="15"
-              height="15"
-              x="0"
-              y="6"
-              href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
+            >
+              <image
+                id="image0"
+                width="15"
+                height="15"
+                x="0"
+                y="6"
+                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
 AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAXVBMVEX/////kUj/kkj/kUj/
 lUr/i0b/k0b/kkf/kkf/kEf/k0f/k0b/kkf/kkf/kUj/kkf/kEj/lEf/kUf/kUf/kUj/j0f/kUb/
 k0j/kkf/lkv/kUj/kUf//wD/kUf///+LAJe9AAAAHXRSTlMAw9mjGAtQcP7pYUnnto7pYzLrQaQZ
@@ -433,7 +487,7 @@ eXBlAGltYWdlL3BuZz+yVk4AAAAXdEVYdFRodW1iOjpNVGltZQAxNjEyNDI4OTAz6wc9eAAAABF0
 RVh0VGh1bWI6OlNpemUAMjk4QkK3drNWAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8vYXBwL3Rt
 cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
 rkJggg=="
-            />
+              />
             </svg>
             {{ $store.state.taskAdmin.GroupName }}
           </span>
@@ -493,34 +547,32 @@ rkJggg=="
       </el-tabs>
     </div>
     <el-dialog width="40%" title="重命名" :visible.sync="dialogRenameVisible">
-      <span style="margin-left:20px;">名称：</span><el-input v-model="Rename" style="width: 60%;margin-left:20px;" />
+      <span style="margin-left: 20px">名称：</span><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="cancelDialog">
-          取消
-        </el-button>
-        <el-button type="goon" size="small" @click="sureRe">
-          确定
-        </el-button>
+        <el-button size="small" @click="cancelDialog"> 取消 </el-button>
+        <el-button type="goon" size="small" @click="sureRe"> 确定 </el-button>
       </div>
     </el-dialog>
     <el-dialog width="40%" title="新建" :visible.sync="dialogNameVisible">
-      <span style="margin-left:20px;">名称：</span><el-input v-model="allName" style="width: 60%;margin-left:20px;" />
+      <span style="margin-left: 20px">名称：</span><el-input v-model="allName" style="width: 60%; margin-left: 20px" />
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="cancelDialog">
-          取消
-        </el-button>
+        <el-button size="small" @click="cancelDialog"> 取消 </el-button>
         <el-button type="goon" size="small" @click="createFolder">
           确定
         </el-button>
       </div>
     </el-dialog>
     <!-- 查看文件版本 -->
-    <el-dialog width="60%" title="查看文件版本信息" :visible.sync="dialogVersionVisible">
+    <el-dialog
+      width="60%"
+      title="查看文件版本信息"
+      :visible.sync="dialogVersionVisible"
+    >
       <el-table
         :data="versionList"
         height="250"
         border
-        :header-cell-style="{background:'#F5F7FA',color:'#606266'}"
+        :header-cell-style="{ background: '#F5F7FA', color: '#606266' }"
         style="width: 100%"
         @selection-change="handleSelectionChange"
       >
@@ -528,23 +580,10 @@ rkJggg=="
           type="selection"
           width="55"
         /> -->
-        <el-table-column
-          prop="jobDesc"
-          label="任务名称"
-        />
-        <el-table-column
-          prop="jobType"
-          label="任务类型"
-        />
-        <el-table-column
-          prop="versionTime"
-          label="版本创建时间"
-          width="200"
-        />
-        <el-table-column
-          label="操作"
-          width="100"
-        >
+        <el-table-column prop="jobDesc" label="任务名称" />
+        <el-table-column prop="jobType" label="任务类型" />
+        <el-table-column prop="versionTime" label="版本创建时间" width="200" />
+        <el-table-column label="操作" width="100">
           <template v-slot:default="{ row }">
             <el-popover
               placement="right"
@@ -552,12 +591,28 @@ rkJggg=="
               width="400"
               trigger="click"
             >
-              <div class="code" style="height: 300px;background-color: #eee;border-radius: 4px;">
-                <pre style="white-space: normal;">{{ row.jobJson }}</pre>
+              <div
+                class="code"
+                style="
+                  height: 300px;
+                  background-color: #eee;
+                  border-radius: 4px;
+                "
+              >
+                <pre style="white-space: normal">{{ row.jobJson }}</pre>
               </div>
-              <el-button slot="reference" type="text" size="small" @click="showCode(row)">代码</el-button>
+              <el-button
+                slot="reference"
+                type="text"
+                size="small"
+                @click="showCode(row)"
+              >代码</el-button>
             </el-popover>
-            <el-button type="text" size="small" @click="rollback(row)">回滚</el-button>
+            <el-button
+              type="text"
+              size="small"
+              @click="rollback(row)"
+            >回滚</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -565,19 +620,17 @@ rkJggg=="
         <!-- <el-button size="small" @click="compare">
           对比
         </el-button> -->
-        <el-button size="small" @click="cancelDialog">
-          取消
-        </el-button>
+        <el-button size="small" @click="cancelDialog"> 取消 </el-button>
       </div>
     </el-dialog>
     <!-- 查看文件信息 -->
     <el-dialog width="40%" title="查看" :visible.sync="dialogViewVisible">
       <div class="box">
         <el-row :gutter="20">
-          <el-col :span="8" style="margin-top: 0;">
+          <el-col :span="8" style="margin-top: 0">
             <span>名称:</span>
           </el-col>
-          <el-col :span="16" style="margin-top: 0;">
+          <el-col :span="16" style="margin-top: 0">
             {{ detailData.jobDesc }}
           </el-col>
           <el-col :span="8">
@@ -601,9 +654,7 @@ rkJggg=="
         </el-row>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="cancelDialog">
-          取消
-        </el-button>
+        <el-button size="small" @click="cancelDialog"> 取消 </el-button>
       </div>
     </el-dialog>
   </div>
@@ -628,7 +679,7 @@ import { component as VueContextMenu } from '@xunlei/vue-context-menu';
 
 import { list as jdbcDsList } from '@/api/datax-jdbcDatasource';
 
-import { objList } from '@/utils/sortArr'
+import { objList } from '@/utils/sortArr';
 
 var time;
 
@@ -720,25 +771,32 @@ export default {
     },
 
     filterList() {
-      return this.List.filter(item => {
-        if (item.jobDesc.toLowerCase().indexOf(this.search.toLowerCase()) > -1) {
-          return true
+      return this.List.filter((item) => {
+        if (
+          item.jobDesc.toLowerCase().indexOf(this.search.toLowerCase()) > -1
+        ) {
+          return true;
         }
         if (this.search === item.id.toString()) {
-          return true
+          return true;
         }
-      })
+      });
     },
 
     dropdownText() {
-      if (this.selectValue !== '' && this.selectValue !== null && this.selectValue !== undefined) {
+      if (
+        this.selectValue !== '' &&
+        this.selectValue !== null &&
+        this.selectValue !== undefined
+      ) {
         if (typeof this.selectValue === 'number') {
-          return this.options.filter(item => item.id === this.selectValue)[0].name
+          return this.options.filter((item) => item.id === this.selectValue)[0]
+            .name;
         } else {
-          return this.selectValue
+          return this.selectValue;
         }
       } else {
-        return '请选择'
+        return '请选择';
       }
     }
   },
@@ -757,7 +815,7 @@ export default {
     },
 
     taskDetailID(val) {
-      console.log(val, 'jobDetailIdx')
+      console.log(val, 'jobDetailIdx');
       this.jobDetailIdx = val;
     },
 
@@ -765,8 +823,8 @@ export default {
       deep: true,
       handler: function(newValue, oldValue) {
         if (oldValue) {
-          const commandId = newValue.split('/')[0]
-          const commandName = newValue.split('/')[1]
+          const commandId = newValue.split('/')[0];
+          const commandName = newValue.split('/')[1];
           this.selectValue = commandName;
           this.$store.commit('SET_PROJECT_ID', commandId);
 
@@ -782,12 +840,12 @@ export default {
           };
           this.projectIds = commandId;
 
-          job.getList(listQuery).then(response => {
+          job.getList(listQuery).then((response) => {
             const { content } = response;
             this.List = content.data;
           });
 
-          this.getDataTree()
+          this.getDataTree();
 
           // 根据项目id获取数据源
 
@@ -797,7 +855,7 @@ export default {
             ascs: 'datasource_name',
             projectId: commandId
           };
-          jdbcDsList(p).then(response => {
+          jdbcDsList(p).then((response) => {
             const { records } = response;
             this.$store.commit('SET_DATASOURCE', records);
           });
@@ -809,7 +867,7 @@ export default {
       deep: true,
       handler: function(newValue, oldValue) {
         if (newValue !== oldValue) {
-          this.getDataTree()
+          this.getDataTree();
         }
       }
     },
@@ -818,13 +876,13 @@ export default {
       deep: true,
       handler: function(newValue, oldValue) {
         if (newValue !== oldValue) {
-          this.removeJobTab(newValue)
+          this.removeJobTab(newValue);
         }
       }
     },
 
     search: function(val) {
-      this.$refs.tree.filter(val)
+      this.$refs.tree.filter(val);
     }
   },
 
@@ -839,7 +897,7 @@ export default {
     };
 
     const a = document.getElementById('newFile');
-    const b = document.getElementsByClassName('right-menu1')
+    const b = document.getElementsByClassName('right-menu1');
     for (var i = 0; i < b.length; i++) {
       b[i].style.display = 'none';
     }
@@ -848,19 +906,19 @@ export default {
       for (var i = 0; i < b.length; i++) {
         b[i].style.display = 'block';
       }
-    }
+    };
 
     a.onmouseout = function() {
       for (var i = 0; i < b.length; i++) {
         b[i].style.display = 'none';
       }
-    }
+    };
 
     b.onmouseover = function() {
       for (var i = 0; i < b.length; i++) {
         b[i].style.display = 'block';
       }
-    }
+    };
   },
 
   created() {
@@ -871,29 +929,27 @@ export default {
     }
     this.getItem();
     setTimeout(() => {
-      this.getDataTree()
-    }, 600)
-    console.log(this.$store.state)
+      this.getDataTree();
+    }, 600);
+    console.log(this.$store.state);
   },
   methods: {
     /**
      * @description: tab关闭逻辑
      */
     removeJobTab(targetId) {
-      const targetIdInt = parseInt(targetId)
-      console.log(this.$store.state.taskAdmin.taskDetailList)
+      const targetIdInt = parseInt(targetId);
+      console.log(this.$store.state.taskAdmin.taskDetailList);
       const removeIndex = this.$store.state.taskAdmin.taskDetailList.findIndex(
-        ele => ele.content.id === targetIdInt
-      )
-      console.log(removeIndex, 'removeIndex')
+        (ele) => ele.content.id === targetIdInt
+      );
+      console.log(removeIndex, 'removeIndex');
       if (this.jobDetailIdx === targetId) {
         this.jobDetailIdx =
-          (
-            this.$store.state.taskAdmin.taskDetailList[removeIndex + 1]?.content
-              ?.id ||
+          (this.$store.state.taskAdmin.taskDetailList[removeIndex + 1]?.content
+            ?.id ||
             this.$store.state.taskAdmin.taskDetailList[removeIndex - 1]?.content
-              ?.id
-          ) + ''
+              ?.id) + '';
         console.log('jobDetailIdx: ', this.jobDetailIdx);
       }
       // 关闭的是[新增任务tab]，非新增任务tab id = content.id
@@ -910,47 +966,55 @@ export default {
 
     // 获取tree数据结构
     getDataTree() {
-      console.log(this.$store.state.project.currentItem, 'currentItem')
+      console.log(this.$store.state.project.currentItem, 'currentItem');
       if (this.$store.state.project.currentItem) {
-        const projectId = this.$store.state.project.currentItem.split('/')[0]
-        job.getTreeData(projectId).then((res) => {
-          if (res.code === 200) {
-            this.treeList = res.content
-          } else {
-            this.$message.error(res.msg)
-          }
-        }).catch((err) => {
-          console.log(err)
-        })
+        const projectId = this.$store.state.project.currentItem.split('/')[0];
+        job
+          .getTreeData(projectId)
+          .then((res) => {
+            if (res.code === 200) {
+              this.treeList = res.content;
+            } else {
+              this.$message.error(res.msg);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } else {
-        const projectId = this.options[0].id
-        job.getTreeData(projectId).then((res) => {
-          if (res.code === 200) {
-            this.treeList = res.content
-          } else {
-            this.$message.error(res.msg)
-          }
-        }).catch((err) => {
-          console.log(err)
-        })
+        const projectId = this.options[0].id;
+        job
+          .getTreeData(projectId)
+          .then((res) => {
+            if (res.code === 200) {
+              this.treeList = res.content;
+            } else {
+              this.$message.error(res.msg);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
     },
 
     showScene() {
-      console.log(this.selectedIndex)
+      console.log(this.selectedIndex);
     },
 
     JobTabClick(ele) {
-      console.log(ele)
+      console.log(ele);
       this.jobType = ele.name;
-      const t = this.List.filter(item => item.id === parseInt(this.jobDetailIdx))
-      this.$store.commit('SET_JOB_INFO', t[0])
+      const t = this.List.filter(
+        (item) => item.id === parseInt(this.jobDetailIdx)
+      );
+      this.$store.commit('SET_JOB_INFO', t[0]);
     },
 
     clearJobTab(name) {
       const removeIndex = _.findIndex(
         this.$store.state.taskAdmin.taskDetailList,
-        ele => ele.content.id === name
+        (ele) => ele.content.id === name
       );
       this.jobDetailIdx =
         (this.$store.state.taskAdmin.taskDetailList[removeIndex + 1]?.content
@@ -989,7 +1053,7 @@ export default {
           });
         }
         this.editableTabsValue = activeName;
-        this.editableTabs = tabs.filter(tab => tab.name !== targetName);
+        this.editableTabs = tabs.filter((tab) => tab.name !== targetName);
       }
     },
 
@@ -1053,16 +1117,16 @@ export default {
 
     // 快速检索关键字
     filterNode(value, data) {
-      console.log(value, data)
-      if (!value) return true
-      return data.name.indexOf(value) !== -1
+      console.log(value, data);
+      if (!value) return true;
+      return data.name.indexOf(value) !== -1;
     },
 
     // 单击文件夹选中
     singleClick(name) {
       clearTimeout(time); // 首先清除计时器
       time = setTimeout(() => {
-        console.log(name, this.showCurrentFolder, '11111ooooooooo')
+        console.log(name, this.showCurrentFolder, '11111ooooooooo');
         if (this.showCurrentFolder) {
           this.showCurrentFolder = false;
         } else {
@@ -1079,36 +1143,39 @@ export default {
 
     // 确认命名文件夹
     sureRe() {
-      console.log(this.selectRow, '...........')
-      var reParams = {}
+      console.log(this.selectRow, '...........');
+      var reParams = {};
       if (this.selectRow.type === 2) {
         reParams = {
           id: this.selectRow.id,
           jobId: this.selectRow.jobId ? this.selectRow.jobId : '',
           name: this.Rename
-        }
+        };
       } else {
         reParams = {
           id: this.selectRow.id,
           name: this.Rename
-        }
+        };
       }
-      job.dragReName(reParams).then((res) => {
-        console.log(res)
-        if (res.code === 200) {
-          this.$message.success(res.msg)
-          this.getDataTree()
-          this.Rename = ''
-          this.getJobDetail(this.detailData)
-          this.removeJobTab(this.selectRow.id)
-          this.handleNodeClick(this.selectRow)
-          this.dialogRenameVisible = false
-        } else {
-          this.$message.err(res.msg)
-        }
-      }).catch((err) => {
-        console.log(err)
-      })
+      job
+        .dragReName(reParams)
+        .then((res) => {
+          console.log(res);
+          if (res.code === 200) {
+            this.$message.success(res.msg);
+            this.getDataTree();
+            this.Rename = '';
+            this.getJobDetail(this.detailData);
+            this.removeJobTab(this.selectRow.id);
+            this.handleNodeClick();
+            this.dialogRenameVisible = false;
+          } else {
+            this.$message.err(res.msg);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
 
     // 复制
@@ -1119,10 +1186,10 @@ export default {
           type: 'warning',
           duration: 1000
         });
-        this.contextMenuVisible = false
+        this.contextMenuVisible = false;
       } else {
-        this.copyObj = this.selectRow
-        this.contextMenuVisible = false
+        this.copyObj = this.selectRow;
+        this.contextMenuVisible = false;
         this.$notify({
           message: '复制成功',
           type: 'success',
@@ -1133,30 +1200,33 @@ export default {
 
     // 粘贴
     pasteFile() {
-      console.log(this.copyObj)
+      console.log(this.copyObj);
       if (this.copyObj) {
-        const pid = this.selectRow.id
-        job.pasteObj(pid, this.copyObj).then((res) => {
-          console.log(res, 'res')
-          if (res.code === 200) {
-            this.contextMenuVisible = false
-            this.getDataTree()
-            this.selectRow = {}
-            this.$notify({
-              message: res.msg === '复制成功' ? '粘贴成功' : res.msg,
-              type: 'success',
-              duration: 1000
-            });
-            this.copyObj = ''
-          } else {
-            this.$message.error(res.msg)
-          }
-          console.log(res)
-        }).catch((err) => {
-          console.log(err)
-        })
+        const pid = this.selectRow.id;
+        job
+          .pasteObj(pid, this.copyObj)
+          .then((res) => {
+            console.log(res, 'res');
+            if (res.code === 200) {
+              this.contextMenuVisible = false;
+              this.getDataTree();
+              this.selectRow = {};
+              this.$notify({
+                message: res.msg === '复制成功' ? '粘贴成功' : res.msg,
+                type: 'success',
+                duration: 1000
+              });
+              this.copyObj = '';
+            } else {
+              this.$message.error(res.msg);
+            }
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } else {
-        this.contextMenuVisible = false
+        this.contextMenuVisible = false;
         this.$notify({
           message: '请选中需要复制的文件夹或任务',
           type: 'warning',
@@ -1168,54 +1238,57 @@ export default {
     // 查看任务信息
     ViewFile() {
       this.dialogViewVisible = true;
-      console.log(this.detailData, '详细信息')
+      console.log(this.detailData, '详细信息');
     },
 
     // 查看文件版本
     ViewVersion() {
       if (this.selectRow.jobId) {
-        console.log(this.$store.state.taskAdmin.GroupId)
-        job.fileVersion(this.$store.state.taskAdmin.GroupId).then((res) => {
-          console.log(res, 'res')
-          this.versionList = res
-          this.dialogVersionVisible = true;
-        }).catch((err) => {
-          console.log(err)
-        })
+        console.log(this.$store.state.taskAdmin.GroupId);
+        job
+          .fileVersion(this.$store.state.taskAdmin.GroupId)
+          .then((res) => {
+            console.log(res, 'res');
+            this.versionList = res;
+            this.dialogVersionVisible = true;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } else {
-        console.log('查看文件版本')
-        this.$message.warning('该任务暂无版本信息')
+        console.log('查看文件版本');
+        this.$message.warning('该任务暂无版本信息');
       }
     },
 
     // 新增命名文件夹
     showAllName(type) {
       if (typeof type === 'string') {
-        this.dialogNameVisible = true
-        this.currentJob = type
-        console.log(type, 'type')
+        this.dialogNameVisible = true;
+        this.currentJob = type;
+        console.log(type, 'type');
       } else {
-        this.dialogNameVisible = true
+        this.dialogNameVisible = true;
       }
     },
 
     // 取消对话框
     cancelDialog() {
-      this.dialogNameVisible = false
-      this.dialogRenameVisible = false
-      this.dialogViewVisible = false
-      this.dialogVersionVisible = false
-      this.allName = ''
-      this.Rename = ''
+      this.dialogNameVisible = false;
+      this.dialogRenameVisible = false;
+      this.dialogViewVisible = false;
+      this.dialogVersionVisible = false;
+      this.allName = '';
+      this.Rename = '';
     },
 
     // 拖拽tree
     handleDragStart(node, ev) {
-      this.dropId = node.data.id
+      this.dropId = node.data.id;
       console.log('节点开始拖拽时触发的事件', node);
     },
     handleDragEnter(draggingNode, dropNode, ev) {
-      this.targetId = dropNode.key
+      this.targetId = dropNode.key;
       console.log('拖拽进入其他节点时触发的事件', this.targetId);
     },
     handleDragLeave(draggingNode, dropNode, ev) {
@@ -1228,19 +1301,22 @@ export default {
       console.log('拖拽成功完成时触发的事件');
     },
     handleDrop(draggingNode, dropNode, dropType, ev) {
-      job.dragReName({
-        id: this.dropId,
-        parentId: this.targetId
-      }).then((res) => {
-        console.log(res)
-        if (res.code === 200) {
-          console.log(res.msg)
-        } else {
-          this.$message.err(res.msg)
-        }
-      }).catch((err) => {
-        console.log(err)
-      })
+      job
+        .dragReName({
+          id: this.dropId,
+          parentId: this.targetId
+        })
+        .then((res) => {
+          console.log(res);
+          if (res.code === 200) {
+            console.log(res.msg);
+          } else {
+            this.$message.err(res.msg);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       console.log('tree drop: ', dropNode.label, dropType, draggingNode);
     },
     allowDrop(draggingNode, dropNode, type) {
@@ -1251,48 +1327,54 @@ export default {
       }
     },
     allowDrag(draggingNode) {
-      console.log(draggingNode, 'draggingNode')
+      console.log(draggingNode, 'draggingNode');
       return draggingNode.data.name.indexOf('三级 3-2-2') === -1;
     },
 
     // 新建文件夹或任务
     createFolder() {
-      console.log(this.selectRow)
-      console.log(this.currentJob + '')
+      console.log(this.selectRow);
+      console.log(this.currentJob + '');
       const params = {
         projectId: this.selectRow.projectId,
         parentId: this.selectRow.id,
         name: this.allName,
         type: this.currentJob ? 2 : 1,
         jobType: this.currentJob ? this.currentJob : 'wenjianjia'
-      }
-      job.createNewFile(params).then((res) => {
-        if (res.code === 200) {
-          this.getDataTree()
-          this.selectRow = {}
-          if (res.content !== '请选择父级目录') {
-            this.$store.commit('changeGroupName', this.allName)
-            this.$store.commit('changeJobId', parseInt(res.content))
-            console.log(res.content)
-            console.log(this.$store.state.taskAdmin.GroupId, 'this.$store.state.taskAdmin.GroupId')
-            this.dialogNameVisible = false
-            if (this.currentJob) {
-              this.createNewJob(this.currentJob)
-              this.currentJob = ''
+      };
+      job
+        .createNewFile(params)
+        .then((res) => {
+          if (res.code === 200) {
+            this.getDataTree();
+            this.selectRow = {};
+            if (res.content !== '请选择父级目录') {
+              this.$store.commit('changeGroupName', this.allName);
+              this.$store.commit('changeJobId', parseInt(res.content));
+              console.log(res.content);
+              console.log(
+                this.$store.state.taskAdmin.GroupId,
+                'this.$store.state.taskAdmin.GroupId'
+              );
+              this.dialogNameVisible = false;
+              if (this.currentJob) {
+                this.createNewJob(this.currentJob);
+                this.currentJob = '';
+              }
+              this.allName = '';
+              this.$message.success('新增成功');
+            } else {
+              this.$message.warning(res.content);
+              this.dialogNameVisible = false;
             }
-            this.allName = ''
-            this.$message.success('新增成功')
           } else {
-            this.$message.warning(res.content)
-            this.dialogNameVisible = false
+            this.$message.error(res.content);
           }
-        } else {
-          this.$message.error(res.content)
-        }
-        console.log(res)
-      }).catch((err) => {
-        console.log(err)
-      })
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
 
     // 点击删除文件夹
@@ -1301,117 +1383,130 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        job.delFile(this.selectRow.id).then((res) => {
-          console.log(res)
-          if (res.code === 200) {
-            this.getDataTree()
-            this.removeJobTab(this.selectRow.id)
-            this.selectRow = {}
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
+      })
+        .then(() => {
+          job
+            .delFile(this.selectRow.id)
+            .then((res) => {
+              console.log(res);
+              if (res.code === 200) {
+                this.getDataTree();
+                this.removeJobTab(this.selectRow.id);
+                this.selectRow = {};
+                this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                });
+              }
             })
-          }
-        }).catch((err) => {
-          console.log(err)
+            .catch((err) => {
+              console.log(err);
+            });
         })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
         });
-      });
     },
 
     handleNodeClick(data) {
-      console.log(data)
-      this.selectRow = data
+      console.log(data);
+      this.selectRow = data;
       if (data.type === 2) {
-        this.$store.commit('changeGroupData', data)
-        this.$store.commit('changeGroupName', data.name)
-        this.currentJobName = data.name
+        this.$store.commit('changeGroupData', data);
+        this.$store.commit('changeGroupName', data.name);
+        this.currentJobName = data.name;
         if (data.jobId) {
-          this.$store.commit('changeJobId', data.jobId)
-          job.getTaskInfo(data.jobId).then((res) => {
-            console.log(res, 'content')
-            if (res.code === 200) {
-              if (res.content) {
-                this.detailData = res.content
-                this.getJobDetail(res.content)
+          this.$store.commit('changeJobId', data.jobId);
+          job
+            .getTaskInfo(data.jobId)
+            .then((res) => {
+              console.log(res, 'content');
+              if (res.code === 200) {
+                if (res.content) {
+                  this.detailData = res.content;
+                  this.getJobDetail(res.content);
+                } else {
+                  this.createNewJob(data.jobType);
+                }
               } else {
-                this.createNewJob(data.jobType)
+                this.createNewJob(data.jobType);
               }
-            } else {
-              this.createNewJob(data.jobType)
-            }
-          }).catch((err) => {
-            console.log(err)
-          })
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         } else {
-          this.createNewJob(data.jobType)
+          this.createNewJob(data.jobType);
         }
       } else {
-        this.currentJobName = ''
+        this.currentJobName = '';
       }
-      console.log(this.currentJobName, '当前任务的名称')
+      console.log(this.currentJobName, '当前任务的名称');
     },
 
     // 显示代码
     showCode(row) {
-      console.log(row)
+      console.log(row);
     },
 
     // 版本回滚
     rollback(row) {
-      console.log(row)
+      console.log(row);
       this.$confirm('此操作将该任务信息回滚到选中版本, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        row.id = this.selectRow.jobId
-        row.projectGroupId = this.selectRow.id
-        job.dataRollBack(row).then((res) => {
-          console.log(res)
-          if (res.code === 200) {
-            this.$message.success(res.content)
-            this.getDataTree()
-            this.removeJobTab(this.selectRow.id)
-            this.handleNodeClick(this.selectRow)
-            this.dialogVersionVisible = false
-          }
-        }).catch((err) => {
-          console.log(err)
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消回滚'
-        })
       })
+        .then(() => {
+          row.id = this.selectRow.jobId;
+          row.projectGroupId = this.selectRow.id;
+          job
+            .dataRollBack(row)
+            .then((res) => {
+              console.log(res);
+              if (res.code === 200) {
+                this.$message.success(res.content);
+                this.getDataTree();
+                this.removeJobTab(this.selectRow.id);
+                this.handleNodeClick(this.selectRow);
+                this.dialogVersionVisible = false;
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消回滚'
+          });
+        });
     },
 
     // 版本对比
     compare() {
-      console.log('对比')
-      this.dialogVersionVisible = false
+      console.log('对比');
+      this.dialogVersionVisible = false;
     },
 
     // 选中的版本方法
     handleSelectionChange(val) {
-      this.multipleSelection = val
-      console.log(val)
+      this.multipleSelection = val;
+      console.log(val);
       if (val.length > 2) {
-        this.$message.warning('目前仅支持两个版本的对比')
+        this.$message.warning('目前仅支持两个版本的对比');
       }
     },
 
     getJobDetail(data) {
-      console.log(data, 'data')
-      this.$store.commit('SET_JOB_INFO', data)
-      this.$store.commit('getJobDetail', data)
-      this.$store.commit('SET_TASKDETAIL_ID', data.id + '')
+      console.log(data, 'data');
+      this.$store.commit('SET_JOB_INFO', data);
+      this.$store.commit('getJobDetail', data);
+      this.$store.commit('SET_TASKDETAIL_ID', data.id + '');
       const a = {};
       a.title = data.jobDesc;
       a.name = data.jobDesc;
@@ -1420,7 +1515,7 @@ export default {
       if (
         _.findIndex(
           this.$store.state.taskAdmin.taskDetailList,
-          tab => tab.content.id === data.id
+          (tab) => tab.content.id === data.id
         ) === -1
       ) {
         this.$store.state.taskAdmin.taskDetailList.push(a);
@@ -1460,13 +1555,13 @@ export default {
     },
 
     getItem(del) {
-      this.listQuery.userId = JSON.parse(localStorage.getItem('userId'))
-      jobProjectApi.list(this.listQuery).then(response => {
+      this.listQuery.userId = JSON.parse(localStorage.getItem('userId'));
+      jobProjectApi.list(this.listQuery).then((response) => {
         const { records } = response;
         const { total } = response;
         this.total = total;
         this.options = records;
-        this.options = objList(this.options, 'name')
+        this.options = objList(this.options, 'name');
         this.selectValue = this.options[0].id;
         this.fetchJobs(this.selectValue);
 
@@ -1482,7 +1577,7 @@ export default {
         listQuery.projectIds = this.projectIds
           ? this.projectIds
           : this.options[0].id;
-        job.getList(listQuery).then(response => {
+        job.getList(listQuery).then((response) => {
           const { content } = response;
           this.List = content.data;
           console.log(this.List);
@@ -1512,10 +1607,10 @@ export default {
     refreshList(isSaveInfo) {
       const removeIndex = _.findIndex(
         this.$store.state.taskAdmin.taskDetailList,
-        ele => ele.content.id === isSaveInfo.content.id + ''
+        (ele) => ele.content.id === isSaveInfo.content.id + ''
       );
       this.$store.commit('DELETE_TASKDETAIL', removeIndex);
-      jobProjectApi.list(this.listQuery).then(response => {
+      jobProjectApi.list(this.listQuery).then((response) => {
         const { records } = response;
         const { total } = response;
         this.total = total;
@@ -1535,14 +1630,14 @@ export default {
         listQuery.projectIds = this.projectIds
           ? this.projectIds
           : this.options[0].id;
-        job.getList(listQuery).then(response => {
+        job.getList(listQuery).then((response) => {
           const { content } = response;
           this.List = content.data;
           console.log(this.List);
           const a = {};
           const eleIndex = _.findIndex(
             this.List,
-            ele => ele.id === isSaveInfo.content.id
+            (ele) => ele.id === isSaveInfo.content.id
           );
           a.title = this.List[eleIndex].jobDesc;
           a.name = this.List[eleIndex].jobDesc;
@@ -1576,7 +1671,7 @@ export default {
       };
       this.projectIds = event;
 
-      job.getList(listQuery).then(response => {
+      job.getList(listQuery).then((response) => {
         const { content } = response;
         this.List = content.data;
       });
@@ -1589,14 +1684,14 @@ export default {
         ascs: 'datasource_name',
         projectId: event
       };
-      jdbcDsList(p).then(response => {
+      jdbcDsList(p).then((response) => {
         const { records } = response;
         this.$store.commit('SET_DATASOURCE', records);
       });
     },
 
     createNewJob(command) {
-      this.$store.commit('SET_READER_ISEDIT', false)
+      this.$store.commit('SET_READER_ISEDIT', false);
       console.log(command);
       this.$store.commit('SET_TAB_TYPE', command);
       this.jobType = command;
@@ -1605,9 +1700,9 @@ export default {
 
     // 切换项目
     handleCommand(command) {
-      const commandId = command.split('/')[0]
-      const commandName = command.split('/')[1]
-      this.$store.commit('changeCurrent', command)
+      const commandId = command.split('/')[0];
+      const commandName = command.split('/')[1];
+      this.$store.commit('changeCurrent', command);
       this.selectValue = commandName;
       this.$store.commit('SET_PROJECT_ID', commandId);
 
@@ -1623,7 +1718,7 @@ export default {
       };
       this.projectIds = commandId;
 
-      job.getList(listQuery).then(response => {
+      job.getList(listQuery).then((response) => {
         const { content } = response;
         this.List = content.data;
       });
@@ -1636,18 +1731,19 @@ export default {
         ascs: 'datasource_name',
         projectId: commandId
       };
-      jdbcDsList(p).then(response => {
+      jdbcDsList(p).then((response) => {
         const { records } = response;
         this.$store.commit('SET_DATASOURCE', records);
       });
     },
     closeCreate() {
-      this.jobType = ''
-      this.$store.commit('SET_TAB_TYPE', '')
+      this.jobType = '';
+      this.$store.commit('SET_TAB_TYPE', '');
       if (this.$store.state.taskAdmin.taskDetailList.length <= 0) {
-        this.jobDetailIdx = '欢迎'
+        this.jobDetailIdx = '欢迎';
       } else {
-        this.jobDetailIdx = this.$store.state.taskAdmin.taskDetailList[0].content.id + ''
+        this.jobDetailIdx =
+          this.$store.state.taskAdmin.taskDetailList[0].content.id + '';
       }
     }
   }
@@ -1721,7 +1817,7 @@ export default {
                 cursor: pointer;
               }
               li:hover {
-                background-color: #DAF3FD;
+                background-color: #daf3fd;
               }
             }
           }
@@ -1752,12 +1848,12 @@ export default {
                   cursor: pointer;
                 }
                 li:hover {
-                  background-color: #DAF3FD;
+                  background-color: #daf3fd;
                 }
               }
               i {
                 float: right;
-                margin-right:20px;
+                margin-right: 20px;
                 margin-top: 8px;
                 cursor: pointer;
               }
@@ -1778,22 +1874,22 @@ export default {
           }
           .right-menu {
             border: 1px solid #eee;
-            box-shadow: 0 0.5em 1em 0 rgba(0,0,0,.1);
+            box-shadow: 0 0.5em 1em 0 rgba(0, 0, 0, 0.1);
             border-radius: 1px;
             display: block;
-            font-family: Microsoft Yahei,Avenir,Helvetica,Arial,sans-serif;
+            font-family: Microsoft Yahei, Avenir, Helvetica, Arial, sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-align: center;
             color: #2c3e50;
             position: fixed;
             background: #fff;
-            border: 1px solid rgba(0,0,0,.2);
+            border: 1px solid rgba(0, 0, 0, 0.2);
             border-radius: 3px;
             z-index: 999;
             display: none;
             padding: 2px;
-            box-shadow:5px 5px 10px gray;
+            box-shadow: 5px 5px 10px gray;
             a {
               padding: 2px 15px;
               // width: 120px;
@@ -1804,7 +1900,9 @@ export default {
               color: #1a1a1a;
               text-decoration: none;
               font-size: 13px;
-              i {margin-left: 20px;}
+              i {
+                margin-left: 20px;
+              }
             }
             a:hover {
               background: #42b983;
@@ -1817,26 +1915,27 @@ export default {
               position: relative;
               .right-menu1 {
                 border: 1px solid #eee;
-                box-shadow: 0 0.5em 1em 0 rgba(0,0,0,.1);
+                box-shadow: 0 0.5em 1em 0 rgba(0, 0, 0, 0.1);
                 height: 400px;
                 overflow-y: auto;
                 border-radius: 1px;
                 display: block;
-                margin-left:116px;
+                margin-left: 116px;
                 margin-top: 28px;
-                font-family: Microsoft Yahei,Avenir,Helvetica,Arial,sans-serif;
+                font-family: Microsoft Yahei, Avenir, Helvetica, Arial,
+                  sans-serif;
                 -webkit-font-smoothing: antialiased;
                 -moz-osx-font-smoothing: grayscale;
                 text-align: center;
                 color: #2c3e50;
                 position: fixed;
                 background: #fff;
-                border: 1px solid rgba(0,0,0,.2);
+                border: 1px solid rgba(0, 0, 0, 0.2);
                 border-radius: 3px;
                 z-index: 999;
                 display: none;
                 padding: 2px;
-                box-shadow:5px 5px 10px gray;
+                box-shadow: 5px 5px 10px gray;
                 a {
                   padding: 2px 15px;
                   width: 176px;
@@ -1847,7 +1946,9 @@ export default {
                   color: #1a1a1a;
                   text-decoration: none;
                   font-size: 13px;
-                  i {margin-left: 20px;}
+                  i {
+                    margin-left: 20px;
+                  }
                 }
                 a:hover {
                   background: #42b983;
@@ -1893,7 +1994,7 @@ export default {
             position: relative;
             overflow: hidden;
             vertical-align: bottom;
-            text-overflow:ellipsis;
+            text-overflow: ellipsis;
             white-space: nowrap;
             .el-icon-close {
               position: absolute;
@@ -1901,7 +2002,7 @@ export default {
               top: 50%;
               transform: translateY(-50%);
             }
-          };
+          }
         }
       }
 
@@ -1951,8 +2052,8 @@ export default {
         text-align: left;
         .el-col {
           margin-top: 20px;
-          overflow:hidden;
-          text-overflow:ellipsis;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
       }
     }
@@ -2004,7 +2105,7 @@ export default {
   margin-right: 5px;
 }
 .list-highlight {
-  background: #DAF3FD;
+  background: #daf3fd;
 }
 .top-icon:hover {
   color: #3d5eff;

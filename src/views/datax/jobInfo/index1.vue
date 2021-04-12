@@ -313,7 +313,7 @@
 </template>
 
 <script>
-import * as executor from '@/api/datax-executor'
+// import * as executor from '@/api/datax-executor'
 import * as job from '@/api/datax-job-info'
 import waves from '@/directive/waves' // waves directive
 import Cron from '@/components/Cron'

@@ -14,23 +14,40 @@
       <ul>
         <li>
           <a :loading="$store.state.graphQL.sqlBtnLoading" @click="fromChild">
-            <i class="el-icon-video-play" />运行查询
+            <!-- <i class="el-icon-video-play" />运行查询 -->
+            <i class="el-icon-video-play" />同步查询
+            <!-- <i class="el-icon-refresh" /> -->
           </a>
         </li>
         <li>
           <a @click="saveQuery">
-            <i class="el-icon-video-play" />保存查询
+            <!-- <i class="el-icon-video-play" />保存查询 -->
+            <i class="el-icon-copy-document" />异步查询
           </a>
         </li>
         <li>
-          <a @click="sqlJobBuild">
-            <i class="el-icon-video-play" />构建sql任务
-          </a>
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="清空编辑区"
+            placement="top-start"
+          >
+            <a @click="sqlJobBuild">
+              <!-- <i class="el-icon-video-play" />构建sql任务 -->
+              <i class="el-icon-delete" />清空
+            </a>
+          </el-tooltip>
         </li>
       </ul>
     </div>
-    <div :style="{height:`400px !important`}" class="sqlArea">
-      <textarea ref="mycode" v-model="code" class="codesql" @onCursorActivity="SelectSQL" @click.native="chooseSql" />
+    <div :style="{ height: `400px !important` }" class="sqlArea">
+      <textarea
+        ref="mycode"
+        v-model="code"
+        class="codesql"
+        @onCursorActivity="SelectSQL"
+        @click.native="chooseSql"
+      />
     </div>
     <!-- <div class="btnContent">
         <el-button size="mini" type="goon" :loading="$store.state.graphQL.sqlBtnLoading" @click="fromChild">
@@ -77,12 +94,14 @@ export default {
   watch: {
     code(val) {
       console.log(this.code, 'code1');
-      this.infoMsg++
+
+      this.infoMsg++;
     },
     sqlparams(val) {
       if (val.level === 3) {
-        this.code = 'SELECT * FROM ' + val.data.schema + '.' + val.data.tableName + ';'
-        console.log(this.code, 'code')
+        this.code =
+          'SELECT * FROM ' + val.data.schema + '.' + val.data.tableName + ';';
+        console.log(this.code, 'code');
         this.leftShow = true;
         this.rightShow = false;
       }
@@ -143,21 +162,22 @@ export default {
       this.$emit('querysql', {
         msg: this.infoMsg,
         code: this.code
-      })
+      });
     },
     /**
      * @description: 保存查询
      */
     saveQuery() {
-      console.log('保存查询')
-      this.$emit('saveQuery', this.code)
+      console.log('保存查询');
+      // this.code = JSON.stringify(this.code);
+      this.$emit('saveQuery', this.code);
     },
     sqlJobBuild() {
       // this.$route.push('/datax/job/JobInfo')
       this.$router.push({
         path: '/datax/job/JobInfo'
       });
-      console.log('=================')
+      console.log('=================');
       // window.location.href = '/datax/job/JobInfo'
     },
 
@@ -195,101 +215,109 @@ export default {
         // }
       });
 
-      _this.editor = editor
+      _this.editor = editor;
       editor.setSize('auto', '400px');
 
       // 代码自动提示功能，记住使用cursorActivity事件不要使用change事件，这是一个坑，那样页面直接会卡死
       editor.on('cursorActivity', function(ins) {
         _this.code = editor.getSelection();
         if (_this.code.trim() !== '') {
-          return
+          return;
         }
-        var cursor = editor.getCursor()
-        var curCh = cursor.ch
-        var curLineNo = cursor.line
-        var curLineContent = editor.getLine(curLineNo)
+        var cursor = editor.getCursor();
+        var curCh = cursor.ch;
+        var curLineNo = cursor.line;
+        var curLineContent = editor.getLine(curLineNo);
         // var sqlScript = ''
-        var endPos = {}
-        var startPos = {}
+        var endPos = {};
+        var startPos = {};
 
         // 当前行
         if (curLineContent.indexOf(';') === -1) {
           // 当前行无分号
           // 往前找;
-          let i = curLineNo - 1
+          let i = curLineNo - 1;
           for (; i >= 0; i--) {
-            var tempLine = editor.getLine(i)
+            var tempLine = editor.getLine(i);
             if (tempLine.indexOf(';') !== -1) {
-              startPos.line = i
-              startPos.ch = tempLine.indexOf(';') + 1
+              startPos.line = i;
+              startPos.ch = tempLine.indexOf(';') + 1;
               break;
             }
           }
           if (i === -1) {
-            startPos.line = 0
-            startPos.ch = 0
+            startPos.line = 0;
+            startPos.ch = 0;
           }
           // 往后找;
-          let j = curLineNo + 1
+          let j = curLineNo + 1;
           for (; j <= editor.lastLine(); j++) {
-            tempLine = editor.getLine(j)
+            tempLine = editor.getLine(j);
             if (tempLine.indexOf(';') !== -1) {
-              endPos.line = j
-              endPos.ch = tempLine.indexOf(';')
+              endPos.line = j;
+              endPos.ch = tempLine.indexOf(';');
               break;
             }
           }
           if (j === editor.lastLine() + 1) {
-            endPos.line = editor.lastLine() + 1
-            endPos.ch = 0
+            endPos.line = editor.lastLine() + 1;
+            endPos.ch = 0;
           }
-        } else if ((curLineContent.indexOf(';') + 1) >= curCh) {
+        } else if (curLineContent.indexOf(';') + 1 >= curCh) {
           // 当前行分号在当前鼠标后
-          endPos.line = curLineNo
-          endPos.ch = curLineContent.indexOf(';')
+          endPos.line = curLineNo;
+          endPos.ch = curLineContent.indexOf(';');
           // 往前找;
-          let i = curLineNo - 1
+          let i = curLineNo - 1;
           for (; i >= 0; i--) {
-            tempLine = editor.getLine(i)
+            tempLine = editor.getLine(i);
             if (tempLine.indexOf(';') !== -1) {
-              startPos.line = i
-              startPos.ch = tempLine.indexOf(';') + 1
+              startPos.line = i;
+              startPos.ch = tempLine.indexOf(';') + 1;
               break;
             }
           }
           if (i === -1) {
-            startPos.line = 0
-            startPos.ch = 0
+            startPos.line = 0;
+            startPos.ch = 0;
           }
         } else {
           // 当前行分号在当前鼠标前
-          startPos.line = curLineNo
-          startPos.ch = curLineContent.indexOf(';') + 1
+          startPos.line = curLineNo;
+          startPos.ch = curLineContent.indexOf(';') + 1;
           // 往后找;
-          let j = curLineNo + 1
+          let j = curLineNo + 1;
           for (; j <= editor.lastLine(); j++) {
-            tempLine = editor.getLine(j)
+            tempLine = editor.getLine(j);
             if (tempLine.indexOf(';') !== -1) {
-              endPos.line = j
-              endPos.ch = tempLine.indexOf(';')
+              endPos.line = j;
+              endPos.ch = tempLine.indexOf(';');
               break;
             }
           }
-          if (j === (editor.lastLine() + 1)) {
-            endPos.line = editor.lastLine() + 1
-            endPos.ch = 0
+          if (j === editor.lastLine() + 1) {
+            endPos.line = editor.lastLine() + 1;
+            endPos.ch = 0;
           }
         }
 
-        _this.code = editor.getRange(startPos, endPos)
-        console.log(_this.code, ' -- SQL')
+        _this.code = editor.getRange(startPos, endPos);
+        console.log(_this.code, ' -- SQL');
       });
 
-      editor.on('change', function(editor, change) { // 触发autocomplete
+      editor.on('change', function(editor, change) {
+        // 触发autocomplete
         console.log(change);
         if (change.origin === '+input') {
           var text = change.text;
-          if ((text !== ' ') && (text !== ';') && (text.length !== 2) && (text !== '*') && (text !== '  ')) { // 不提示
+          if (
+            text !== ' ' &&
+            text !== ';' &&
+            text.length !== 2 &&
+            text !== '*' &&
+            text !== '  '
+          ) {
+            // 不提示
             editor.execCommand('autocomplete');
           }
         }
@@ -300,7 +328,7 @@ export default {
      * @description: 回显sql
      */
     setCode(code) {
-      this.code = code
+      this.code = code;
     }
   }
 };
@@ -308,47 +336,46 @@ export default {
 
 <style lang="scss" scoped>
 .codesql {
-    font-size: 11pt;
-    /* font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono,
+  font-size: 11pt;
+  /* font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono,
     DejaVu Sans Mono,
     Bitstream Vera Sans Mono, Courier New, monospace, serif; */
 }
 
 .btnContent {
-    padding-left: 15px;
-    height: 40px;
-    line-height: 40px;
-    background-color: #fff;
-    border-bottom: 1px solid #F5F7FA;
-    font-size: 13px;
-    ul {
-        overflow: hidden;
-        li {
-            float: left;
-            margin-right: 30px;
-            a {
-                i {
-                    margin-right: 10px;
-                }
-            }
-            a:hover {
-                color: skyblue;
-            }
+  padding-left: 15px;
+  height: 40px;
+  line-height: 40px;
+  background-color: #fff;
+  border-bottom: 1px solid #f5f7fa;
+  font-size: 13px;
+  ul {
+    overflow: hidden;
+    li {
+      float: left;
+      margin-right: 30px;
+      a {
+        i {
+          margin-right: 10px;
         }
+      }
+      a:hover {
+        color: skyblue;
+      }
     }
+  }
 }
 
 .sqlArea {
-    overflow: scroll;
-
+  overflow: scroll;
 }
 
 .sqlArea::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 >>> .CodeMirror-gutters {
-    background-color: #fff;
-    border-right: none;
+  background-color: #fff;
+  border-right: none;
 }
 </style>
