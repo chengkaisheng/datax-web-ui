@@ -35,12 +35,12 @@
 
 <script>
 // import { validUsername } from '@/utils/validate'
-import SocialSign from './components/SocialSignin';
+// import SocialSign from './components/SocialSignin';
 import * as permission from '@/api/datax-user.js'
 
 export default {
   name: 'Login',
-  components: { SocialSign },
+  // components: { SocialSign },
   data() {
     // const validateUsername = (rule, value, callback) => {
     //   if (!validUsername(value)) {
