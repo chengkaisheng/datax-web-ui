@@ -182,7 +182,7 @@
           />
         </span>
       </el-tab-pane>
-      <!-- <el-tab-pane name="res">
+      <!-- <el-tab-pane name="res" closable>
         <span slot="label">
           {{ tabLabel["res"] }}
           <el-dropdown
@@ -196,12 +196,10 @@
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item
                 @click.native.stop="fileSaver('tableRes1', 'xlsx')"
-                >导出为Excel</el-dropdown-item
-              >
+              >导出为Excel</el-dropdown-item>
               <el-dropdown-item
                 @click.native.stop="fileSaver('tableRes1', 'csv')"
-                >导出为CSV</el-dropdown-item
-              >
+              >导出为CSV</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </span>
@@ -324,7 +322,7 @@
           />
         </el-table>
       </el-tab-pane>
-      <button @click="addTab">添加</button>
+      <!-- <button @click="addTab">添加</button> -->
     </el-tabs>
   </div>
 </template>
@@ -357,6 +355,7 @@ export default {
       /** SQL语句执行历史 */
       sqlHistoryData: [],
       editableTabs: [],
+      editableTabsValue: '0',
       tabIndex: 0,
       tabLabel: {
         querylog: '查询日志',
@@ -413,7 +412,7 @@ export default {
         // content: "New Tab content",
       });
       console.log(this.editableTabs);
-      this.editableTabsValue = newTabName;
+      this.tabsActive = newTabName;
     },
     removeTab(targetName) {
       if (this.editableTabs.length > 0) {
@@ -454,7 +453,7 @@ export default {
     },
 
     async queryData(queryDsInfo, sql) {
-      this.tableLoading = true;
+      // this.tableLoading = true;
       if (queryDsInfo.jdbcUrl === undefined || queryDsInfo.jdbcUrl === '') {
         this.$notify({
           title: '错误',
@@ -479,13 +478,14 @@ export default {
       // console.log(sql, 'sql')
       console.log(queryDsInfo.jdbcUrl, 'queryDsInfo.jdbcUrl');
       const host = (queryDsInfo.jdbcUrl || '')
-        .split('://')[1]
+        .split(':@//')[1]
         .split('/')[0]
         .split(':')[0];
       const port = (queryDsInfo.jdbcUrl || '')
-        .split('://')[1]
+        .split(':@//')[1]
         .split('/')[0]
         .split(':')[1];
+
       const databaseName = queryDsInfo.db;
       const userName = queryDsInfo.username;
       const password = queryDsInfo.password;
@@ -530,9 +530,8 @@ export default {
           }
         }
       };
-
       const resCreateConnection = await createConnection(params1);
-      console.log(resCreateConnection, 'create connection');
+      console.log(resCreateConnection);
 
       if (resCreateConnection.data == null) {
         this.$notify({
@@ -545,7 +544,6 @@ export default {
       }
 
       this.connectionId = resCreateConnection.data.createConnection.id;
-
       // 2、初始化连接
       const params2 = {
         id: this.connectionId,
@@ -563,6 +561,7 @@ export default {
         })
         .catch((err) => {
           infoErr2 = err.message;
+          console.log(err)
         });
       if (infoErr2) {
         this.$message.error(infoErr2);
@@ -755,7 +754,7 @@ export default {
         sqlhisApi
           .getSqlListTemp(searchParams)
           .then((response) => {
-            if (response.code === 0) {
+            if (response.code === 200) {
               this.sqlHistoryData = response.content.records;
               this.pagination.total = response.content.total;
             }
@@ -769,7 +768,7 @@ export default {
         sqlhisApi
           .getSqlListSaved(searchParams)
           .then((response) => {
-            if (response.code === 0) {
+            if (response.code === 200) {
               this.sqlHistoryData = response.content.records;
               this.pagination.total = response.content.total;
             }
