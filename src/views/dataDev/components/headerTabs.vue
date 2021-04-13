@@ -400,7 +400,7 @@ export default {
         this.selectedDatasource.username = this.datasourceSelected.secretMap?.u;
         this.selectedDatasource.password = this.datasourceSelected.secretMap?.p;
         this.selectedDatasource.datasource = this.datasourceSelected.datasource.toLowerCase();
-        console.log(this.selectedDatasource);
+        console.log('--------------', this.selectedDatasource);
         for (let i = 0; i < this.editableTabs.length; i++) {
           this.$refs.content[i].setQueryParams(this.selectedDatasource);
         }
