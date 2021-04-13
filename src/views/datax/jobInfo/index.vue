@@ -1523,6 +1523,8 @@ export default {
       console.log("tttt", data);
       this.selectRow = data;
       this.jobType = data.jobType;
+      console.log('jobType++++++++++++++++', data.jobType)
+      console.log('this.jobType++++++++++++++++', this.jobType)
       // this.jobType = data.jobType;
       if (data.type === 2) {
         this.$store.commit("changeGroupData", data);
