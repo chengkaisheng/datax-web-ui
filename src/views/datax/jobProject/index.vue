@@ -12,7 +12,12 @@
     </div>
 
     <div class="main">
-      <el-form class="search-bar" label-position="right" label-width="auto" :inline="true">
+      <el-form
+        class="search-bar"
+        label-position="right"
+        label-width="auto"
+        :inline="true"
+      >
         <el-form-item label="项目名称：">
           <el-input
             v-model="listQuery.searchVal"
@@ -35,17 +40,22 @@
           >重 置</el-button>
         </el-form-item>
       </el-form>
-      <el-row v-loading="listLoading" :gutter="20" style="margin-top: 20px;">
-        <el-col :xs="12" :sm="8" :md="6" :lg="6" :xl="6" style="margin-bottom: 20px;">
+      <el-row v-loading="listLoading" :gutter="20" style="margin-top: 20px">
+        <el-col
+          :xs="12"
+          :sm="8"
+          :md="6"
+          :lg="6"
+          :xl="6"
+          style="margin-bottom: 20px"
+        >
           <el-card
             shadow="hover"
             class="box-card new-project"
             :body-style="{ padding: '0px', height: '163px' }"
             @click.native="handleCreate"
           >
-            <span>
-              <i class="el-icon-plus" /> 添加
-            </span>
+            <span> <i class="el-icon-plus" /> 添加 </span>
           </el-card>
         </el-col>
         <el-col
@@ -56,12 +66,21 @@
           :md="6"
           :lg="6"
           :xl="6"
-          style="margin-bottom: 20px;"
+          style="margin-bottom: 20px"
         >
-          <project-card :all-users="users" :content="item" style="cursor: pointer;" @click.native="handleLink(item)">
+          <project-card
+            :all-users="users"
+            :content="item"
+            style="cursor: pointer"
+            @click.native="handleLink(item)"
+          >
             <div slot="top">
               <el-tooltip placement="left" content="操作" @click.native.stop>
-                <el-dropdown trigger="click" placement="bottom-end" @click.native.stop>
+                <el-dropdown
+                  trigger="click"
+                  placement="bottom-end"
+                  @click.native.stop
+                >
                   <span class="el-dropdown-link">
                     <el-button type="text" icon="el-icon-more" />
                   </span>
@@ -124,11 +143,11 @@
         </el-table-column>
       </el-table> -->
       <el-row>
-        <el-col style="background: #ffffff; padding-bottom: 24px;">
+        <el-col style="background: #ffffff; padding-bottom: 24px">
           <pagination
             v-show="total > 0"
             :total="total"
-            style="float: right; margin-top: 0;"
+            style="float: right; margin-top: 0"
             :page.sync="listQuery.pageNo"
             :limit.sync="listQuery.pageSize"
             @pagination="fetchData"
@@ -208,7 +227,7 @@
         <el-form-item label="数据源:">
           <el-select
             v-model="sourceForm.region"
-            style="width: 100%;"
+            style="width: 100%"
             placeholder="请选择数据源"
           >
             <el-option label="数据源一" value="data1" />
@@ -245,8 +264,8 @@ import Pagination from '@/components/Pagination';
 import { translaterMaster } from '@/utils/dictionary';
 import { getAllUser } from '@/api/datax-user';
 import ProjectCard from './components/projectCard';
-import Member from './components/member'
-import { objList } from '@/utils/sortArr'
+import Member from './components/member';
+import { objList } from '@/utils/sortArr';
 
 export default {
   name: 'JobProject',
@@ -320,28 +339,28 @@ export default {
   computed: {
     // 在用户列表通过id找username
     getNameById() {
-      return id => {
-        const temp = this.users.filter(item => item.id === id);
+      return (id) => {
+        const temp = this.users.filter((item) => item.id === id);
         return temp[0]?.username;
       };
     }
   },
   created() {
-    getAllUser().then(response => {
+    getAllUser().then((response) => {
       this.users = response;
     });
     this.fetchData();
   },
   methods: {
     fetchData() {
-      this.listQuery.userId = JSON.parse(localStorage.getItem('userId'))
+      this.listQuery.userId = JSON.parse(localStorage.getItem('userId'));
       this.listLoading = true;
-      jobProjectApi.list(this.listQuery).then(response => {
+      jobProjectApi.list(this.listQuery).then((response) => {
         const { records } = response;
         const { total } = response;
         this.total = total;
         this.list = records;
-        this.list = objList(this.list, 'name')
+        this.list = objList(this.list, 'name');
         this.listLoading = false;
       });
     },
@@ -362,9 +381,9 @@ export default {
       });
     },
     createData() {
-      this.$refs['dataForm'].validate(valid => {
+      this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          jobProjectApi.created(this.temp).then(response => {
+          jobProjectApi.created(this.temp).then((response) => {
             this.fetchData();
             this.dialogFormVisible = false;
             this.$notify({
@@ -378,28 +397,32 @@ export default {
       });
     },
     handleLink(item) {
-      console.log(JSON.parse(localStorage.getItem('permission')))
-      const myLeft = JSON.parse(localStorage.getItem('permission'))
-      const strParam = item.id + '/' + item.name
-      sessionStorage.setItem('strParam', strParam)
-      const arr = []
+      console.log(JSON.parse(localStorage.getItem('permission')));
+      const myLeft = JSON.parse(localStorage.getItem('permission'));
+      const strParam = item.id + '/' + item.name;
+      sessionStorage.setItem('strParam', strParam);
+      const arr = [];
       for (let i = 0; i < myLeft.length; i++) {
-        if (myLeft[i].menuId !== 2 && myLeft[i].menuId !== 4 && myLeft[i].menuId !== 61) {
-          arr.push(myLeft[i])
+        if (
+          myLeft[i].menuId !== 2 &&
+          myLeft[i].menuId !== 4 &&
+          myLeft[i].menuId !== 61
+        ) {
+          arr.push(myLeft[i]);
         }
       }
       for (let i = 0; i < arr.length; i++) {
         if (arr[i].path) {
-          window.open('#' + arr[0].path + '?level=2')
+          window.open('#' + arr[0].path + '?level=2');
         } else {
-          window.open('#' + arr[0].children[0].path + '?level=2')
+          window.open('#' + arr[0].children[0].path + '?level=2');
         }
       }
       console.log('#' + arr[0].path + '');
       console.log(arr);
     },
     handleUpdate(row) {
-      jobProjectApi.getInfoById(row.id).then(response => {
+      jobProjectApi.getInfoById(row.id).then((response) => {
         // console.log(response);
         this.temp = Object.assign({}, response);
       });
@@ -418,7 +441,7 @@ export default {
       this.$router.push('/datax/datasource/jdbcDatasource');
     },
     updateData() {
-      this.$refs['dataForm'].validate(valid => {
+      this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp);
           jobProjectApi.updated(tempData).then(() => {
@@ -446,7 +469,7 @@ export default {
           .deleted({
             idList: row.id
           })
-          .then(response => {
+          .then((response) => {
             this.fetchData();
             this.$notify({
               title: '成功',
@@ -471,8 +494,8 @@ export default {
      * @description: 重置
      */
     reSet() {
-      this.listQuery.searchVal = ''
-      this.fetchData()
+      this.listQuery.searchVal = '';
+      this.fetchData();
     }
   }
 };
@@ -488,7 +511,7 @@ export default {
     padding: 0px;
 
     .el-card {
-      box-shadow: inset 0px 5px 10px -8px rgba(0,0,0,0.1);
+      box-shadow: inset 0px 5px 10px -8px rgba(0, 0, 0, 0.1);
       border: 0 !important;
       border-radius: 0;
 
@@ -505,7 +528,7 @@ export default {
         float: left;
         font-size: 14px;
         font-family: PingFangHK-Medium, PingFangHK;
-        color: #000000A6;
+        color: #000000a6;
         margin: 15px 24px;
       }
     }
@@ -532,7 +555,6 @@ export default {
     border-radius: 8px;
 
     .el-dialog__header {
-
       .dialog_title {
         font-size: 24px;
         font-family: PingFangHK-Medium, PingFangHK;
@@ -574,5 +596,4 @@ export default {
     color: #3d5eff;
   }
 }
-
 </style>

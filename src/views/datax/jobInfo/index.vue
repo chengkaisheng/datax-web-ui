@@ -369,7 +369,11 @@ rkJggg=="
         @tab-remove="removeJobTab"
         @tab-click="JobTabClick"
       >
-        <el-tab-pane label="欢迎" name="欢迎">
+        <el-tab-pane
+          v-if="!$store.state.taskAdmin.taskDetailList.length"
+          label="欢迎"
+          name="欢迎"
+        >
           <div class="title_h3">一站式数据开发解决方案</div>
           <svg-icon
             style="width: 100%; height: 90%; margin-top: 25px"
@@ -983,8 +987,6 @@ export default {
       this.getDataTree();
     }, 600);
     console.log(this.$store.state);
-    console.log("任务类型", this.jobType);
-    console.log("列表------>>>", this.$store.state.taskAdmin.taskDetailList);
   },
   methods: {
     /**
@@ -1019,7 +1021,6 @@ export default {
 
     // 获取tree数据结构
     getDataTree() {
-      console.log("列表------>>>", this.$store.state.taskAdmin.taskDetailList);
       console.log(this.$store.state.project.currentItem, "currentItem");
       if (this.$store.state.project.currentItem) {
         const projectId = this.$store.state.project.currentItem.split("/")[0];
@@ -1221,7 +1222,7 @@ export default {
             this.Rename = "";
             this.getJobDetail(this.detailData);
             this.removeJobTab(this.selectRow.id);
-            this.handleNodeClick(this.selectRow);
+            this.handleNodeClick();
             this.dialogRenameVisible = false;
           } else {
             this.$message.err(res.msg);
@@ -1523,8 +1524,8 @@ export default {
       console.log("tttt", data);
       this.selectRow = data;
       this.jobType = data.jobType;
-      console.log('jobType++++++++++++++++', data.jobType)
-      console.log('this.jobType++++++++++++++++', this.jobType)
+      console.log("jobType++++++++++++++++", data.jobType);
+      console.log("this.jobType++++++++++++++++", this.jobType);
       // this.jobType = data.jobType;
       if (data.type === 2) {
         this.$store.commit("changeGroupData", data);

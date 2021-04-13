@@ -31,7 +31,7 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     port: port,
-    open: true,
+    open: false,
     overlay: {
       warnings: false,
       errors: true
@@ -42,11 +42,16 @@ module.exports = {
         ws: false,
         // target: `http://localhost:${apiPort}/api`,
         // target: 'http://47.103.79.104:9090',
+<<<<<<< HEAD
         target: "http://183.194.64.166:9527", //路拦截
         //target: "http://192.168.3.115:9527", //杨江主
+=======
+        target: 'http://183.194.64.166:9528',
+>>>>>>> b754066667ec4d343343cb878c79ce6b235da96e
         // target: 'http://192.168.3.83:8080', // 曹海生
         // target: 'http://192.168.3.70:8083', // 刘向前
         // target: 'http://192.168.3.39:8080', // 侯峰
+        // target: 'http://192.168.3.108:8080', // 卢兰杰
         changeOrigin: true,
         pathRewrite: {
           ["^" + process.env.VUE_APP_API]: "/" + process.env.VUE_APP_API
@@ -138,14 +143,22 @@ module.exports = {
         ws: false,
         // target: 'http://192.168.3.66:8978',
         // target: 'http://47.103.79.104:8979',
+<<<<<<< HEAD
         target: "http://183.194.64.166:9528", // 可用
+=======
+        target: 'http://183.194.64.166:8978', // 可用
+>>>>>>> b754066667ec4d343343cb878c79ce6b235da96e
         changeOrigin: true,
         // headers: {
         //   host: "http://192.168.3.74:8978",
         //   origin: "http://192.168.3.74:8978"
         // }
         pathRewrite: {
+<<<<<<< HEAD
           ["^" + "/dbeaver/gql"]: "/dbeaver/gql"
+=======
+          ['^' + '/dbeaver/gql']: '/api/gql'
+>>>>>>> b754066667ec4d343343cb878c79ce6b235da96e
         }
       },
       // /api

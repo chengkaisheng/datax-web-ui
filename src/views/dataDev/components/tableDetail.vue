@@ -1,41 +1,106 @@
 <template>
   <div class="table">
-    <el-tabs v-model="tabsActive" type="border-card">
-      <el-tab-pane name="res">
+    <el-tabs v-model="tabsActive" type="border-card" @tab-remove="removeTab">
+      <el-tab-pane name="querylog">
         <span slot="label">
-          {{ tabLabel['res'] }}
-          <el-dropdown v-if="tabsActive === 'res' && tableData.length > 0" style="margin-left: 10px;" placement="top">
-            <span class="el-dropdown-link">
+          {{ tabLabel["querylog"] }}
+          <el-dropdown
+            v-if="tabsActive === 'querylog' && tableData.length > 0"
+            style="margin-left: 10px"
+            placement="top"
+          >
+            <!-- <span class="el-dropdown-link">
               <i class="el-icon-more" />
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native.stop="fileSaver('tableRes1', 'xlsx')">导出为Excel</el-dropdown-item>
-              <el-dropdown-item @click.native.stop="fileSaver('tableRes1', 'csv')">导出为CSV</el-dropdown-item>
-            </el-dropdown-menu>
+              <el-dropdown-item
+                @click.native.stop="fileSaver('tableRes1', 'xlsx')"
+                >导出为Excel</el-dropdown-item
+              >
+              <el-dropdown-item
+                @click.native.stop="fileSaver('tableRes1', 'csv')"
+                >导出为CSV</el-dropdown-item
+              >
+            </el-dropdown-menu> -->
           </el-dropdown>
         </span>
-        <el-table v-show="firstShow" ref="tableRes1" v-loading="tableLoading" style="padding: 0px; margin-right: 10px" :data="tableData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
-          <el-table-column v-for="item in columns" :key="item.label" :prop="item.label" :width="(item.label.toUpperCase().length*10 + 60)" :label="item.label" show-overflow-tooltip align="center" />
+        <!-- <el-table
+          v-show="firstShow"
+          ref="tableRes1"
+          v-loading="tableLoading"
+          style="padding: 0px; margin-right: 10px"
+          :data="tableData"
+          height="245"
+          :row-style="{ height: '33px' }"
+          :cell-style="{ padding: '0' }"
+          :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
+        >
+          <el-table-column
+            v-for="item in columns"
+            :key="item.label"
+            :prop="item.label"
+            :width="item.label.toUpperCase().length * 10 + 60"
+            :label="item.label"
+            show-overflow-tooltip
+            align="center"
+          />
         </el-table>
-        <el-table v-show="secondShow" ref="tableRes2" v-loading="tableLoading" style="padding: 0px; margin-right: 10px" :data="secondData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
-          <el-table-column prop="name" label="name" width="200" align="center" />
-          <el-table-column prop="value" label="value" width="400" align="center" />
-        </el-table>
+        <el-table
+          v-show="secondShow"
+          ref="tableRes2"
+          v-loading="tableLoading"
+          style="padding: 0px; margin-right: 10px"
+          :data="secondData"
+          height="245"
+          :row-style="{ height: '33px' }"
+          :cell-style="{ padding: '0' }"
+          :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
+        >
+          <el-table-column
+            prop="name"
+            label="name"
+            width="200"
+            align="center"
+          />
+          <el-table-column
+            prop="value"
+            label="value"
+            width="400"
+            align="center"
+          />
+        </el-table> -->
       </el-tab-pane>
+
       <el-tab-pane name="hisSql">
         <span slot="label">
-          {{ tabLabel['hisSql'] }}
-          <el-dropdown v-if="tabsActive === 'hisSql' && sqlHistoryData.length > 0" style="margin-left: 10px;" placement="top">
+          {{ tabLabel["hisSql"] }}
+          <el-dropdown
+            v-if="tabsActive === 'hisSql' && sqlHistoryData.length > 0"
+            style="margin-left: 10px"
+            placement="top"
+          >
             <span class="el-dropdown-link">
               <i class="el-icon-more" />
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native.stop="fileSaver('tableHisSql', 'xlsx')">导出为Excel</el-dropdown-item>
-              <el-dropdown-item @click.native.stop="fileSaver('tableHisSql', 'csv')">导出为CSV</el-dropdown-item>
+              <el-dropdown-item
+                @click.native.stop="fileSaver('tableHisSql', 'xlsx')"
+              >导出为Excel</el-dropdown-item>
+              <el-dropdown-item
+                @click.native.stop="fileSaver('tableHisSql', 'csv')"
+              >导出为CSV</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </span>
-        <el-table ref="tableHisSql" v-loading="tableLoading" :data="sqlHistoryData" height="245" :row-style="{height: '33px'}" :cell-style="{padding: '0'}" :header-row-style="{fontWeight: '900', fontSize: '15px'}">
+        <el-table
+          ref="tableHisSql"
+          v-loading="tableLoading"
+          :data="sqlHistoryData"
+          height="245"
+          :row-style="{ height: '33px' }"
+          :cell-style="{ padding: '0' }"
+          :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
+        >
           <el-table-column prop="id" label="序号" width="80" align="center" />
           <el-table-column label="执行语句" width="200" align="center">
             <template slot-scope="scope">
@@ -47,9 +112,24 @@
               <span>{{ scope.row.datasourceId }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="databaseSchema" label="数据库" width="150" align="center" />
-          <el-table-column prop="sqlStatus" label="执行状态" width="150" align="center" />
-          <el-table-column prop="submitTime" label="提交时间" width="150" align="center" />
+          <el-table-column
+            prop="databaseSchema"
+            label="数据库"
+            width="150"
+            align="center"
+          />
+          <el-table-column
+            prop="sqlStatus"
+            label="执行状态"
+            width="150"
+            align="center"
+          />
+          <el-table-column
+            prop="submitTime"
+            label="提交时间"
+            width="150"
+            align="center"
+          />
           <el-table-column width="150" align="center">
             <template slot="header">
               <el-select v-model="isSaveMode" @change="getSqlList">
@@ -58,11 +138,18 @@
               </el-select>
             </template>
             <template slot-scope="scope">
-              <span>{{ scope.row.isSaved === 0 ? 'SQL临时查询' : '已保存SQL查询' }}</span>
+              <span>{{
+                scope.row.isSaved === 0 ? "SQL临时查询" : "已保存SQL查询"
+              }}</span>
             </template>
           </el-table-column>
           <!-- <el-table-column prop="sqlResult" label="执行结果" width="150" align="center" /> -->
-          <el-table-column v-if="isSaveMode === 1" label="操作" width="150" align="center">
+          <el-table-column
+            v-if="isSaveMode === 1"
+            label="操作"
+            width="150"
+            align="center"
+          >
             <template slot-scope="scope">
               <el-button
                 type="text"
@@ -75,7 +162,7 @@
           </el-table-column>
         </el-table>
         <el-pagination
-          style="text-align: right; margin: 10px 0;"
+          style="text-align: right; margin: 10px 0"
           :current-page="pagination.current"
           :page-sizes="[10, 20, 50, 100]"
           :page-size="pagination.size"
@@ -85,6 +172,157 @@
           @current-change="handleCurrentChange"
         />
       </el-tab-pane>
+      <el-tab-pane name="asynctask">
+        <span slot="label">
+          {{ tabLabel["asynctask"] }}
+          <el-dropdown
+            v-if="tabsActive === 'asynctask' && tableData.length > 0"
+            style="margin-left: 10px"
+            placement="top"
+          />
+        </span>
+      </el-tab-pane>
+      <!-- <el-tab-pane name="res" closable>
+        <span slot="label">
+          {{ tabLabel["res"] }}
+          <el-dropdown
+            v-if="tabsActive === 'res' && tableData.length > 0"
+            style="margin-left: 10px"
+            placement="top"
+          >
+            <span class="el-dropdown-link">
+              <i class="el-icon-more" />
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item
+                @click.native.stop="fileSaver('tableRes1', 'xlsx')"
+              >导出为Excel</el-dropdown-item>
+              <el-dropdown-item
+                @click.native.stop="fileSaver('tableRes1', 'csv')"
+              >导出为CSV</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </span>
+        <el-table
+          v-show="firstShow"
+          ref="tableRes1"
+          v-loading="tableLoading"
+          style="padding: 0px; margin-right: 10px"
+          :data="tableData"
+          height="245"
+          :row-style="{ height: '33px' }"
+          :cell-style="{ padding: '0' }"
+          :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
+        >
+          <el-table-column
+            v-for="item in columns"
+            :key="item.label"
+            :prop="item.label"
+            :width="item.label.toUpperCase().length * 10 + 60"
+            :label="item.label"
+            show-overflow-tooltip
+            align="center"
+          />
+        </el-table>
+        <el-table
+          v-show="secondShow"
+          ref="tableRes2"
+          v-loading="tableLoading"
+          style="padding: 0px; margin-right: 10px"
+          :data="secondData"
+          height="245"
+          :row-style="{ height: '33px' }"
+          :cell-style="{ padding: '0' }"
+          :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
+        >
+          <el-table-column
+            prop="name"
+            label="name"
+            width="200"
+            align="center"
+          />
+          <el-table-column
+            prop="value"
+            label="value"
+            width="400"
+            align="center"
+          />
+        </el-table>
+      </el-tab-pane> -->
+      <el-tab-pane
+        v-for="item in editableTabs"
+        :key="item.name"
+        closable
+        :label="item.title"
+        :name="item.name"
+      >
+        <span slot="label">
+          {{ tabLabel["res"] }}
+          <el-dropdown
+            v-if="tabsActive === 'res' && tableData.length > 0"
+            style="margin-left: 10px"
+            placement="top"
+          >
+            <span class="el-dropdown-link">
+              <i class="el-icon-more" />
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item
+                @click.native.stop="fileSaver('tableRes1', 'xlsx')"
+              >导出为Excel</el-dropdown-item>
+              <el-dropdown-item
+                @click.native.stop="fileSaver('tableRes1', 'csv')"
+              >导出为CSV</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </span>
+        <el-table
+          v-show="firstShow"
+          ref="tableRes1"
+          v-loading="tableLoading"
+          style="padding: 0px; margin-right: 10px"
+          :data="tableData"
+          height="245"
+          :row-style="{ height: '33px' }"
+          :cell-style="{ padding: '0' }"
+          :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
+        >
+          <el-table-column
+            v-for="item in columns"
+            :key="item.label"
+            :prop="item.label"
+            :width="item.label.toUpperCase().length * 10 + 60"
+            :label="item.label"
+            show-overflow-tooltip
+            align="center"
+          />
+        </el-table>
+        <el-table
+          v-show="secondShow"
+          ref="tableRes2"
+          v-loading="tableLoading"
+          style="padding: 0px; margin-right: 10px"
+          :data="secondData"
+          height="245"
+          :row-style="{ height: '33px' }"
+          :cell-style="{ padding: '0' }"
+          :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
+        >
+          <el-table-column
+            prop="name"
+            label="name"
+            width="200"
+            align="center"
+          />
+          <el-table-column
+            prop="value"
+            label="value"
+            width="400"
+            align="center"
+          />
+        </el-table>
+      </el-tab-pane>
+      <!-- <button @click="addTab">添加</button> -->
     </el-tabs>
   </div>
 </template>
@@ -98,9 +336,9 @@ import {
   getAsyncTaskInfo,
   getSqlExecuteTaskResults
 } from '@/graphQL/graphQL';
-import * as sqlhisApi from '@/graphQL/graphQL-history'
-import FileSaver from 'file-saver'
-import XLSX from 'xlsx'
+import * as sqlhisApi from '@/graphQL/graphQL-history';
+import FileSaver from 'file-saver';
+import XLSX from 'xlsx';
 
 export default {
   name: 'TableDetail',
@@ -116,9 +354,14 @@ export default {
       tabsActive: 'res',
       /** SQL语句执行历史 */
       sqlHistoryData: [],
+      editableTabs: [],
+      editableTabsValue: '0',
+      tabIndex: 0,
       tabLabel: {
-        'res': '当前查询结果',
-        'hisSql': 'SQL查询历史'
+        querylog: '查询日志',
+        asynctask: '异步任务',
+        res: '当前查询结果',
+        hisSql: 'SQL查询历史'
       },
       /** 分页 */
       pagination: {
@@ -135,14 +378,14 @@ export default {
       return {
         size: this.pagination.size,
         current: this.pagination.current
-      }
+      };
     },
     getBasedInfo() {
       return {
         projectId: this.$store.state.taskAdmin.sqlParams.projectId,
         datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId,
         schema: this.$store.state.taskAdmin.sqlParams.schema
-      }
+      };
     }
   },
   watch: {
@@ -150,37 +393,68 @@ export default {
       handler(val) {
         switch (val) {
           case 'res':
-            break
+            break;
           case 'hisSql':
-            this.getSqlList()
-            break
+            this.getSqlList();
+            break;
           default:
-            break
+            break;
         }
       }
     }
   },
   methods: {
+    addTab(targetName) {
+      const newTabName = ++this.tabIndex + '';
+      this.editableTabs.push({
+        title: '当前查询结果',
+        name: newTabName
+        // content: "New Tab content",
+      });
+      console.log(this.editableTabs);
+      this.tabsActive = newTabName;
+    },
+    removeTab(targetName) {
+      if (this.editableTabs.length > 0) {
+        const tabs = this.editableTabs;
+        let activeName = this.editableTabsValue;
+        if (activeName === targetName) {
+          tabs.forEach((tab, index) => {
+            if (tab.name === targetName) {
+              const nextTab = tabs[index + 1] || tabs[index - 1];
+              if (nextTab) {
+                activeName = nextTab.name;
+              }
+            }
+          });
+        }
+        this.editableTabsValue = activeName;
+        this.editableTabs = tabs.filter((tab) => tab.name !== targetName);
+      } else {
+        this.$message.info('不可删除');
+      }
+    },
     deleteRow(index, rows) {
       rows.splice(index, 1);
     },
 
     initData(dsInfo, node) {
       console.log('dsInfo', dsInfo);
-      console.log('node', node)
-      var queryDsInfo = {}
-      queryDsInfo.jdbcUrl = dsInfo.jdbcUrl
-      queryDsInfo.db = node.data.schema
-      queryDsInfo.username = dsInfo.secretMap?.u
-      queryDsInfo.password = dsInfo.secretMap?.p
-      queryDsInfo.datasource = dsInfo.datasource.toLowerCase()
-      var sql = 'Select * from ' + node.data.schema + '.' + node.data.tableName
-      console.log(queryDsInfo, 'queryDsInfo')
-      this.queryData(queryDsInfo, sql)
+      console.log('node', node);
+      var queryDsInfo = {};
+      queryDsInfo.jdbcUrl = dsInfo.jdbcUrl;
+      queryDsInfo.db = node.data.schema;
+      queryDsInfo.username = dsInfo.secretMap?.u;
+      queryDsInfo.password = dsInfo.secretMap?.p;
+      queryDsInfo.datasource = dsInfo.datasource.toLowerCase();
+      var sql = 'Select * from ' + node.data.schema + '.' + node.data.tableName;
+      console.log(queryDsInfo, 'queryDsInfo');
+	  console.log(sql, '---sql')
+      this.queryData(queryDsInfo, sql);
     },
 
     async queryData(queryDsInfo, sql) {
-      this.tableLoading = true
+      // this.tableLoading = true;
       if (queryDsInfo.jdbcUrl === undefined || queryDsInfo.jdbcUrl === '') {
         this.$notify({
           title: '错误',
@@ -188,8 +462,8 @@ export default {
           type: 'error',
           duration: 2000
         });
-        this.tableLoading = false
-        return
+        this.tableLoading = false;
+        return;
       }
       if (sql.trim() === '') {
         this.$notify({
@@ -198,43 +472,67 @@ export default {
           type: 'warning',
           duration: 2000
         });
-        return
+        return;
       }
-      this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', true) // 按钮状态
-      sql = sql.replace(';', '')
+      this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', true); // 按钮状态
+      sql = sql.replace(';', '');
       // console.log(sql, 'sql')
-      console.log(queryDsInfo.jdbcUrl, 'queryDsInfo.jdbcUrl')
-      const host = (queryDsInfo.jdbcUrl || '').split('://')[1].split('/')[0].split(':')[0];
-      const port = (queryDsInfo.jdbcUrl || '').split('://')[1].split('/')[0].split(':')[1];
-      const databaseName = queryDsInfo.db
-      const userName = queryDsInfo.username
-      const password = queryDsInfo.password
+      console.log(queryDsInfo.jdbcUrl, 'queryDsInfo.jdbcUrl');
+
+      // const host = (queryDsInfo.jdbcUrl || '')
+      //   .split(':@//')[1]
+      //   .split('/')[0]
+      //   .split(':')[0];
+      // const port = (queryDsInfo.jdbcUrl || '')
+      //   .split(':@//')[1]
+      //   .split('/')[0]
+      //   .split(':')[1];
+
+      // const databaseName = queryDsInfo.db;
+
+      // jdbc:oracle:thin:@//183.194.64.166:3309/helowin
+      const host = queryDsInfo.jdbcUrl
+        .split('//')[1]
+        .split('/')[0]
+        .split(':')[0];
+      const port = queryDsInfo.jdbcUrl
+        .split('//')[1]
+        .split('/')[0]
+        .split(':')[1];
+      var databaseName = queryDsInfo.db;
+      const userName = queryDsInfo.username;
+      const password = queryDsInfo.password;
 
       var driverId;
       switch (queryDsInfo.datasource) {
         case 'mysql':
-          driverId = 'mysql:mysql8'
+          driverId = 'mysql:mysql8';
           break;
         case 'oracle':
-          driverId = 'oracle:oracle_thin'
+          driverId = 'oracle:oracle_thin';
           break;
         case 'hive':
-          driverId = 'generic:apache_hive2'
+          driverId = 'generic:apache_hive2';
           break;
         case 'impala':
-          driverId = 'generic:cloudera_impala'
+          driverId = 'generic:cloudera_impala';
           break;
         default:
-          this.$notify.info('')
+          this.$notify.info('');
           this.$notify({
             title: '消息',
             message: '请联系管理员获取该数据库查询功能',
             type: 'info',
             duration: 2000
           });
-          return
+          return;
       }
 
+      if (driverId === 'oracle:oracle_thin') {
+        databaseName = queryDsInfo.jdbcUrl
+          .split('//')[1]
+          .split('/')[1]
+      }
       // 1、创建链接
       const params1 = {
         config: {
@@ -250,9 +548,8 @@ export default {
           }
         }
       };
-
       const resCreateConnection = await createConnection(params1);
-      console.log(resCreateConnection, 'create connection');
+      console.log(resCreateConnection);
 
       if (resCreateConnection.data == null) {
         this.$notify({
@@ -261,11 +558,10 @@ export default {
           type: 'error',
           duration: 2000
         });
-        this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
+        this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false);
       }
 
       this.connectionId = resCreateConnection.data.createConnection.id;
-
       // 2、初始化连接
       const params2 = {
         id: this.connectionId,
@@ -276,17 +572,20 @@ export default {
       };
       var infoErr2 = '';
       var success2 = '';
-      const resInitConnection = await initConnection(params2).then(res => {
-        console.log(res, 'params2')
-        success2 = res
-      }).catch(err => {
-        infoErr2 = err.message
-      });
+      const resInitConnection = await initConnection(params2)
+        .then((res) => {
+          console.log(res, 'params2');
+          success2 = res;
+        })
+        .catch((err) => {
+          infoErr2 = err.message;
+          console.log(err)
+        });
       if (infoErr2) {
-        this.$message.error(infoErr2)
-        this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
+        this.$message.error(infoErr2);
+        this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false);
       }
-      console.log(resInitConnection)
+      console.log(resInitConnection);
 
       // 3、创建sqlcontext
       const params3 = {
@@ -315,7 +614,7 @@ export default {
         queryStatus = resGetAsyncTaskInfo.data.taskInfo.status;
         if (resGetAsyncTaskInfo.data.taskInfo.error) {
           this.$message.error(resGetAsyncTaskInfo.data.taskInfo.error);
-          this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
+          this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false);
           break;
         }
       }
@@ -323,37 +622,45 @@ export default {
       const params6 = {
         taskId: resGetAsyncTaskInfo.data.taskInfo.id
       };
-      const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(params6);
+      const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
+        params6
+      );
       if (resGetSqlExecuteTaskResults) {
-        this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
-        console.log(resGetSqlExecuteTaskResults.data.result.statusMessage, 'second_table');
+        this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false);
+        console.log(
+          resGetSqlExecuteTaskResults.data.result.statusMessage,
+          'second_table'
+        );
         if (resGetSqlExecuteTaskResults.data.result.results[0].updateRowCount) {
           this.firstShow = false;
           this.secondShow = true;
-          this.secondData = []
+          this.secondData = [];
           this.secondData.push({
             name: 'updateRowCount',
-            value: resGetSqlExecuteTaskResults.data.result.results[0].updateRowCount
-          })
+            value:
+              resGetSqlExecuteTaskResults.data.result.results[0].updateRowCount
+          });
           this.secondData.push({
             name: 'query',
             value: sql.replace(';', '')
-          })
+          });
           //   const time = new Date()
           this.secondData.push({
             name: 'time',
             value: new Date().toLocaleString('cn', {
               hour12: false
             })
-          })
+          });
         } else {
           this.firstShow = true;
           this.secondShow = false;
         }
       }
       if (!resGetSqlExecuteTaskResults.data.result.results[0].resultSet) return;
-      const columns = resGetSqlExecuteTaskResults.data.result.results[0].resultSet.columns;
-      const rows = resGetSqlExecuteTaskResults.data.result.results[0].resultSet.rows;
+      const columns =
+        resGetSqlExecuteTaskResults.data.result.results[0].resultSet.columns;
+      const rows =
+        resGetSqlExecuteTaskResults.data.result.results[0].resultSet.rows;
       this.columns = columns;
       this.tableData = rows.map((ele) => {
         const obj = {};
@@ -362,11 +669,11 @@ export default {
         });
         return obj;
       });
-      this.autoSaveSql(sql)
-      this.tableLoading = false
+      this.autoSaveSql(sql);
+      this.tableLoading = false;
       this.firstShow = true;
       this.secondShow = false;
-      this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
+      this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false);
     },
     /**
      * @description:保存时添加历史
@@ -379,174 +686,195 @@ export default {
           type: 'warning',
           duration: 2000
         });
-        return
+        return;
       }
-      sqlhisApi.saveSql({
-        datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId, // 数据源id
-        projectId: this.$store.state.taskAdmin.sqlParams.projectId, // 项目id
-        databaseSchema: this.$store.state.taskAdmin.sqlParams.schema, // 数据库schema
-        sqlResult: {
-          columns: this.columns,
-          tableData: this.tableData
-        }, // sql执行结果
-        sqlStatus: 1, // 1：成功  0：失败
-        sqlContent: sql, // sql语句
-        submitUser: parseInt(localStorage.getItem('userId')) // 提交用户id
-      }).then(response => {
-        console.log(response)
-        if (response.code === 0) {
-          this.$notify({
-            title: '成功',
-            message: response.msg,
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: '错误',
-            message: '保存失败',
-            type: 'error',
-            duration: 2000
-          })
-        }
-      }).catch(_ => {
-        this.$notify({
-          title: '错误',
-          message: '保存失败.',
-          type: 'error',
-          duration: 2000
+      sqlhisApi
+        .saveSql({
+          datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId, // 数据源id
+          projectId: this.$store.state.taskAdmin.sqlParams.projectId, // 项目id
+          databaseSchema: this.$store.state.taskAdmin.sqlParams.schema, // 数据库schema
+          sqlResult: JSON.stringify({
+            columns: this.columns,
+            tableData: this.tableData
+          }), // sql执行结果
+          sqlStatus: 1, // 1：成功  0：失败
+          sqlContent: sql, // sql语句
+          submitUser: parseInt(localStorage.getItem('userId')) // 提交用户id
         })
-      })
-    },
-    /**
-     * @description: 执行时添加历史
-     */
-    autoSaveSql(sql) {
-      sqlhisApi.autoSaveSql({
-        datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId, // 数据源id
-        projectId: this.$store.state.taskAdmin.sqlParams.projectId, // 项目id
-        databaseSchema: this.$store.state.taskAdmin.sqlParams.schema, // 数据库schema
-        sqlResult: {
-          columns: this.columns,
-          tableData: this.tableData
-        }, // sql执行结果
-        sqlStatus: 1, // 1：成功  0：失败
-        sqlContent: sql, // sql语句
-        submitUser: parseInt(localStorage.getItem('userId')) // 提交用户id
-      })
-        .then(response => {
-          if (response.code === 0) {
-            console.log(response)
-          }
-        }).catch(_ => {
-          this.$notify({
-            title: '错误',
-            message: '自动保存失败.',
-            type: 'error',
-            duration: 2000
-          })
-        })
-    },
-    /**
-     * @description: 获取sql自动保存的历史记录
-     */
-    getSqlList(val = null) {
-      this.tableLoading = true
-      const searchParams = Object.assign(Object.assign({}, this.getPagination), this.getBasedInfo)
-      if (this.isSaveMode === 0) {
-        sqlhisApi.getSqlListTemp(searchParams)
-          .then(response => {
-            if (response.code === 0) {
-              this.sqlHistoryData = response.content.records
-              this.pagination.total = response.content.total
-            }
-            this.tableLoading = false
-          }).catch(error => {
-            console.log(error)
-            this.tableLoading = false
-          })
-      } else {
-        sqlhisApi.getSqlListSaved(searchParams)
-          .then(response => {
-            if (response.code === 0) {
-              this.sqlHistoryData = response.content.records
-              this.pagination.total = response.content.total
-            }
-            this.tableLoading = false
-          }).catch(error => {
-            console.log(error)
-            this.tableLoading = false
-          })
-      }
-    },
-    /**
-     * @description: 删除手动保存
-     */
-    deleteHis(id) {
-      sqlhisApi.deleteSaved(id)
-        .then(response => {
+        .then((response) => {
+          console.log(response);
           if (response.code === 0) {
             this.$notify({
               title: '成功',
               message: response.msg,
               type: 'success',
               duration: 2000
-            })
+            });
+          } else {
+            this.$notify({
+              title: '错误',
+              message: '保存失败',
+              type: 'error',
+              duration: 2000
+            });
+          }
+        })
+        .catch((_) => {
+          this.$notify({
+            title: '错误',
+            message: '保存失败.',
+            type: 'error',
+            duration: 2000
+          });
+        });
+    },
+    /**
+     * @description: 执行时添加历史
+     */
+    autoSaveSql(sql) {
+      sqlhisApi
+        .autoSaveSql({
+          datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId, // 数据源id
+          projectId: this.$store.state.taskAdmin.sqlParams.projectId, // 项目id
+          databaseSchema: this.$store.state.taskAdmin.sqlParams.schema, // 数据库schema
+          sqlResult: {
+            columns: this.columns,
+            tableData: this.tableData
+          }, // sql执行结果
+          sqlStatus: 1, // 1：成功  0：失败
+          sqlContent: sql, // sql语句
+          submitUser: parseInt(localStorage.getItem('userId')) // 提交用户id
+        })
+        .then((response) => {
+          if (response.code === 0) {
+            console.log(response);
+          }
+        })
+        .catch((_) => {
+          this.$notify({
+            title: '错误',
+            message: '自动保存失败.',
+            type: 'error',
+            duration: 2000
+          });
+        });
+    },
+    /**
+     * @description: 获取sql自动保存的历史记录
+     */
+    getSqlList(val = null) {
+      this.tableLoading = true;
+      const searchParams = Object.assign(
+        Object.assign({}, this.getPagination),
+        this.getBasedInfo
+      );
+      if (this.isSaveMode === 0) {
+        sqlhisApi
+          .getSqlListTemp(searchParams)
+          .then((response) => {
+            if (response.code === 200) {
+              this.sqlHistoryData = response.content.records;
+              this.pagination.total = response.content.total;
+            }
+            this.tableLoading = false;
+          })
+          .catch((error) => {
+            console.log(error);
+            this.tableLoading = false;
+          });
+      } else {
+        sqlhisApi
+          .getSqlListSaved(searchParams)
+          .then((response) => {
+            if (response.code === 200) {
+              this.sqlHistoryData = response.content.records;
+              this.pagination.total = response.content.total;
+            }
+            this.tableLoading = false;
+          })
+          .catch((error) => {
+            console.log(error);
+            this.tableLoading = false;
+          });
+      }
+    },
+    /**
+     * @description: 删除手动保存
+     */
+    deleteHis(id) {
+      sqlhisApi
+        .deleteSaved(id)
+        .then((response) => {
+          if (response.code === 0) {
+            this.$notify({
+              title: '成功',
+              message: response.msg,
+              type: 'success',
+              duration: 2000
+            });
           } else {
             this.$notify({
               title: '错误',
               message: '删除失败',
               type: 'error',
               duration: 2000
-            })
+            });
           }
-        }).catch(_ => {
+        })
+        .catch((_) => {
           this.$notify({
             title: '错误',
             message: '删除失败.',
             type: 'error',
             duration: 2000
-          })
-        })
+          });
+        });
     },
     /**
      * @description: 文件导出
      */
     fileSaver(tableRef, exportType) {
       this.$nextTick(() => {
-        const wb = XLSX.utils.table_to_book(this.$refs[tableRef].$el)
-        const wbout = XLSX.write(wb, { bookType: exportType, bookSST: true, type: 'array' })
+        const wb = XLSX.utils.table_to_book(this.$refs[tableRef].$el);
+        const wbout = XLSX.write(wb, {
+          bookType: exportType,
+          bookSST: true,
+          type: 'array'
+        });
         try {
-          FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), this.tabLabel[this.tabsActive].concat('.').concat(exportType))
+          FileSaver.saveAs(
+            new Blob([wbout], { type: 'application/octet-stream' }),
+            this.tabLabel[this.tabsActive].concat('.').concat(exportType)
+          );
         } catch (e) {
-          if (typeof console !== 'undefined') console.log(e, wbout)
+          if (typeof console !== 'undefined') console.log(e, wbout);
         }
-        return wbout
-      })
+        return wbout;
+      });
     },
     /**
      * @description: 页面尺寸改变
      */
     handleSizeChange(size) {
-      this.pagination.size = size
-      this.pagination.current = 1
-      this.getSqlList()
+      this.pagination.size = size;
+      this.pagination.current = 1;
+      this.getSqlList();
     },
     /**
      * @description: 当前页码改变
      */
     handleCurrentChange(current) {
-      this.pagination.current = current
-      this.getSqlList()
+      this.pagination.current = current;
+      this.getSqlList();
     },
     /**
      * @description: 回显结果
      */
     echoResult(row) {
-      this.columns = row.sqlResult.columns
-      this.tableData = row.sqlResult.tableData
-      this.tabsActive = 'hisSql'
-      this.$emit('echoResult', row)
+      this.columns = row.sqlResult.columns;
+      this.tableData = row.sqlResult.tableData;
+      this.tabsActive = 'hisSql';
+      this.$emit('echoResult', row);
     }
   }
 };
@@ -555,58 +883,57 @@ export default {
 <style lang="scss" scoped>
 .table {
   .el-tabs {
-        .el-tab-pane {
-          .el-table {
-            .el-table-column {
-              .el-select {
-                height: 28px;
-                >>> .el-input__inner {
-                  height: 28px !important;
-                  line-height: 28px !important;
-                }
-              }
+    .el-tab-pane {
+      .el-table {
+        .el-table-column {
+          .el-select {
+            height: 28px;
+            >>> .el-input__inner {
+              height: 28px !important;
+              line-height: 28px !important;
             }
           }
         }
+      }
     }
+  }
 }
 
 .border-card {
-    border: none;
-    .el-tabs {
-        border-right: none;
-        box-shadow: none;
-        // border-bottom: none;
-        .el-tab-pane {
-          height: 400px;
+  border: none;
+  .el-tabs {
+    border-right: none;
+    box-shadow: none;
+    // border-bottom: none;
+    .el-tab-pane {
+      height: 400px;
 
-          .el-table {
-            .el-table-column {
-              .el-select {
-                height: 28px;
-                >>> .el-input__inner {
-                  height: 28px !important;
-                  line-height: 28px !important;
-                }
-              }
+      .el-table {
+        .el-table-column {
+          .el-select {
+            height: 28px;
+            >>> .el-input__inner {
+              height: 28px !important;
+              line-height: 28px !important;
             }
           }
         }
+      }
     }
-    >>>.el-tabs--border-card {
-        border-right: none;
-    }
+  }
+  >>> .el-tabs--border-card {
+    border-right: none;
+  }
 }
 
 .el-table::before {
-    height: 0;
+  height: 0;
 }
 
-.el-tabs--border-card>.el-tabs__content {
-    padding: 0px;
+.el-tabs--border-card > .el-tabs__content {
+  padding: 0px;
 }
-.el-tabs--border-card>.el-tabs__header {
-    border-bottom: none;
+.el-tabs--border-card > .el-tabs__header {
+  border-bottom: none;
 }
-
 </style>
