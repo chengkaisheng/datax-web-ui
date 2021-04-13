@@ -478,18 +478,18 @@ export default {
       sql = sql.replace(';', '');
       // console.log(sql, 'sql')
       console.log(queryDsInfo.jdbcUrl, 'queryDsInfo.jdbcUrl');
-<<<<<<< HEAD
-      const host = (queryDsInfo.jdbcUrl || '')
-        .split(':@//')[1]
-        .split('/')[0]
-        .split(':')[0];
-      const port = (queryDsInfo.jdbcUrl || '')
-        .split(':@//')[1]
-        .split('/')[0]
-        .split(':')[1];
 
-      const databaseName = queryDsInfo.db;
-=======
+      // const host = (queryDsInfo.jdbcUrl || '')
+      //   .split(':@//')[1]
+      //   .split('/')[0]
+      //   .split(':')[0];
+      // const port = (queryDsInfo.jdbcUrl || '')
+      //   .split(':@//')[1]
+      //   .split('/')[0]
+      //   .split(':')[1];
+
+      // const databaseName = queryDsInfo.db;
+
       // jdbc:oracle:thin:@//183.194.64.166:3309/helowin
       const host = queryDsInfo.jdbcUrl
         .split('//')[1]
@@ -499,11 +499,9 @@ export default {
         .split('//')[1]
         .split('/')[0]
         .split(':')[1];
-       var databaseName = queryDsInfo.db;
->>>>>>> a20ea95a7692a21ebcd20b241a2fa61072f74c66
+      var databaseName = queryDsInfo.db;
       const userName = queryDsInfo.username;
       const password = queryDsInfo.password;
-
 
       var driverId;
       switch (queryDsInfo.datasource) {
@@ -530,11 +528,11 @@ export default {
           return;
       }
 
-       if (driverId === 'oracle:oracle_thin') {
-         databaseName = queryDsInfo.jdbcUrl
-        .split('//')[1]
-        .split('/')[1]
-       }
+      if (driverId === 'oracle:oracle_thin') {
+        databaseName = queryDsInfo.jdbcUrl
+          .split('//')[1]
+          .split('/')[1]
+      }
       // 1、创建链接
       const params1 = {
         config: {
