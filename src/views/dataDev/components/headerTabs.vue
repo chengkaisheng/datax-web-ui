@@ -166,14 +166,14 @@
 </template>
 
 <script>
-import DataDevContent from './content';
-import * as jobProjectApi from '@/api/datax-job-project';
-import * as datasourceApi from '@/api/datax-jdbcDatasource';
+import DataDevContent from './content'
+import * as jobProjectApi from '@/api/datax-job-project'
+import * as datasourceApi from '@/api/datax-jdbcDatasource'
 import {
   getTableListWithComment,
   getTableSchema,
   getTableColumns
-} from '@/api/metadata-query';
+} from '@/api/metadata-query'
 export default {
   // name: "HeaderTabs",
   components: {
@@ -206,7 +206,7 @@ export default {
         label: 'name',
         isLeaf: (data, node) => {
           if (node.level === 3) {
-            return true;
+            return true
           }
         }
       },
@@ -244,7 +244,7 @@ export default {
       schemaTreeLoading: false,
       /** 数据源列表 */
       dataSourceList: []
-    };
+    }
   },
   computed: {
     typeIsText() {
@@ -253,7 +253,7 @@ export default {
         type === 'text' ||
         type === 'mediumtext' ||
         type === 'char' ||
-        type === 'longtext';
+        type === 'longtext'
     },
     typeIsNumber() {
       return (type) =>
@@ -264,39 +264,39 @@ export default {
         type === 'tinyint' ||
         type === 'float' ||
         type === 'decimal' ||
-        type === 'smallint';
+        type === 'smallint'
     },
     typeIsDate() {
       return (type) =>
         type === 'date' ||
         type === 'timestamp' ||
         type === 'datetime' ||
-        type === 'time';
+        type === 'time'
     }
   },
   watch: {
     searchTree(val) {
-      this.$refs.schemaTree.filter(val);
+      this.$refs.schemaTree.filter(val)
     },
     '$store.state.project.currentItem': {
       deep: true,
       handler: function(newValue, oldValue) {
         if (oldValue) {
-          this.arrQuery.projectId = newValue.split('/')[0];
-          this.getDataSourceList();
+          this.arrQuery.projectId = newValue.split('/')[0]
+          this.getDataSourceList()
         }
       }
     },
     /** projectid存入vuex */
     selectValue: {
       handler(val) {
-        this.$store.commit('SET_SQLP_PROJECTID', val);
+        this.$store.commit('SET_SQLP_PROJECTID', val)
       },
       immediate: true
     },
     datasourceSelectedId: {
       handler(val) {
-        this.$store.commit('SET_SQLP_DATASOURCEID', val);
+        this.$store.commit('SET_SQLP_DATASOURCEID', val)
       },
       immediate: true
     }
@@ -305,37 +305,37 @@ export default {
     if (sessionStorage.getItem('strParam')) {
       this.arrQuery.projectId = sessionStorage
         .getItem('strParam')
-        .split('/')[0];
+        .split('/')[0]
     }
     if (localStorage.getItem('userId') === '1') {
-      this.showInput = true;
+      this.showInput = true
     } else {
-      this.showInput = false;
+      this.showInput = false
     }
-    this.getProJectList();
+    this.getProJectList()
   },
   mounted() {
-    this.handleTabsEdit('', 'add');
+    this.handleTabsEdit('', 'add')
   },
   methods: {
     addTab(targetName) {
-      const newTabName = ++this.tabIndex + '';
+      const newTabName = ++this.tabIndex + ''
       this.editableTabs.push({
         title: '未命名的查询',
         name: newTabName
         // content: "New Tab content",
-      });
-      console.log(this.editableTabs);
-      this.editableTabsValue = newTabName;
+      })
+      console.log(this.editableTabs)
+      this.editableTabsValue = newTabName
     },
     handleDelete(name) {
-      console.log(name);
+      console.log(name)
       for (let i = 0; i < this.editableTabs.length; i++) {
         if (this.editableTabs[i].name === name) {
-          this.editableTabs.splice(i, 1);
-          this.tabIndex = i + '';
-          console.log(this.tabIndex, 'index');
-          this.editableTabsValue = this.tabIndex;
+          this.editableTabs.splice(i, 1)
+          this.tabIndex = i + ''
+          console.log(this.tabIndex, 'index')
+          this.editableTabsValue = this.tabIndex
         }
       }
     },
@@ -348,8 +348,8 @@ export default {
           id: data.dsid,
           schema: data.name
         }).then((res) => {
-          this.tableList = res;
-          const arr = [];
+          this.tableList = res
+          const arr = []
           for (let j = 0; j < res.length; j++) {
             arr.push({
               id: new Date().getTime() + j,
@@ -357,18 +357,18 @@ export default {
               dsid: data.dsid,
               schema: data.name,
               tableName: res[j].name
-            });
+            })
           }
-          this.$refs.schemaTree.updateKeyChildren(data.id, arr);
-        });
+          this.$refs.schemaTree.updateKeyChildren(data.id, arr)
+        })
       } else if (node.level === 2) {
         getTableColumns({
           datasourceId: data.dsid,
           tableName: data.tableName,
           schema: data.schema
         }).then((res) => {
-          this.columnList = res.datas;
-          const arr = [];
+          this.columnList = res.datas
+          const arr = []
           for (let j = 0; j < res.datas.length; j++) {
             arr.push({
               id: new Date().getTime() + j,
@@ -380,12 +380,12 @@ export default {
                 ' - ' +
                 res.datas[j].COLUMN_COMMENT,
               type: res.datas[j].DATA_TYPE
-            });
+            })
           }
-          this.$refs.schemaTree.updateKeyChildren(data.id, arr);
-        });
+          this.$refs.schemaTree.updateKeyChildren(data.id, arr)
+        })
       } else {
-        console.log('最后一级');
+        console.log('最后一级')
       }
     },
     /**
@@ -393,59 +393,59 @@ export default {
      */
     handleNodeClick(data, node, nodeComp) {
       if (node.level === 1) {
-        this.selectedDbName = node.data.name;
-        this.selectedDsName = this.datasourceSelected.name; // node.parent.data => this.datasourceSelected
-        this.selectedDatasource.jdbcUrl = this.datasourceSelected.jdbcUrl;
-        this.selectedDatasource.db = node.data.name;
-        this.selectedDatasource.username = this.datasourceSelected.secretMap?.u;
-        this.selectedDatasource.password = this.datasourceSelected.secretMap?.p;
-        this.selectedDatasource.datasource = this.datasourceSelected.datasource.toLowerCase();
-        console.log('--------------', this.selectedDatasource);
+        this.selectedDbName = node.data.name
+        this.selectedDsName = this.datasourceSelected.name // node.parent.data => this.datasourceSelected
+        this.selectedDatasource.jdbcUrl = this.datasourceSelected.jdbcUrl
+        this.selectedDatasource.db = node.data.name
+        this.selectedDatasource.username = this.datasourceSelected.secretMap?.u
+        this.selectedDatasource.password = this.datasourceSelected.secretMap?.p
+        this.selectedDatasource.datasource = this.datasourceSelected.datasource.toLowerCase()
+        console.log('--------------', this.selectedDatasource)
         for (let i = 0; i < this.editableTabs.length; i++) {
-          this.$refs.content[i].setQueryParams(this.selectedDatasource);
+          this.$refs.content[i].setQueryParams(this.selectedDatasource)
         }
       }
 
       if (node.level === 2) {
         for (let i = 0; i < this.editableTabs.length; i++) {
           if (this.editableTabs[i].name === this.editableTabsValue) {
-            this.$refs.content[i].previewData(this.datasourceSelected, node);
+            this.$refs.content[i].previewData(this.datasourceSelected, node)
             // this.$refs.tabel.addTab()
-            break;
+            break
           }
         }
       }
 
-      this.$store.commit('SET_SQLP_SCHEMA', node.data.name);
+      this.$store.commit('SET_SQLP_SCHEMA', node.data.name)
     },
     /**
      * @description: 筛选节点
      */
     filterNode(value, data) {
-      if (!value) return true;
-      return data.name.indexOf(value) !== -1;
+      if (!value) return true
+      return data.name.indexOf(value) !== -1
     },
     /**
      * @description: 获取项目数据
      */
     async getProJectList() {
-      this.listQuery.userId = parseInt(localStorage.getItem('userId'));
+      this.listQuery.userId = parseInt(localStorage.getItem('userId'))
       try {
-        const { records } = await jobProjectApi.list(this.listQuery);
-        this.projectArray = records;
-        console.log(this.projectArray, 'projectArray');
-        console.log(records);
+        const { records } = await jobProjectApi.list(this.listQuery)
+        this.projectArray = records
+        console.log(this.projectArray, 'projectArray')
+        console.log(records)
         if (this.selectValue === '') {
-          console.log(this.projectArray[0].name, 'name');
-          this.selectValue = this.projectArray[0].name;
-          this.getDataSourceList();
+          console.log(this.projectArray[0].name, 'name')
+          this.selectValue = this.projectArray[0].name
+          this.getDataSourceList()
         }
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     },
     selectMethod() {
-      this.getDataSourceList();
+      this.getDataSourceList()
     },
     /**
      * @description: 根据项目获取数据源
@@ -457,75 +457,75 @@ export default {
         //     this.arrQuery.projectId = this.projectArray[i].id;
         //   }
         // }
-        this.arrQuery.projectId = this.selectValue;
+        this.arrQuery.projectId = this.selectValue
       }
       datasourceApi.getJobList(this.arrQuery).then((res) => {
-        console.log(res, '数据源接口返回信息');
+        console.log(res, '数据源接口返回信息')
         // console.log(res.code, "code");
         for (let i = 0; i < res.records.length; i++) {
           res.records[i].name =
             res.records[i].datasourceName +
             ' - ' +
-            res.records[i].jdbcUrl.split('//')[1].split('/')[0];
+            res.records[i].jdbcUrl.split('//')[1].split('/')[0]
         }
-        console.log(res.records);
-        this.dataSourceList = res.records;
-        console.log('55555555555555555555555555' + this.dataSourceList);
+        console.log(res.records)
+        this.dataSourceList = res.records
+        console.log('55555555555555555555555555' + this.dataSourceList)
         // 初始化数据库以及schema
-        this.datasourceSelectedId = '';
-        this.schemaTreeData = [];
-        this.schemaTree = '';
-        this.schemaTreeLoading = false;
-        this.sourceList = res.records; // 传给子组件的数据
-      });
+        this.datasourceSelectedId = ''
+        this.schemaTreeData = []
+        this.schemaTree = ''
+        this.schemaTreeLoading = false
+        this.sourceList = res.records // 传给子组件的数据
+      })
     },
 
     removeTab(targetName) {
       if (this.editableTabs.length > 1) {
-        const tabs = this.editableTabs;
-        let activeName = this.editableTabsValue;
+        const tabs = this.editableTabs
+        let activeName = this.editableTabsValue
         if (activeName === targetName) {
           tabs.forEach((tab, index) => {
             if (tab.name === targetName) {
-              const nextTab = tabs[index + 1] || tabs[index - 1];
+              const nextTab = tabs[index + 1] || tabs[index - 1]
               if (nextTab) {
-                activeName = nextTab.name;
+                activeName = nextTab.name
               }
             }
-          });
+          })
         }
-        this.editableTabsValue = activeName;
-        this.editableTabs = tabs.filter((tab) => tab.name !== targetName);
+        this.editableTabsValue = activeName
+        this.editableTabs = tabs.filter((tab) => tab.name !== targetName)
       } else {
-        this.$message.info('最后一个,请勿删除');
+        this.$message.info('最后一个,请勿删除')
       }
     },
     handleTabsEdit(targetName, action) {
       if (action === 'add') {
-        const newTabName = ++this.tabIndex + '';
+        const newTabName = ++this.tabIndex + ''
         this.editableTabs.push({
           title: '未命名的查询',
           name: newTabName,
           content: 'New Tab content'
-        });
-        this.editableTabsValue = newTabName;
+        })
+        this.editableTabsValue = newTabName
       }
       if (action === 'remove') {
-        const tabs = this.editableTabs;
-        let activeName = this.editableTabsValue;
+        const tabs = this.editableTabs
+        let activeName = this.editableTabsValue
         if (activeName === targetName) {
           tabs.forEach((tab, index) => {
             if (tab.name === targetName) {
-              const nextTab = tabs[index + 1] || tabs[index - 1];
+              const nextTab = tabs[index + 1] || tabs[index - 1]
               if (nextTab) {
-                activeName = nextTab.name;
+                activeName = nextTab.name
               }
             }
-          });
+          })
         }
 
-        this.editableTabsValue = activeName;
-        this.editableTabs = tabs.filter((tab) => tab.name !== targetName);
+        this.editableTabsValue = activeName
+        this.editableTabs = tabs.filter((tab) => tab.name !== targetName)
       }
     },
     /**
@@ -534,30 +534,30 @@ export default {
     getSchemas(id) {
       this.datasourceSelected = this.dataSourceList.find(
         (item) => item.id === id
-      );
-      this.schemaTreeLoading = true;
+      )
+      this.schemaTreeLoading = true
       getTableSchema({
         datasourceId: id
       })
         .then((response) => {
-          const arr = [];
+          const arr = []
           for (let i = 0; i < response.length; i++) {
             arr.push({
               id: new Date().getTime() + i,
               name: response[i], // schema名称
               dsid: id // dataSource Id
-            });
+            })
           }
-          this.schemaTreeData = arr;
-          this.schemaTreeLoading = false;
+          this.schemaTreeData = arr
+          this.schemaTreeLoading = false
         })
         .catch((err) => {
-          console.log(err);
-          this.schemaTreeLoading = false;
-        });
+          console.log(err)
+          this.schemaTreeLoading = false
+        })
     }
   }
-};
+}
 </script>
 
 <style lang="scss">
