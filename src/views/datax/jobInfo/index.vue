@@ -30,7 +30,8 @@
                   v-for="item in options"
                   :key="item.id"
                   :command="item.id + '/' + item.name"
-                >{{ item.name }}</el-dropdown-item>
+                  >{{ item.name }}</el-dropdown-item
+                >
               </el-dropdown-menu>
             </el-dropdown>
             <!-- <el-dropdown-menu slot="dropdown" placeholder="请选择">
@@ -203,16 +204,20 @@ rkJggg=="
               @update:show="(show) => (contextMenuVisible = show)"
             >
               <a href="javascript:" @click="showAllName">新建文件夹</a>
-              <a
-                id="newFile"
-                href="javascript:"
-              >新建任务<i class="el-icon-arrow-right" />
+              <a id="newFile" href="javascript:"
+                >新建任务<i class="el-icon-arrow-right" />
                 <vue-context-menu
                   class="right-menu1"
                   :target="contextMenu1Target"
                   :show.sync="contextMenu1Visible"
                   style="display: none"
                 >
+                  <a href="javascript:" @click="ShowHives('HIVE')">
+                    <svg-icon class="svg_icon" icon-class="NORMAL" /> Hive任务
+                  </a>
+                  <a href="javascript:" @click="ShowHives('IMPALA')">
+                    <svg-icon class="svg_icon" icon-class="NORMAL" /> Impala任务
+                  </a>
                   <a href="javascript:" @click="showAllName('NORMAL')">
                     <svg-icon class="svg_icon" icon-class="NORMAL" /> 普通任务
                   </a>
@@ -271,7 +276,7 @@ rkJggg=="
                   <a href="javascript:" @click="showAllName('DQCJOB')">
                     <svg-icon class="svg_icon" icon-class="DQCJOB" />质量任务
                   </a>
-                  <hr style="padding: 0; margin: 0">
+                  <hr style="padding: 0; margin: 0" />
                   <a href="javascript:" @click="showAllName('METACOLLECT')">
                     <svg-icon
                       class="svg_icon"
@@ -284,7 +289,7 @@ rkJggg=="
                       icon-class="METACOMPARE"
                     />元数据比较任务
                   </a>
-                  <hr style="padding: 0; margin: 0">
+                  <hr style="padding: 0; margin: 0" />
                   <a href="javascript:" @click="showAllName('SHELL')">
                     <svg-icon class="svg_icon" icon-class="SHELL" />SHELL任务
                   </a>
@@ -297,7 +302,7 @@ rkJggg=="
                   <a href="javascript:" @click="showAllName('PYTHON')">
                     <svg-icon class="svg_icon" icon-class="PYTHON" />PYTHON任务
                   </a>
-                  <hr style="padding: 0; margin: 0">
+                  <hr style="padding: 0; margin: 0" />
                   <a href="javascript:" @click="showAllName('VJOB')">
                     <svg-icon class="svg_icon" icon-class="VJOB" />虚任务
                   </a>
@@ -331,21 +336,24 @@ rkJggg=="
                 v-show="selectRow.jobType !== 'wenjianjia'"
                 href="javascript:"
                 @click="ViewFile"
-              >查看文件信息</a>
+                >查看文件信息</a
+              >
               <a
                 v-show="selectRow.jobType !== 'wenjianjia'"
                 href="javascript:"
                 @click="ViewVersion"
-              >查看文件版本</a>
+                >查看文件版本</a
+              >
               <a href="javascript:" @click="resetName">重命名</a>
-              <hr style="padding: 0; margin: 0">
+              <hr style="padding: 0; margin: 0" />
               <a href="javascript:" @click="copyFile">复制(C)</a>
               <a href="javascript:" @click="pasteFile">粘贴(P)</a>
               <a
                 v-show="selectRow.parentId !== 0"
                 href="javascript:"
                 @click="delFolder"
-              >删除(D)</a>
+                >删除(D)</a
+              >
             </vue-context-menu>
           </el-scrollbar>
         </div>
@@ -494,12 +502,20 @@ rkJggg=="
           <div
             v-if="
               jobType === 'NORMAL' ||
-                jobType === 'IMPORT' ||
-                jobType === 'EXPORT'
+              jobType === 'IMPORT' ||
+              jobType === 'EXPORT'
             "
             class="rg"
           >
             <JsonBuild @cancel="closeCreate" />
+          </div>
+
+          <div v-if="jobType === 'HIVE'" class="rg">
+            <Hive job-type="GLUE_HIVE" job-type-label="HIVE任务" />
+          </div>
+
+          <div v-if="jobType === 'IMPALA'" class="rg">
+            <Hive job-type="GLUE_IMPALA" job-type-label="IMPALA任务" />
           </div>
 
           <div v-if="jobType === 'SQLJOB'" class="rg">
@@ -547,17 +563,51 @@ rkJggg=="
       </el-tabs>
     </div>
     <el-dialog width="40%" title="重命名" :visible.sync="dialogRenameVisible">
-      <span style="margin-left: 20px">名称：</span><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
+      <span style="margin-left: 20px">名称：</span
+      ><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelDialog"> 取消 </el-button>
         <el-button type="goon" size="small" @click="sureRe"> 确定 </el-button>
       </div>
     </el-dialog>
     <el-dialog width="40%" title="新建" :visible.sync="dialogNameVisible">
-      <span style="margin-left: 20px">名称：</span><el-input v-model="allName" style="width: 60%; margin-left: 20px" />
+      <span style="margin-left: 20px">名称：</span
+      ><el-input v-model="allName" style="width: 60%; margin-left: 20px" />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelDialog"> 取消 </el-button>
         <el-button type="goon" size="small" @click="createFolder">
+          确定
+        </el-button>
+      </div>
+    </el-dialog>
+    <!--新增Hive任务-->
+    <el-dialog width="40%" title="新建" :visible.sync="showHive">
+      <div class="boxs">
+        <span style="margin-left: 20px; display: inline-block; width: 100px"
+          >任务中文名：</span
+        ><el-input
+          v-model="chineseName"
+          style="width: 60%; margin-left: 20px"
+        />
+      </div>
+      <br />
+      <div class="boxs">
+        <span style="margin-left: 20px; display: inline-block; width: 100px"
+          >任务英文名：</span
+        ><el-input
+          v-model="englishName"
+          style="width: 60%; margin-left: 20px"
+        />
+      </div>
+      <br />
+      <div class="boxs">
+        <span style="margin-left: 20px; display: inline-block; width: 100px"
+          >任务说明：</span
+        ><el-input v-model="task" style="width: 60%; margin-left: 20px" />
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="cancelDialog"> 取消 </el-button>
+        <el-button type="goon" size="small" @click="HivecreateHandl('HIVE')">
           确定
         </el-button>
       </div>
@@ -606,13 +656,12 @@ rkJggg=="
                 type="text"
                 size="small"
                 @click="showCode(row)"
-              >代码</el-button>
+                >代码</el-button
+              >
             </el-popover>
-            <el-button
-              type="text"
-              size="small"
-              @click="rollback(row)"
-            >回滚</el-button>
+            <el-button type="text" size="small" @click="rollback(row)"
+              >回滚</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -661,35 +710,37 @@ rkJggg=="
 </template>
 
 <script>
-import Workflow from './components/workflow.vue';
-import SimpleJob from './components/simpleJob.vue';
-import SparkJob from './components/sparkJob.vue';
-import JobDetail from './components/jobDetail.vue';
-import JobDetailPro from './components/jobDetailPro.vue';
-import * as jobProjectApi from '@/api/datax-job-project';
-import * as job from '@/api/datax-job-info';
-import JsonBuild from '@/views/datax/json-build/index';
-import JsonQuality from '@/views/datax/jsonQuality/index';
-import BatchBuild from '@/views/datax/json-build-batch/index';
-import JobTemplate from '@/views/datax/jobTemplate/index';
-import SqlJob from '@/views/datax/jobInfo/components/sqlJob';
-import MetaCompare from '@/views/datax/jobInfo/components/metaCompare';
-import _ from 'lodash';
-import { component as VueContextMenu } from '@xunlei/vue-context-menu';
+import Workflow from "./components/workflow.vue";
+import SimpleJob from "./components/simpleJob.vue";
+import Hive from "./components/Hive.vue";
+import SparkJob from "./components/sparkJob.vue";
+import JobDetail from "./components/jobDetail.vue";
+import JobDetailPro from "./components/jobDetailPro.vue";
+import * as jobProjectApi from "@/api/datax-job-project";
+import * as job from "@/api/datax-job-info";
+import JsonBuild from "@/views/datax/json-build/index";
+import JsonQuality from "@/views/datax/jsonQuality/index";
+import BatchBuild from "@/views/datax/json-build-batch/index";
+import JobTemplate from "@/views/datax/jobTemplate/index";
+import SqlJob from "@/views/datax/jobInfo/components/sqlJob";
+import MetaCompare from "@/views/datax/jobInfo/components/metaCompare";
+import _ from "lodash";
+import { component as VueContextMenu } from "@xunlei/vue-context-menu";
 
-import { list as jdbcDsList } from '@/api/datax-jdbcDatasource';
+import { list as jdbcDsList } from "@/api/datax-jdbcDatasource";
 
-import { objList } from '@/utils/sortArr';
+import { objList } from "@/utils/sortArr";
 
 var time;
 
 export default {
-  name: '',
+  name: "",
   components: {
     Workflow,
     JsonBuild,
     JsonQuality,
     SimpleJob,
+    Hive,
     JobDetail,
     JobDetailPro,
     BatchBuild,
@@ -697,67 +748,71 @@ export default {
     SparkJob,
     SqlJob,
     MetaCompare,
-    'vue-context-menu': VueContextMenu
+    "vue-context-menu": VueContextMenu,
   },
   data() {
     return {
-      editableTabsValue: '1',
+      showHive: false,
+      chineseName: "",
+      englishName: "",
+      task: "",
+      editableTabsValue: "1",
       isDel: false,
       editableTabs: [
         {
-          title: 'Untitled',
-          name: '1'
-        }
+          title: "Untitled",
+          name: "1",
+        },
       ],
       dialogRenameVisible: false,
       dialogNameVisible: false,
       dialogViewVisible: false,
       showCurrentFolder: false,
       dialogVersionVisible: false,
-      Rename: '',
-      allName: '',
+      Rename: "",
+      allName: "",
       tabIndex: 1,
       treeList: [],
       contextMenuVisible: false,
       contextMenu1Visible: false,
-      contextMenuTarget: '',
-      contextMenu1Target: '',
-      selectedIndex: '',
+      contextMenuTarget: "",
+      contextMenu1Target: "",
+      selectedIndex: "",
       /** el-select选项 */
       options: [],
       /** el-select激活项 */
-      selectValue: '',
-      search: '',
+      selectValue: "",
+      search: "",
       List: [],
       listQuery: {
         pageNo: 1,
         pageSize: 1000,
-        searchVal: '',
-        userId: ''
+        searchVal: "",
+        userId: "",
       },
       /** 任务类型 */
-      jobType: 'SHOWDETAIL',
-      jobDetailIdx: '欢迎',
-      jobTypeMap: '',
+      jobType: "",
+      jobDetailIdx: "欢迎",
+      jobTypeMap: "",
       jobDetailLoading: true,
       firstTime: true,
-      projectIds: '',
+      projectIds: "",
       showAdmin: false,
-      folderName: '新建文件夹',
+      folderName: "新建文件夹",
       FolderArray: [],
       isFolder: true,
       defaultProps: {
-        children: 'children',
-        label: 'name'
+        children: "children",
+        label: "name",
       },
       selectRow: {},
       detailData: {},
       versionList: [],
-      copyObj: '',
-      currentJob: '', // 当前任务类型
-      currentJobName: '', // 当前任务名
-      targetId: '', // 目标id
-      dropId: '' // 被拖拽id
+      copyObj: "",
+      currentJob: "", // 当前任务类型
+      currentJobName: "", // 当前任务名
+      targetId: "", // 目标id
+      dropId: "", // 被拖拽id
     };
   },
   computed: {
@@ -785,20 +840,20 @@ export default {
 
     dropdownText() {
       if (
-        this.selectValue !== '' &&
+        this.selectValue !== "" &&
         this.selectValue !== null &&
         this.selectValue !== undefined
       ) {
-        if (typeof this.selectValue === 'number') {
+        if (typeof this.selectValue === "number") {
           return this.options.filter((item) => item.id === this.selectValue)[0]
             .name;
         } else {
           return this.selectValue;
         }
       } else {
-        return '请选择';
+        return "请选择";
       }
-    }
+    },
   },
   watch: {
     editableTabs(val) {
@@ -815,18 +870,18 @@ export default {
     },
 
     taskDetailID(val) {
-      console.log(val, 'jobDetailIdx');
+      console.log(val, "jobDetailIdx");
       this.jobDetailIdx = val;
     },
 
-    '$store.state.project.currentItem': {
+    "$store.state.project.currentItem": {
       deep: true,
-      handler: function(newValue, oldValue) {
+      handler: function (newValue, oldValue) {
         if (oldValue) {
-          const commandId = newValue.split('/')[0];
-          const commandName = newValue.split('/')[1];
+          const commandId = newValue.split("/")[0];
+          const commandName = newValue.split("/")[1];
           this.selectValue = commandName;
-          this.$store.commit('SET_PROJECT_ID', commandId);
+          this.$store.commit("SET_PROJECT_ID", commandId);
 
           // 获取任务列表
           const listQuery = {
@@ -835,8 +890,8 @@ export default {
             jobGroup: 0,
             projectIds: commandId,
             triggerStatus: -1,
-            jobDesc: '',
-            glueType: ''
+            jobDesc: "",
+            glueType: "",
           };
           this.projectIds = commandId;
 
@@ -852,77 +907,77 @@ export default {
           const p = {
             current: 1,
             size: 200,
-            ascs: 'datasource_name',
-            projectId: commandId
+            ascs: "datasource_name",
+            projectId: commandId,
           };
           jdbcDsList(p).then((response) => {
             const { records } = response;
-            this.$store.commit('SET_DATASOURCE', records);
+            this.$store.commit("SET_DATASOURCE", records);
           });
         }
-      }
+      },
     },
 
-    '$store.state.taskAdmin.watchStr': {
+    "$store.state.taskAdmin.watchStr": {
       deep: true,
-      handler: function(newValue, oldValue) {
+      handler: function (newValue, oldValue) {
         if (newValue !== oldValue) {
           this.getDataTree();
         }
-      }
+      },
     },
 
-    '$store.state.taskAdmin.scheduleId': {
+    "$store.state.taskAdmin.scheduleId": {
       deep: true,
-      handler: function(newValue, oldValue) {
+      handler: function (newValue, oldValue) {
         if (newValue !== oldValue) {
           this.removeJobTab(newValue);
         }
-      }
+      },
     },
 
-    search: function(val) {
+    search: function (val) {
       this.$refs.tree.filter(val);
-    }
+    },
   },
 
   mounted() {
-    const myChartContainer = document.getElementById('main_span');
+    const myChartContainer = document.getElementById("main_span");
     // 右击显示菜单 区域位置
     this.contextMenuTarget = myChartContainer;
     this.contextMenu1Target = myChartContainer;
     // 关闭浏览器右击默认菜单
-    myChartContainer.oncontextmenu = function(e) {
+    myChartContainer.oncontextmenu = function (e) {
       return false;
     };
 
-    const a = document.getElementById('newFile');
-    const b = document.getElementsByClassName('right-menu1');
+    const a = document.getElementById("newFile");
+    const b = document.getElementsByClassName("right-menu1");
     for (var i = 0; i < b.length; i++) {
-      b[i].style.display = 'none';
+      b[i].style.display = "none";
     }
 
-    a.onmouseover = function() {
+    a.onmouseover = function () {
       for (var i = 0; i < b.length; i++) {
-        b[i].style.display = 'block';
+        b[i].style.display = "block";
       }
     };
 
-    a.onmouseout = function() {
+    a.onmouseout = function () {
       for (var i = 0; i < b.length; i++) {
-        b[i].style.display = 'none';
+        b[i].style.display = "none";
       }
     };
 
-    b.onmouseover = function() {
+    b.onmouseover = function () {
       for (var i = 0; i < b.length; i++) {
-        b[i].style.display = 'block';
+        b[i].style.display = "block";
       }
     };
   },
 
   created() {
-    if (sessionStorage.getItem('level') === '2') {
+    if (sessionStorage.getItem("level") === "2") {
       this.showAdmin = false;
     } else {
       this.showAdmin = true;
@@ -943,32 +998,32 @@ export default {
       const removeIndex = this.$store.state.taskAdmin.taskDetailList.findIndex(
         (ele) => ele.content.id === targetIdInt
       );
-      console.log(removeIndex, 'removeIndex');
+      console.log(removeIndex, "removeIndex");
       if (this.jobDetailIdx === targetId) {
         this.jobDetailIdx =
           (this.$store.state.taskAdmin.taskDetailList[removeIndex + 1]?.content
             ?.id ||
             this.$store.state.taskAdmin.taskDetailList[removeIndex - 1]?.content
-              ?.id) + '';
-        console.log('jobDetailIdx: ', this.jobDetailIdx);
+              ?.id) + "";
+        console.log("jobDetailIdx: ", this.jobDetailIdx);
       }
       // 关闭的是[新增任务tab]，非新增任务tab id = content.id
       if (this.$store.state.taskAdmin.tabTypeArr.indexOf(targetId) !== -1) {
-        this.jobType = '';
-        this.$store.commit('SET_TAB_TYPE', '');
+        this.jobType = "";
+        this.$store.commit("SET_TAB_TYPE", "");
       } else {
-        this.$store.commit('DELETE_TASKDETAIL', removeIndex);
+        this.$store.commit("DELETE_TASKDETAIL", removeIndex);
         if (this.$store.state.taskAdmin.taskDetailList.length === 0) {
-          this.jobDetailIdx = '欢迎';
+          this.jobDetailIdx = "欢迎";
         }
       }
     },
 
     // 获取tree数据结构
     getDataTree() {
-      console.log(this.$store.state.project.currentItem, 'currentItem');
+      console.log(this.$store.state.project.currentItem, "currentItem");
       if (this.$store.state.project.currentItem) {
-        const projectId = this.$store.state.project.currentItem.split('/')[0];
+        const projectId = this.$store.state.project.currentItem.split("/")[0];
         job
           .getTreeData(projectId)
           .then((res) => {
@@ -1008,7 +1063,7 @@ export default {
       const t = this.List.filter(
         (item) => item.id === parseInt(this.jobDetailIdx)
       );
-      this.$store.commit('SET_JOB_INFO', t[0]);
+      this.$store.commit("SET_JOB_INFO", t[0]);
     },
 
     clearJobTab(name) {
@@ -1020,26 +1075,26 @@ export default {
         (this.$store.state.taskAdmin.taskDetailList[removeIndex + 1]?.content
           ?.id ||
           this.$store.state.taskAdmin.taskDetailList[removeIndex - 1]?.content
-            ?.id) + '';
-      this.$store.commit('DELETE_TASKDETAIL', removeIndex);
+            ?.id) + "";
+      this.$store.commit("DELETE_TASKDETAIL", removeIndex);
     },
 
     freshItem() {
       this.getItem();
-      this.jobType = 'SHOWDETAIL';
+      this.jobType = "SHOWDETAIL";
     },
 
     handleTabsEdit(targetName, action) {
-      if (action === 'add') {
+      if (action === "add") {
         const newTabName = new Date().valueOf().toString();
         this.editableTabs.push({
-          title: 'Untitled',
+          title: "Untitled",
           name: newTabName,
-          content: 'New Tab content'
+          content: "New Tab content",
         });
         this.editableTabsValue = newTabName;
       }
-      if (action === 'remove') {
+      if (action === "remove") {
         const tabs = this.editableTabs;
         let activeName = this.editableTabsValue;
         if (activeName === targetName) {
@@ -1080,7 +1135,7 @@ export default {
       if (this.List.length < 1) {
         this.List.push({
           name: val.name,
-          data: val.data
+          data: val.data,
         });
       } else {
         for (let i = 0; i < this.List.length; i++) {
@@ -1089,7 +1144,7 @@ export default {
           } else {
             this.List.push({
               name: val.name,
-              data: val.data
+              data: val.data,
             });
           }
         }
@@ -1126,7 +1181,7 @@ export default {
     singleClick(name) {
       clearTimeout(time); // 首先清除计时器
       time = setTimeout(() => {
-        console.log(name, this.showCurrentFolder, '11111ooooooooo');
+        console.log(name, this.showCurrentFolder, "11111ooooooooo");
         if (this.showCurrentFolder) {
           this.showCurrentFolder = false;
         } else {
@@ -1143,18 +1198,18 @@ export default {
 
     // 确认命名文件夹
     sureRe() {
-      console.log(this.selectRow, '...........');
+      console.log(this.selectRow, "...........");
       var reParams = {};
       if (this.selectRow.type === 2) {
         reParams = {
           id: this.selectRow.id,
-          jobId: this.selectRow.jobId ? this.selectRow.jobId : '',
-          name: this.Rename
+          jobId: this.selectRow.jobId ? this.selectRow.jobId : "",
+          name: this.Rename,
         };
       } else {
         reParams = {
           id: this.selectRow.id,
-          name: this.Rename
+          name: this.Rename,
         };
       }
       job
@@ -1164,7 +1219,7 @@ export default {
           if (res.code === 200) {
             this.$message.success(res.msg);
             this.getDataTree();
-            this.Rename = '';
+            this.Rename = "";
             this.getJobDetail(this.detailData);
             this.removeJobTab(this.selectRow.id);
             this.handleNodeClick();
@@ -1182,18 +1237,18 @@ export default {
     copyFile() {
       if (this.selectRow.parentId === 0) {
         this.$notify({
-          message: '不能复制整个根目录数据',
-          type: 'warning',
-          duration: 1000
+          message: "不能复制整个根目录数据",
+          type: "warning",
+          duration: 1000,
         });
         this.contextMenuVisible = false;
       } else {
         this.copyObj = this.selectRow;
         this.contextMenuVisible = false;
         this.$notify({
-          message: '复制成功',
-          type: 'success',
-          duration: 1000
+          message: "复制成功",
+          type: "success",
+          duration: 1000,
         });
       }
     },
@@ -1206,17 +1261,17 @@ export default {
         job
           .pasteObj(pid, this.copyObj)
           .then((res) => {
-            console.log(res, 'res');
+            console.log(res, "res");
             if (res.code === 200) {
               this.contextMenuVisible = false;
               this.getDataTree();
               this.selectRow = {};
               this.$notify({
-                message: res.msg === '复制成功' ? '粘贴成功' : res.msg,
-                type: 'success',
-                duration: 1000
+                message: res.msg === "复制成功" ? "粘贴成功" : res.msg,
+                type: "success",
+                duration: 1000,
               });
-              this.copyObj = '';
+              this.copyObj = "";
             } else {
               this.$message.error(res.msg);
             }
@@ -1228,9 +1283,9 @@ export default {
       } else {
         this.contextMenuVisible = false;
         this.$notify({
-          message: '请选中需要复制的文件夹或任务',
-          type: 'warning',
-          duration: 1000
+          message: "请选中需要复制的文件夹或任务",
+          type: "warning",
+          duration: 1000,
         });
       }
     },
@@ -1238,7 +1293,7 @@ export default {
     // 查看任务信息
     ViewFile() {
       this.dialogViewVisible = true;
-      console.log(this.detailData, '详细信息');
+      console.log(this.detailData, "详细信息");
     },
 
     // 查看文件版本
@@ -1248,7 +1303,7 @@ export default {
         job
           .fileVersion(this.$store.state.taskAdmin.GroupId)
           .then((res) => {
-            console.log(res, 'res');
+            console.log(res, "res");
             this.versionList = res;
             this.dialogVersionVisible = true;
           })
@@ -1256,17 +1311,21 @@ export default {
             console.log(err);
           });
       } else {
-        console.log('查看文件版本');
-        this.$message.warning('该任务暂无版本信息');
+        console.log("查看文件版本");
+        this.$message.warning("该任务暂无版本信息");
       }
     },
-
+    //新增Hive任务
+    ShowHives(type) {
+      this.showHive = true;
+      this.currentJob = type;
+    },
     // 新增命名文件夹
     showAllName(type) {
-      if (typeof type === 'string') {
+      if (typeof type === "string") {
         this.dialogNameVisible = true;
         this.currentJob = type;
-        console.log(type, 'type');
+        console.log(type, "type");
       } else {
         this.dialogNameVisible = true;
       }
@@ -1278,33 +1337,34 @@ export default {
       this.dialogRenameVisible = false;
       this.dialogViewVisible = false;
       this.dialogVersionVisible = false;
-      this.allName = '';
-      this.Rename = '';
+      this.showHive = false;
+      this.allName = "";
+      this.Rename = "";
     },
 
     // 拖拽tree
     handleDragStart(node, ev) {
       this.dropId = node.data.id;
-      console.log('节点开始拖拽时触发的事件', node);
+      console.log("节点开始拖拽时触发的事件", node);
     },
     handleDragEnter(draggingNode, dropNode, ev) {
       this.targetId = dropNode.key;
-      console.log('拖拽进入其他节点时触发的事件', this.targetId);
+      console.log("拖拽进入其他节点时触发的事件", this.targetId);
     },
     handleDragLeave(draggingNode, dropNode, ev) {
-      console.log('拖拽离开某个节点时触发的事件');
+      console.log("拖拽离开某个节点时触发的事件");
     },
     handleDragOver(draggingNode, dropNode, ev) {
-      console.log('拖拽结束时（可能未成功）触发的事件');
+      console.log("拖拽结束时（可能未成功）触发的事件");
     },
     handleDragEnd(draggingNode, dropNode, dropType, ev) {
-      console.log('拖拽成功完成时触发的事件');
+      console.log("拖拽成功完成时触发的事件");
     },
     handleDrop(draggingNode, dropNode, dropType, ev) {
       job
         .dragReName({
           id: this.dropId,
-          parentId: this.targetId
+          parentId: this.targetId,
         })
         .then((res) => {
           console.log(res);
@@ -1317,30 +1377,34 @@ export default {
         .catch((err) => {
           console.log(err);
         });
-      console.log('tree drop: ', dropNode.label, dropType, draggingNode);
+      console.log("tree drop: ", dropNode.label, dropType, draggingNode);
     },
     allowDrop(draggingNode, dropNode, type) {
-      if (dropNode.data.name === '二级 3-1') {
-        return type !== 'inner';
+      if (dropNode.data.name === "二级 3-1") {
+        return type !== "inner";
       } else {
         return true;
       }
     },
     allowDrag(draggingNode) {
-      console.log(draggingNode, 'draggingNode');
-      return draggingNode.data.name.indexOf('三级 3-2-2') === -1;
+      console.log(draggingNode, "draggingNode");
+      return draggingNode.data.name.indexOf("三级 3-2-2") === -1;
     },
-
-    // 新建文件夹或任务
-    createFolder() {
-      console.log(this.selectRow);
-      console.log(this.currentJob + '');
+    //HIVE任务新建
+    HivecreateHandl(data) {
+      console.log("111");
+      this.jobType = data;
+      console.log("wert", this.selectRow);
+      console.log("job---->", this.jobType);
       const params = {
+        // chineseName: this.chineseName,
+        // englishName: this.englishName,
+        // task: this.task,
         projectId: this.selectRow.projectId,
         parentId: this.selectRow.id,
-        name: this.allName,
+        name: this.chineseName,
         type: this.currentJob ? 2 : 1,
-        jobType: this.currentJob ? this.currentJob : 'wenjianjia'
+        jobType: data,
       };
       job
         .createNewFile(params)
@@ -1348,21 +1412,66 @@ export default {
           if (res.code === 200) {
             this.getDataTree();
             this.selectRow = {};
-            if (res.content !== '请选择父级目录') {
-              this.$store.commit('changeGroupName', this.allName);
-              this.$store.commit('changeJobId', parseInt(res.content));
+            if (res.content !== "请选择父级目录") {
+              this.$store.commit("changeGroupName", this.chineseName);
+              this.$store.commit("changeJobId", parseInt(res.content));
               console.log(res.content);
               console.log(
                 this.$store.state.taskAdmin.GroupId,
-                'this.$store.state.taskAdmin.GroupId'
+                "this.$store.state.taskAdmin.GroupId"
+              );
+              this.showHive = false;
+              if (this.currentJob) {
+                this.createNewJob(this.currentJob);
+                this.currentJob = "";
+              }
+              this.chineseName = "";
+              this.$message.success("新增成功");
+            } else {
+              this.$message.warning(res.content);
+              this.showHive = false;
+            }
+          } else {
+            this.$message.error(res.content);
+          }
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    // 新建文件夹或任务
+    createFolder() {
+      console.log(this.selectRow);
+      console.log(this.currentJob + "");
+      const params = {
+        projectId: this.selectRow.projectId,
+        parentId: this.selectRow.id,
+        name: this.allName,
+        type: this.currentJob ? 2 : 1,
+        jobType: this.currentJob ? this.currentJob : "wenjianjia",
+      };
+      job
+        .createNewFile(params)
+        .then((res) => {
+          if (res.code === 200) {
+            this.getDataTree();
+            this.selectRow = {};
+            if (res.content !== "请选择父级目录") {
+              this.$store.commit("changeGroupName", this.allName);
+              this.$store.commit("changeJobId", parseInt(res.content));
+              console.log(res.content);
+              console.log(
+                this.$store.state.taskAdmin.GroupId,
+                "this.$store.state.taskAdmin.GroupId"
               );
               this.dialogNameVisible = false;
               if (this.currentJob) {
                 this.createNewJob(this.currentJob);
-                this.currentJob = '';
+                this.currentJob = "";
               }
-              this.allName = '';
-              this.$message.success('新增成功');
+              this.allName = "";
+              this.$message.success("新增成功");
             } else {
               this.$message.warning(res.content);
               this.dialogNameVisible = false;
@@ -1379,10 +1488,10 @@ export default {
 
     // 点击删除文件夹
     delFolder() {
-      this.$confirm('此操作将删除该文件夹, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$confirm("此操作将删除该文件夹, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
         .then(() => {
           job
@@ -1394,8 +1503,8 @@ export default {
                 this.removeJobTab(this.selectRow.id);
                 this.selectRow = {};
                 this.$message({
-                  type: 'success',
-                  message: '删除成功!'
+                  type: "success",
+                  message: "删除成功!",
                 });
               }
             })
@@ -1405,25 +1514,29 @@ export default {
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
+            type: "info",
+            message: "已取消删除",
           });
         });
     },
 
     handleNodeClick(data) {
-      console.log(data);
+      console.log("tttt", data);
       this.selectRow = data;
+      this.jobType = data.jobType;
+      console.log("jobType++++++++++++++++", data.jobType);
+      console.log("this.jobType++++++++++++++++", this.jobType);
+      // this.jobType = data.jobType;
       if (data.type === 2) {
-        this.$store.commit('changeGroupData', data);
-        this.$store.commit('changeGroupName', data.name);
+        this.$store.commit("changeGroupData", data);
+        this.$store.commit("changeGroupName", data.name);
         this.currentJobName = data.name;
         if (data.jobId) {
-          this.$store.commit('changeJobId', data.jobId);
+          this.$store.commit("changeJobId", data.jobId);
           job
             .getTaskInfo(data.jobId)
             .then((res) => {
-              console.log(res, 'content');
+              console.log(res, "content");
               if (res.code === 200) {
                 if (res.content) {
                   this.detailData = res.content;
@@ -1442,9 +1555,9 @@ export default {
           this.createNewJob(data.jobType);
         }
       } else {
-        this.currentJobName = '';
+        this.currentJobName = "";
       }
-      console.log(this.currentJobName, '当前任务的名称');
+      console.log(this.currentJobName, "当前任务的名称");
     },
 
     // 显示代码
@@ -1455,10 +1568,10 @@ export default {
     // 版本回滚
     rollback(row) {
       console.log(row);
-      this.$confirm('此操作将该任务信息回滚到选中版本, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$confirm("此操作将该任务信息回滚到选中版本, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
         .then(() => {
           row.id = this.selectRow.jobId;
@@ -1481,15 +1594,15 @@ export default {
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消回滚'
+            type: "info",
+            message: "已取消回滚",
           });
         });
     },
 
     // 版本对比
     compare() {
-      console.log('对比');
+      console.log("对比");
       this.dialogVersionVisible = false;
     },
 
@@ -1498,15 +1611,15 @@ export default {
       this.multipleSelection = val;
       console.log(val);
       if (val.length > 2) {
-        this.$message.warning('目前仅支持两个版本的对比');
+        this.$message.warning("目前仅支持两个版本的对比");
       }
     },
 
     getJobDetail(data) {
-      console.log(data, 'data');
-      this.$store.commit('SET_JOB_INFO', data);
-      this.$store.commit('getJobDetail', data);
-      this.$store.commit('SET_TASKDETAIL_ID', data.id + '');
+      console.log(data, "data");
+      this.$store.commit("SET_JOB_INFO", data);
+      this.$store.commit("getJobDetail", data);
+      this.$store.commit("SET_TASKDETAIL_ID", data.id + "");
       const a = {};
       a.title = data.jobDesc;
       a.name = data.jobDesc;
@@ -1519,9 +1632,9 @@ export default {
         ) === -1
       ) {
         this.$store.state.taskAdmin.taskDetailList.push(a);
-        this.jobDetailIdx = a.content.id + '';
+        this.jobDetailIdx = a.content.id + "";
       } else {
-        this.jobDetailIdx = a.content.id + '';
+        this.jobDetailIdx = a.content.id + "";
       }
       // this.jobType = 'SHOWDETAIL';
     },
@@ -1539,7 +1652,7 @@ export default {
           } else {
             this.editableTabs.push({
               title: data.name,
-              name: (this.editableTabs.length + 1).toString()
+              name: (this.editableTabs.length + 1).toString(),
             });
             this.editableTabsValue = this.editableTabs[
               this.editableTabs.length - 1
@@ -1549,19 +1662,19 @@ export default {
       } else {
         this.editableTabs.push({
           title: data.name,
-          name: (this.editableTabs.length + 1).toString()
+          name: (this.editableTabs.length + 1).toString(),
         });
       }
     },
 
     getItem(del) {
-      this.listQuery.userId = JSON.parse(localStorage.getItem('userId'));
+      this.listQuery.userId = JSON.parse(localStorage.getItem("userId"));
       jobProjectApi.list(this.listQuery).then((response) => {
         const { records } = response;
         const { total } = response;
         this.total = total;
         this.options = records;
-        this.options = objList(this.options, 'name');
+        this.options = objList(this.options, "name");
         this.selectValue = this.options[0].id;
         this.fetchJobs(this.selectValue);
 
@@ -1571,8 +1684,8 @@ export default {
           jobGroup: 0,
           // projectIds: '',
           triggerStatus: -1,
-          jobDesc: '',
-          glueType: ''
+          jobDesc: "",
+          glueType: "",
         };
         listQuery.projectIds = this.projectIds
           ? this.projectIds
@@ -1590,8 +1703,8 @@ export default {
           if (!this.firstTime) {
             if (!del) {
               // this.$store.state.taskAdmin.taskDetailList.push(a);
-              this.$store.commit('ADD_TASKDETAIL', a);
-              this.jobDetailIdx = a.content.id + '';
+              this.$store.commit("ADD_TASKDETAIL", a);
+              this.jobDetailIdx = a.content.id + "";
             }
           } else {
             this.firstTime = false;
@@ -1607,9 +1720,9 @@ export default {
     refreshList(isSaveInfo) {
       const removeIndex = _.findIndex(
         this.$store.state.taskAdmin.taskDetailList,
-        (ele) => ele.content.id === isSaveInfo.content.id + ''
+        (ele) => ele.content.id === isSaveInfo.content.id + ""
       );
-      this.$store.commit('DELETE_TASKDETAIL', removeIndex);
+      this.$store.commit("DELETE_TASKDETAIL", removeIndex);
       jobProjectApi.list(this.listQuery).then((response) => {
         const { records } = response;
         const { total } = response;
@@ -1624,8 +1737,8 @@ export default {
           jobGroup: 0,
           // projectIds: '',
           triggerStatus: -1,
-          jobDesc: '',
-          glueType: ''
+          jobDesc: "",
+          glueType: "",
         };
         listQuery.projectIds = this.projectIds
           ? this.projectIds
@@ -1645,8 +1758,8 @@ export default {
           if (!this.firstTime) {
             // if (!del) {
             // this.$store.state.taskAdmin.taskDetailList.push(a);
-            this.$store.commit('ADD_TASKDETAIL', a);
-            this.jobDetailIdx = a.content.id + '';
+            this.$store.commit("ADD_TASKDETAIL", a);
+            this.jobDetailIdx = a.content.id + "";
             // }
           } else {
             this.firstTime = false;
@@ -1657,7 +1770,7 @@ export default {
     },
 
     fetchJobs(event) {
-      this.$store.commit('SET_PROJECT_ID', event);
+      this.$store.commit("SET_PROJECT_ID", event);
 
       // 获取任务列表
       const listQuery = {
@@ -1666,8 +1779,8 @@ export default {
         jobGroup: 0,
         projectIds: event,
         triggerStatus: -1,
-        jobDesc: '',
-        glueType: ''
+        jobDesc: "",
+        glueType: "",
       };
       this.projectIds = event;
 
@@ -1681,30 +1794,30 @@ export default {
       const p = {
         current: 1,
         size: 200,
-        ascs: 'datasource_name',
-        projectId: event
+        ascs: "datasource_name",
+        projectId: event,
       };
       jdbcDsList(p).then((response) => {
         const { records } = response;
-        this.$store.commit('SET_DATASOURCE', records);
+        this.$store.commit("SET_DATASOURCE", records);
       });
     },
 
     createNewJob(command) {
-      this.$store.commit('SET_READER_ISEDIT', false);
+      this.$store.commit("SET_READER_ISEDIT", false);
       console.log(command);
-      this.$store.commit('SET_TAB_TYPE', command);
+      this.$store.commit("SET_TAB_TYPE", command);
       this.jobType = command;
       this.jobDetailIdx = command;
     },
 
     // 切换项目
     handleCommand(command) {
-      const commandId = command.split('/')[0];
-      const commandName = command.split('/')[1];
-      this.$store.commit('changeCurrent', command);
+      const commandId = command.split("/")[0];
+      const commandName = command.split("/")[1];
+      this.$store.commit("changeCurrent", command);
       this.selectValue = commandName;
-      this.$store.commit('SET_PROJECT_ID', commandId);
+      this.$store.commit("SET_PROJECT_ID", commandId);
 
       // 获取任务列表
       const listQuery = {
@@ -1713,8 +1826,8 @@ export default {
         jobGroup: 0,
         projectIds: commandId,
         triggerStatus: -1,
-        jobDesc: '',
-        glueType: ''
+        jobDesc: "",
+        glueType: "",
       };
       this.projectIds = commandId;
 
@@ -1728,25 +1841,25 @@ export default {
       const p = {
         current: 1,
         size: 200,
-        ascs: 'datasource_name',
-        projectId: commandId
+        ascs: "datasource_name",
+        projectId: commandId,
       };
       jdbcDsList(p).then((response) => {
         const { records } = response;
-        this.$store.commit('SET_DATASOURCE', records);
+        this.$store.commit("SET_DATASOURCE", records);
       });
     },
     closeCreate() {
-      this.jobType = '';
-      this.$store.commit('SET_TAB_TYPE', '');
+      this.jobType = "";
+      this.$store.commit("SET_TAB_TYPE", "");
       if (this.$store.state.taskAdmin.taskDetailList.length <= 0) {
-        this.jobDetailIdx = '欢迎';
+        this.jobDetailIdx = "欢迎";
       } else {
         this.jobDetailIdx =
-          this.$store.state.taskAdmin.taskDetailList[0].content.id + '';
+          this.$store.state.taskAdmin.taskDetailList[0].content.id + "";
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -2044,6 +2157,10 @@ export default {
   }
 
   .el-dialog__body {
+    .boxs {
+      border: none;
+      text-align: center;
+    }
     .box {
       border: 1px solid #ccc;
       height: 100%;

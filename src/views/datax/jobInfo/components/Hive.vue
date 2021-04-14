@@ -1,0 +1,218 @@
+<template>
+  <div class="wrap">
+    <div class="elid">
+      <CodeMirror
+        ref="codemirror"
+        @querysql="runQuery"
+        @saveQuery="saveQuery"
+      />
+      <el-button
+        size="small"
+        class="drawer"
+        @click="drawer = true"
+        type="primary"
+        style="margin-left: 16px"
+      >
+        参数配置
+      </el-button>
+      <el-drawer
+        title="内容新增"
+        size="400px"
+        :visible.sync="drawer"
+        :with-header="true"
+      >
+        <div style="padding: 20px">
+          <el-button
+            style="margin-bottom: 20px"
+            type="primary"
+            size="small"
+            @click="
+              () => {
+                isshow = true;
+              }
+            "
+            >新增</el-button
+          >
+          <el-input
+            v-show="isshow"
+            v-model="input"
+            size="mini"
+            placeholder="请输入参数"
+          ></el-input>
+          <div style="margin-top: 20px" v-show="isshow">
+            <el-button
+              @click="
+                () => {
+                  drawer = false;
+                  isshow = false;
+                }
+              "
+              size="small"
+              style="margin-bottom: 20px"
+              type="primary"
+              >取消</el-button
+            >
+            <el-button size="small" style="margin-bottom: 20px" type="primary"
+              >保存</el-button
+            >
+          </div>
+        </div>
+      </el-drawer>
+    </div>
+    <div class="log">
+      <template>
+        <el-tabs
+          style="text-align: center"
+          v-model="first"
+          type="card"
+          @tab-click="handleClick"
+        >
+          <el-tab-pane align="center" label="任务日志" name="first">
+            <template>
+              <el-table
+                :data="TableData"
+                style="width: 100%"
+                :header-cell-style="{
+                  background: '#eee',
+                  fontSize: '16px',
+                  fontWeight: 800,
+                  color: '#606266',
+                }"
+              >
+                <el-table-column
+                  fixed
+                  prop="FunctionDescription"
+                  label="功能说明"
+                  width="100"
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="QueryOriginalTable"
+                  label="查询原表"
+                  width="100"
+                >
+                </el-table-column>
+                <el-table-column prop="TargetTable" label="目标表" width="100">
+                </el-table-column>
+                <el-table-column
+                  prop="UpdatMethod"
+                  label="更新方式"
+                  width="100"
+                >
+                </el-table-column>
+                <el-table-column prop="Department" label="科室部门" width="100">
+                </el-table-column>
+                <el-table-column
+                  prop="responsibilityPerson"
+                  label="负责人"
+                  width="100"
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="CreationDate"
+                  label="创建日期"
+                  width="100"
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="OperationCycle"
+                  label="运行周期"
+                  width="100"
+                >
+                </el-table-column>
+                <el-table-column prop="routine" label="例程" width="100">
+                </el-table-column>
+                <el-table-column prop="remarks" label="备注" width="100">
+                </el-table-column>
+                <el-table-column
+                  prop="ScriptVersion"
+                  label="脚本版本"
+                  width="100"
+                >
+                </el-table-column>
+              </el-table>
+            </template>
+          </el-tab-pane>
+        </el-tabs>
+      </template>
+    </div>
+  </div>
+</template>
+
+
+<script>
+import JsonEditor from "@/components/JsonEditor";
+import MarddownEditor from "@/components/MarkdownEditor";
+import CodeMirror from "./codeMirrror";
+export default {
+  components: {
+    JsonEditor,
+    MarddownEditor,
+    CodeMirror,
+  },
+  name: "Hive",
+  data() {
+    return {
+      numberValidateForm: {
+        age: "",
+      },
+      dialogVisible: false,
+      activeName: "second",
+      TableData: [
+        { FunctionDescription: "a" },
+        { FunctionDescription: "b" },
+        { FunctionDescription: "c" },
+        { FunctionDescription: "d" },
+        { FunctionDescription: "e" },
+        { FunctionDescription: "f" },
+        { FunctionDescription: "g" },
+      ],
+      temp: {
+        triggerStatus: "1",
+      },
+      drawer: false,
+      isshow: false,
+      input: "",
+      ddd: [],
+    };
+  },
+  created() {},
+  methods: {
+    runQuery(val) {
+      console.log("------->", val);
+    },
+    saveQuery(val) {
+      console.log("------->", val);
+    },
+    handleEdit() {
+      this.dialogVisible = true;
+    },
+    handleDelete(a, b) {
+      console.log(a);
+      this.TableData.splice(a, 1);
+    },
+  },
+};
+</script>
+
+<style>
+.wrap {
+  width: 100%;
+  height: auto;
+}
+
+.elid {
+  position: relative;
+  width: 100%;
+  height: 450px;
+}
+.drawer {
+  position: absolute;
+  right: 5px;
+  top: 3px;
+}
+.log {
+  width: 100%;
+  height: 400px;
+}
+</style>
