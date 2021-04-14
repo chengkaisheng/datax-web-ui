@@ -1,59 +1,59 @@
-import * as job from "@/api/datax-job-info";
+import * as job from '@/api/datax-job-info';
 
 const state = {
   allTabType: {
-    HIVE: "Hive任务",
-    IMPALA: "Impala任务",
-    NORMAL: "普通任务",
-    IMPORT: "引入任务",
-    EXPORT: "导出任务",
-    COMPUTE: "计算任务",
-    SQLJOB: "SQL任务",
-    SPARK: "SPARK任务",
-    DQCJOB: "质量任务",
-    METACOLLECT: "元数据采集任务",
-    METACOMPARE: "元数据比较任务",
-    SHELL: "SHELL任务",
-    POWERSHELL: "POWERSHELL任务",
-    PYTHON: "PYTHON任务",
-    VJOB: "虚任务",
-    JAVA: "Java任务",
-    SCALA: "Scala任务",
-    PYSPARK: "PySpark任务",
-    R: "R任务",
-    BATCH: "任务批量构建",
-    TEMPLATE: "普通任务模板"
+    HIVE: 'Hive任务',
+    IMPALA: 'Impala任务',
+    NORMAL: '普通任务',
+    IMPORT: '引入任务',
+    EXPORT: '导出任务',
+    COMPUTE: '计算任务',
+    SQLJOB: 'SQL任务',
+    SPARK: 'SPARK任务',
+    DQCJOB: '质量任务',
+    METACOLLECT: '元数据采集任务',
+    METACOMPARE: '元数据比较任务',
+    SHELL: 'SHELL任务',
+    POWERSHELL: 'POWERSHELL任务',
+    PYTHON: 'PYTHON任务',
+    VJOB: '虚任务',
+    JAVA: 'Java任务',
+    SCALA: 'Scala任务',
+    PYSPARK: 'PySpark任务',
+    R: 'R任务',
+    BATCH: '任务批量构建',
+    TEMPLATE: '普通任务模板'
   },
 
   tabTypeArr: [
-    "HIVE",
-    "IMPALA",
-    "NORMAL",
-    "IMPORT",
-    "EXPORT",
-    "COMPUTE",
-    "SQLJOB",
-    "SPARK",
-    "DQCJOB",
-    "METACOLLECT",
-    "METACOMPARE",
-    "SHELL",
-    "POWERSHELL",
-    "PYTHON",
-    "VJOB",
-    "JAVA",
-    "SCALA",
-    "PYSPARK",
-    "R",
-    "BATCH",
-    "TEMPLATE"
+    'HIVE',
+    'IMPALA',
+    'NORMAL',
+    'IMPORT',
+    'EXPORT',
+    'COMPUTE',
+    'SQLJOB',
+    'SPARK',
+    'DQCJOB',
+    'METACOLLECT',
+    'METACOMPARE',
+    'SHELL',
+    'POWERSHELL',
+    'PYTHON',
+    'VJOB',
+    'JAVA',
+    'SCALA',
+    'PYSPARK',
+    'R',
+    'BATCH',
+    'TEMPLATE'
   ],
 
-  tabType: "",
+  tabType: '',
 
   tableData: [], // 新建时的表格类型
 
-  projectId: "", // 选择项目的id
+  projectId: '', // 选择项目的id
 
   dataSourceList: [], // 数据库源
 
@@ -61,15 +61,15 @@ const state = {
 
   taskDetailList: [], // 任务详情列表
 
-  taskDetailID: "", // 当前选中任务详情id
+  taskDetailID: '', // 当前选中任务详情id
 
-  jobParam: "", // 创建任务的jobparam
+  jobParam: '', // 创建任务的jobparam
 
   // ===========================================
 
-  readerDataSourceID: "", //
+  readerDataSourceID: '', //
 
-  writerDataSourceID: "",
+  writerDataSourceID: '',
 
   readerColumns: [], // 所有reader字段
 
@@ -79,13 +79,13 @@ const state = {
 
   selectWriterColumn: [], // 已选中writer字段
 
-  readerTableName: "", // reader表
+  readerTableName: '', // reader表
 
-  writerTableName: "", // writer表
+  writerTableName: '', // writer表
 
-  readerSchema: "", // reader Schema
+  readerSchema: '', // reader Schema
 
-  writerSchema: "", // writer Schema
+  writerSchema: '', // writer Schema
 
   // ==========================================
 
@@ -93,7 +93,7 @@ const state = {
 
   logViewType: 0,
 
-  jobInfoType: "",
+  jobInfoType: '',
 
   jobRule: [], // 规则
 
@@ -101,7 +101,7 @@ const state = {
 
   Group: {}, // 选中任务对象
 
-  GroupId: "", // 选中任务Id
+  GroupId: '', // 选中任务Id
 
   GroupName: {}, // 选中任务对象名称
 
@@ -111,16 +111,16 @@ const state = {
 
   logWatch: false, // 可以查看实时日志
 
-  PartitionVal: "",
+  PartitionVal: '',
 
   jobDataDetail: {}, // 任务数据详情
 
-  scheduleId: "", // 调度任务修改id
+  scheduleId: '', // 调度任务修改id
 
   sqlParams: {
-    projectId: "", // 项目ID
-    datasourceId: "", // 数据源ID
-    schema: "" // 数据库名
+    projectId: '', // 项目ID
+    datasourceId: '', // 数据源ID
+    schema: '' // 数据库名
   }
 };
 
@@ -243,7 +243,7 @@ const mutations = {
 
   ADD_RULEITEM: state => {
     state.jobRule.push({
-      columnName: "",
+      columnName: '',
       ruleId: [],
       status: 1
     });
@@ -302,21 +302,21 @@ const actions = {
       jobGroup: 0,
       projectIds: state.projectId,
       triggerStatus: -1,
-      jobDesc: "",
-      glueType: ""
+      jobDesc: '',
+      glueType: ''
     };
 
     job.getList(listQuery).then(response => {
-      commit("SET_TASKDETAIL_LIST", response.content.data);
+      commit('SET_TASKDETAIL_LIST', response.content.data);
       if (isAddTask) {
         const firstElement = response.content.data[0] || {};
         const a = {};
         a.title = firstElement.jobDesc;
         a.name = firstElement.jobDesc;
         a.content = firstElement;
-        commit("ADD_TASKDETAIL", a);
-        commit("SET_JOB_INFO", response.content.data[0]);
-        commit("SET_TASKDETAIL_ID", a.content.id + "");
+        commit('ADD_TASKDETAIL', a);
+        commit('SET_JOB_INFO', response.content.data[0]);
+        commit('SET_TASKDETAIL_ID', a.content.id + '');
       }
     });
   }

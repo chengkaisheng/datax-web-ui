@@ -214,10 +214,10 @@ rkJggg=="
                   style="display: none"
                 >
                   <a href="javascript:" @click="ShowHives('HIVE')">
-                    <svg-icon class="svg_icon" icon-class="NORMAL" /> Hive任务
+                    <svg-icon class="svg_icon" icon-class="HIVE" /> Hive任务
                   </a>
                   <a href="javascript:" @click="ShowHives('IMPALA')">
-                    <svg-icon class="svg_icon" icon-class="NORMAL" /> Impala任务
+                    <svg-icon class="svg_icon" icon-class="IMPALA" /> Impala任务
                   </a>
                   <a href="javascript:" @click="showAllName('NORMAL')">
                     <svg-icon class="svg_icon" icon-class="NORMAL" /> 普通任务
@@ -603,11 +603,12 @@ rkJggg=="
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-        <el-button type="goon" size="small" @click="HivecreateHandl('HIVE')">
+        <el-button type="goon" size="small" @click="HivecreateHandl()">
           确定
         </el-button>
       </div>
     </el-dialog>
+
     <!-- 查看文件版本 -->
     <el-dialog
       width="60%"
@@ -707,28 +708,28 @@ rkJggg=="
 </template>
 
 <script>
-import Workflow from './components/workflow.vue';
-import SimpleJob from './components/simpleJob.vue';
-import Hive from './components/Hive.vue';
-import SparkJob from './components/sparkJob.vue';
-import JobDetail from './components/jobDetail.vue';
-import JobDetailPro from './components/jobDetailPro.vue';
-import * as jobProjectApi from '@/api/datax-job-project';
-import * as job from '@/api/datax-job-info';
-import JsonBuild from '@/views/datax/json-build/index';
-import JsonQuality from '@/views/datax/jsonQuality/index';
-import BatchBuild from '@/views/datax/json-build-batch/index';
-import JobTemplate from '@/views/datax/jobTemplate/index';
-import SqlJob from '@/views/datax/jobInfo/components/sqlJob';
-import MetaCompare from '@/views/datax/jobInfo/components/metaCompare';
-import _ from 'lodash';
-import { component as VueContextMenu } from '@xunlei/vue-context-menu';
+import Workflow from './components/workflow.vue'
+import SimpleJob from './components/simpleJob.vue'
+import Hive from './components/Hive.vue'
+import SparkJob from './components/sparkJob.vue'
+import JobDetail from './components/jobDetail.vue'
+import JobDetailPro from './components/jobDetailPro.vue'
+import * as jobProjectApi from '@/api/datax-job-project'
+import * as job from '@/api/datax-job-info'
+import JsonBuild from '@/views/datax/json-build/index'
+import JsonQuality from '@/views/datax/jsonQuality/index'
+import BatchBuild from '@/views/datax/json-build-batch/index'
+import JobTemplate from '@/views/datax/jobTemplate/index'
+import SqlJob from '@/views/datax/jobInfo/components/sqlJob'
+import MetaCompare from '@/views/datax/jobInfo/components/metaCompare'
+import _ from 'lodash'
+import { component as VueContextMenu } from '@xunlei/vue-context-menu'
 
-import { list as jdbcDsList } from '@/api/datax-jdbcDatasource';
+import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
 
-import { objList } from '@/utils/sortArr';
+import { objList } from '@/utils/sortArr'
 
-var time;
+var time
 
 export default {
   name: '',
@@ -810,16 +811,16 @@ export default {
       currentJobName: '', // 当前任务名
       targetId: '', // 目标id
       dropId: '' // 被拖拽id
-    };
+    }
   },
   computed: {
     taskList() {
       // 任务列表
-      return this.$store.state.taskAdmin.taskList;
+      return this.$store.state.taskAdmin.taskList
     },
 
     taskDetailID() {
-      return this.$store.state.taskAdmin.taskDetailID;
+      return this.$store.state.taskAdmin.taskDetailID
     },
 
     filterList() {
@@ -827,12 +828,12 @@ export default {
         if (
           item.jobDesc.toLowerCase().indexOf(this.search.toLowerCase()) > -1
         ) {
-          return true;
+          return true
         }
         if (this.search === item.id.toString()) {
-          return true;
+          return true
         }
-      });
+      })
     },
 
     dropdownText() {
@@ -843,42 +844,42 @@ export default {
       ) {
         if (typeof this.selectValue === 'number') {
           return this.options.filter((item) => item.id === this.selectValue)[0]
-            .name;
+            .name
         } else {
-          return this.selectValue;
+          return this.selectValue
         }
       } else {
-        return '请选择';
+        return '请选择'
       }
     }
   },
   watch: {
     editableTabs(val) {
-      console.log(val);
+      console.log(val)
       if (val.length === 1) {
-        this.isDel = false;
+        this.isDel = false
       } else {
-        this.isDel = true;
+        this.isDel = true
       }
     },
 
     taskList(val) {
-      this.List = val;
+      this.List = val
     },
 
     taskDetailID(val) {
-      console.log(val, 'jobDetailIdx');
-      this.jobDetailIdx = val;
+      console.log(val, 'jobDetailIdx')
+      this.jobDetailIdx = val
     },
 
     '$store.state.project.currentItem': {
       deep: true,
       handler: function(newValue, oldValue) {
         if (oldValue) {
-          const commandId = newValue.split('/')[0];
-          const commandName = newValue.split('/')[1];
-          this.selectValue = commandName;
-          this.$store.commit('SET_PROJECT_ID', commandId);
+          const commandId = newValue.split('/')[0]
+          const commandName = newValue.split('/')[1]
+          this.selectValue = commandName
+          this.$store.commit('SET_PROJECT_ID', commandId)
 
           // 获取任务列表
           const listQuery = {
@@ -889,15 +890,15 @@ export default {
             triggerStatus: -1,
             jobDesc: '',
             glueType: ''
-          };
-          this.projectIds = commandId;
+          }
+          this.projectIds = commandId
 
           job.getList(listQuery).then((response) => {
-            const { content } = response;
-            this.List = content.data;
-          });
+            const { content } = response
+            this.List = content.data
+          })
 
-          this.getDataTree();
+          this.getDataTree()
 
           // 根据项目id获取数据源
 
@@ -906,11 +907,11 @@ export default {
             size: 200,
             ascs: 'datasource_name',
             projectId: commandId
-          };
+          }
           jdbcDsList(p).then((response) => {
-            const { records } = response;
-            this.$store.commit('SET_DATASOURCE', records);
-          });
+            const { records } = response
+            this.$store.commit('SET_DATASOURCE', records)
+          })
         }
       }
     },
@@ -919,7 +920,7 @@ export default {
       deep: true,
       handler: function(newValue, oldValue) {
         if (newValue !== oldValue) {
-          this.getDataTree();
+          this.getDataTree()
         }
       }
     },
@@ -928,202 +929,201 @@ export default {
       deep: true,
       handler: function(newValue, oldValue) {
         if (newValue !== oldValue) {
-          this.removeJobTab(newValue);
+          this.removeJobTab(newValue)
         }
       }
     },
 
     search: function(val) {
-      this.$refs.tree.filter(val);
+      this.$refs.tree.filter(val)
     }
   },
 
   mounted() {
-    const myChartContainer = document.getElementById('main_span');
+    const myChartContainer = document.getElementById('main_span')
     // 右击显示菜单 区域位置
-    this.contextMenuTarget = myChartContainer;
-    this.contextMenu1Target = myChartContainer;
+    this.contextMenuTarget = myChartContainer
+    this.contextMenu1Target = myChartContainer
     // 关闭浏览器右击默认菜单
     myChartContainer.oncontextmenu = function(e) {
-      return false;
-    };
+      return false
+    }
 
-    const a = document.getElementById('newFile');
-    const b = document.getElementsByClassName('right-menu1');
+    const a = document.getElementById('newFile')
+    const b = document.getElementsByClassName('right-menu1')
     for (var i = 0; i < b.length; i++) {
-      b[i].style.display = 'none';
+      b[i].style.display = 'none'
     }
 
     a.onmouseover = function() {
       for (var i = 0; i < b.length; i++) {
-        b[i].style.display = 'block';
+        b[i].style.display = 'block'
       }
-    };
+    }
 
     a.onmouseout = function() {
       for (var i = 0; i < b.length; i++) {
-        b[i].style.display = 'none';
+        b[i].style.display = 'none'
       }
-    };
+    }
 
     b.onmouseover = function() {
       for (var i = 0; i < b.length; i++) {
-        b[i].style.display = 'block';
+        b[i].style.display = 'block'
       }
-    };
+    }
   },
 
   created() {
     if (sessionStorage.getItem('level') === '2') {
-      this.showAdmin = false;
+      this.showAdmin = false
     } else {
-      this.showAdmin = true;
+      this.showAdmin = true
     }
-    this.getItem();
+    this.getItem()
     setTimeout(() => {
-      this.getDataTree();
-    }, 600);
-    console.log(this.$store.state);
+      this.getDataTree()
+    }, 600)
   },
   methods: {
     /**
      * @description: tab关闭逻辑
      */
     removeJobTab(targetId) {
-      const targetIdInt = parseInt(targetId);
-      console.log(this.$store.state.taskAdmin.taskDetailList);
+      const targetIdInt = parseInt(targetId)
+      console.log(this.$store.state.taskAdmin.taskDetailList)
       const removeIndex = this.$store.state.taskAdmin.taskDetailList.findIndex(
         (ele) => ele.content.id === targetIdInt
-      );
-      console.log(removeIndex, 'removeIndex');
+      )
+      console.log(removeIndex, 'removeIndex')
       if (this.jobDetailIdx === targetId) {
         this.jobDetailIdx =
           (this.$store.state.taskAdmin.taskDetailList[removeIndex + 1]?.content
             ?.id ||
             this.$store.state.taskAdmin.taskDetailList[removeIndex - 1]?.content
-              ?.id) + '';
-        console.log('jobDetailIdx: ', this.jobDetailIdx);
+              ?.id) + ''
+        console.log('jobDetailIdx: ', this.jobDetailIdx)
       }
       // 关闭的是[新增任务tab]，非新增任务tab id = content.id
       if (this.$store.state.taskAdmin.tabTypeArr.indexOf(targetId) !== -1) {
-        this.jobType = '';
-        this.$store.commit('SET_TAB_TYPE', '');
+        this.jobType = ''
+        this.$store.commit('SET_TAB_TYPE', '')
       } else {
-        this.$store.commit('DELETE_TASKDETAIL', removeIndex);
+        this.$store.commit('DELETE_TASKDETAIL', removeIndex)
         if (this.$store.state.taskAdmin.taskDetailList.length === 0) {
-          this.jobDetailIdx = '欢迎';
+          this.jobDetailIdx = '欢迎'
         }
       }
     },
 
     // 获取tree数据结构
     getDataTree() {
-      console.log(this.$store.state.project.currentItem, 'currentItem');
+      console.log(this.$store.state.project.currentItem, 'currentItem')
       if (this.$store.state.project.currentItem) {
-        const projectId = this.$store.state.project.currentItem.split('/')[0];
+        const projectId = this.$store.state.project.currentItem.split('/')[0]
         job
           .getTreeData(projectId)
           .then((res) => {
             if (res.code === 200) {
-              this.treeList = res.content;
+              this.treeList = res.content
             } else {
-              this.$message.error(res.msg);
+              this.$message.error(res.msg)
             }
           })
           .catch((err) => {
-            console.log(err);
-          });
+            console.log(err)
+          })
       } else {
-        const projectId = this.options[0].id;
+        const projectId = this.options[0].id
         job
           .getTreeData(projectId)
           .then((res) => {
             if (res.code === 200) {
-              this.treeList = res.content;
+              this.treeList = res.content
             } else {
-              this.$message.error(res.msg);
+              this.$message.error(res.msg)
             }
           })
           .catch((err) => {
-            console.log(err);
-          });
+            console.log(err)
+          })
       }
     },
 
     showScene() {
-      console.log(this.selectedIndex);
+      console.log(this.selectedIndex)
     },
 
     JobTabClick(ele) {
-      console.log(ele);
-      this.jobType = ele.name;
+      console.log(ele)
+      this.jobType = ele.name
       const t = this.List.filter(
         (item) => item.id === parseInt(this.jobDetailIdx)
-      );
-      this.$store.commit('SET_JOB_INFO', t[0]);
+      )
+      this.$store.commit('SET_JOB_INFO', t[0])
     },
 
     clearJobTab(name) {
       const removeIndex = _.findIndex(
         this.$store.state.taskAdmin.taskDetailList,
         (ele) => ele.content.id === name
-      );
+      )
       this.jobDetailIdx =
         (this.$store.state.taskAdmin.taskDetailList[removeIndex + 1]?.content
           ?.id ||
           this.$store.state.taskAdmin.taskDetailList[removeIndex - 1]?.content
-            ?.id) + '';
-      this.$store.commit('DELETE_TASKDETAIL', removeIndex);
+            ?.id) + ''
+      this.$store.commit('DELETE_TASKDETAIL', removeIndex)
     },
 
     freshItem() {
-      this.getItem();
-      this.jobType = 'SHOWDETAIL';
+      this.getItem()
+      this.jobType = 'SHOWDETAIL'
     },
 
     handleTabsEdit(targetName, action) {
       if (action === 'add') {
-        const newTabName = new Date().valueOf().toString();
+        const newTabName = new Date().valueOf().toString()
         this.editableTabs.push({
           title: 'Untitled',
           name: newTabName,
           content: 'New Tab content'
-        });
-        this.editableTabsValue = newTabName;
+        })
+        this.editableTabsValue = newTabName
       }
       if (action === 'remove') {
-        const tabs = this.editableTabs;
-        let activeName = this.editableTabsValue;
+        const tabs = this.editableTabs
+        let activeName = this.editableTabsValue
         if (activeName === targetName) {
           tabs.forEach((tab, index) => {
             if (tab.name === targetName) {
-              const nextTab = tabs[index + 1] || tabs[index - 1];
+              const nextTab = tabs[index + 1] || tabs[index - 1]
               if (nextTab) {
-                activeName = nextTab.name;
+                activeName = nextTab.name
               }
             }
-          });
+          })
         }
-        this.editableTabsValue = activeName;
-        this.editableTabs = tabs.filter((tab) => tab.name !== targetName);
+        this.editableTabsValue = activeName
+        this.editableTabs = tabs.filter((tab) => tab.name !== targetName)
       }
     },
 
     changeTab(e) {
       for (let i = 0; i < this.editableTabs.length; i++) {
         if (this.editableTabs[i].title === e.label) {
-          this.editableTabsValue = this.editableTabs[i].name;
+          this.editableTabsValue = this.editableTabs[i].name
         }
       }
-      console.log(this.editableTabsValue);
+      console.log(this.editableTabsValue)
     },
 
     getChild(v) {
-      console.log(v);
+      console.log(v)
       for (let i = 0; i < this.editableTabs.length; i++) {
         if (this.editableTabs[i].name === v.index) {
-          this.editableTabs[i].title = v.name;
-          this.pushList(v);
+          this.editableTabs[i].title = v.name
+          this.pushList(v)
         }
       }
     },
@@ -1133,35 +1133,35 @@ export default {
         this.List.push({
           name: val.name,
           data: val.data
-        });
+        })
       } else {
         for (let i = 0; i < this.List.length; i++) {
           if (this.List[i].name === val.name) {
-            this.editableTabsValue = val.index;
+            this.editableTabsValue = val.index
           } else {
             this.List.push({
               name: val.name,
               data: val.data
-            });
+            })
           }
         }
       }
     },
 
     handleRemove(name) {
-      console.log(name);
+      console.log(name)
       if (this.editableTabs.length === 1) {
-        this.isDel = false;
-        this.editableTabsValue = this.editableTabs[0].name;
+        this.isDel = false
+        this.editableTabsValue = this.editableTabs[0].name
       } else {
         for (let i = 0; i < this.editableTabs.length; i++) {
           if (this.editableTabs[i].name === name) {
-            this.editableTabs.splice(i, 1);
+            this.editableTabs.splice(i, 1)
           }
           if (this.editableTabsValue === name) {
             this.editableTabsValue = this.editableTabs[
               this.editableTabs.length
-            ].name;
+            ].name
           }
         }
       }
@@ -1169,65 +1169,65 @@ export default {
 
     // 快速检索关键字
     filterNode(value, data) {
-      console.log(value, data);
-      if (!value) return true;
-      return data.name.indexOf(value) !== -1;
+      console.log(value, data)
+      if (!value) return true
+      return data.name.indexOf(value) !== -1
     },
 
     // 单击文件夹选中
     singleClick(name) {
-      clearTimeout(time); // 首先清除计时器
+      clearTimeout(time) // 首先清除计时器
       time = setTimeout(() => {
-        console.log(name, this.showCurrentFolder, '11111ooooooooo');
+        console.log(name, this.showCurrentFolder, '11111ooooooooo')
         if (this.showCurrentFolder) {
-          this.showCurrentFolder = false;
+          this.showCurrentFolder = false
         } else {
-          this.showCurrentFolder = true;
+          this.showCurrentFolder = true
         }
-      }, 300); // 大概时间300ms
+      }, 300) // 大概时间300ms
     },
 
     // 文件夹重命名
     resetName(name) {
-      clearTimeout(time);
-      this.dialogRenameVisible = true;
+      clearTimeout(time)
+      this.dialogRenameVisible = true
     },
 
     // 确认命名文件夹
     sureRe() {
-      console.log(this.selectRow, '...........');
-      var reParams = {};
+      console.log(this.selectRow, '...........')
+      var reParams = {}
       if (this.selectRow.type === 2) {
         reParams = {
           id: this.selectRow.id,
           jobId: this.selectRow.jobId ? this.selectRow.jobId : '',
           name: this.Rename
-        };
+        }
       } else {
         reParams = {
           id: this.selectRow.id,
           name: this.Rename
-        };
+        }
       }
       job
         .dragReName(reParams)
         .then((res) => {
-          console.log(res);
+          console.log(res)
           if (res.code === 200) {
-            this.$message.success(res.msg);
-            this.getDataTree();
-            this.Rename = '';
-            this.getJobDetail(this.detailData);
-            this.removeJobTab(this.selectRow.id);
-            this.handleNodeClick();
-            this.dialogRenameVisible = false;
+            this.$message.success(res.msg)
+            this.getDataTree()
+            this.Rename = ''
+            this.getJobDetail(this.detailData)
+            this.removeJobTab(this.selectRow.id)
+            this.handleNodeClick()
+            this.dialogRenameVisible = false
           } else {
-            this.$message.err(res.msg);
+            this.$message.err(res.msg)
           }
         })
         .catch((err) => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
 
     // 复制
@@ -1237,125 +1237,127 @@ export default {
           message: '不能复制整个根目录数据',
           type: 'warning',
           duration: 1000
-        });
-        this.contextMenuVisible = false;
+        })
+        this.contextMenuVisible = false
       } else {
-        this.copyObj = this.selectRow;
-        this.contextMenuVisible = false;
+        this.copyObj = this.selectRow
+        this.contextMenuVisible = false
         this.$notify({
           message: '复制成功',
           type: 'success',
           duration: 1000
-        });
+        })
       }
     },
 
     // 粘贴
     pasteFile() {
-      console.log(this.copyObj);
+      console.log(this.copyObj)
       if (this.copyObj) {
-        const pid = this.selectRow.id;
+        const pid = this.selectRow.id
         job
           .pasteObj(pid, this.copyObj)
           .then((res) => {
-            console.log(res, 'res');
+            console.log(res, 'res')
             if (res.code === 200) {
-              this.contextMenuVisible = false;
-              this.getDataTree();
-              this.selectRow = {};
+              this.contextMenuVisible = false
+              this.getDataTree()
+              this.selectRow = {}
               this.$notify({
                 message: res.msg === '复制成功' ? '粘贴成功' : res.msg,
                 type: 'success',
                 duration: 1000
-              });
-              this.copyObj = '';
+              })
+              this.copyObj = ''
             } else {
-              this.$message.error(res.msg);
+              this.$message.error(res.msg)
             }
-            console.log(res);
+            console.log(res)
           })
           .catch((err) => {
-            console.log(err);
-          });
+            console.log(err)
+          })
       } else {
-        this.contextMenuVisible = false;
+        this.contextMenuVisible = false
         this.$notify({
           message: '请选中需要复制的文件夹或任务',
           type: 'warning',
           duration: 1000
-        });
+        })
       }
     },
 
     // 查看任务信息
     ViewFile() {
-      this.dialogViewVisible = true;
-      console.log(this.detailData, '详细信息');
+      this.dialogViewVisible = true
+      console.log(this.detailData, '详细信息')
     },
 
     // 查看文件版本
     ViewVersion() {
       if (this.selectRow.jobId) {
-        console.log(this.$store.state.taskAdmin.GroupId);
+        console.log(this.$store.state.taskAdmin.GroupId)
         job
           .fileVersion(this.$store.state.taskAdmin.GroupId)
           .then((res) => {
-            console.log(res, 'res');
-            this.versionList = res;
-            this.dialogVersionVisible = true;
+            console.log(res, 'res')
+            this.versionList = res
+            this.dialogVersionVisible = true
           })
           .catch((err) => {
-            console.log(err);
-          });
+            console.log(err)
+          })
       } else {
-        console.log('查看文件版本');
-        this.$message.warning('该任务暂无版本信息');
+        console.log('查看文件版本')
+        this.$message.warning('该任务暂无版本信息')
       }
     },
     // 新增Hive任务
-    ShowHives(type) {
-      this.showHive = true;
-      this.currentJob = type;
+    ShowHives(data) {
+      this.currentJob = data
+      console.log('>>>>>>>>', this.currentJob)
+      this.showHive = true
     },
+
     // 新增命名文件夹
     showAllName(type) {
       if (typeof type === 'string') {
-        this.dialogNameVisible = true;
-        this.currentJob = type;
-        console.log(type, 'type');
+        this.dialogNameVisible = true
+        this.currentJob = type
+        console.log(type, 'type')
       } else {
-        this.dialogNameVisible = true;
+        this.dialogNameVisible = true
       }
     },
 
     // 取消对话框
     cancelDialog() {
-      this.dialogNameVisible = false;
-      this.dialogRenameVisible = false;
-      this.dialogViewVisible = false;
-      this.dialogVersionVisible = false;
-      this.showHive = false;
-      this.allName = '';
-      this.Rename = '';
+      this.dialogNameVisible = false
+      this.dialogRenameVisible = false
+      this.dialogViewVisible = false
+      this.dialogVersionVisible = false
+      this.showHive = false
+      this.allName = ''
+      this.Rename = ''
     },
 
     // 拖拽tree
     handleDragStart(node, ev) {
-      this.dropId = node.data.id;
-      console.log('节点开始拖拽时触发的事件', node);
+      this.dropId = node.data.id
+      console.log('节点开始拖拽时触发的事件', node)
     },
     handleDragEnter(draggingNode, dropNode, ev) {
-      this.targetId = dropNode.key;
-      console.log('拖拽进入其他节点时触发的事件', this.targetId);
+      this.targetId = dropNode.key
+      console.log('拖拽进入其他节点时触发的事件', this.targetId)
     },
     handleDragLeave(draggingNode, dropNode, ev) {
-      console.log('拖拽离开某个节点时触发的事件');
+      console.log('拖拽离开某个节点时触发的事件')
     },
     handleDragOver(draggingNode, dropNode, ev) {
-      console.log('拖拽结束时（可能未成功）触发的事件');
+      console.log('拖拽结束时（可能未成功）触发的事件')
     },
     handleDragEnd(draggingNode, dropNode, dropType, ev) {
-      console.log('拖拽成功完成时触发的事件');
+      console.log('拖拽成功完成时触发的事件')
     },
     handleDrop(draggingNode, dropNode, dropType, ev) {
       job
@@ -1364,35 +1366,34 @@ export default {
           parentId: this.targetId
         })
         .then((res) => {
-          console.log(res);
+          console.log(res)
           if (res.code === 200) {
-            console.log(res.msg);
+            console.log(res.msg)
           } else {
-            this.$message.err(res.msg);
+            this.$message.err(res.msg)
           }
         })
         .catch((err) => {
-          console.log(err);
-        });
-      console.log('tree drop: ', dropNode.label, dropType, draggingNode);
+          console.log(err)
+        })
+      console.log('tree drop: ', dropNode.label, dropType, draggingNode)
     },
     allowDrop(draggingNode, dropNode, type) {
       if (dropNode.data.name === '二级 3-1') {
-        return type !== 'inner';
+        return type !== 'inner'
       } else {
-        return true;
+        return true
       }
     },
     allowDrag(draggingNode) {
-      console.log(draggingNode, 'draggingNode');
-      return draggingNode.data.name.indexOf('三级 3-2-2') === -1;
+      console.log(draggingNode, 'draggingNode')
+      return draggingNode.data.name.indexOf('三级 3-2-2') === -1
     },
     // HIVE任务新建
-    HivecreateHandl(data) {
-      console.log('111');
-      this.jobType = data;
-      console.log('wert', this.selectRow);
-      console.log('job---->', this.jobType);
+    HivecreateHandl() {
+      console.log('111')
+      console.log('wert', this.selectRow)
+      console.log('job---->', this.currentJob)
       const params = {
         // chineseName: this.chineseName,
         // englishName: this.englishName,
@@ -1401,86 +1402,86 @@ export default {
         parentId: this.selectRow.id,
         name: this.chineseName,
         type: this.currentJob ? 2 : 1,
-        jobType: data
-      };
+        jobType: this.currentJob
+      }
       job
         .createNewFile(params)
         .then((res) => {
           if (res.code === 200) {
-            this.getDataTree();
-            this.selectRow = {};
+            this.getDataTree()
+            this.selectRow = {}
             if (res.content !== '请选择父级目录') {
-              this.$store.commit('changeGroupName', this.chineseName);
-              this.$store.commit('changeJobId', parseInt(res.content));
-              console.log(res.content);
+              this.$store.commit('changeGroupName', this.chineseName)
+              this.$store.commit('changeJobId', parseInt(res.content))
+              console.log(res.content)
               console.log(
                 this.$store.state.taskAdmin.GroupId,
                 'this.$store.state.taskAdmin.GroupId'
-              );
-              this.showHive = false;
+              )
+              this.showHive = false
               if (this.currentJob) {
-                this.createNewJob(this.currentJob);
-                this.currentJob = '';
+                this.createNewJob(this.currentJob)
+                this.currentJob = ''
               }
-              this.chineseName = '';
-              this.$message.success('新增成功');
+              this.chineseName = ''
+              this.$message.success('新增成功')
             } else {
-              this.$message.warning(res.content);
-              this.showHive = false;
+              this.$message.warning(res.content)
+              this.showHive = false
             }
           } else {
-            this.$message.error(res.content);
+            this.$message.error(res.content)
           }
-          console.log(res);
+          console.log(res)
         })
         .catch((err) => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
     // 新建文件夹或任务
     createFolder() {
-      console.log(this.selectRow);
-      console.log(this.currentJob + '');
+      console.log(this.selectRow)
+      console.log(this.currentJob + '')
       const params = {
         projectId: this.selectRow.projectId,
         parentId: this.selectRow.id,
         name: this.allName,
         type: this.currentJob ? 2 : 1,
         jobType: this.currentJob ? this.currentJob : 'wenjianjia'
-      };
+      }
       job
         .createNewFile(params)
         .then((res) => {
           if (res.code === 200) {
-            this.getDataTree();
-            this.selectRow = {};
+            this.getDataTree()
+            this.selectRow = {}
             if (res.content !== '请选择父级目录') {
-              this.$store.commit('changeGroupName', this.allName);
-              this.$store.commit('changeJobId', parseInt(res.content));
-              console.log(res.content);
+              this.$store.commit('changeGroupName', this.allName)
+              this.$store.commit('changeJobId', parseInt(res.content))
+              console.log(res.content)
               console.log(
                 this.$store.state.taskAdmin.GroupId,
                 'this.$store.state.taskAdmin.GroupId'
-              );
-              this.dialogNameVisible = false;
+              )
+              this.dialogNameVisible = false
               if (this.currentJob) {
-                this.createNewJob(this.currentJob);
-                this.currentJob = '';
+                this.createNewJob(this.currentJob)
+                this.currentJob = ''
               }
-              this.allName = '';
-              this.$message.success('新增成功');
+              this.allName = ''
+              this.$message.success('新增成功')
             } else {
-              this.$message.warning(res.content);
-              this.dialogNameVisible = false;
+              this.$message.warning(res.content)
+              this.dialogNameVisible = false
             }
           } else {
-            this.$message.error(res.content);
+            this.$message.error(res.content)
           }
-          console.log(res);
+          console.log(res)
         })
         .catch((err) => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
 
     // 点击删除文件夹
@@ -1494,133 +1495,133 @@ export default {
           job
             .delFile(this.selectRow.id)
             .then((res) => {
-              console.log(res);
+              console.log(res)
               if (res.code === 200) {
-                this.getDataTree();
-                this.removeJobTab(this.selectRow.id);
-                this.selectRow = {};
+                this.getDataTree()
+                this.removeJobTab(this.selectRow.id)
+                this.selectRow = {}
                 this.$message({
                   type: 'success',
                   message: '删除成功!'
-                });
+                })
               }
             })
             .catch((err) => {
-              console.log(err);
-            });
+              console.log(err)
+            })
         })
         .catch(() => {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });
-        });
+          })
+        })
     },
 
     handleNodeClick(data) {
-      console.log('tttt', data);
-      this.selectRow = data;
-      this.jobType = data.jobType;
-      console.log('jobType++++++++++++++++', data.jobType);
-      console.log('this.jobType++++++++++++++++', this.jobType);
+      console.log('tttt', data)
+      this.selectRow = data
+      this.jobType = data.jobType
+      console.log('jobType++++++++++++++++', data.jobType)
+      console.log('this.jobType++++++++++++++++', this.jobType)
       // this.jobType = data.jobType;
       if (data.type === 2) {
-        this.$store.commit('changeGroupData', data);
-        this.$store.commit('changeGroupName', data.name);
-        this.currentJobName = data.name;
+        this.$store.commit('changeGroupData', data)
+        this.$store.commit('changeGroupName', data.name)
+        this.currentJobName = data.name
         if (data.jobId) {
-          this.$store.commit('changeJobId', data.jobId);
+          this.$store.commit('changeJobId', data.jobId)
           job
             .getTaskInfo(data.jobId)
             .then((res) => {
-              console.log(res, 'content');
+              console.log(res, 'content')
               if (res.code === 200) {
                 if (res.content) {
-                  this.detailData = res.content;
-                  this.getJobDetail(res.content);
+                  this.detailData = res.content
+                  this.getJobDetail(res.content)
                 } else {
-                  this.createNewJob(data.jobType);
+                  this.createNewJob(data.jobType)
                 }
               } else {
-                this.createNewJob(data.jobType);
+                this.createNewJob(data.jobType)
               }
             })
             .catch((err) => {
-              console.log(err);
-            });
+              console.log(err)
+            })
         } else {
-          this.createNewJob(data.jobType);
+          this.createNewJob(data.jobType)
         }
       } else {
-        this.currentJobName = '';
+        this.currentJobName = ''
       }
-      console.log(this.currentJobName, '当前任务的名称');
+      console.log(this.currentJobName, '当前任务的名称')
     },
 
     // 显示代码
     showCode(row) {
-      console.log(row);
+      console.log(row)
     },
 
     // 版本回滚
     rollback(row) {
-      console.log(row);
+      console.log(row)
       this.$confirm('此操作将该任务信息回滚到选中版本, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          row.id = this.selectRow.jobId;
-          row.projectGroupId = this.selectRow.id;
+          row.id = this.selectRow.jobId
+          row.projectGroupId = this.selectRow.id
           job
             .dataRollBack(row)
             .then((res) => {
-              console.log(res);
+              console.log(res)
               if (res.code === 200) {
-                this.$message.success(res.content);
-                this.getDataTree();
-                this.removeJobTab(this.selectRow.id);
-                this.handleNodeClick(this.selectRow);
-                this.dialogVersionVisible = false;
+                this.$message.success(res.content)
+                this.getDataTree()
+                this.removeJobTab(this.selectRow.id)
+                this.handleNodeClick(this.selectRow)
+                this.dialogVersionVisible = false
               }
             })
             .catch((err) => {
-              console.log(err);
-            });
+              console.log(err)
+            })
         })
         .catch(() => {
           this.$message({
             type: 'info',
             message: '已取消回滚'
-          });
-        });
+          })
+        })
     },
 
     // 版本对比
     compare() {
-      console.log('对比');
-      this.dialogVersionVisible = false;
+      console.log('对比')
+      this.dialogVersionVisible = false
     },
 
     // 选中的版本方法
     handleSelectionChange(val) {
-      this.multipleSelection = val;
-      console.log(val);
+      this.multipleSelection = val
+      console.log(val)
       if (val.length > 2) {
-        this.$message.warning('目前仅支持两个版本的对比');
+        this.$message.warning('目前仅支持两个版本的对比')
       }
     },
 
     getJobDetail(data) {
-      console.log(data, 'data');
-      this.$store.commit('SET_JOB_INFO', data);
-      this.$store.commit('getJobDetail', data);
-      this.$store.commit('SET_TASKDETAIL_ID', data.id + '');
-      const a = {};
-      a.title = data.jobDesc;
-      a.name = data.jobDesc;
-      a.content = data;
+      console.log(data, 'data')
+      this.$store.commit('SET_JOB_INFO', data)
+      this.$store.commit('getJobDetail', data)
+      this.$store.commit('SET_TASKDETAIL_ID', data.id + '')
+      const a = {}
+      a.title = data.jobDesc
+      a.name = data.jobDesc
+      a.content = data
 
       if (
         _.findIndex(
@@ -1628,52 +1629,52 @@ export default {
           (tab) => tab.content.id === data.id
         ) === -1
       ) {
-        this.$store.state.taskAdmin.taskDetailList.push(a);
-        this.jobDetailIdx = a.content.id + '';
+        this.$store.state.taskAdmin.taskDetailList.push(a)
+        this.jobDetailIdx = a.content.id + ''
       } else {
-        this.jobDetailIdx = a.content.id + '';
+        this.jobDetailIdx = a.content.id + ''
       }
       // this.jobType = 'SHOWDETAIL';
     },
 
     getList(data) {
-      console.log(data);
-      console.log(this.editableTabs);
+      console.log(data)
+      console.log(this.editableTabs)
 
       if (this.editableTabs.length > 0) {
         for (let i = 0; i < this.editableTabs.length; i++) {
           if (this.editableTabs[i].title === data.name) {
-            this.editableTabsValue = this.editableTabs[i].name;
-            console.log(this.editableTabsValue);
-            break;
+            this.editableTabsValue = this.editableTabs[i].name
+            console.log(this.editableTabsValue)
+            break
           } else {
             this.editableTabs.push({
               title: data.name,
               name: (this.editableTabs.length + 1).toString()
-            });
+            })
             this.editableTabsValue = this.editableTabs[
               this.editableTabs.length - 1
-            ].name;
+            ].name
           }
         }
       } else {
         this.editableTabs.push({
           title: data.name,
           name: (this.editableTabs.length + 1).toString()
-        });
+        })
       }
     },
 
     getItem(del) {
-      this.listQuery.userId = JSON.parse(localStorage.getItem('userId'));
+      this.listQuery.userId = JSON.parse(localStorage.getItem('userId'))
       jobProjectApi.list(this.listQuery).then((response) => {
-        const { records } = response;
-        const { total } = response;
-        this.total = total;
-        this.options = records;
-        this.options = objList(this.options, 'name');
-        this.selectValue = this.options[0].id;
-        this.fetchJobs(this.selectValue);
+        const { records } = response
+        const { total } = response
+        this.total = total
+        this.options = records
+        this.options = objList(this.options, 'name')
+        this.selectValue = this.options[0].id
+        this.fetchJobs(this.selectValue)
 
         const listQuery = {
           current: 1,
@@ -1683,32 +1684,32 @@ export default {
           triggerStatus: -1,
           jobDesc: '',
           glueType: ''
-        };
+        }
         listQuery.projectIds = this.projectIds
           ? this.projectIds
-          : this.options[0].id;
+          : this.options[0].id
         job.getList(listQuery).then((response) => {
-          const { content } = response;
-          this.List = content.data;
-          console.log(this.List);
-          const firstElement = content?.data[0] || {};
-          const a = {};
+          const { content } = response
+          this.List = content.data
+          console.log(this.List)
+          const firstElement = content?.data[0] || {}
+          const a = {}
 
-          a.title = firstElement.jobDesc;
-          a.name = firstElement.jobDesc;
-          a.content = firstElement;
+          a.title = firstElement.jobDesc
+          a.name = firstElement.jobDesc
+          a.content = firstElement
           if (!this.firstTime) {
             if (!del) {
               // this.$store.state.taskAdmin.taskDetailList.push(a);
-              this.$store.commit('ADD_TASKDETAIL', a);
-              this.jobDetailIdx = a.content.id + '';
+              this.$store.commit('ADD_TASKDETAIL', a)
+              this.jobDetailIdx = a.content.id + ''
             }
           } else {
-            this.firstTime = false;
+            this.firstTime = false
           }
-          this.jobDetailLoading = false;
-        });
-      });
+          this.jobDetailLoading = false
+        })
+      })
     },
 
     /**
@@ -1718,15 +1719,15 @@ export default {
       const removeIndex = _.findIndex(
         this.$store.state.taskAdmin.taskDetailList,
         (ele) => ele.content.id === isSaveInfo.content.id + ''
-      );
-      this.$store.commit('DELETE_TASKDETAIL', removeIndex);
+      )
+      this.$store.commit('DELETE_TASKDETAIL', removeIndex)
       jobProjectApi.list(this.listQuery).then((response) => {
-        const { records } = response;
-        const { total } = response;
-        this.total = total;
-        this.options = records;
-        this.selectValue = this.options[0].id;
-        this.fetchJobs(this.selectValue);
+        const { records } = response
+        const { total } = response
+        this.total = total
+        this.options = records
+        this.selectValue = this.options[0].id
+        this.fetchJobs(this.selectValue)
 
         const listQuery = {
           current: 1,
@@ -1736,38 +1737,38 @@ export default {
           triggerStatus: -1,
           jobDesc: '',
           glueType: ''
-        };
+        }
         listQuery.projectIds = this.projectIds
           ? this.projectIds
-          : this.options[0].id;
+          : this.options[0].id
         job.getList(listQuery).then((response) => {
-          const { content } = response;
-          this.List = content.data;
-          console.log(this.List);
-          const a = {};
+          const { content } = response
+          this.List = content.data
+          console.log(this.List)
+          const a = {}
           const eleIndex = _.findIndex(
             this.List,
             (ele) => ele.id === isSaveInfo.content.id
-          );
-          a.title = this.List[eleIndex].jobDesc;
-          a.name = this.List[eleIndex].jobDesc;
-          a.content = this.List[eleIndex];
+          )
+          a.title = this.List[eleIndex].jobDesc
+          a.name = this.List[eleIndex].jobDesc
+          a.content = this.List[eleIndex]
           if (!this.firstTime) {
             // if (!del) {
             // this.$store.state.taskAdmin.taskDetailList.push(a);
-            this.$store.commit('ADD_TASKDETAIL', a);
-            this.jobDetailIdx = a.content.id + '';
+            this.$store.commit('ADD_TASKDETAIL', a)
+            this.jobDetailIdx = a.content.id + ''
             // }
           } else {
-            this.firstTime = false;
+            this.firstTime = false
           }
-          this.jobDetailLoading = false;
-        });
-      });
+          this.jobDetailLoading = false
+        })
+      })
     },
 
     fetchJobs(event) {
-      this.$store.commit('SET_PROJECT_ID', event);
+      this.$store.commit('SET_PROJECT_ID', event)
 
       // 获取任务列表
       const listQuery = {
@@ -1778,13 +1779,13 @@ export default {
         triggerStatus: -1,
         jobDesc: '',
         glueType: ''
-      };
-      this.projectIds = event;
+      }
+      this.projectIds = event
 
       job.getList(listQuery).then((response) => {
-        const { content } = response;
-        this.List = content.data;
-      });
+        const { content } = response
+        this.List = content.data
+      })
 
       // 根据项目id获取数据源
 
@@ -1793,28 +1794,28 @@ export default {
         size: 200,
         ascs: 'datasource_name',
         projectId: event
-      };
+      }
       jdbcDsList(p).then((response) => {
-        const { records } = response;
-        this.$store.commit('SET_DATASOURCE', records);
-      });
+        const { records } = response
+        this.$store.commit('SET_DATASOURCE', records)
+      })
     },
 
     createNewJob(command) {
-      this.$store.commit('SET_READER_ISEDIT', false);
-      console.log(command);
-      this.$store.commit('SET_TAB_TYPE', command);
-      this.jobType = command;
-      this.jobDetailIdx = command;
+      this.$store.commit('SET_READER_ISEDIT', false)
+      console.log(command)
+      this.$store.commit('SET_TAB_TYPE', command)
+      this.jobType = command
+      this.jobDetailIdx = command
     },
 
     // 切换项目
     handleCommand(command) {
-      const commandId = command.split('/')[0];
-      const commandName = command.split('/')[1];
-      this.$store.commit('changeCurrent', command);
-      this.selectValue = commandName;
-      this.$store.commit('SET_PROJECT_ID', commandId);
+      const commandId = command.split('/')[0]
+      const commandName = command.split('/')[1]
+      this.$store.commit('changeCurrent', command)
+      this.selectValue = commandName
+      this.$store.commit('SET_PROJECT_ID', commandId)
 
       // 获取任务列表
       const listQuery = {
@@ -1825,13 +1826,13 @@ export default {
         triggerStatus: -1,
         jobDesc: '',
         glueType: ''
-      };
-      this.projectIds = commandId;
+      }
+      this.projectIds = commandId
 
       job.getList(listQuery).then((response) => {
-        const { content } = response;
-        this.List = content.data;
-      });
+        const { content } = response
+        this.List = content.data
+      })
 
       // 根据项目id获取数据源
 
@@ -1840,24 +1841,24 @@ export default {
         size: 200,
         ascs: 'datasource_name',
         projectId: commandId
-      };
+      }
       jdbcDsList(p).then((response) => {
-        const { records } = response;
-        this.$store.commit('SET_DATASOURCE', records);
-      });
+        const { records } = response
+        this.$store.commit('SET_DATASOURCE', records)
+      })
     },
     closeCreate() {
-      this.jobType = '';
-      this.$store.commit('SET_TAB_TYPE', '');
+      this.jobType = ''
+      this.$store.commit('SET_TAB_TYPE', '')
       if (this.$store.state.taskAdmin.taskDetailList.length <= 0) {
-        this.jobDetailIdx = '欢迎';
+        this.jobDetailIdx = '欢迎'
       } else {
         this.jobDetailIdx =
-          this.$store.state.taskAdmin.taskDetailList[0].content.id + '';
+          this.$store.state.taskAdmin.taskDetailList[0].content.id + ''
       }
     }
   }
-};
+}
 </script>
 
 <style lang="scss">
@@ -2135,7 +2136,7 @@ export default {
           position: absolute;
           font-size: 24px;
           font-weight: 700;
-          font-family: "楷体";
+          font-family: '楷体';
           left: 24px;
           top: 30px;
         }

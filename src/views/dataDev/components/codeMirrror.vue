@@ -44,7 +44,6 @@
       <textarea
         ref="mycode"
         v-model="code"
-        name="code"
         class="codesql"
         @onCursorActivity="SelectSQL"
         @click.native="chooseSql"
@@ -95,7 +94,6 @@ export default {
   watch: {
     code(val) {
       console.log(this.code, 'code1');
-
       this.infoMsg++;
     },
     sqlparams(val) {
