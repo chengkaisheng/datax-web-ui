@@ -44,6 +44,7 @@
       <textarea
         ref="mycode"
         v-model="code"
+        name="code"
         class="codesql"
         @onCursorActivity="SelectSQL"
         @click.native="chooseSql"
@@ -173,12 +174,16 @@ export default {
       this.$emit('saveQuery', this.code);
     },
     sqlJobBuild() {
-      // this.$route.push('/datax/job/JobInfo')
-      this.$router.push({
-        path: '/datax/job/JobInfo'
-      });
-      console.log('=================');
+      console.log('1233    ' + this.code);
+      this.$refs.mycode.text = ''
+      this.code = ''
+      this.editor = ''
+      // this.$router.push({
+      //   path: '/datax/job/JobInfo'
+      // });
+      // console.log('=================');
       // window.location.href = '/datax/job/JobInfo'
+      this.mountCodeMirror()
     },
 
     mountCodeMirror(code) {

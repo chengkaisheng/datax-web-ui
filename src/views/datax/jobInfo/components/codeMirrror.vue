@@ -82,7 +82,6 @@ export default {
       if (val.level === 3) {
         this.code =
           "SELECT * FROM " + val.data.schema + "." + val.data.tableName + ";";
-        console.log(this.code, "code");
         this.leftShow = true;
         this.rightShow = false;
       }
@@ -98,7 +97,6 @@ export default {
       // }
       this.tips = Object.assign(this.tips, columeObj);
       console.log(this.tips, "tips1");
-      // this.mountCodeMirror();
     },
     tableList(val) {
       // this.tips = {}
@@ -128,11 +126,6 @@ export default {
   },
   mounted() {
     this.mountCodeMirror();
-    if (code) {
-      this.TIPS = false;
-    } else if (!code) {
-      this.TIPS = true;
-    }
   },
   methods: {
     chooseSql() {

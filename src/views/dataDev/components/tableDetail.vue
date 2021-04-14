@@ -449,7 +449,7 @@ export default {
       queryDsInfo.datasource = dsInfo.datasource.toLowerCase();
       var sql = 'Select * from ' + node.data.schema + '.' + node.data.tableName;
       console.log(queryDsInfo, 'queryDsInfo');
-	  console.log(sql, '---sql')
+      console.log(sql, '---sql')
       this.queryData(queryDsInfo, sql);
     },
 
