@@ -162,6 +162,7 @@ export default {
         msg: this.infoMsg,
         code: this.code
       });
+      console.log(this.code)
     },
     /**
      * @description: 保存查询
@@ -179,9 +180,8 @@ export default {
       // this.$router.push({
       //   path: '/datax/job/JobInfo'
       // });
-      // console.log('=================');
-      // window.location.href = '/datax/job/JobInfo'
       this.mountCodeMirror()
+      // this.setCode()
     },
 
     mountCodeMirror(code) {

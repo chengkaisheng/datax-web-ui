@@ -384,7 +384,7 @@ export default {
       return {
         projectId: this.$store.state.taskAdmin.sqlParams.projectId,
         datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId,
-        schema: this.$store.state.taskAdmin.sqlParams.schema
+        databaseSchema: this.$store.state.taskAdmin.sqlParams.schema
       };
     }
   },
@@ -454,6 +454,7 @@ export default {
     },
 
     async queryData(queryDsInfo, sql) {
+      console.log(sql)
       // this.tableLoading = true;
       if (queryDsInfo.jdbcUrl === undefined || queryDsInfo.jdbcUrl === '') {
         this.$notify({
@@ -464,6 +465,8 @@ export default {
         });
         this.tableLoading = false;
         return;
+      } else {
+        this.addTab()
       }
       if (sql.trim() === '') {
         this.$notify({
@@ -473,207 +476,203 @@ export default {
           duration: 2000
         });
         return;
-      }
-      this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', true); // 按钮状态
-      sql = sql.replace(';', '');
-      // console.log(sql, 'sql')
-      console.log(queryDsInfo.jdbcUrl, 'queryDsInfo.jdbcUrl');
+      } else {
+        // this.$refs.table.addTab();
+        this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', true); // 按钮状态
+        // sql = sql.replace(';', '');
+        console.log(sql, 'sql')
+        console.log(queryDsInfo.jdbcUrl, 'queryDsInfo.jdbcUrl');
+        const host = queryDsInfo.jdbcUrl
+          .split('//')[1]
+          .split('/')[0]
+          .split(':')[0];
+        const port = queryDsInfo.jdbcUrl
+          .split('//')[1]
+          .split('/')[0]
+          .split(':')[1];
+        var databaseName = queryDsInfo.db;
+        const userName = queryDsInfo.username;
+        const password = queryDsInfo.password;
 
-      // const host = (queryDsInfo.jdbcUrl || '')
-      //   .split(':@//')[1]
-      //   .split('/')[0]
-      //   .split(':')[0];
-      // const port = (queryDsInfo.jdbcUrl || '')
-      //   .split(':@//')[1]
-      //   .split('/')[0]
-      //   .split(':')[1];
+        var driverId;
+        switch (queryDsInfo.datasource) {
+          case 'mysql':
+            driverId = 'mysql:mysql8';
+            break;
+          case 'oracle':
+            driverId = 'oracle:oracle_thin';
+            break;
+          case 'hive':
+            driverId = 'generic:apache_hive2';
+            break;
+          case 'impala':
+            driverId = 'generic:cloudera_impala';
+            break;
+          default:
+            this.$notify.info('');
+            this.$notify({
+              title: '消息',
+              message: '请联系管理员获取该数据库查询功能',
+              type: 'info',
+              duration: 2000
+            });
+            return;
+        }
 
-      // const databaseName = queryDsInfo.db;
+        if (driverId === 'oracle:oracle_thin') {
+          databaseName = queryDsInfo.jdbcUrl
+            .split('//')[1]
+            .split('/')[1]
+        }
+        // 1、创建链接
+        const params1 = {
+          config: {
+            name: databaseName + '@' + host,
+            driverId: driverId,
+            host: host,
+            port: port,
+            databaseName: databaseName,
+            authModelId: 'native',
+            credentials: {
+              userName: userName,
+              userPassword: password
+            }
+          }
+        };
+        const resCreateConnection = await createConnection(params1);
+        console.log(resCreateConnection);
 
-      // jdbc:oracle:thin:@//183.194.64.166:3309/helowin
-      const host = queryDsInfo.jdbcUrl
-        .split('//')[1]
-        .split('/')[0]
-        .split(':')[0];
-      const port = queryDsInfo.jdbcUrl
-        .split('//')[1]
-        .split('/')[0]
-        .split(':')[1];
-      var databaseName = queryDsInfo.db;
-      const userName = queryDsInfo.username;
-      const password = queryDsInfo.password;
-
-      var driverId;
-      switch (queryDsInfo.datasource) {
-        case 'mysql':
-          driverId = 'mysql:mysql8';
-          break;
-        case 'oracle':
-          driverId = 'oracle:oracle_thin';
-          break;
-        case 'hive':
-          driverId = 'generic:apache_hive2';
-          break;
-        case 'impala':
-          driverId = 'generic:cloudera_impala';
-          break;
-        default:
-          this.$notify.info('');
+        if (resCreateConnection.data == null) {
           this.$notify({
-            title: '消息',
-            message: '请联系管理员获取该数据库查询功能',
-            type: 'info',
+            title: '错误',
+            message: resCreateConnection.message,
+            type: 'error',
             duration: 2000
           });
-          return;
-      }
+          this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false);
+        }
 
-      if (driverId === 'oracle:oracle_thin') {
-        databaseName = queryDsInfo.jdbcUrl
-          .split('//')[1]
-          .split('/')[1]
-      }
-      // 1、创建链接
-      const params1 = {
-        config: {
-          name: databaseName + '@' + host,
-          driverId: driverId,
-          host: host,
-          port: port,
-          databaseName: databaseName,
-          authModelId: 'native',
+        this.connectionId = resCreateConnection.data.createConnection.id;
+        // 2、初始化连接
+        const params2 = {
+          id: this.connectionId,
           credentials: {
             userName: userName,
             userPassword: password
           }
-        }
-      };
-      const resCreateConnection = await createConnection(params1);
-      console.log(resCreateConnection);
-
-      if (resCreateConnection.data == null) {
-        this.$notify({
-          title: '错误',
-          message: resCreateConnection.message,
-          type: 'error',
-          duration: 2000
-        });
-        this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false);
-      }
-
-      this.connectionId = resCreateConnection.data.createConnection.id;
-      // 2、初始化连接
-      const params2 = {
-        id: this.connectionId,
-        credentials: {
-          userName: userName,
-          userPassword: password
-        }
-      };
-      var infoErr2 = '';
-      var success2 = '';
-      const resInitConnection = await initConnection(params2)
-        .then((res) => {
-          console.log(res, 'params2');
-          success2 = res;
-        })
-        .catch((err) => {
-          infoErr2 = err.message;
-          console.log(err)
-        });
-      if (infoErr2) {
-        this.$message.error(infoErr2);
-        this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false);
-      }
-      console.log(resInitConnection);
-
-      // 3、创建sqlcontext
-      const params3 = {
-        connectionId: success2.data.connection.id
-      };
-      const resSqlContextCreate = await sqlContextCreate(params3);
-      const params4 = {
-        connectionId: this.connectionId,
-        contextId: resSqlContextCreate.data.context.id,
-        query: sql, // sql语句
-        filter: {
-          offset: 0,
-          limit: 200,
-          constraints: []
-        }
-      };
-      const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(params4);
-      const params5 = {
-        taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
-        removeOnFinish: false
-      };
-      let queryStatus = '';
-      let resGetAsyncTaskInfo;
-      while (queryStatus !== 'Finished') {
-        resGetAsyncTaskInfo = await getAsyncTaskInfo(params5);
-        queryStatus = resGetAsyncTaskInfo.data.taskInfo.status;
-        if (resGetAsyncTaskInfo.data.taskInfo.error) {
-          this.$message.error(resGetAsyncTaskInfo.data.taskInfo.error);
+        };
+        var infoErr2 = '';
+        var success2 = '';
+        const resInitConnection = await initConnection(params2)
+          .then((res) => {
+            console.log(res, 'params2');
+            success2 = res;
+          })
+          .catch((err) => {
+            infoErr2 = err.message;
+            console.log(err)
+          });
+        if (infoErr2) {
+          this.$message.error(infoErr2);
           this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false);
-          break;
         }
-      }
-      console.log(queryStatus, 'queryStatus');
-      const params6 = {
-        taskId: resGetAsyncTaskInfo.data.taskInfo.id
-      };
-      const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
-        params6
-      );
-      if (resGetSqlExecuteTaskResults) {
-        this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false);
-        console.log(
-          resGetSqlExecuteTaskResults.data.result.statusMessage,
-          'second_table'
-        );
-        if (resGetSqlExecuteTaskResults.data.result.results[0].updateRowCount) {
-          this.firstShow = false;
-          this.secondShow = true;
-          this.secondData = [];
-          this.secondData.push({
-            name: 'updateRowCount',
-            value:
+        console.log(resInitConnection);
+
+        const sqlarr = sql.split(';')
+
+        for (var i = 0; i < sqlarr.length; i++) {
+          const sqlOne = sqlarr[i];
+          console.log(sqlOne)
+          this.addTab()
+          // 3、创建sqlcontext
+          const params3 = {
+            connectionId: success2.data.connection.id
+          };
+          const resSqlContextCreate = await sqlContextCreate(params3);
+          const params4 = {
+            connectionId: this.connectionId,
+            contextId: resSqlContextCreate.data.context.id,
+            query: sql, // sql语句
+            filter: {
+              offset: 0,
+              limit: 200,
+              constraints: []
+            }
+          };
+          const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(params4);
+          const params5 = {
+            taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
+            removeOnFinish: false
+          };
+          let queryStatus = '';
+          let resGetAsyncTaskInfo;
+          while (queryStatus !== 'Finished') {
+            resGetAsyncTaskInfo = await getAsyncTaskInfo(params5);
+            queryStatus = resGetAsyncTaskInfo.data.taskInfo.status;
+            if (resGetAsyncTaskInfo.data.taskInfo.error) {
+              this.$message.error(resGetAsyncTaskInfo.data.taskInfo.error);
+              this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false);
+              break;
+            }
+          }
+          console.log(queryStatus, 'queryStatus');
+          const params6 = {
+            taskId: resGetAsyncTaskInfo.data.taskInfo.id
+          };
+          const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
+            params6
+          );
+          if (resGetSqlExecuteTaskResults) {
+            this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false);
+            console.log(
+              resGetSqlExecuteTaskResults.data.result.statusMessage,
+              'second_table'
+            );
+            if (resGetSqlExecuteTaskResults.data.result.results[0].updateRowCount) {
+              this.firstShow = false;
+              this.secondShow = true;
+              this.secondData = [];
+              this.secondData.push({
+                name: 'updateRowCount',
+                value:
               resGetSqlExecuteTaskResults.data.result.results[0].updateRowCount
+              });
+              this.secondData.push({
+                name: 'query',
+                value: sql.replace(';', '')
+              });
+              //   const time = new Date()
+              this.secondData.push({
+                name: 'time',
+                value: new Date().toLocaleString('cn', {
+                  hour12: false
+                })
+              });
+            } else {
+              this.firstShow = true;
+              this.secondShow = false;
+            }
+          }
+          if (!resGetSqlExecuteTaskResults.data.result.results[0].resultSet) return;
+          const columns =
+        resGetSqlExecuteTaskResults.data.result.results[0].resultSet.columns;
+          const rows =
+        resGetSqlExecuteTaskResults.data.result.results[0].resultSet.rows;
+          this.columns = columns;
+          this.tableData = rows.map((ele) => {
+            const obj = {};
+            ele.forEach((fieldVal, index) => {
+              obj[columns[index].name] = fieldVal;
+            });
+            return obj;
           });
-          this.secondData.push({
-            name: 'query',
-            value: sql.replace(';', '')
-          });
-          //   const time = new Date()
-          this.secondData.push({
-            name: 'time',
-            value: new Date().toLocaleString('cn', {
-              hour12: false
-            })
-          });
-        } else {
+          this.autoSaveSql(sql);
+          this.tableLoading = false;
           this.firstShow = true;
           this.secondShow = false;
+          this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false);
         }
       }
-      if (!resGetSqlExecuteTaskResults.data.result.results[0].resultSet) return;
-      const columns =
-        resGetSqlExecuteTaskResults.data.result.results[0].resultSet.columns;
-      const rows =
-        resGetSqlExecuteTaskResults.data.result.results[0].resultSet.rows;
-      this.columns = columns;
-      this.tableData = rows.map((ele) => {
-        const obj = {};
-        ele.forEach((fieldVal, index) => {
-          obj[columns[index].name] = fieldVal;
-        });
-        return obj;
-      });
-      this.autoSaveSql(sql);
-      this.tableLoading = false;
-      this.firstShow = true;
-      this.secondShow = false;
-      this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false);
     },
     /**
      * @description:保存时添加历史
@@ -763,14 +762,31 @@ export default {
      * @description: 获取sql自动保存的历史记录
      */
     getSqlList(val = null) {
+      // : Object.assign({ isSaved: 1 }, params)
       this.tableLoading = true;
-      const searchParams = Object.assign(
-        Object.assign({}, this.getPagination),
-        this.getBasedInfo
-      );
+      // const searchParams = Object.assign(
+      //   Object.assign({}, this.getPagination),
+      //   this.getBasedInfo
+      // );
+      // console.log('1111111111111111', searchParams)
+      // const searchParams = {
+      //   size: this.pagination.size,
+      //   current: this.pagination.current,
+      //   projectId: this.$store.state.taskAdmin.sqlParams.projectId,
+      //   datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId,
+      //   databaseSchema: this.$store.state.taskAdmin.sqlParams.schema,
+      //   isSaved: 1
+      // }
       if (this.isSaveMode === 0) {
         sqlhisApi
-          .getSqlListTemp(searchParams)
+          .getSqlListTemp({
+            size: this.pagination.size,
+            current: this.pagination.current,
+            projectId: this.$store.state.taskAdmin.sqlParams.projectId,
+            datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId,
+            databaseSchema: this.$store.state.taskAdmin.sqlParams.schema,
+            isSaved: 0
+          })
           .then((response) => {
             if (response.code === 200) {
               this.sqlHistoryData = response.content.records;
@@ -784,7 +800,14 @@ export default {
           });
       } else {
         sqlhisApi
-          .getSqlListSaved(searchParams)
+          .getSqlListSaved({
+            size: this.pagination.size,
+            current: this.pagination.current,
+            projectId: this.$store.state.taskAdmin.sqlParams.projectId,
+            datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId,
+            databaseSchema: this.$store.state.taskAdmin.sqlParams.schema,
+            isSaved: 1
+          })
           .then((response) => {
             if (response.code === 200) {
               this.sqlHistoryData = response.content.records;
