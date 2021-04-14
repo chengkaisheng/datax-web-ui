@@ -156,6 +156,7 @@ export default {
       numberValidateForm: {
         age: "",
       },
+      first: "first",
       dialogVisible: false,
       activeName: "second",
       TableData: [
@@ -190,6 +191,9 @@ export default {
     handleDelete(a, b) {
       console.log(a);
       this.TableData.splice(a, 1);
+    },
+    handleClick(tab, event) {
+      console.log(tab, event);
     },
   },
 };
