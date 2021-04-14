@@ -703,7 +703,7 @@ export default {
         })
         .then((response) => {
           console.log(response);
-          if (response.code === 0) {
+          if (response.code === 200) {
             this.$notify({
               title: '成功',
               message: response.msg,
@@ -737,16 +737,16 @@ export default {
           datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId, // 数据源id
           projectId: this.$store.state.taskAdmin.sqlParams.projectId, // 项目id
           databaseSchema: this.$store.state.taskAdmin.sqlParams.schema, // 数据库schema
-          sqlResult: {
+          sqlResult: JSON.stringify({
             columns: this.columns,
             tableData: this.tableData
-          }, // sql执行结果
+          }), // sql执行结果
           sqlStatus: 1, // 1：成功  0：失败
           sqlContent: sql, // sql语句
           submitUser: parseInt(localStorage.getItem('userId')) // 提交用户id
         })
         .then((response) => {
-          if (response.code === 0) {
+          if (response.code === 200) {
             console.log(response);
           }
         })
