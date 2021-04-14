@@ -47,7 +47,7 @@ module.exports = {
         // target: 'http://192.168.3.83:8080', // 曹海生
         // target: 'http://192.168.3.70:8083', // 刘向前
         // target: 'http://192.168.3.39:8080', // 侯峰
-        // target: "http://192.168.3.108:8080", // 卢兰杰
+        // target: 'http://192.168.3.108:8080', // 卢兰杰
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_API]: '/' + process.env.VUE_APP_API
