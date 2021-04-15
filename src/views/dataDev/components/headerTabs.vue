@@ -410,6 +410,7 @@ export default {
         for (let i = 0; i < this.editableTabs.length; i++) {
           if (this.editableTabs[i].name === this.editableTabsValue) {
             this.$refs.content[i].previewData(this.datasourceSelected, node);
+            // this.$refs.tabel.addTab()
             break;
           }
         }

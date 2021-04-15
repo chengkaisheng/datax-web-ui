@@ -192,7 +192,9 @@ export default {
       console.log(val, '子传父');
       console.log(this.queryDsInfo);
       this.$refs.table.queryData(this.queryDsInfo, val.code, {});
-      this.$refs.table.addTab();
+      this.code = val.code
+      console.log(this.code)
+      // this.$refs.table.addTab();
     },
     previewData(dsInfo, params) {
       this.$refs.table.initData(dsInfo, params);
