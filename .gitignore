@@ -23,3 +23,5 @@ package-lock.json
 yarn.lock
 dist.zip
 dist.7z
+
+vue.config.js
