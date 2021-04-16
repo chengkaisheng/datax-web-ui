@@ -437,8 +437,12 @@ rkJggg=="
             @deleteJob="getItem"
             @deleteDetailTab="clearJobTab"
           />
+          <Hive
+            v-if="item.content.jobType !== 'VJOB'"
+            :job-info="$store.state.taskAdmin.jobInfo"
+          />
           <Workflow
-            v-else
+            v-if="item.content.jobType === 'VJOB'"
             :is-save="item"
             job-type="VJOB"
             :task-list="List"
@@ -1060,6 +1064,7 @@ export default {
       const t = this.List.filter(
         (item) => item.id === parseInt(this.jobDetailIdx)
       )
+      console.log(t, 'tttttttttttttttttttttttttt')
       this.$store.commit('SET_JOB_INFO', t[0])
     },
 
@@ -1518,6 +1523,7 @@ export default {
         })
     },
 
+    // 点击tree控件方法
     handleNodeClick(data) {
       console.log('tttt', data)
       this.selectRow = data
