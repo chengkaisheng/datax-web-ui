@@ -397,7 +397,6 @@
           />
         </el-table>
       </el-tab-pane>
-      <!-- <button @click="addTab">添加</button> -->
     </el-tabs>
   </div>
 </template>
@@ -472,6 +471,9 @@ export default {
           case 'res':
             break
           case 'hisSql':
+            this.getSqlList()
+            break
+          case 'asynctask':
             this.getSqlList()
             break
           default:
@@ -559,9 +561,6 @@ export default {
         this.tableLoading = false
         return
       }
-      // else {
-      //   this.addTab()
-      // }
       if (sql.trim() === '') {
         this.$notify({
           title: '警告',
@@ -571,8 +570,6 @@ export default {
         })
         return
       }
-      // else {
-      // this.$refs.table.addTab();
       this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', true) // 按钮状态
       // sql = sql.replace(';', '')
       console.log(sql, 'sql')
@@ -783,6 +780,7 @@ export default {
         })
         return
       }
+
       sqlhisApi
         .saveSql({
           datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId, // 数据源id
@@ -864,15 +862,6 @@ export default {
       //   Object.assign({}, this.getPagination),
       //   this.getBasedInfo
       // );
-      // console.log('1111111111111111', searchParams)
-      // const searchParams = {
-      //   size: this.pagination.size,
-      //   current: this.pagination.current,
-      //   projectId: this.$store.state.taskAdmin.sqlParams.projectId,
-      //   datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId,
-      //   databaseSchema: this.$store.state.taskAdmin.sqlParams.schema,
-      //   isSaved: 1
-      // }
       if (this.isSaveMode === 0) {
         sqlhisApi
           .getSqlListTemp({
