@@ -391,23 +391,52 @@ export default {
     /**
      * @description: 点击节点
      */
+    // handleNodeClick(data, node, nodeComp) {
+    //   if (node.level === 1) {
+    //     this.selectedDbName = node.data.name
+    //     this.selectedDsName = this.datasourceSelected.name // node.parent.data => this.datasourceSelected
+    //     this.selectedDatasource.jdbcUrl = this.datasourceSelected.jdbcUrl
+    //     this.selectedDatasource.db = node.data.name
+    //     this.selectedDatasource.username = this.datasourceSelected.secretMap?.u
+    //     this.selectedDatasource.password = this.datasourceSelected.secretMap?.p
+    //     this.selectedDatasource.datasource = this.datasourceSelected.datasource.toLowerCase()
+    //     console.log('--------------', this.selectedDatasource)
+    //     for (let i = 0; i < this.editableTabs.length; i++) {
+    //       this.$refs.content[i].setQueryParams(this.selectedDatasource)
+    //     }
+    //   }
+
+    //   if (node.level === 2) {
+    //     for (let i = 0; i < this.editableTabs.length; i++) {
+    //       if (this.editableTabs[i].name === this.editableTabsValue) {
+    //         this.$refs.content[i].previewData(this.datasourceSelected, node)
+    //         // this.$refs.tabel.addTab()
+    //         break
+    //       }
+    //     }
+    //   }
+
+    //   this.$store.commit('SET_SQLP_SCHEMA', node.data.name)
+    // },
     handleNodeClick(data, node, nodeComp) {
+      this.selectedDbName = node.data.name
+      this.selectedDsName = this.datasourceSelected.name // node.parent.data => this.datasourceSelected
+      this.selectedDatasource.jdbcUrl = this.datasourceSelected.jdbcUrl
+      this.selectedDatasource.username = this.datasourceSelected.secretMap?.u
+      this.selectedDatasource.password = this.datasourceSelected.secretMap?.p
+      this.selectedDatasource.datasource = this.datasourceSelected.datasource.toLowerCase()
+      console.log('--------------', this.selectedDatasource)
       if (node.level === 1) {
-        this.selectedDbName = node.data.name
-        this.selectedDsName = this.datasourceSelected.name // node.parent.data => this.datasourceSelected
-        this.selectedDatasource.jdbcUrl = this.datasourceSelected.jdbcUrl
         this.selectedDatasource.db = node.data.name
-        this.selectedDatasource.username = this.datasourceSelected.secretMap?.u
-        this.selectedDatasource.password = this.datasourceSelected.secretMap?.p
-        this.selectedDatasource.datasource = this.datasourceSelected.datasource.toLowerCase()
-        console.log('--------------', this.selectedDatasource)
         for (let i = 0; i < this.editableTabs.length; i++) {
           this.$refs.content[i].setQueryParams(this.selectedDatasource)
         }
       }
 
       if (node.level === 2) {
+        this.selectedDatasource.db = node.data.schema
         for (let i = 0; i < this.editableTabs.length; i++) {
+          this.$refs.content[i].setQueryParams(this.selectedDatasource)
           if (this.editableTabs[i].name === this.editableTabsValue) {
             this.$refs.content[i].previewData(this.datasourceSelected, node)
             // this.$refs.tabel.addTab()
@@ -416,7 +445,14 @@ export default {
         }
       }
 
-      this.$store.commit('SET_SQLP_SCHEMA', node.data.name)
+      if (node.level === 3) {
+        this.selectedDatasource.db = node.parent.data.schema
+        for (let i = 0; i < this.editableTabs.length; i++) {
+          this.$refs.content[i].setQueryParams(this.selectedDatasource)
+        }
+      }
+
+      this.$store.commit('SET_SQLP_SCHEMA', this.selectedDatasource.db)
     },
     /**
      * @description: 筛选节点

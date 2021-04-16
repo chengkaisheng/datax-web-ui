@@ -445,16 +445,16 @@ rkJggg=="
           />
           <div v-if="item.content.jobType === 'HIVE'" class="rg">
             <Hive
-              @gettreelist="Gettreelist"
               job-type="GLUE_HIVE"
               job-type-label="HIVE任务"
+              @gettreelist="Gettreelist"
             />
           </div>
           <div v-if="item.content.jobType === 'IMPALA'" class="rg">
             <Hive
-              @gettreelist="Gettreelist"
               job-type="GLUE_IMPALA"
               job-type-label="IMPALA任务"
+              @gettreelist="Gettreelist"
             />
           </div>
           <Workflow
@@ -515,7 +515,7 @@ cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
 rkJggg=="
               />
             </svg>
-            {{ $store.state.taskAdmin.GroupName }}
+            {{ $store.state.taskAdmin.Group.name }}
           </span>
           <div
             v-if="
@@ -530,17 +530,17 @@ rkJggg=="
 
           <div v-if="jobType === 'HIVE'" class="rg">
             <Hive
-              @gettreelist="Gettreelist"
               job-type="GLUE_HIVE"
               job-type-label="HIVE任务"
+              @gettreelist="Gettreelist"
             />
           </div>
 
           <div v-if="jobType === 'IMPALA'" class="rg">
             <Hive
-              @gettreelist="Gettreelist"
               job-type="GLUE_IMPALA"
               job-type-label="IMPALA任务"
+              @gettreelist="Gettreelist"
             />
           </div>
 
@@ -1019,7 +1019,7 @@ export default {
     /**
      * @description: tab关闭逻辑
      */
-    //点击子组件保存按钮后重新获取tree
+    // 点击子组件保存按钮后重新获取tree
     Gettreelist() {
       this.getDataTree()
     },
@@ -1094,6 +1094,7 @@ export default {
       const t = this.List.filter(
         (item) => item.id === parseInt(this.jobDetailIdx)
       )
+      console.log(t, 'tttttttttttttttttttttttttt')
       this.$store.commit('SET_JOB_INFO', t[0])
     },
 
@@ -1437,7 +1438,6 @@ export default {
         specification: this.task,
         projectId: this.selectRow.projectId,
         parentId: this.selectRow.id,
-        name: this.chineseName,
         type: this.currentJob ? 2 : 1,
         jobType: this.currentJob,
       }
@@ -1557,6 +1557,7 @@ export default {
         })
     },
 
+    // 点击tree控件方法
     handleNodeClick(data) {
       console.log('任务数据', data)
       this.selectRow = data
@@ -1675,6 +1676,7 @@ export default {
         ) === -1
       ) {
         this.$store.state.taskAdmin.taskDetailList.push(a)
+        console.log(a, '切换a')
         this.jobDetailIdx = a.content.id + ''
       } else {
         this.jobDetailIdx = a.content.id + ''
