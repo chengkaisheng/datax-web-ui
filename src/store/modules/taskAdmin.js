@@ -117,22 +117,27 @@ const state = {
 
   scheduleId: '', // 调度任务修改id
 
+  SingleData: '',//单条数据信息
+
   sqlParams: {
     projectId: '', // 项目ID
     datasourceId: '', // 数据源ID
     schema: '' // 数据库名
-  }
+  },
+  setcode: '',
+  projectId: '',
 };
 
 const mutations = {
   SET_TAB_TYPE: (state, type) => {
     state.tabType = type;
   },
-
   setScheduleId: (state, payload) => {
     state.scheduleId = payload;
   },
-
+  SETCODE: (state, payload) => {
+    state.setcode = payload
+  },
   getJobDetail: (state, payload) => {
     state.jobDataDetail = payload;
   },
@@ -144,7 +149,12 @@ const mutations = {
   changeGroupData(state, payload) {
     state.Group = payload;
   },
-
+  Singledata(state, payload) {
+    state.SingleData = payload
+  },
+  SETPJTID: (state, payload) => {
+    state.projectId = payload
+  },
   changeWatch(state, payload) {
     state.watchStr += payload;
   },
