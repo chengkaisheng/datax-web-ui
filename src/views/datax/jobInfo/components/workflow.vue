@@ -189,12 +189,12 @@
   </div>
 </template>
 <script id="code">
-import go from 'gojs';
+import go from 'gojs'
 import cron from '@/components/Cron'
 import * as wfApi from '@/api/datax-job-info-workflow'
 import { handlerStart, handlerStop, handlerDelete } from '../method'
-import jobLog from './jobLog';
-import * as job from '@/api/datax-job-info';
+import jobLog from './jobLog'
+import * as job from '@/api/datax-job-info'
 
 export default {
   name: 'Flow',
@@ -261,7 +261,7 @@ export default {
     /** 虚任务Id */
     infoId() {
       if (this.isSave.hasOwnProperty('content')) {
-        var temp = JSON.parse(this.isSave.content.jobJson);
+        var temp = JSON.parse(this.isSave.content.jobJson)
         var ret = ''
         // console.log(temp);
         for (var i = 0; i < temp.nodeDataArray.length; i++) {
@@ -346,11 +346,11 @@ export default {
             handlesDragDropForTopLevelParts: true,
             'clickCreatingTool.archetypeNodeData': { text: 'NEW NODE' }, // create a new node by double-clicking in background
             'PartCreated': function(e) {
-              var node = e.subject; // the newly inserted Node -- now need to snap its location to the grid
-              node.location = node.location.copy().snapToGridPoint(e.diagram.grid.gridOrigin, e.diagram.grid.gridCellSize);
+              var node = e.subject // the newly inserted Node -- now need to snap its location to the grid
+              node.location = node.location.copy().snapToGridPoint(e.diagram.grid.gridOrigin, e.diagram.grid.gridCellSize)
               setTimeout(function() { // and have the user start editing its text
-                e.diagram.commandHandler.editTextBlock();
-              }, 20);
+                e.diagram.commandHandler.editTextBlock()
+              }, 20)
             },
             'commandHandler.archetypeGroupData': { isGroup: true, text: 'NEW GROUP' },
             'undoManager.isEnabled': true
@@ -660,7 +660,7 @@ export default {
       }
       this.showSaveBox = true
       // this.myDiagram.model = go.Model.fromJson(this.isSave.content.jobJson)
-      console.log(JSON.parse(this.myDiagram.model.toJson()));
+      console.log(JSON.parse(this.myDiagram.model.toJson()))
     },
     sure() {
       console.log('---------')
@@ -673,7 +673,7 @@ export default {
       selectNode.pb.j[0].data.id = this.form.id.toString()
       selectNode.pb.j[0].data.infoId = this.guid()
       // console.log(selectNode)
-      this.myDiagram.model.updateTargetBindings(selectNode.pb.j[0].data);
+      this.myDiagram.model.updateTargetBindings(selectNode.pb.j[0].data)
       // this.myDiagram.model = go.Model.fromJson(this.myDiagram.model.toJson())
       // console.log('++++++++++' + selectNode.data.key)
       // this.load()
@@ -760,7 +760,7 @@ export default {
      * @description: 关闭设置调度时间面板
      */
     sureCron() {
-      console.log(this.jobCron);
+      console.log(this.jobCron)
       this.showCronBox = false
     },
     /**
@@ -815,7 +815,7 @@ export default {
       wfApi.triggerVirtualTask({
         id: this.id
       }).then(response => {
-        console.log(response);
+        console.log(response)
         if (response.code === 200) {
           this.$notify.success({
             title: '成功',
@@ -847,43 +847,43 @@ export default {
     },
     guid() {
       return ('xxxxxxxxxxxxxxxxxxx'.concat((new Date()).valueOf().toString())).replace(/[xy]/g, function(c) {
-        var r = Math.random() * 16 | 0;
+        var r = Math.random() * 16 | 0
         var v = c === 'x' ? r : (r & 0x3 | 0x8)
-        return v.toString(16);
+        return v.toString(16)
       })
     },
     // 查看日志
     handlerViewLog() {
       // handlerViewLog.call(this, temp);
       this.$store.commit('SET_LOGVIEW_TYPE', 1)
-      this.logview = true;
-      this.jobId = this.isSave.content.id;
-      this.$refs.jobLog?.fetchData();
+      this.logview = true
+      this.jobId = this.isSave.content.id
+      this.$refs.jobLog?.fetchData()
     },
     fetchData() {
-      this.listLoading = true;
-      this.listQuery.projectIds = this.$store.state.taskAdmin.projectId;
+      this.listLoading = true
+      this.listQuery.projectIds = this.$store.state.taskAdmin.projectId
       job.getList(this.listQuery).then((response) => {
         const {
           content
-        } = response;
-        this.total = content.recordsTotal;
-        this.list = content.data;
-        this.listLoading = false;
+        } = response
+        this.total = content.recordsTotal
+        this.list = content.data
+        this.listLoading = false
 
         this.$store.commit('SET_TASKLIST', this.list)
-      });
+      })
     },
     // 删除
     handlerDelete() {
       handlerDelete
         .call(this, this.isSave.content)
         .then(() => {
-          this.$emit('deleteDetailTab', this.isSave.content.id);
-          this.$emit('deleteJob', true);
+          this.$emit('deleteDetailTab', this.isSave.content.id)
+          this.$emit('deleteJob', true)
           this.$emit('refreshList', this.isSave)
         })
-        .then(() => {});
+        .then(() => {})
     }
   }
 }

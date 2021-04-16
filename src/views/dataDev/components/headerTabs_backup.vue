@@ -77,9 +77,9 @@
 </template>
 
 <script>
-import DataDevContent from './content';
-import * as jobProjectApi from '@/api/datax-job-project';
-import * as datasourceApi from '@/api/datax-jdbcDatasource';
+import DataDevContent from './content'
+import * as jobProjectApi from '@/api/datax-job-project'
+import * as datasourceApi from '@/api/datax-jdbcDatasource'
 import {
   // getTables,
   // getColumns,
@@ -87,7 +87,7 @@ import {
   getTableSchema,
   // getTableList,
   getTableColumns
-} from '@/api/metadata-query';
+} from '@/api/metadata-query'
 export default {
   // name: "HeaderTabs",
   components: {
@@ -134,11 +134,11 @@ export default {
       tableList: [],
       columnList: [],
       showInput: false
-    };
+    }
   },
   watch: {
     'searchModel': function(val) {
-      this.$refs.tree.filter(val);
+      this.$refs.tree.filter(val)
     },
     '$store.state.project.currentItem': {
       deep: true,
@@ -162,7 +162,7 @@ export default {
     this.getProJectList()
   },
   mounted() {
-    this.handleTabsEdit('', 'add');
+    this.handleTabsEdit('', 'add')
   },
   methods: {
     handleNodeClick(data, node, nodeComp) {
@@ -191,23 +191,23 @@ export default {
       }
     },
     addTab(targetName) {
-      const newTabName = ++this.tabIndex + '';
+      const newTabName = ++this.tabIndex + ''
       this.editableTabs.push({
         title: '未命名的查询',
         name: newTabName
         // content: "New Tab content",
-      });
-      console.log(this.editableTabs);
-      this.editableTabsValue = newTabName;
+      })
+      console.log(this.editableTabs)
+      this.editableTabsValue = newTabName
     },
     handleDelete(name) {
-      console.log(name);
+      console.log(name)
       for (let i = 0; i < this.editableTabs.length; i++) {
         if (this.editableTabs[i].name === name) {
-          this.editableTabs.splice(i, 1);
+          this.editableTabs.splice(i, 1)
           this.tabIndex = i + ''
           console.log(this.tabIndex, 'index')
-          this.editableTabsValue = this.tabIndex;
+          this.editableTabsValue = this.tabIndex
         }
       }
     },
@@ -227,17 +227,17 @@ export default {
               dsid: data.id
             })
           }
-          this.$refs.tree.updateKeyChildren(data.id, arr);
+          this.$refs.tree.updateKeyChildren(data.id, arr)
         }).catch(err => {
-          console.log(err);
+          console.log(err)
         })
       } else if (node.level === 2) {
         getTableListWithComment({
           id: data.dsid,
           schema: data.name
         }).then(res => {
-          console.log('res', res);
-          this.tableList = res;
+          console.log('res', res)
+          this.tableList = res
           const arr = []
           for (let j = 0; j < res.length; j++) {
             arr.push({
@@ -248,7 +248,7 @@ export default {
               tableName: res[j].name
             })
           }
-          this.$refs.tree.updateKeyChildren(data.id, arr);
+          this.$refs.tree.updateKeyChildren(data.id, arr)
         })
       } else if (node.level === 3) {
         getTableColumns({
@@ -266,15 +266,15 @@ export default {
               type: res.datas[j].DATA_TYPE
             })
           }
-          this.$refs.tree.updateKeyChildren(data.id, arr);
-        });
+          this.$refs.tree.updateKeyChildren(data.id, arr)
+        })
       } else {
         console.log('最后一级')
       }
     },
     filterNode(value, data) {
-      if (!value) return true;
-      return data.name.indexOf(value) !== -1;
+      if (!value) return true
+      return data.name.indexOf(value) !== -1
     },
     // 获取项目数据
     async getProJectList() {
@@ -282,9 +282,9 @@ export default {
       try {
         const {
           records
-        } = await jobProjectApi.list(this.listQuery);
-        this.projectArray = records;
-        console.log(this.projectArray, 'projectArray');
+        } = await jobProjectApi.list(this.listQuery)
+        this.projectArray = records
+        console.log(this.projectArray, 'projectArray')
         console.log(records)
         if (this.selectValue === '') {
           console.log(this.projectArray[0].name, 'name')
@@ -292,7 +292,7 @@ export default {
           this.getDataSourceList()
         }
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     },
     selectMethod() {
@@ -306,65 +306,65 @@ export default {
         //     this.arrQuery.projectId = this.projectArray[i].id;
         //   }
         // }
-        this.arrQuery.projectId = this.selectValue;
+        this.arrQuery.projectId = this.selectValue
       }
       datasourceApi.getJobList(this.arrQuery).then((res) => {
-        console.log(res, '数据源接口返回信息');
+        console.log(res, '数据源接口返回信息')
         console.log(res.code, 'code')
         for (let i = 0; i < res.records.length; i++) {
           res.records[i].name = res.records[i].datasourceName + ' - ' + res.records[i].jdbcUrl.split('//')[1].split('/')[0]
         }
-        this.dataTree = res.records;
-        this.sourceList = res.records; // 传给子组件的数据
-      });
+        this.dataTree = res.records
+        this.sourceList = res.records // 传给子组件的数据
+      })
     },
 
     removeTab(targetName) {
       if (this.editableTabs.length > 1) {
-        const tabs = this.editableTabs;
-        let activeName = this.editableTabsValue;
+        const tabs = this.editableTabs
+        let activeName = this.editableTabsValue
         if (activeName === targetName) {
           tabs.forEach((tab, index) => {
             if (tab.name === targetName) {
-              const nextTab = tabs[index + 1] || tabs[index - 1];
+              const nextTab = tabs[index + 1] || tabs[index - 1]
               if (nextTab) {
-                activeName = nextTab.name;
+                activeName = nextTab.name
               }
             }
-          });
+          })
         }
-        this.editableTabsValue = activeName;
-        this.editableTabs = tabs.filter((tab) => tab.name !== targetName);
+        this.editableTabsValue = activeName
+        this.editableTabs = tabs.filter((tab) => tab.name !== targetName)
       } else {
         this.$message.info('最后一个,请勿删除')
       }
     },
     handleTabsEdit(targetName, action) {
       if (action === 'add') {
-        const newTabName = ++this.tabIndex + '';
+        const newTabName = ++this.tabIndex + ''
         this.editableTabs.push({
           title: '未命名的查询',
           name: newTabName,
           content: 'New Tab content'
-        });
-        this.editableTabsValue = newTabName;
+        })
+        this.editableTabsValue = newTabName
       }
       if (action === 'remove') {
-        const tabs = this.editableTabs;
-        let activeName = this.editableTabsValue;
+        const tabs = this.editableTabs
+        let activeName = this.editableTabsValue
         if (activeName === targetName) {
           tabs.forEach((tab, index) => {
             if (tab.name === targetName) {
-              const nextTab = tabs[index + 1] || tabs[index - 1];
+              const nextTab = tabs[index + 1] || tabs[index - 1]
               if (nextTab) {
-                activeName = nextTab.name;
+                activeName = nextTab.name
               }
             }
-          });
+          })
         }
 
-        this.editableTabsValue = activeName;
-        this.editableTabs = tabs.filter((tab) => tab.name !== targetName);
+        this.editableTabsValue = activeName
+        this.editableTabs = tabs.filter((tab) => tab.name !== targetName)
       }
     }
   }

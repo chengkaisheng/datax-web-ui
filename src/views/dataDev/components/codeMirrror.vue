@@ -88,7 +88,8 @@ export default {
       leftShow: false,
       rightShow: true,
       infoMsg: 0,
-      editor: {}
+      editor: {},
+      sqlContent: ''
     }
   },
   watch: {
@@ -234,6 +235,7 @@ export default {
         // var sqlScript = ''
         var endPos = {}
         var startPos = {}
+        var startPos1 = { line: 0, ch: 0 }
 
         // 当前行
         if (curLineContent.indexOf(';') === -1) {
@@ -304,7 +306,7 @@ export default {
           }
         }
 
-        _this.code = editor.getRange(startPos, endPos)
+        _this.code = editor.getRange(startPos1, endPos)
         console.log(_this.code, ' -- SQL')
       })
 
@@ -324,7 +326,7 @@ export default {
             editor.execCommand('autocomplete')
           }
         }
-        // _this.code = editor.getValue();
+        // _this.code = editor.getValue()
       })
     },
     /**

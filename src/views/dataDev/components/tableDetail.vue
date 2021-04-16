@@ -109,7 +109,7 @@
           </el-table-column>
           <el-table-column label="数据源" width="150" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.datasourceId }}</span>
+              <span>{{ scope.row.datasourceName }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -119,7 +119,7 @@
             align="center"
           />
           <el-table-column
-            prop="sqlStatus"
+            prop="sqlStatusStr"
             label="执行状态"
             width="150"
             align="center"
@@ -151,6 +151,12 @@
             align="center"
           >
             <template slot-scope="scope">
+              <el-button type="text" size="small" @click="handleClick(scope.row)">查看</el-button>
+              <el-button
+                type="text"
+                icon="el-icon-refresh"
+                @click="handleClick(scope.row.id)"
+              />
               <el-button
                 type="text"
                 icon="el-icon-delete"
@@ -181,8 +187,77 @@
             placement="top"
           />
         </span>
+        <el-table
+          ref="tableHisSql"
+          v-loading="tableLoading"
+          :data="sqlHistoryData"
+          height="245"
+          :row-style="{ height: '33px' }"
+          :cell-style="{ padding: '0' }"
+          :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
+        >
+          <el-table-column prop="id" label="序号" width="80" align="center" />
+          <el-table-column label="执行语句" width="200" align="center">
+            <template slot-scope="scope">
+              <a @click="echoResult(scope.row)">{{ scope.row.sqlContent }}</a>
+            </template>
+          </el-table-column>
+          <el-table-column label="数据源" width="150" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.datasourceName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="databaseSchema"
+            label="数据库"
+            width="150"
+            align="center"
+          />
+          <el-table-column
+            prop="sqlStatusStr"
+            label="执行状态"
+            width="150"
+            align="center"
+          />
+          <el-table-column
+            prop="submitTime"
+            label="提交时间"
+            width="150"
+            align="center"
+          />
+          <el-table-column width="150" align="center">
+            <template slot="header">
+              <el-select v-model="isSaveMode" @change="getSqlList">
+                <el-option :value="0" label="SQL临时查询" />
+                <el-option :value="1" label="已保存SQL查询" />
+              </el-select>
+            </template>
+            <template slot-scope="scope">
+              <span>{{
+                scope.row.isSaved === 0 ? "SQL临时查询" : "已保存SQL查询"
+              }}</span>
+            </template>
+          </el-table-column> -->
+          <!-- <el-table-column prop="sqlResult" label="执行结果" width="150" align="center" /> -->
+          <el-table-column
+            v-if="isSaveMode === 1"
+            label="操作"
+            width="150"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <el-button
+                type="text"
+                icon="el-icon-delete"
+                @click="deleteHis(scope.row.id)"
+              >
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
       </el-tab-pane>
-      <!-- <el-tab-pane name="res" closable>
+      <!-- <el-tab-pane name="res">
         <span slot="label">
           {{ tabLabel["res"] }}
           <el-dropdown
@@ -248,7 +323,7 @@
             align="center"
           />
         </el-table>
-      </el-tab-pane> -->
+      </el-tab-pane>  -->
       <el-tab-pane
         v-for="item in editableTabs"
         :key="item.name"
@@ -259,7 +334,7 @@
         <span slot="label">
           {{ tabLabel["res"] }}
           <el-dropdown
-            v-if="tabsActive === 'res' && tableData.length > 0"
+            v-if="tabsActive === 'res' && item.tableData.length > 0"
             style="margin-left: 10px"
             placement="top"
           >
@@ -281,14 +356,14 @@
           ref="tableRes1"
           v-loading="tableLoading"
           style="padding: 0px; margin-right: 10px"
-          :data="tableData"
+          :data="item.tableData"
           height="245"
           :row-style="{ height: '33px' }"
           :cell-style="{ padding: '0' }"
           :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
         >
           <el-table-column
-            v-for="item in columns"
+            v-for="item in item.columns"
             :key="item.label"
             :prop="item.label"
             :width="item.label.toUpperCase().length * 10 + 60"
@@ -302,7 +377,7 @@
           ref="tableRes2"
           v-loading="tableLoading"
           style="padding: 0px; margin-right: 10px"
-          :data="secondData"
+          :data="item.secondData"
           height="245"
           :row-style="{ height: '33px' }"
           :cell-style="{ padding: '0' }"
@@ -335,10 +410,10 @@ import {
   asyncSqlExecuteQuery,
   getAsyncTaskInfo,
   getSqlExecuteTaskResults
-} from '@/graphQL/graphQL';
-import * as sqlhisApi from '@/graphQL/graphQL-history';
-import FileSaver from 'file-saver';
-import XLSX from 'xlsx';
+} from '@/graphQL/graphQL'
+import * as sqlhisApi from '@/graphQL/graphQL-history'
+import FileSaver from 'file-saver'
+import XLSX from 'xlsx'
 
 export default {
   name: 'TableDetail',
@@ -354,6 +429,8 @@ export default {
       tabsActive: 'res',
       /** SQL语句执行历史 */
       sqlHistoryData: [],
+      // 异步任务
+      sqlHistoryData1: [],
       editableTabs: [],
       editableTabsValue: '0',
       tabIndex: 0,
@@ -371,21 +448,21 @@ export default {
       },
       /** isSaved=0表示临时查询历史，isSaved=1表示保存了的历史 */
       isSaveMode: 0
-    };
+    }
   },
   computed: {
     getPagination() {
       return {
         size: this.pagination.size,
         current: this.pagination.current
-      };
+      }
     },
     getBasedInfo() {
       return {
         projectId: this.$store.state.taskAdmin.sqlParams.projectId,
         datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId,
         databaseSchema: this.$store.state.taskAdmin.sqlParams.schema
-      };
+      }
     }
   },
   watch: {
@@ -393,64 +470,80 @@ export default {
       handler(val) {
         switch (val) {
           case 'res':
-            break;
+            break
           case 'hisSql':
-            this.getSqlList();
-            break;
+            this.getSqlList()
+            break
           default:
-            break;
+            break
         }
       }
     }
   },
   methods: {
+    handleClick(tab) {
+      // if (tab.name === 'first') {
+      //   this.isFirst = true
+      //   this.isSecond = false
+      // } else if (tab.name === 'second') {
+      //   this.isFirst = false
+      //   this.isSecond = true
+      // }
+    },
+    // 查看
+    // handleClick(row) {
+    //   console.log(row)
+    // },
+    // 新增查询结果
     addTab(targetName) {
-      const newTabName = ++this.tabIndex + '';
+      const newTabName = ++this.tabIndex + ''
       this.editableTabs.push({
         title: '当前查询结果',
-        name: newTabName
-        // content: "New Tab content",
-      });
-      console.log(this.editableTabs);
-      this.tabsActive = newTabName;
+        name: newTabName,
+        tableData: this.tableData,
+        secondData: this.secondData,
+        columns: this.columns
+      })
+      console.log(this.editableTabs)
+      this.tabsActive = newTabName
     },
     removeTab(targetName) {
       if (this.editableTabs.length > 0) {
-        const tabs = this.editableTabs;
-        let activeName = this.editableTabsValue;
+        const tabs = this.editableTabs
+        let activeName = this.editableTabsValue
         if (activeName === targetName) {
           tabs.forEach((tab, index) => {
             if (tab.name === targetName) {
-              const nextTab = tabs[index + 1] || tabs[index - 1];
+              const nextTab = tabs[index + 1] || tabs[index - 1]
               if (nextTab) {
-                activeName = nextTab.name;
+                activeName = nextTab.name
               }
             }
-          });
+          })
         }
-        this.editableTabsValue = activeName;
-        this.editableTabs = tabs.filter((tab) => tab.name !== targetName);
+        this.editableTabsValue = activeName
+        this.editableTabs = tabs.filter((tab) => tab.name !== targetName)
       } else {
-        this.$message.info('不可删除');
+        this.$message.info('不可删除')
       }
     },
     deleteRow(index, rows) {
-      rows.splice(index, 1);
+      rows.splice(index, 1)
     },
 
     initData(dsInfo, node) {
-      console.log('dsInfo', dsInfo);
-      console.log('node', node);
-      var queryDsInfo = {};
-      queryDsInfo.jdbcUrl = dsInfo.jdbcUrl;
-      queryDsInfo.db = node.data.schema;
-      queryDsInfo.username = dsInfo.secretMap?.u;
-      queryDsInfo.password = dsInfo.secretMap?.p;
-      queryDsInfo.datasource = dsInfo.datasource.toLowerCase();
-      var sql = 'Select * from ' + node.data.schema + '.' + node.data.tableName;
-      console.log(queryDsInfo, 'queryDsInfo');
-      console.log(sql, '---sql')
-      this.queryData(queryDsInfo, sql);
+      console.log('dsInfo', dsInfo)
+      console.log('node', node)
+      var queryDsInfo = {}
+      queryDsInfo.jdbcUrl = dsInfo.jdbcUrl
+      queryDsInfo.db = node.data.schema
+      queryDsInfo.username = dsInfo.secretMap?.u
+      queryDsInfo.password = dsInfo.secretMap?.p
+      queryDsInfo.datasource = dsInfo.datasource.toLowerCase()
+      this.code = 'Select * from ' + node.data.schema + '.' + node.data.tableName
+      console.log(queryDsInfo, 'queryDsInfo')
+      console.log(this.code, '---sql')
+      this.queryData(queryDsInfo, this.code)
     },
 
     async queryData(queryDsInfo, sql) {
@@ -462,217 +555,220 @@ export default {
           message: '未指定SQL查询数据源信息，请单击数据库以选中',
           type: 'error',
           duration: 2000
-        });
-        this.tableLoading = false;
-        return;
-      } else {
-        this.addTab()
+        })
+        this.tableLoading = false
+        return
       }
+      // else {
+      //   this.addTab()
+      // }
       if (sql.trim() === '') {
         this.$notify({
           title: '警告',
           message: '请先选中需要执行的SQL！',
           type: 'warning',
           duration: 2000
-        });
-        return;
-      } else {
-        // this.$refs.table.addTab();
-        this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', true); // 按钮状态
-        // sql = sql.replace(';', '');
-        console.log(sql, 'sql')
-        console.log(queryDsInfo.jdbcUrl, 'queryDsInfo.jdbcUrl');
-        const host = queryDsInfo.jdbcUrl
-          .split('//')[1]
-          .split('/')[0]
-          .split(':')[0];
-        const port = queryDsInfo.jdbcUrl
-          .split('//')[1]
-          .split('/')[0]
-          .split(':')[1];
-        var databaseName = queryDsInfo.db;
-        const userName = queryDsInfo.username;
-        const password = queryDsInfo.password;
+        })
+        return
+      }
+      // else {
+      // this.$refs.table.addTab();
+      this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', true) // 按钮状态
+      // sql = sql.replace(';', '')
+      console.log(sql, 'sql')
+      console.log(queryDsInfo.jdbcUrl, 'queryDsInfo.jdbcUrl')
+      const host = queryDsInfo.jdbcUrl
+        .split('//')[1]
+        .split('/')[0]
+        .split(':')[0]
+      const port = queryDsInfo.jdbcUrl
+        .split('//')[1]
+        .split('/')[0]
+        .split(':')[1]
+      var databaseName = queryDsInfo.db
+      const userName = queryDsInfo.username
+      const password = queryDsInfo.password
 
-        var driverId;
-        switch (queryDsInfo.datasource) {
-          case 'mysql':
-            driverId = 'mysql:mysql8';
-            break;
-          case 'oracle':
-            driverId = 'oracle:oracle_thin';
-            break;
-          case 'hive':
-            driverId = 'generic:apache_hive2';
-            break;
-          case 'impala':
-            driverId = 'generic:cloudera_impala';
-            break;
-          default:
-            this.$notify.info('');
-            this.$notify({
-              title: '消息',
-              message: '请联系管理员获取该数据库查询功能',
-              type: 'info',
-              duration: 2000
-            });
-            return;
-        }
-
-        if (driverId === 'oracle:oracle_thin') {
-          databaseName = queryDsInfo.jdbcUrl
-            .split('//')[1]
-            .split('/')[1]
-        }
-        // 1、创建链接
-        const params1 = {
-          config: {
-            name: databaseName + '@' + host,
-            driverId: driverId,
-            host: host,
-            port: port,
-            databaseName: databaseName,
-            authModelId: 'native',
-            credentials: {
-              userName: userName,
-              userPassword: password
-            }
-          }
-        };
-        const resCreateConnection = await createConnection(params1);
-        console.log(resCreateConnection);
-
-        if (resCreateConnection.data == null) {
+      var driverId
+      switch (queryDsInfo.datasource) {
+        case 'mysql':
+          driverId = 'mysql:mysql8'
+          break
+        case 'oracle':
+          driverId = 'oracle:oracle_thin'
+          break
+        case 'hive':
+          driverId = 'generic:apache_hive2'
+          break
+        case 'impala':
+          driverId = 'generic:cloudera_impala'
+          break
+        default:
+          this.$notify.info('')
           this.$notify({
-            title: '错误',
-            message: resCreateConnection.message,
-            type: 'error',
+            title: '消息',
+            message: '请联系管理员获取该数据库查询功能',
+            type: 'info',
             duration: 2000
-          });
-          this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false);
-        }
+          })
+          return
+      }
 
-        this.connectionId = resCreateConnection.data.createConnection.id;
-        // 2、初始化连接
-        const params2 = {
-          id: this.connectionId,
+      if (driverId === 'oracle:oracle_thin') {
+        databaseName = queryDsInfo.jdbcUrl
+          .split('//')[1]
+          .split('/')[1]
+      }
+      // 1、创建链接
+      const params1 = {
+        config: {
+          name: databaseName + '@' + host,
+          driverId: driverId,
+          host: host,
+          port: port,
+          databaseName: databaseName,
+          authModelId: 'native',
           credentials: {
             userName: userName,
             userPassword: password
           }
-        };
-        var infoErr2 = '';
-        var success2 = '';
-        const resInitConnection = await initConnection(params2)
-          .then((res) => {
-            console.log(res, 'params2');
-            success2 = res;
-          })
-          .catch((err) => {
-            infoErr2 = err.message;
-            console.log(err)
-          });
-        if (infoErr2) {
-          this.$message.error(infoErr2);
-          this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false);
-        }
-        console.log(resInitConnection);
-
-        const sqlarr = sql.split(';')
-
-        for (var i = 0; i < sqlarr.length; i++) {
-          const sqlOne = sqlarr[i];
-          console.log(sqlOne)
-          this.addTab()
-          // 3、创建sqlcontext
-          const params3 = {
-            connectionId: success2.data.connection.id
-          };
-          const resSqlContextCreate = await sqlContextCreate(params3);
-          const params4 = {
-            connectionId: this.connectionId,
-            contextId: resSqlContextCreate.data.context.id,
-            query: sql, // sql语句
-            filter: {
-              offset: 0,
-              limit: 200,
-              constraints: []
-            }
-          };
-          const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(params4);
-          const params5 = {
-            taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
-            removeOnFinish: false
-          };
-          let queryStatus = '';
-          let resGetAsyncTaskInfo;
-          while (queryStatus !== 'Finished') {
-            resGetAsyncTaskInfo = await getAsyncTaskInfo(params5);
-            queryStatus = resGetAsyncTaskInfo.data.taskInfo.status;
-            if (resGetAsyncTaskInfo.data.taskInfo.error) {
-              this.$message.error(resGetAsyncTaskInfo.data.taskInfo.error);
-              this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false);
-              break;
-            }
-          }
-          console.log(queryStatus, 'queryStatus');
-          const params6 = {
-            taskId: resGetAsyncTaskInfo.data.taskInfo.id
-          };
-          const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
-            params6
-          );
-          if (resGetSqlExecuteTaskResults) {
-            this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false);
-            console.log(
-              resGetSqlExecuteTaskResults.data.result.statusMessage,
-              'second_table'
-            );
-            if (resGetSqlExecuteTaskResults.data.result.results[0].updateRowCount) {
-              this.firstShow = false;
-              this.secondShow = true;
-              this.secondData = [];
-              this.secondData.push({
-                name: 'updateRowCount',
-                value:
-              resGetSqlExecuteTaskResults.data.result.results[0].updateRowCount
-              });
-              this.secondData.push({
-                name: 'query',
-                value: sql.replace(';', '')
-              });
-              //   const time = new Date()
-              this.secondData.push({
-                name: 'time',
-                value: new Date().toLocaleString('cn', {
-                  hour12: false
-                })
-              });
-            } else {
-              this.firstShow = true;
-              this.secondShow = false;
-            }
-          }
-          if (!resGetSqlExecuteTaskResults.data.result.results[0].resultSet) return;
-          const columns =
-        resGetSqlExecuteTaskResults.data.result.results[0].resultSet.columns;
-          const rows =
-        resGetSqlExecuteTaskResults.data.result.results[0].resultSet.rows;
-          this.columns = columns;
-          this.tableData = rows.map((ele) => {
-            const obj = {};
-            ele.forEach((fieldVal, index) => {
-              obj[columns[index].name] = fieldVal;
-            });
-            return obj;
-          });
-          this.autoSaveSql(sql);
-          this.tableLoading = false;
-          this.firstShow = true;
-          this.secondShow = false;
-          this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false);
         }
       }
+      const resCreateConnection = await createConnection(params1)
+      console.log(resCreateConnection)
+
+      if (resCreateConnection.data == null) {
+        this.$notify({
+          title: '错误',
+          message: resCreateConnection.message,
+          type: 'error',
+          duration: 2000
+        })
+        this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
+      }
+
+      this.connectionId = resCreateConnection.data.createConnection.id
+      // 2、初始化连接
+      const params2 = {
+        id: this.connectionId,
+        credentials: {
+          userName: userName,
+          userPassword: password
+        }
+      }
+      var infoErr2 = ''
+      var success2 = ''
+      const resInitConnection = await initConnection(params2)
+        .then((res) => {
+          console.log(res, 'params2')
+          success2 = res
+        })
+        .catch((err) => {
+          infoErr2 = err.message
+          console.log(err)
+        })
+      if (infoErr2) {
+        this.$message.error(infoErr2)
+        this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
+      }
+      console.log(resInitConnection)
+
+      const sqlarr = sql.split(';')
+      console.log(sqlarr)
+      for (var i = 0; i < sqlarr.length; i++) {
+        const sqlOne = sqlarr[i]
+        console.log(sqlOne)
+
+        // 3、创建sqlcontext
+        const params3 = {
+          connectionId: success2.data.connection.id
+        }
+        const resSqlContextCreate = await sqlContextCreate(params3)
+        const params4 = {
+          connectionId: this.connectionId,
+          contextId: resSqlContextCreate.data.context.id,
+          query: sqlOne, // sql语句
+          filter: {
+            offset: 0,
+            limit: 200,
+            constraints: []
+          }
+        }
+        const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(params4)
+        const params5 = {
+          taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
+          removeOnFinish: false
+        }
+        let queryStatus = ''
+        let resGetAsyncTaskInfo
+        while (queryStatus !== 'Finished') {
+          resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
+          queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
+          if (resGetAsyncTaskInfo.data.taskInfo.error) {
+            this.$message.error(resGetAsyncTaskInfo.data.taskInfo.error)
+            this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
+            break
+          }
+        }
+        console.log(queryStatus, 'queryStatus')
+        const params6 = {
+          taskId: resGetAsyncTaskInfo.data.taskInfo.id
+        }
+        const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
+          params6
+        )
+        if (resGetSqlExecuteTaskResults) {
+          this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
+          console.log(
+            resGetSqlExecuteTaskResults.data.result.statusMessage,
+            'second_table'
+          )
+          if (resGetSqlExecuteTaskResults.data.result.results[0].updateRowCount) {
+            this.firstShow = false
+            this.secondShow = true
+            this.secondData = []
+            this.secondData.push({
+              name: 'updateRowCount',
+              value:
+              resGetSqlExecuteTaskResults.data.result.results[0].updateRowCount
+            })
+            this.secondData.push({
+              name: 'query',
+              value: sql.replace(';', '')
+            })
+            //   const time = new Date()
+            this.secondData.push({
+              name: 'time',
+              value: new Date().toLocaleString('cn', {
+                hour12: false
+              })
+            })
+          } else {
+            this.firstShow = true
+            this.secondShow = false
+          }
+        }
+        if (!resGetSqlExecuteTaskResults.data.result.results[0].resultSet) return
+        const columns =
+        resGetSqlExecuteTaskResults.data.result.results[0].resultSet.columns
+        const rows =
+        resGetSqlExecuteTaskResults.data.result.results[0].resultSet.rows
+        this.columns = columns
+        this.tableData = rows.map((ele) => {
+          const obj = {}
+          ele.forEach((fieldVal, index) => {
+            obj[columns[index].name] = fieldVal
+          })
+          return obj
+        })
+        this.autoSaveSql(sql)
+        this.tableLoading = false
+        this.firstShow = true
+        this.secondShow = false
+        this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
+        this.addTab()
+      }
+      // }
     },
     /**
      * @description:保存时添加历史
@@ -684,8 +780,8 @@ export default {
           message: '请先编辑需要执行的SQL！',
           type: 'warning',
           duration: 2000
-        });
-        return;
+        })
+        return
       }
       sqlhisApi
         .saveSql({
@@ -701,21 +797,21 @@ export default {
           submitUser: parseInt(localStorage.getItem('userId')) // 提交用户id
         })
         .then((response) => {
-          console.log(response);
+          console.log(response)
           if (response.code === 200) {
             this.$notify({
               title: '成功',
               message: response.msg,
               type: 'success',
               duration: 2000
-            });
+            })
           } else {
             this.$notify({
               title: '错误',
               message: '保存失败',
               type: 'error',
               duration: 2000
-            });
+            })
           }
         })
         .catch((_) => {
@@ -724,8 +820,8 @@ export default {
             message: '保存失败.',
             type: 'error',
             duration: 2000
-          });
-        });
+          })
+        })
     },
     /**
      * @description: 执行时添加历史
@@ -746,7 +842,7 @@ export default {
         })
         .then((response) => {
           if (response.code === 200) {
-            console.log(response);
+            console.log(response)
           }
         })
         .catch((_) => {
@@ -755,15 +851,15 @@ export default {
             message: '自动保存失败.',
             type: 'error',
             duration: 2000
-          });
-        });
+          })
+        })
     },
     /**
      * @description: 获取sql自动保存的历史记录
      */
     getSqlList(val = null) {
       // : Object.assign({ isSaved: 1 }, params)
-      this.tableLoading = true;
+      this.tableLoading = true
       // const searchParams = Object.assign(
       //   Object.assign({}, this.getPagination),
       //   this.getBasedInfo
@@ -789,15 +885,15 @@ export default {
           })
           .then((response) => {
             if (response.code === 200) {
-              this.sqlHistoryData = response.content.records;
-              this.pagination.total = response.content.total;
+              this.sqlHistoryData = response.content.records
+              this.pagination.total = response.content.total
             }
-            this.tableLoading = false;
+            this.tableLoading = false
           })
           .catch((error) => {
-            console.log(error);
-            this.tableLoading = false;
-          });
+            console.log(error)
+            this.tableLoading = false
+          })
       } else {
         sqlhisApi
           .getSqlListSaved({
@@ -810,15 +906,15 @@ export default {
           })
           .then((response) => {
             if (response.code === 200) {
-              this.sqlHistoryData = response.content.records;
-              this.pagination.total = response.content.total;
+              this.sqlHistoryData = response.content.records
+              this.pagination.total = response.content.total
             }
-            this.tableLoading = false;
+            this.tableLoading = false
           })
           .catch((error) => {
-            console.log(error);
-            this.tableLoading = false;
-          });
+            console.log(error)
+            this.tableLoading = false
+          })
       }
     },
     /**
@@ -834,14 +930,14 @@ export default {
               message: response.msg,
               type: 'success',
               duration: 2000
-            });
+            })
           } else {
             this.$notify({
               title: '错误',
               message: '删除失败',
               type: 'error',
               duration: 2000
-            });
+            })
           }
         })
         .catch((_) => {
@@ -850,57 +946,57 @@ export default {
             message: '删除失败.',
             type: 'error',
             duration: 2000
-          });
-        });
+          })
+        })
     },
     /**
      * @description: 文件导出
      */
     fileSaver(tableRef, exportType) {
       this.$nextTick(() => {
-        const wb = XLSX.utils.table_to_book(this.$refs[tableRef].$el);
+        const wb = XLSX.utils.table_to_book(this.$refs[tableRef].$el)
         const wbout = XLSX.write(wb, {
           bookType: exportType,
           bookSST: true,
           type: 'array'
-        });
+        })
         try {
           FileSaver.saveAs(
             new Blob([wbout], { type: 'application/octet-stream' }),
             this.tabLabel[this.tabsActive].concat('.').concat(exportType)
-          );
+          )
         } catch (e) {
-          if (typeof console !== 'undefined') console.log(e, wbout);
+          if (typeof console !== 'undefined') console.log(e, wbout)
         }
-        return wbout;
-      });
+        return wbout
+      })
     },
     /**
      * @description: 页面尺寸改变
      */
     handleSizeChange(size) {
-      this.pagination.size = size;
-      this.pagination.current = 1;
-      this.getSqlList();
+      this.pagination.size = size
+      this.pagination.current = 1
+      this.getSqlList()
     },
     /**
      * @description: 当前页码改变
      */
     handleCurrentChange(current) {
-      this.pagination.current = current;
-      this.getSqlList();
+      this.pagination.current = current
+      this.getSqlList()
     },
     /**
      * @description: 回显结果
      */
     echoResult(row) {
-      this.columns = row.sqlResult.columns;
-      this.tableData = row.sqlResult.tableData;
-      this.tabsActive = 'hisSql';
-      this.$emit('echoResult', row);
+      this.columns = row.sqlResult.columns
+      this.tableData = row.sqlResult.tableData
+      this.tabsActive = 'hisSql'
+      this.$emit('echoResult', row)
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
