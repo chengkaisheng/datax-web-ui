@@ -24,6 +24,7 @@ import App from "./App";
 import store from "./store";
 import router from "./router";
 import axios from "axios";
+Vue.use(axios)
 import gojs from "gojs";
 import JsonViewer from "vue-json-viewer";
 Vue.use(JsonViewer);
@@ -54,7 +55,14 @@ import { mockXHR } from "../mock";
 if (process.env.NODE_ENV === "production") {
   mockXHR();
 }
-
+const EventBus = new Vue()
+Object.defineProperties(Vue.prototype, {
+  $bus: {
+    get: function () {
+      return EventBus
+    }
+  }
+})
 Vue.prototype.$axios = axios;
 axios.defaults.baseURL = process.env.VUE_APP_BASE_API;
 
@@ -69,11 +77,11 @@ Object.keys(filters).forEach(key => {
 
 // 添加请求拦截器
 axios.interceptors.request.use(
-  function(config) {
+  function (config) {
     // 在发送请求之前做些什么
     return config;
   },
-  function(error) {
+  function (error) {
     // 对请求错误做些什么
     return Promise.reject(error);
   }

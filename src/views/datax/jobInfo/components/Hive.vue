@@ -28,7 +28,7 @@
             size="small"
             @click="
               () => {
-                isshow = true;
+                isshow = true
               }
             "
             >新增</el-button
@@ -43,8 +43,8 @@
             <el-button
               @click="
                 () => {
-                  drawer = false;
-                  isshow = false;
+                  drawer = false
+                  isshow = false
                 }
               "
               size="small"
@@ -141,62 +141,117 @@
 
 
 <script>
-import JsonEditor from "@/components/JsonEditor";
-import MarddownEditor from "@/components/MarkdownEditor";
-import CodeMirror from "./codeMirrror";
+import JsonEditor from '@/components/JsonEditor'
+import MarddownEditor from '@/components/MarkdownEditor'
+import CodeMirror from './codeMirrror'
+import * as job from '@/api/datax-job-info'
+import jsonFormatVue from '../../../tool/jsonFormat.vue'
 export default {
   components: {
     JsonEditor,
     MarddownEditor,
     CodeMirror,
   },
-  name: "Hive",
+  name: 'Hive',
   data() {
     return {
       numberValidateForm: {
-        age: "",
+        age: '',
       },
-      first: "first",
+      first: 'first',
       dialogVisible: false,
-      activeName: "second",
+      activeName: 'second',
       TableData: [
-        { FunctionDescription: "a" },
-        { FunctionDescription: "b" },
-        { FunctionDescription: "c" },
-        { FunctionDescription: "d" },
-        { FunctionDescription: "e" },
-        { FunctionDescription: "f" },
-        { FunctionDescription: "g" },
+        { FunctionDescription: 'a' },
+        { FunctionDescription: 'b' },
+        { FunctionDescription: 'c' },
+        { FunctionDescription: 'd' },
+        { FunctionDescription: 'e' },
+        { FunctionDescription: 'f' },
+        { FunctionDescription: 'g' },
       ],
       temp: {
-        triggerStatus: "1",
+        triggerStatus: '1',
       },
       drawer: false,
       isshow: false,
-      input: "",
+      input: '',
       ddd: [],
-    };
+      code: {},
+      SingleData: {},
+      taskParam: [],
+    }
   },
   created() {},
   methods: {
     runQuery(val) {
-      console.log("------->", val);
+      console.log('------->', val)
     },
     saveQuery(val) {
-      console.log("------->", val);
+      this.SingleData = this.$store.state.taskAdmin.SingleData
+      console.log('ID------>>>>>', this.$store.state.taskAdmin.SingleData)
+      const jobinfo = {
+        jobParam: val,
+        alarmEmail: '',
+        childJobId: '',
+        childJobIdArr: [],
+        datasourceId: '',
+        executorBlockStrategy: 'SERIAL_EXECUTION',
+        executorFailRetryCount: 1,
+        executorHandler: 'executorJobHandler',
+        executorParam: '',
+        executorRouteStrategy: 'FIRST',
+        executorTimeout: 1,
+        glueSource: '',
+        glueType: 'GLUE_SHELL',
+        incStartId: '',
+        incStartTime: '',
+        incrementType: 0,
+        jobConfigId: '',
+        jobCron: '* * * ? * * *',
+        jobDesc: 'tt',
+        jobGroup: 1,
+        jobJson: '',
+        jobType: this.$store.state.taskAdmin.tabType,
+        jvmParam: '',
+        partitionInfo: '',
+        primaryKey: '',
+        projectGroupId: this.SingleData.id,
+        projectId: this.$store.state.taskAdmin.projectId,
+        readerTable: '',
+        replaceParam: '',
+        replaceParamType: 'Timestamp',
+        userId: 0,
+      }
+      console.log('this.store', this.SingleData)
+      console.log('------->', val)
+      console.log('======>>>', jobinfo)
+      this.code = val
+      // const data = { jobInfo: jobinfo }
+      if (this.code) {
+        job
+          .AddHive(jobinfo)
+          .then((res) => {
+            console.log('----=====>>>>', res.content)
+            this.$emit('gettreelist', jobinfo.projectId)
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      }
     },
     handleEdit() {
-      this.dialogVisible = true;
+      this.dialogVisible = true
     },
     handleDelete(a, b) {
-      console.log(a);
-      this.TableData.splice(a, 1);
+      console.log(a)
+      this.TableData.splice(a, 1)
     },
     handleClick(tab, event) {
-      console.log(tab, event);
+      console.log(tab, event)
     },
   },
-};
+}
 </script>
 
 <style>
