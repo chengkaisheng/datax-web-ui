@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { Group } from 'gojs'
 
 // datax插件api
 
@@ -14,7 +15,20 @@ export function getList(params) {
     params
   })
 }
-
+export function Selecthive(id) {
+  return request({
+    url: '/api/job/selectHiveId',
+    method: 'get',
+    params: id
+  })
+}
+export function AddHive(jobParam) {
+  return request({
+    url: 'api/job/add',
+    method: 'post',
+    data: jobParam,
+  })
+}
 export function triggerJob(data) {
   return request({
     url: '/api/job/trigger',
@@ -222,3 +236,4 @@ export function dataRollBack(data) {
     data
   })
 }
+

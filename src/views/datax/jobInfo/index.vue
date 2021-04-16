@@ -367,11 +367,7 @@ rkJggg=="
         @tab-remove="removeJobTab"
         @tab-click="JobTabClick"
       >
-        <el-tab-pane
-          v-if="!$store.state.taskAdmin.taskDetailList.length"
-          label="欢迎"
-          name="欢迎"
-        >
+        <el-tab-pane label="欢迎" name="欢迎">
           <div class="title_h3">一站式数据开发解决方案</div>
           <svg-icon
             style="width: 100%; height: 90%; margin-top: 25px"
@@ -432,13 +428,31 @@ rkJggg=="
             {{ item.title }}
           </span>
           <JobDetailPro
-            v-if="item.content.jobType !== 'VJOB'"
+            v-if="
+              item.content.jobType !== 'VJOB' &&
+                item.content.jobType !== 'IMPALA' &&
+                item.content.jobType !== 'HIVE'
+            "
             :job-info="$store.state.taskAdmin.jobInfo"
             @deleteJob="getItem"
             @deleteDetailTab="clearJobTab"
           />
+          <div v-if="item.content.jobType === 'HIVE'" class="rg">
+            <Hive
+              job-type="GLUE_HIVE"
+              job-type-label="HIVE任务"
+              @gettreelist="Gettreelist"
+            />
+          </div>
+          <div v-if="item.content.jobType === 'IMPALA'" class="rg">
+            <Hive
+              job-type="GLUE_IMPALA"
+              job-type-label="IMPALA任务"
+              @gettreelist="Gettreelist"
+            />
+          </div>
           <Workflow
-            v-else
+            v-if="jobType === 'VJOB'"
             :is-save="item"
             job-type="VJOB"
             :task-list="List"
@@ -495,7 +509,7 @@ cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
 rkJggg=="
               />
             </svg>
-            {{ $store.state.taskAdmin.GroupName }}
+            {{ $store.state.taskAdmin.Group.name }}
           </span>
           <div
             v-if="
@@ -509,11 +523,19 @@ rkJggg=="
           </div>
 
           <div v-if="jobType === 'HIVE'" class="rg">
-            <Hive job-type="GLUE_HIVE" job-type-label="HIVE任务" />
+            <Hive
+              job-type="GLUE_HIVE"
+              job-type-label="HIVE任务"
+              @gettreelist="Gettreelist"
+            />
           </div>
 
           <div v-if="jobType === 'IMPALA'" class="rg">
-            <Hive job-type="GLUE_IMPALA" job-type-label="IMPALA任务" />
+            <Hive
+              job-type="GLUE_IMPALA"
+              job-type-label="IMPALA任务"
+              @gettreelist="Gettreelist"
+            />
           </div>
 
           <div v-if="jobType === 'SQLJOB'" class="rg">
@@ -989,6 +1011,10 @@ export default {
     /**
      * @description: tab关闭逻辑
      */
+    // 点击子组件保存按钮后重新获取tree
+    Gettreelist() {
+      this.getDataTree()
+    },
     removeJobTab(targetId) {
       const targetIdInt = parseInt(targetId)
       console.log(this.$store.state.taskAdmin.taskDetailList)
@@ -1031,7 +1057,7 @@ export default {
             }
           })
           .catch((err) => {
-            console.log(err)
+            console.log('err----->', err)
           })
       } else {
         const projectId = this.options[0].id
@@ -1060,6 +1086,7 @@ export default {
       const t = this.List.filter(
         (item) => item.id === parseInt(this.jobDetailIdx)
       )
+      console.log(t, 'tttttttttttttttttttttttttt')
       this.$store.commit('SET_JOB_INFO', t[0])
     },
 
@@ -1389,28 +1416,32 @@ export default {
       console.log(draggingNode, 'draggingNode')
       return draggingNode.data.name.indexOf('三级 3-2-2') === -1
     },
+    Preservation(val) {
+      console.log('______>>>>>', val)
+    },
     // HIVE任务新建
     HivecreateHandl() {
       console.log('111')
       console.log('wert', this.selectRow)
       console.log('job---->', this.currentJob)
       const params = {
-        // chineseName: this.chineseName,
-        // englishName: this.englishName,
-        // task: this.task,
+        name: this.chineseName,
+        ename: this.englishName,
+        specification: this.task,
         projectId: this.selectRow.projectId,
         parentId: this.selectRow.id,
-        name: this.chineseName,
         type: this.currentJob ? 2 : 1,
         jobType: this.currentJob
       }
+      console.log('p------>>>', params)
       job
         .createNewFile(params)
         .then((res) => {
+          console.log('pppppp>>>>>>>', res)
           if (res.code === 200) {
             this.getDataTree()
             this.selectRow = {}
-            if (res.content !== '请选择父级目录') {
+            if (res.content != '请选择父级目录') {
               this.$store.commit('changeGroupName', this.chineseName)
               this.$store.commit('changeJobId', parseInt(res.content))
               console.log(res.content)
@@ -1518,18 +1549,22 @@ export default {
         })
     },
 
+    // 点击tree控件方法
     handleNodeClick(data) {
-      console.log('tttt', data)
+      console.log('任务数据', data)
       this.selectRow = data
       this.jobType = data.jobType
-      console.log('jobType++++++++++++++++', data.jobType)
-      console.log('this.jobType++++++++++++++++', this.jobType)
-      // this.jobType = data.jobType;
+      this.$store.commit('Singledata', data)
+      this.$store.commit('SETPJTID', data.projectId)
+      this.jobType = data.jobType
+      this.$store.commit('SETCODE', '')
       if (data.type === 2) {
         this.$store.commit('changeGroupData', data)
         this.$store.commit('changeGroupName', data.name)
         this.currentJobName = data.name
+        console.log('123')
         if (data.jobId) {
+          console.log('123', data.jobId)
           this.$store.commit('changeJobId', data.jobId)
           job
             .getTaskInfo(data.jobId)
@@ -1537,6 +1572,8 @@ export default {
               console.log(res, 'content')
               if (res.code === 200) {
                 if (res.content) {
+                  console.log('content----->>>>', res.content.jobParam)
+                  this.$store.commit('SETCODE', res.content.jobParam)
                   this.detailData = res.content
                   this.getJobDetail(res.content)
                 } else {
@@ -1614,7 +1651,7 @@ export default {
     },
 
     getJobDetail(data) {
-      console.log(data, 'data')
+      console.log(data, 'data==============')
       this.$store.commit('SET_JOB_INFO', data)
       this.$store.commit('getJobDetail', data)
       this.$store.commit('SET_TASKDETAIL_ID', data.id + '')
@@ -1630,6 +1667,7 @@ export default {
         ) === -1
       ) {
         this.$store.state.taskAdmin.taskDetailList.push(a)
+        console.log(a, '切换a')
         this.jobDetailIdx = a.content.id + ''
       } else {
         this.jobDetailIdx = a.content.id + ''
@@ -1802,8 +1840,8 @@ export default {
     },
 
     createNewJob(command) {
+      console.log('newjob---->>>>>>', command)
       this.$store.commit('SET_READER_ISEDIT', false)
-      console.log(command)
       this.$store.commit('SET_TAB_TYPE', command)
       this.jobType = command
       this.jobDetailIdx = command

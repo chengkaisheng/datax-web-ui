@@ -550,7 +550,7 @@ export default {
 
     async queryData(queryDsInfo, sql) {
       console.log(sql)
-      // this.tableLoading = true;
+      this.tableLoading = true
       if (queryDsInfo.jdbcUrl === undefined || queryDsInfo.jdbcUrl === '') {
         this.$notify({
           title: '错误',

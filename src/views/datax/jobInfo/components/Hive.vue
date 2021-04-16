@@ -9,9 +9,9 @@
       <el-button
         size="small"
         class="drawer"
-        @click="drawer = true"
         type="primary"
         style="margin-left: 16px"
+        @click="drawer = true"
       >
         参数配置
       </el-button>
@@ -28,33 +28,33 @@
             size="small"
             @click="
               () => {
-                isshow = true;
+                isshow = true
               }
             "
-            >新增</el-button
-          >
+          >新增</el-button>
           <el-input
             v-show="isshow"
             v-model="input"
             size="mini"
             placeholder="请输入参数"
-          ></el-input>
-          <div style="margin-top: 20px" v-show="isshow">
+          />
+          <div v-show="isshow" style="margin-top: 20px">
             <el-button
-              @click="
-                () => {
-                  drawer = false;
-                  isshow = false;
-                }
-              "
               size="small"
               style="margin-bottom: 20px"
               type="primary"
-              >取消</el-button
-            >
-            <el-button size="small" style="margin-bottom: 20px" type="primary"
-              >保存</el-button
-            >
+              @click="
+                () => {
+                  drawer = false
+                  isshow = false
+                }
+              "
+            >取消</el-button>
+            <el-button
+              size="small"
+              style="margin-bottom: 20px"
+              type="primary"
+            >保存</el-button>
           </div>
         </div>
       </el-drawer>
@@ -62,8 +62,8 @@
     <div class="log">
       <template>
         <el-tabs
-          style="text-align: center"
           v-model="first"
+          style="text-align: center"
           type="card"
           @tab-click="handleClick"
         >
@@ -84,52 +84,41 @@
                   prop="FunctionDescription"
                   label="功能说明"
                   width="100"
-                >
-                </el-table-column>
+                />
                 <el-table-column
                   prop="QueryOriginalTable"
                   label="查询原表"
                   width="100"
-                >
-                </el-table-column>
-                <el-table-column prop="TargetTable" label="目标表" width="100">
-                </el-table-column>
+                />
+                <el-table-column prop="TargetTable" label="目标表" width="100" />
                 <el-table-column
                   prop="UpdatMethod"
                   label="更新方式"
                   width="100"
-                >
-                </el-table-column>
-                <el-table-column prop="Department" label="科室部门" width="100">
-                </el-table-column>
+                />
+                <el-table-column prop="Department" label="科室部门" width="100" />
                 <el-table-column
                   prop="responsibilityPerson"
                   label="负责人"
                   width="100"
-                >
-                </el-table-column>
+                />
                 <el-table-column
                   prop="CreationDate"
                   label="创建日期"
                   width="100"
-                >
-                </el-table-column>
+                />
                 <el-table-column
                   prop="OperationCycle"
                   label="运行周期"
                   width="100"
-                >
-                </el-table-column>
-                <el-table-column prop="routine" label="例程" width="100">
-                </el-table-column>
-                <el-table-column prop="remarks" label="备注" width="100">
-                </el-table-column>
+                />
+                <el-table-column prop="routine" label="例程" width="100" />
+                <el-table-column prop="remarks" label="备注" width="100" />
                 <el-table-column
                   prop="ScriptVersion"
                   label="脚本版本"
                   width="100"
-                >
-                </el-table-column>
+                />
               </el-table>
             </template>
           </el-tab-pane>
@@ -139,64 +128,118 @@
   </div>
 </template>
 
-
 <script>
-import JsonEditor from "@/components/JsonEditor";
-import MarddownEditor from "@/components/MarkdownEditor";
-import CodeMirror from "./codeMirrror";
+import JsonEditor from '@/components/JsonEditor'
+import MarddownEditor from '@/components/MarkdownEditor'
+import CodeMirror from './codeMirrror'
+import * as job from '@/api/datax-job-info'
+import jsonFormatVue from '../../../tool/jsonFormat.vue'
 export default {
+  name: 'Hive',
   components: {
     JsonEditor,
     MarddownEditor,
-    CodeMirror,
+    CodeMirror
   },
-  name: "Hive",
   data() {
     return {
       numberValidateForm: {
-        age: "",
+        age: ''
       },
-      first: "first",
+      first: 'first',
       dialogVisible: false,
-      activeName: "second",
+      activeName: 'second',
       TableData: [
-        { FunctionDescription: "a" },
-        { FunctionDescription: "b" },
-        { FunctionDescription: "c" },
-        { FunctionDescription: "d" },
-        { FunctionDescription: "e" },
-        { FunctionDescription: "f" },
-        { FunctionDescription: "g" },
+        { FunctionDescription: 'a' },
+        { FunctionDescription: 'b' },
+        { FunctionDescription: 'c' },
+        { FunctionDescription: 'd' },
+        { FunctionDescription: 'e' },
+        { FunctionDescription: 'f' },
+        { FunctionDescription: 'g' }
       ],
       temp: {
-        triggerStatus: "1",
+        triggerStatus: '1'
       },
       drawer: false,
       isshow: false,
-      input: "",
+      input: '',
       ddd: [],
-    };
+      code: {},
+      SingleData: {},
+      taskParam: []
+    }
   },
   created() {},
   methods: {
     runQuery(val) {
-      console.log("------->", val);
+      console.log('------->', val)
     },
     saveQuery(val) {
-      console.log("------->", val);
+      this.SingleData = this.$store.state.taskAdmin.SingleData
+      console.log('ID------>>>>>', this.$store.state.taskAdmin.SingleData)
+      const jobinfo = {
+        jobParam: val,
+        alarmEmail: '',
+        childJobId: '',
+        childJobIdArr: [],
+        datasourceId: '',
+        executorBlockStrategy: 'SERIAL_EXECUTION',
+        executorFailRetryCount: 1,
+        executorHandler: 'executorJobHandler',
+        executorParam: '',
+        executorRouteStrategy: 'FIRST',
+        executorTimeout: 1,
+        glueSource: '',
+        glueType: 'GLUE_SHELL',
+        incStartId: '',
+        incStartTime: '',
+        incrementType: 0,
+        jobConfigId: '',
+        jobCron: '* * * ? * * *',
+        jobDesc: 'tt',
+        jobGroup: 1,
+        jobJson: '',
+        jobType: this.$store.state.taskAdmin.tabType,
+        jvmParam: '',
+        partitionInfo: '',
+        primaryKey: '',
+        projectGroupId: this.SingleData.id,
+        projectId: this.$store.state.taskAdmin.projectId,
+        readerTable: '',
+        replaceParam: '',
+        replaceParamType: 'Timestamp',
+        userId: 0
+      }
+      console.log('this.store', this.SingleData)
+      console.log('------->', val)
+      console.log('======>>>', jobinfo)
+      this.code = val
+      // const data = { jobInfo: jobinfo }
+      if (this.code) {
+        job
+          .AddHive(jobinfo)
+          .then((res) => {
+            console.log('----=====>>>>', res.content)
+            this.$emit('gettreelist', jobinfo.projectId)
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      }
     },
     handleEdit() {
-      this.dialogVisible = true;
+      this.dialogVisible = true
     },
     handleDelete(a, b) {
-      console.log(a);
-      this.TableData.splice(a, 1);
+      console.log(a)
+      this.TableData.splice(a, 1)
     },
     handleClick(tab, event) {
-      console.log(tab, event);
-    },
-  },
-};
+      console.log(tab, event)
+    }
+  }
+}
 </script>
 
 <style>
