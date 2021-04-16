@@ -26,16 +26,16 @@
 </template>
 
 <script>
-import { list } from '@/api/datax-jdbcDatasource';
+import { list } from '@/api/datax-jdbcDatasource'
 import {
   // getTables,
   getTableColumns,
   getTableSchema,
   // getTableList,
   getTableListWithComment
-} from '@/api/metadata-query';
-import CodeMirror from './codeMirrror';
-import TableDetail from './tableDetail';
+} from '@/api/metadata-query'
+import CodeMirror from './codeMirrror'
+import TableDetail from './tableDetail'
 export default {
   name: 'DataDevContent',
   components: {
@@ -66,54 +66,54 @@ export default {
       options1: [],
       datasourceWidth: 100,
       queryDsInfo: {}
-    };
+    }
   },
   watch: {
     dataBaseid() {
-      this.getSchema();
+      this.getSchema()
     },
     parentlist(val) {
       if (val.length > 0) {
-        this.options = val;
+        this.options = val
       }
     },
     clist(val) {
-      console.log(val, 'clist');
-      this.columnList = val;
+      console.log(val, 'clist')
+      this.columnList = val
     },
     tlist(val) {
-      console.log(val, 'tlist');
-      this.tableList = val;
+      console.log(val, 'tlist')
+      this.tableList = val
     }
   },
   created() {
-    this.getDataBaseList();
-    console.log(this.parentlist);
+    this.getDataBaseList()
+    console.log(this.parentlist)
   },
   methods: {
     setQueryParams(qp) {
-      console.log(qp);
-      this.queryDsInfo = qp;
+      console.log(qp)
+      this.queryDsInfo = qp
     },
 
     handleChangeSQL(value) {
-      console.log(value);
-      this.datasourcewidth = value.length;
+      console.log(value)
+      this.datasourcewidth = value.length
     },
     handleChange(value) {
-      console.log(value);
+      console.log(value)
       getTableSchema({
         datasourceId: value
       })
         .then((res) => {
-          console.log(res);
-          this.options1 = res;
+          console.log(res)
+          this.options1 = res
         })
         .catch((err) => {
-          console.log(err);
-          this.options1 = [];
-          this.sqlName = '';
-        });
+          console.log(err)
+          this.options1 = []
+          this.sqlName = ''
+        })
     },
     // 获取数据库列表
     getDataBaseList() {
@@ -121,10 +121,10 @@ export default {
         current: 1,
         size: 100000
       }).then((res) => {
-        this.dataBaseList = res.records;
-        this.dataBaseid = res.records[0].id;
-        this.getSchema();
-      });
+        this.dataBaseList = res.records
+        this.dataBaseid = res.records[0].id
+        this.getSchema()
+      })
     },
 
     // 获取schema
@@ -133,11 +133,11 @@ export default {
         datasourceId: this.dataBaseid
       })
         .then((res) => {
-          this.SchemaList = res;
+          this.SchemaList = res
         })
         .catch((err) => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
 
     // getTableList
@@ -151,9 +151,9 @@ export default {
         id: this.dataBaseid,
         schema: this.schemaId
       }).then((res) => {
-        console.log('res', res);
-        this.tableList = res;
-      });
+        console.log('res', res)
+        this.tableList = res
+      })
     },
     // 获取字段
     getClo() {
@@ -163,24 +163,24 @@ export default {
         tableName: this.tableName,
         schema: this.schemaId
       }).then((res) => {
-        console.log(res);
-        this.columnList = res.datas;
-      });
+        console.log(res)
+        this.columnList = res.datas
+      })
     },
     // 选择表
     selectTable(val) {
-      this.tableNameWithComment = val;
-      this.tableName = val.split(' ')[0];
-      this.getClo();
-      this.activeNames = ['1'];
+      this.tableNameWithComment = val
+      this.tableName = val.split(' ')[0]
+      this.getClo()
+      this.activeNames = ['1']
     },
     // 拖拽设置表格高度
     setTableHeight(e) {
       // const _this = this;
       if (this.dragging) {
-        const top = e.target.offsetTop; // 获取鼠标距离父元素顶的高度
-        const height = e.target.parentNode.parentNode.offsetHeight;
-        console.log(top, height);
+        const top = e.target.offsetTop // 获取鼠标距离父元素顶的高度
+        const height = e.target.parentNode.parentNode.offsetHeight
+        console.log(top, height)
         // const sqlHeightRate = (top / height).toFixed(2);
         // const tableHeightRate = 1 - sqlHeightRate;
         // this.sqlHeight = sqlHeightRate * height;
@@ -189,30 +189,32 @@ export default {
     },
     // 执行sql
     runQuery(val) {
-      console.log(val, '子传父');
-      console.log(this.queryDsInfo);
-      this.$refs.table.queryData(this.queryDsInfo, val.code, {});
-      this.$refs.table.addTab();
+      console.log(val, '子传父')
+      console.log(this.queryDsInfo)
+      this.$refs.table.queryData(this.queryDsInfo, val.code, {})
+      // this.code = val.code
+      // console.log(this.code)
+      // this.$refs.table.addTab();
     },
     previewData(dsInfo, params) {
-      this.$refs.table.initData(dsInfo, params);
+      this.$refs.table.initData(dsInfo, params)
     },
     /**
      * @description: 保存查询
      */
     saveQuery(queryDsInfo, sql) {
-      console.log(queryDsInfo);
-      console.log(sql);
-      this.$refs.table.saveSql(queryDsInfo, sql);
+      console.log(queryDsInfo)
+      console.log(sql)
+      this.$refs.table.saveSql(queryDsInfo, sql)
     },
     /**
      * @description: 回显结果
      */
     echoResult(row) {
-      this.$refs.codemirror.setCode(row.sqlContent);
+      this.$refs.codemirror.setCode(row.sqlContent)
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

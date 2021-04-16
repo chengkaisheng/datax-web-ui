@@ -22,11 +22,13 @@ import request from '@/utils/request'
  *  }
  * @return {Promise}
  */
-export function getSqlListTemp(params) {
+export function getSqlListTemp(data) {
   return request({
     url: '/api/sqlhis/page',
-    method: 'get',
-    params: Object.assign({ isSave: 0 }, params)
+    method: 'post',
+    data
+    // params: Object.assign({ isSaved: 0 }, params)
+    // params
   })
 }
 
@@ -43,11 +45,13 @@ export function getSqlListTemp(params) {
  *  }
  * @return {Promise}
  */
-export function getSqlListSaved(params) {
+export function getSqlListSaved(data) {
   return request({
     url: '/api/sqlhis/page',
-    method: 'get',
-    params: Object.assign({ isSave: 1 }, params)
+    method: 'post',
+    data
+    // params: Object.assign({ isSaved: 1 }, params)
+    // params
   })
 }
 

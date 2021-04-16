@@ -1,5 +1,5 @@
-import * as job from '@/api/datax-job-info';
-import * as executor from '@/api/datax-executor';
+import * as job from '@/api/datax-job-info'
+import * as executor from '@/api/datax-executor'
 
 // 执行一次
 export function handlerExecute(row) {
@@ -8,9 +8,9 @@ export function handlerExecute(row) {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    const param = {};
-    param.jobId = row.id;
-    param.executorParam = row.executorParam;
+    const param = {}
+    param.jobId = row.id
+    param.executorParam = row.executorParam
 
     job.triggerJob(param).then(response => {
       this.$store.commit('SET_LOG_WATCH', !this.$store.state.taskAdmin.logWatch)
@@ -19,14 +19,14 @@ export function handlerExecute(row) {
         message: '执行成功',
         type: 'success',
         duration: 2000
-      });
-    });
-  });
+      })
+    })
+  })
 }
 
 // 查看日志
 export function handlerViewLog(row) {
-  this.$router.push({ path: '/datax/log/jobLog', query: { jobId: row.id }});
+  this.$router.push({ path: '/datax/log/jobLog', query: { jobId: row.id }})
 }
 
 // 删除
@@ -42,9 +42,9 @@ export function handlerDelete(row) {
         message: '删除成功',
         type: 'success',
         duration: 2000
-      });
-    });
-  });
+      })
+    })
+  })
 }
 
 // 启动
@@ -55,8 +55,8 @@ export function handlerStart(row) {
       message: '上线成功',
       type: 'success',
       duration: 2000
-    });
-  });
+    })
+  })
 }
 
 // 暂停
@@ -67,25 +67,25 @@ export function handlerStop(row) {
       message: '下线成功',
       type: 'success',
       duration: 2000
-    });
-  });
+    })
+  })
 }
 
 // 注册节点
 export function loadById(row) {
   executor.loadById(row.jobGroup).then(response => {
-    this.registerNode = [];
-    const { content } = response;
-    this.registerNode.push(content);
-  });
+    this.registerNode = []
+    const { content } = response
+    this.registerNode.push(content)
+  })
 }
 
 // 下次注册时间
 export function nextTriggerTime(row) {
   job.nextTriggerTime(row.jobCron).then(response => {
-    const { content } = response;
-    this.triggerNextTimes = content.join('<br>');
-  });
+    const { content } = response
+    this.triggerNextTimes = content.join('<br>')
+  })
 }
 
 // 编辑

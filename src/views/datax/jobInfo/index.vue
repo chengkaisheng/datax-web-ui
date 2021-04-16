@@ -1341,7 +1341,7 @@ export default {
         this.$message.warning('该任务暂无版本信息')
       }
     },
-    //新增Hive任务
+    // 新增Hive任务
     ShowHives(data) {
       this.currentJob = data
       console.log('>>>>>>>>', this.currentJob)
@@ -1422,6 +1422,7 @@ export default {
       console.log('______>>>>>', val)
     },
     //HIVE任务新建
+    // HIVE任务新建
     HivecreateHandl() {
       console.log('111')
       console.log('wert', this.selectRow)

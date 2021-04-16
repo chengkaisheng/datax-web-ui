@@ -65,17 +65,17 @@
 </template>
 
 <script>
-import 'codemirror/theme/ambiance.css';
-import 'codemirror/lib/codemirror.css';
-import 'codemirror/addon/hint/show-hint.css';
-import sqlFormatter from 'sql-formatter';
+import 'codemirror/theme/ambiance.css'
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/addon/hint/show-hint.css'
+import sqlFormatter from 'sql-formatter'
 
-const CodeMirror = require('codemirror/lib/codemirror');
-require('codemirror/addon/edit/matchbrackets');
-require('codemirror/addon/selection/active-line');
-require('codemirror/mode/sql/sql');
-require('codemirror/addon/hint/show-hint');
-require('codemirror/addon/hint/sql-hint');
+const CodeMirror = require('codemirror/lib/codemirror')
+require('codemirror/addon/edit/matchbrackets')
+require('codemirror/addon/selection/active-line')
+require('codemirror/mode/sql/sql')
+require('codemirror/addon/hint/show-hint')
+require('codemirror/addon/hint/sql-hint')
 export default {
   name: 'CodeMirror',
   props: ['sqlHeight', 'columnList', 'tableList', 'sqlparams'],
@@ -88,48 +88,49 @@ export default {
       leftShow: false,
       rightShow: true,
       infoMsg: 0,
-      editor: {}
-    };
+      editor: {},
+      sqlContent: ''
+    }
   },
   watch: {
     code(val) {
-      console.log(this.code, 'code1');
-      this.infoMsg++;
+      console.log(this.code, 'code1')
+      this.infoMsg++
     },
     sqlparams(val) {
       if (val.level === 3) {
         this.code =
-          'SELECT * FROM ' + val.data.schema + '.' + val.data.tableName + ';';
-        console.log(this.code, 'code');
-        this.leftShow = true;
-        this.rightShow = false;
+          'SELECT * FROM ' + val.data.schema + '.' + val.data.tableName + ';'
+        console.log(this.code, 'code')
+        this.leftShow = true
+        this.rightShow = false
       }
     },
     columnList(val) {
       // this.tips = {}
-      const columeObj = {};
+      const columeObj = {}
       val.forEach((ele) => {
-        columeObj[ele.name] = [];
-      });
+        columeObj[ele.name] = []
+      })
       // for (let i = 0; i < val.length; i++) {
       //   columeObj[val[i].name] = [];
       // }
-      this.tips = Object.assign(this.tips, columeObj);
-      console.log(this.tips, 'tips1');
+      this.tips = Object.assign(this.tips, columeObj)
+      console.log(this.tips, 'tips1')
       // this.mountCodeMirror();
     },
     tableList(val) {
       // this.tips = {}
-      const tableObj = {};
+      const tableObj = {}
       val.forEach((ele) => {
-        tableObj[ele.name] = [];
-      });
+        tableObj[ele.name] = []
+      })
       // this.mountCodeMirror();
       // for (let i = 0; i < val.length; i++) {
       //   tableObj[val[i].name] = [];
       // }
-      this.tips = Object.assign(this.tips, tableObj);
-      console.log(this.tips, 'tips2');
+      this.tips = Object.assign(this.tips, tableObj)
+      console.log(this.tips, 'tips2')
     }
   },
   beforeMount() {
@@ -145,14 +146,14 @@ export default {
     // console.log(this.tips, 'tips');
   },
   mounted() {
-    this.mountCodeMirror();
+    this.mountCodeMirror()
   },
   methods: {
     chooseSql() {
-      console.log(window.getSelection());
+      console.log(window.getSelection())
     },
     SelectSQL(instance) {
-      console.log(instance, '.....................');
+      console.log(instance, '.....................')
     },
     /**
      * @description: 运行查询
@@ -161,33 +162,33 @@ export default {
       this.$emit('querysql', {
         msg: this.infoMsg,
         code: this.code
-      });
+      })
+      console.log(this.code)
     },
     /**
      * @description: 保存查询
      */
     saveQuery() {
-      console.log('保存查询');
+      console.log('保存查询')
       // this.code = JSON.stringify(this.code);
-      this.$emit('saveQuery', this.code);
+      this.$emit('saveQuery', this.code)
     },
     sqlJobBuild() {
-      console.log('1233    ' + this.code);
+      console.log('1233    ' + this.code)
       this.$refs.mycode.text = ''
       this.code = ''
       this.editor = ''
       // this.$router.push({
       //   path: '/datax/job/JobInfo'
       // });
-      // console.log('=================');
-      // window.location.href = '/datax/job/JobInfo'
       this.mountCodeMirror()
+      // this.setCode()
     },
 
     mountCodeMirror(code) {
-      const mime = 'text/x-sql';
+      const mime = 'text/x-sql'
       // const theme = 'ambiance'; // 设置主题，不设置的会使用默认主题
-      const _this = this;
+      const _this = this
       const editor = CodeMirror.fromTextArea(this.$refs.mycode, {
         mode: mime, // 选择对应代码编辑器的语言，我这边选的是数据库，根据个人情况自行设置即可
         indentWithTabs: true,
@@ -204,10 +205,10 @@ export default {
         },
         extraKeys: {
           'Ctrl-F': function(editor) {
-            let sqlContent = '';
-            sqlContent = editor.getValue();
+            let sqlContent = ''
+            sqlContent = editor.getValue()
             /* 将sql内容进行格式后放入编辑器中*/
-            editor.setValue(sqlFormatter.format(sqlContent));
+            editor.setValue(sqlFormatter.format(sqlContent))
           }
         }
         // configureMouse() {
@@ -216,103 +217,104 @@ export default {
         //         unit: 'word'
         //     };
         // }
-      });
+      })
 
-      _this.editor = editor;
-      editor.setSize('auto', '400px');
+      _this.editor = editor
+      editor.setSize('auto', '400px')
 
       // 代码自动提示功能，记住使用cursorActivity事件不要使用change事件，这是一个坑，那样页面直接会卡死
       editor.on('cursorActivity', function(ins) {
-        _this.code = editor.getSelection();
+        _this.code = editor.getSelection()
         if (_this.code.trim() !== '') {
-          return;
+          return
         }
-        var cursor = editor.getCursor();
-        var curCh = cursor.ch;
-        var curLineNo = cursor.line;
-        var curLineContent = editor.getLine(curLineNo);
+        var cursor = editor.getCursor()
+        var curCh = cursor.ch
+        var curLineNo = cursor.line
+        var curLineContent = editor.getLine(curLineNo)
         // var sqlScript = ''
-        var endPos = {};
-        var startPos = {};
+        var endPos = {}
+        var startPos = {}
+        var startPos1 = { line: 0, ch: 0 }
 
         // 当前行
         if (curLineContent.indexOf(';') === -1) {
           // 当前行无分号
           // 往前找;
-          let i = curLineNo - 1;
+          let i = curLineNo - 1
           for (; i >= 0; i--) {
-            var tempLine = editor.getLine(i);
+            var tempLine = editor.getLine(i)
             if (tempLine.indexOf(';') !== -1) {
-              startPos.line = i;
-              startPos.ch = tempLine.indexOf(';') + 1;
-              break;
+              startPos.line = i
+              startPos.ch = tempLine.indexOf(';') + 1
+              break
             }
           }
           if (i === -1) {
-            startPos.line = 0;
-            startPos.ch = 0;
+            startPos.line = 0
+            startPos.ch = 0
           }
           // 往后找;
-          let j = curLineNo + 1;
+          let j = curLineNo + 1
           for (; j <= editor.lastLine(); j++) {
-            tempLine = editor.getLine(j);
+            tempLine = editor.getLine(j)
             if (tempLine.indexOf(';') !== -1) {
-              endPos.line = j;
-              endPos.ch = tempLine.indexOf(';');
-              break;
+              endPos.line = j
+              endPos.ch = tempLine.indexOf(';')
+              break
             }
           }
           if (j === editor.lastLine() + 1) {
-            endPos.line = editor.lastLine() + 1;
-            endPos.ch = 0;
+            endPos.line = editor.lastLine() + 1
+            endPos.ch = 0
           }
         } else if (curLineContent.indexOf(';') + 1 >= curCh) {
           // 当前行分号在当前鼠标后
-          endPos.line = curLineNo;
-          endPos.ch = curLineContent.indexOf(';');
+          endPos.line = curLineNo
+          endPos.ch = curLineContent.indexOf(';')
           // 往前找;
-          let i = curLineNo - 1;
+          let i = curLineNo - 1
           for (; i >= 0; i--) {
-            tempLine = editor.getLine(i);
+            tempLine = editor.getLine(i)
             if (tempLine.indexOf(';') !== -1) {
-              startPos.line = i;
-              startPos.ch = tempLine.indexOf(';') + 1;
-              break;
+              startPos.line = i
+              startPos.ch = tempLine.indexOf(';') + 1
+              break
             }
           }
           if (i === -1) {
-            startPos.line = 0;
-            startPos.ch = 0;
+            startPos.line = 0
+            startPos.ch = 0
           }
         } else {
           // 当前行分号在当前鼠标前
-          startPos.line = curLineNo;
-          startPos.ch = curLineContent.indexOf(';') + 1;
+          startPos.line = curLineNo
+          startPos.ch = curLineContent.indexOf(';') + 1
           // 往后找;
-          let j = curLineNo + 1;
+          let j = curLineNo + 1
           for (; j <= editor.lastLine(); j++) {
-            tempLine = editor.getLine(j);
+            tempLine = editor.getLine(j)
             if (tempLine.indexOf(';') !== -1) {
-              endPos.line = j;
-              endPos.ch = tempLine.indexOf(';');
-              break;
+              endPos.line = j
+              endPos.ch = tempLine.indexOf(';')
+              break
             }
           }
           if (j === editor.lastLine() + 1) {
-            endPos.line = editor.lastLine() + 1;
-            endPos.ch = 0;
+            endPos.line = editor.lastLine() + 1
+            endPos.ch = 0
           }
         }
 
-        _this.code = editor.getRange(startPos, endPos);
-        console.log(_this.code, ' -- SQL');
-      });
+        _this.code = editor.getRange(startPos1, endPos)
+        console.log(_this.code, ' -- SQL')
+      })
 
       editor.on('change', function(editor, change) {
         // 触发autocomplete
-        console.log(change);
+        console.log(change)
         if (change.origin === '+input') {
-          var text = change.text;
+          var text = change.text
           if (
             text !== ' ' &&
             text !== ';' &&
@@ -321,20 +323,20 @@ export default {
             text !== '  '
           ) {
             // 不提示
-            editor.execCommand('autocomplete');
+            editor.execCommand('autocomplete')
           }
         }
-        // _this.code = editor.getValue();
-      });
+        // _this.code = editor.getValue()
+      })
     },
     /**
      * @description: 回显sql
      */
     setCode(code) {
-      this.code = code;
+      this.code = code
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
