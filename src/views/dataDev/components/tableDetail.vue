@@ -446,7 +446,12 @@ export default {
         size: 10
       },
       /** isSaved=0表示临时查询历史，isSaved=1表示保存了的历史 */
-      isSaveMode: 0
+      isSaveMode: 0,
+      host: '',
+      port: '',
+      userName: '',
+      password: '',
+      databaseName: ''
     }
   },
   computed: {
@@ -473,14 +478,17 @@ export default {
           case 'hisSql':
             this.getSqlList()
             break
-          case 'asynctask':
-            this.getSqlList()
-            break
+          // case 'asynctask':
+          //   this.getSqlList()
+          //   break
           default:
             break
         }
       }
     }
+  },
+  created: {
+    // this.getcreateConnec(),
   },
   methods: {
     handleClick(tab) {
@@ -532,7 +540,35 @@ export default {
     deleteRow(index, rows) {
       rows.splice(index, 1)
     },
+    // async getcreateConnec() {
+    //       // 1、创建链接
+    //   const params1 = {
+    //     config: {
+    //       name: this.databaseName + '@' + this.host,
+    //       driverId: driverId,
+    //       host: this.host,
+    //       port: this.port,
+    //       databaseName: this.databaseName,
+    //       authModelId: 'native',
+    //       credentials: {
+    //         userName: this.userName,
+    //         userPassword: this.password
+    //       }
+    //     }
+    //   }
+    //   const resCreateConnection = await createConnection(params1)
+    //   console.log(resCreateConnection)
 
+    //   if (resCreateConnection.data == null) {
+    //     this.$notify({
+    //       title: '错误',
+    //       message: resCreateConnection.message,
+    //       type: 'error',
+    //       duration: 2000
+    //     })
+    //     this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
+    //   }
+    // },
     initData(dsInfo, node) {
       console.log('dsInfo', dsInfo)
       console.log('node', node)
@@ -568,23 +604,25 @@ export default {
           type: 'warning',
           duration: 2000
         })
+        this.tableLoading = false
         return
       }
+      // else {
       this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', true) // 按钮状态
       // sql = sql.replace(';', '')
       console.log(sql, 'sql')
       console.log(queryDsInfo.jdbcUrl, 'queryDsInfo.jdbcUrl')
-      const host = queryDsInfo.jdbcUrl
+      this.host = queryDsInfo.jdbcUrl
         .split('//')[1]
         .split('/')[0]
         .split(':')[0]
-      const port = queryDsInfo.jdbcUrl
+      this.port = queryDsInfo.jdbcUrl
         .split('//')[1]
         .split('/')[0]
         .split(':')[1]
-      var databaseName = queryDsInfo.db
-      const userName = queryDsInfo.username
-      const password = queryDsInfo.password
+      this.databaseName = queryDsInfo.db
+      this.userName = queryDsInfo.username
+      this.password = queryDsInfo.password
 
       var driverId
       switch (queryDsInfo.datasource) {
@@ -610,24 +648,25 @@ export default {
           })
           return
       }
-
+      console.log(this.databaseName)
       if (driverId === 'oracle:oracle_thin') {
-        databaseName = queryDsInfo.jdbcUrl
+        this.databaseName = queryDsInfo.jdbcUrl
           .split('//')[1]
           .split('/')[1]
       }
+      console.log(this.databaseName)
       // 1、创建链接
       const params1 = {
         config: {
-          name: databaseName + '@' + host,
+          name: this.databaseName + '@' + this.host,
           driverId: driverId,
-          host: host,
-          port: port,
-          databaseName: databaseName,
+          host: this.host,
+          port: this.port,
+          databaseName: this.databaseName,
           authModelId: 'native',
           credentials: {
-            userName: userName,
-            userPassword: password
+            userName: this.userName,
+            userPassword: this.password
           }
         }
       }
@@ -649,36 +688,34 @@ export default {
       const params2 = {
         id: this.connectionId,
         credentials: {
-          userName: userName,
-          userPassword: password
+          userName: this.userName,
+          userPassword: this.password
         }
       }
-      var infoErr2 = ''
-      var success2 = ''
+      console.log(params2)
+      // var infoErr2 = ''
+      // var success2 = ''
       const resInitConnection = await initConnection(params2)
-        .then((res) => {
-          console.log(res, 'params2')
-          success2 = res
-        })
         .catch((err) => {
-          infoErr2 = err.message
+          // infoErr2 = err.message
           console.log(err)
+          this.$message.error(err.message)
+          this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
         })
-      if (infoErr2) {
-        this.$message.error(infoErr2)
-        this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
-      }
+
       console.log(resInitConnection)
 
       const sqlarr = sql.split(';')
-      console.log(sqlarr)
       for (var i = 0; i < sqlarr.length; i++) {
         const sqlOne = sqlarr[i]
         console.log(sqlOne)
-
+        if (sqlOne === '') {
+        // console.log(sqlarr)
+          continue
+        }
         // 3、创建sqlcontext
         const params3 = {
-          connectionId: success2.data.connection.id
+          connectionId: resInitConnection.data.connection.id
         }
         const resSqlContextCreate = await sqlContextCreate(params3)
         const params4 = {

@@ -1260,11 +1260,11 @@
 </template>
 
 <script>
-import * as datasourceApi from '@/api/datax-jdbcDatasource';
-import waves from '@/directive/waves'; // waves directive
-import { parseTime } from '@/utils';
-import Pagination from '@/components/Pagination';
-import * as meta from '@/api/metadata-query';
+import * as datasourceApi from '@/api/datax-jdbcDatasource'
+import waves from '@/directive/waves' // waves directive
+import { parseTime } from '@/utils'
+import Pagination from '@/components/Pagination'
+import * as meta from '@/api/metadata-query'
 
 export default {
   name: 'JdbcDatasource',
@@ -1280,8 +1280,8 @@ export default {
         published: 'success',
         draft: 'gray',
         deleted: 'danger'
-      };
-      return statusMap[status];
+      }
+      return statusMap[status]
     }
   },
   data() {
@@ -1718,7 +1718,7 @@ export default {
       paramsData: {},
       rowObj: {},
       jobName: ''
-    };
+    }
   },
   // 计算属性
   computed: {
@@ -1727,29 +1727,29 @@ export default {
       return (
         this.currentStep === 2 &&
         (this.sqlName === 'ClickHouse' || this.sqlName === 'HBase')
-      );
+      )
     },
     // Greenplum PostqreSQL
     gp() {
       return (
         (this.sqlName === 'Greenplum' || this.sqlName === 'PostgreSQL') &&
         this.currentStep === 2
-      );
+      )
     },
     // oracle
     oracle() {
-      return this.sqlName === 'Oracle' && this.currentStep === 2;
+      return this.sqlName === 'Oracle' && this.currentStep === 2
     },
     // MariaDB MYSQL
     mm() {
       return (
         (this.sqlName === 'MariaDB' || this.sqlName === 'MySQL') &&
         this.currentStep === 2
-      );
+      )
     },
     // DB2
     DB2() {
-      return this.sqlName === 'DB2' && this.currentStep === 2;
+      return this.sqlName === 'DB2' && this.currentStep === 2
     },
     // Apache Hive,Apache Spark,Cloudera Impala
     threeSQL() {
@@ -1759,53 +1759,53 @@ export default {
           this.sqlName === 'Impala' ||
           this.sqlName === 'Flink') &&
         this.currentStep === 2
-      );
+      )
     },
     // sqlserver
     sqlserver() {
-      return this.sqlName === 'Sql Server' && this.currentStep === 2;
+      return this.sqlName === 'Sql Server' && this.currentStep === 2
     },
     // MongoDB
     Mdb() {
-      return this.sqlName === 'MongoDB' && this.currentStep === 2;
+      return this.sqlName === 'MongoDB' && this.currentStep === 2
     }
   },
   watch: {
     sqlName: function(val) {
-      console.log(val.replace(/\s*/g, ''));
-      console.log(this.params, '----------');
+      console.log(val.replace(/\s*/g, ''))
+      console.log(this.params, '----------')
       if (val === 'MYSQL') {
-        this.params.jdbcUrl = 'jdbc:mysql://{host}:{port}/{database}';
-        console.log(this.params.jdbcUrl);
+        this.params.jdbcUrl = 'jdbc:mysql://{host}:{port}/{database}'
+        console.log(this.params.jdbcUrl)
       } else if (val.toLowerCase() === 'oracle') {
-        this.params.jdbcUrl = 'jdbc:oracle:thin:@//{host}:{port}/{database}';
+        this.params.jdbcUrl = 'jdbc:oracle:thin:@//{host}:{port}/{database}'
       } else if (val.toLowerCase() === 'postgresql') {
-        this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
-        this.ruleForm.driver = 'org.postgresql.Driver';
+        this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}'
+        this.ruleForm.driver = 'org.postgresql.Driver'
       } else if (val.toLowerCase() === 'greenplum') {
-        this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
-        this.ruleForm.driver = 'org.postgresql.Driver';
+        this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}'
+        this.ruleForm.driver = 'org.postgresql.Driver'
       } else if (val.replace(/\s*/g, '').toLowerCase() === 'sqlserver') {
         this.params.jdbcUrl =
-          'jdbc:sqlserver://{host}:{port};DatabaseName={database}';
+          'jdbc:sqlserver://{host}:{port};DatabaseName={database}'
       } else if (val.toLowerCase() === 'clickhouse') {
-        this.params.jdbcUrl = 'jdbc:clickhouse://{host}:{port}/{database}';
+        this.params.jdbcUrl = 'jdbc:clickhouse://{host}:{port}/{database}'
       } else if (val === 'hive') {
-        this.params.jdbcUrl = 'jdbc:hive2://{host}:{port}/{database}';
+        this.params.jdbcUrl = 'jdbc:hive2://{host}:{port}/{database}'
       } else if (val.toLowerCase() === 'mongodb') {
         this.MdbForm.serverUrl =
-          'mongodb://[username:password@]host1[:port1][,...hostN[:portN]]][/[database][?options]]';
+          'mongodb://[username:password@]host1[:port1][,...hostN[:portN]]][/[database][?options]]'
       } else {
-        this.isBanAdd = false;
+        this.isBanAdd = false
       }
     },
     'CHForm.master': {
       handler(val) {
         if (val) {
           this.CHForm.jdbcUrl =
-            'jdbc:' + this.sqlName.toLowerCase() + '://' + val;
+            'jdbc:' + this.sqlName.toLowerCase() + '://' + val
         } else {
-          this.CHForm.jdbcUrl = '';
+          this.CHForm.jdbcUrl = ''
         }
       },
       deep: true
@@ -1820,16 +1820,16 @@ export default {
               '://' +
               this.CHForm.jdbcUrl.split('//')[1].split(':')[0] +
               ':' +
-              val;
+              val
           } else {
-            this.CHForm.jdbcUrl = this.CHForm.jdbcUrl + ':' + val;
+            this.CHForm.jdbcUrl = this.CHForm.jdbcUrl + ':' + val
           }
         } else if (!val && this.CHForm.master) {
           this.CHForm.jdbcUrl =
             'jdbc:' +
             this.sqlName.toLowerCase() +
             '://' +
-            this.CHForm.jdbcUrl.split('//')[1].split(':')[0];
+            this.CHForm.jdbcUrl.split('//')[1].split(':')[0]
         }
       },
       deep: true
@@ -1851,7 +1851,7 @@ export default {
               ':' +
               this.CHForm.serverPort +
               '/' +
-              val;
+              val
           }
         } else if (!val && this.CHForm.master && this.CHForm.serverPort) {
           this.CHForm.jdbcUrl =
@@ -1860,7 +1860,7 @@ export default {
             '://' +
             this.CHForm.master +
             ':' +
-            this.CHForm.serverPort;
+            this.CHForm.serverPort
         }
       },
       deep: true
@@ -1869,9 +1869,9 @@ export default {
       handler(val) {
         if (val) {
           this.chEdit.jdbcUrl =
-            'jdbc:' + this.selectType.toLowerCase() + '://' + val;
+            'jdbc:' + this.selectType.toLowerCase() + '://' + val
         } else {
-          this.chEdit.jdbcUrl = '';
+          this.chEdit.jdbcUrl = ''
         }
       },
       deep: true
@@ -1886,16 +1886,16 @@ export default {
               '://' +
               this.chEdit.jdbcUrl.split('//')[1].split(':')[0] +
               ':' +
-              val;
+              val
           } else {
-            this.chEdit.jdbcUrl = this.chEdit.jdbcUrl + ':' + val;
+            this.chEdit.jdbcUrl = this.chEdit.jdbcUrl + ':' + val
           }
         } else if (!val && this.chEdit.master) {
           this.chEdit.jdbcUrl =
             'jdbc:' +
             this.selectType.toLowerCase() +
             '://' +
-            this.chEdit.jdbcUrl.split('//')[1].split(':')[0];
+            this.chEdit.jdbcUrl.split('//')[1].split(':')[0]
         }
       },
       deep: true
@@ -1917,7 +1917,7 @@ export default {
               ':' +
               this.chEdit.serverPort +
               '/' +
-              val;
+              val
           }
         } else if (!val && this.chEdit.master && this.chEdit.serverPort) {
           this.chEdit.jdbcUrl =
@@ -1926,7 +1926,7 @@ export default {
             '://' +
             this.chEdit.master +
             ':' +
-            this.chEdit.serverPort;
+            this.chEdit.serverPort
         }
       },
       deep: true
@@ -1935,9 +1935,9 @@ export default {
       handler(val) {
         if (val) {
           this.HiveForm.jdbcUrl =
-            'jdbc:' + this.sqlName.toLowerCase() + '://' + val;
+            'jdbc:' + this.sqlName.toLowerCase() + '://' + val
         } else {
-          this.HiveForm.jdbcUrl = '';
+          this.HiveForm.jdbcUrl = ''
         }
       },
       deep: true
@@ -1952,16 +1952,16 @@ export default {
               '://' +
               this.HiveForm.jdbcUrl.split('//')[1].split(':')[0] +
               ':' +
-              val;
+              val
           } else {
-            this.HiveForm.jdbcUrl = this.HiveForm.jdbcUrl + ':' + val;
+            this.HiveForm.jdbcUrl = this.HiveForm.jdbcUrl + ':' + val
           }
         } else if (!val && this.HiveForm.master) {
           this.HiveForm.jdbcUrl =
             'jdbc:' +
             this.sqlName.toLowerCase() +
             '://' +
-            this.HiveForm.jdbcUrl.split('//')[1].split(':')[0];
+            this.HiveForm.jdbcUrl.split('//')[1].split(':')[0]
         }
       },
       deep: true
@@ -1983,9 +1983,9 @@ export default {
               ':' +
               this.HiveForm.serverPort +
               '/' +
-              val;
+              val
           } else {
-            this.HiveForm.jdbcUrl = this.HiveForm.jdbcUrl + ':' + val;
+            this.HiveForm.jdbcUrl = this.HiveForm.jdbcUrl + ':' + val
           }
         } else if (!val && this.HiveForm.master && this.HiveForm.serverPort) {
           this.HiveForm.jdbcUrl =
@@ -1994,7 +1994,7 @@ export default {
             '://' +
             this.HiveForm.master +
             ':' +
-            this.HiveForm.serverPort;
+            this.HiveForm.serverPort
         }
       },
       deep: true
@@ -2003,9 +2003,9 @@ export default {
       handler(val) {
         if (val) {
           this.hiveEdit.jdbcUrl =
-            'jdbc:' + this.selectType.toLowerCase() + '://' + val;
+            'jdbc:' + this.selectType.toLowerCase() + '://' + val
         } else {
-          this.hiveEdit.jdbcUrl = '';
+          this.hiveEdit.jdbcUrl = ''
         }
       },
       deep: true
@@ -2020,16 +2020,16 @@ export default {
               '://' +
               this.hiveEdit.jdbcUrl.split('//')[1].split(':')[0] +
               ':' +
-              val;
+              val
           } else {
-            this.hiveEdit.jdbcUrl = this.hiveEdit.jdbcUrl + ':' + val;
+            this.hiveEdit.jdbcUrl = this.hiveEdit.jdbcUrl + ':' + val
           }
         } else if (!val && this.hiveEdit.master) {
           this.hiveEdit.jdbcUrl =
             'jdbc:' +
             this.selectType.toLowerCase() +
             '://' +
-            this.hiveEdit.jdbcUrl.split('//')[1].split(':')[0];
+            this.hiveEdit.jdbcUrl.split('//')[1].split(':')[0]
         }
       },
       deep: true
@@ -2051,9 +2051,9 @@ export default {
               ':' +
               this.hiveEdit.serverPort +
               '/' +
-              val;
+              val
           } else {
-            this.hiveEdit.jdbcUrl = this.hiveEdit.jdbcUrl + ':' + val;
+            this.hiveEdit.jdbcUrl = this.hiveEdit.jdbcUrl + ':' + val
           }
         } else if (!val && this.hiveEdit.master && this.hiveEdit.serverPort) {
           this.hiveEdit.jdbcUrl =
@@ -2062,24 +2062,24 @@ export default {
             '://' +
             this.hiveEdit.master +
             ':' +
-            this.hiveEdit.serverPort;
+            this.hiveEdit.serverPort
         }
       },
       deep: true
     }
   },
   created() {
-    this.jobName = sessionStorage.getItem('JobName');
-    this.fetchData();
-    this.OracleForm.role = this.roleList[0].label;
+    this.jobName = sessionStorage.getItem('JobName')
+    this.fetchData()
+    this.OracleForm.role = this.roleList[0].label
   },
   activated() {
     // 在vue对象存活的情况下，进入当前存在activated()函数的页面时，一进入页面就触发；可用于初始化页面数据等
-    console.log('123');
-    console.log(this.$route);
-    this.jobRow = this.$route.params;
-    this.jobName = sessionStorage.getItem('JobName');
-    this.fetchData();
+    console.log('123')
+    console.log(this.$route)
+    this.jobRow = this.$route.params
+    this.jobName = sessionStorage.getItem('JobName')
+    this.fetchData()
   },
   methods: {
     gatherMetadata(row) {
@@ -2089,39 +2089,39 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          console.log(row);
-          const param = {};
-          param.id = row.id;
-          console.log(param);
+          console.log(row)
+          const param = {}
+          param.id = row.id
+          console.log(param)
           meta.getDbMetadata(param).then(res => {
-            console.log(res);
-            this.gathering = false;
+            console.log(res)
+            this.gathering = false
             this.$message({
               type: 'success',
               message: '元数据采集成功'
-            });
-            this.$router.push('/cloudbeaveratlas/management');
-            console.log('跳转成功');
-          });
-          this.gathering = true;
+            })
+            this.$router.push('/cloudbeaveratlas/management')
+            console.log('跳转成功')
+          })
+          this.gathering = true
           this.$message({
             type: 'info',
             message: '采集任务开始!'
-          });
-          this.$router.push('/cloudbeaveratlas/management');
-          console.log('跳转失败');
+          })
+          this.$router.push('/cloudbeaveratlas/management')
+          console.log('跳转失败')
         })
         .catch(() => {
           this.$message({
             type: 'warning',
             message: '已取消元数据采集'
-          });
-        });
+          })
+        })
     },
     // 搜索数据源类型
     searchSQL() {
       for (let i = 0; i < this.typeArr.length; i++) {
-        console.log(this.typeArr[i].name.indexOf(this.input3));
+        console.log(this.typeArr[i].name.indexOf(this.input3))
         if (
           this.typeArr[i].name
             .toLowerCase()
@@ -2129,34 +2129,34 @@ export default {
         ) {
           document.getElementById(
             this.typeArr[i].type + this.typeArr[i].name
-          ).style.display = 'block';
+          ).style.display = 'block'
         } else {
           document.getElementById(
             this.typeArr[i].type + this.typeArr[i].name
-          ).style.display = 'none';
+          ).style.display = 'none'
         }
       }
     },
     selectDataSource(datasource) {
       if (datasource === 'MYSQL') {
-        this.temp.jdbcUrl = 'jdbc:mysql://{host}:{port}/{database}';
+        this.temp.jdbcUrl = 'jdbc:mysql://{host}:{port}/{database}'
       } else if (datasource === 'oracle') {
-        this.temp.jdbcUrl = 'jdbc:oracle:thin:@//{host}:{port}/{database}';
+        this.temp.jdbcUrl = 'jdbc:oracle:thin:@//{host}:{port}/{database}'
       } else if (datasource === 'postgresql') {
-        this.temp.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
-        this.temp.jdbcDriverClass = 'org.postgresql.Driver';
+        this.temp.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}'
+        this.temp.jdbcDriverClass = 'org.postgresql.Driver'
       } else if (datasource === 'greenplum') {
-        this.temp.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
-        this.temp.jdbcDriverClass = 'org.postgresql.Driver';
+        this.temp.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}'
+        this.temp.jdbcDriverClass = 'org.postgresql.Driver'
       } else if (datasource === 'sqlserver') {
         this.temp.jdbcUrl =
-          'jdbc:sqlserver://{host}:{port};DatabaseName={database}';
+          'jdbc:sqlserver://{host}:{port};DatabaseName={database}'
       } else if (datasource === 'clickhouse') {
-        this.temp.jdbcUrl = 'jdbc:clickhouse://{host}:{port}/{database}';
+        this.temp.jdbcUrl = 'jdbc:clickhouse://{host}:{port}/{database}'
       } else if (datasource === 'hive') {
-        this.temp.jdbcUrl = 'jdbc:hive2://{host}:{port}/{database}';
+        this.temp.jdbcUrl = 'jdbc:hive2://{host}:{port}/{database}'
       }
-      this.getShowStrategy(datasource);
+      this.getShowStrategy(datasource)
     },
     resetTemp() {
       this.temp = {
@@ -2168,191 +2168,191 @@ export default {
         jdbcUrl: '',
         jdbcDriverClass: '',
         comments: ''
-      };
+      }
     },
     // 显示添加对话框
     showAdd() {
-      this.currentStep = 1;
-      this.dialogVisible = true;
-      this.MySQLForm.serverTime = 'Asia/Shanghai';
+      this.currentStep = 1
+      this.dialogVisible = true
+      this.MySQLForm.serverTime = 'Asia/Shanghai'
     },
     // 获取点击当前数据源名称方法
     getInfo(e) {
       // window.clearTimeout(time) // 首先清除计时器
       // time = setTimeout(() => {
-      this.sqlName = e.path[1].textContent.trim();
+      this.sqlName = e.path[1].textContent.trim()
       if (this.sqlName !== this.lastSelect) {
-        this.currentSelect = this.sqlName;
+        this.currentSelect = this.sqlName
         if (this.lastSelect !== '') {
           document.getElementById(
             this.tabType + this.lastSelect
-          ).style.backgroundColor = '#fff';
+          ).style.backgroundColor = '#fff'
           console.log(
             document.getElementById(this.tabType + this.lastSelect),
             '-------------'
-          );
+          )
         }
         document.getElementById(
           this.tabType + this.currentSelect
-        ).style.backgroundColor = '#C4CFFF';
-        this.lastSelect = this.sqlName;
+        ).style.backgroundColor = '#C4CFFF'
+        this.lastSelect = this.sqlName
       }
-      console.log(this.sqlName);
+      console.log(this.sqlName)
       // }, 1000); // 大概时间300ms
     },
     // tabs标签页方法
     handleClick(tab, event) {
-      console.log(tab.label);
-      console.log(tab.index);
+      console.log(tab.label)
+      console.log(tab.index)
       if (tab.index === '3') {
-        this.lastSelect = '';
-        this.currentSelect = '';
-        this.sqlName = '';
-        this.tabType = 'ass';
+        this.lastSelect = ''
+        this.currentSelect = ''
+        this.sqlName = ''
+        this.tabType = 'ass'
         for (let i = 0; i < this.SQLType.length; i++) {
           document.getElementById(
             this.SQLType[i].type + this.SQLType[i].name
-          ).style.backgroundColor = '#fff';
+          ).style.backgroundColor = '#fff'
         }
         for (let i = 0; i < this.iconTXT.length; i++) {
           document.getElementById(
             this.iconTXT[i].type + this.iconTXT[i].name
-          ).style.backgroundColor = '#fff';
+          ).style.backgroundColor = '#fff'
         }
         for (let i = 0; i < this.CommonType.length; i++) {
           document.getElementById(
             this.CommonType[i].type + this.CommonType[i].name
-          ).style.backgroundColor = '#fff';
+          ).style.backgroundColor = '#fff'
         }
-        this.typeArr = this.AssType;
+        this.typeArr = this.AssType
       } else if (tab.index === '2') {
-        this.lastSelect = '';
-        this.currentSelect = '';
-        this.sqlName = '';
+        this.lastSelect = ''
+        this.currentSelect = ''
+        this.sqlName = ''
         for (let i = 0; i < this.AssType.length; i++) {
           document.getElementById(
             this.AssType[i].type + this.AssType[i].name
-          ).style.backgroundColor = '#fff';
+          ).style.backgroundColor = '#fff'
         }
         for (let i = 0; i < this.iconTXT.length; i++) {
           document.getElementById(
             this.iconTXT[i].type + this.iconTXT[i].name
-          ).style.backgroundColor = '#fff';
+          ).style.backgroundColor = '#fff'
         }
         for (let i = 0; i < this.CommonType.length; i++) {
           document.getElementById(
             this.CommonType[i].type + this.CommonType[i].name
-          ).style.backgroundColor = '#fff';
+          ).style.backgroundColor = '#fff'
         }
-        this.tabType = 'SQL';
-        this.typeArr = this.SQLType;
+        this.tabType = 'SQL'
+        this.typeArr = this.SQLType
       } else if (tab.index === '1') {
-        this.lastSelect = '';
-        this.currentSelect = '';
-        this.sqlName = '';
+        this.lastSelect = ''
+        this.currentSelect = ''
+        this.sqlName = ''
         for (let i = 0; i < this.AssType.length; i++) {
           document.getElementById(
             this.AssType[i].type + this.AssType[i].name
-          ).style.backgroundColor = '#fff';
+          ).style.backgroundColor = '#fff'
         }
         for (let i = 0; i < this.iconTXT.length; i++) {
           document.getElementById(
             this.iconTXT[i].type + this.iconTXT[i].name
-          ).style.backgroundColor = '#fff';
+          ).style.backgroundColor = '#fff'
         }
         for (let i = 0; i < this.SQLType.length; i++) {
           document.getElementById(
             this.SQLType[i].type + this.SQLType[i].name
-          ).style.backgroundColor = '#fff';
+          ).style.backgroundColor = '#fff'
         }
-        this.tabType = 'Common';
-        this.typeArr = this.CommonType;
+        this.tabType = 'Common'
+        this.typeArr = this.CommonType
       } else if (tab.index === '0') {
-        this.lastSelect = '';
-        this.currentSelect = '';
-        this.sqlName = '';
+        this.lastSelect = ''
+        this.currentSelect = ''
+        this.sqlName = ''
         for (let i = 0; i < this.AssType.length; i++) {
           document.getElementById(
             this.AssType[i].type + this.AssType[i].name
-          ).style.backgroundColor = '#fff';
+          ).style.backgroundColor = '#fff'
         }
         for (let i = 0; i < this.CommonType.length; i++) {
           document.getElementById(
             this.CommonType[i].type + this.CommonType[i].name
-          ).style.backgroundColor = '#fff';
+          ).style.backgroundColor = '#fff'
         }
         for (let i = 0; i < this.SQLType.length; i++) {
           document.getElementById(
             this.SQLType[i].type + this.SQLType[i].name
-          ).style.backgroundColor = '#fff';
+          ).style.backgroundColor = '#fff'
         }
-        this.tabType = 'all';
-        this.typeArr = this.iconTXT;
+        this.tabType = 'all'
+        this.typeArr = this.iconTXT
       }
     },
     // 取消
     cancel() {
-      this.dialogVisible = false;
-      this.currentStep = 1;
-      this.MySQLForm = {};
-      this.OracleForm = {};
-      this.MdbForm = {};
-      this.sqlName = '';
+      this.dialogVisible = false
+      this.currentStep = 1
+      this.MySQLForm = {}
+      this.OracleForm = {}
+      this.MdbForm = {}
+      this.sqlName = ''
       for (let i = 0; i < this.SQLType.length; i++) {
         document.getElementById(
           this.SQLType[i].type + this.SQLType[i].name
-        ).style.backgroundColor = '#fff';
+        ).style.backgroundColor = '#fff'
       }
       for (let i = 0; i < this.iconTXT.length; i++) {
         document.getElementById(
           this.iconTXT[i].type + this.iconTXT[i].name
-        ).style.backgroundColor = '#fff';
+        ).style.backgroundColor = '#fff'
       }
       for (let i = 0; i < this.CommonType.length; i++) {
         document.getElementById(
           this.CommonType[i].type + this.CommonType[i].name
-        ).style.backgroundColor = '#fff';
+        ).style.backgroundColor = '#fff'
       }
       for (let i = 0; i < this.AssType.length; i++) {
         document.getElementById(
           this.AssType[i].type + this.AssType[i].name
-        ).style.backgroundColor = '#fff';
+        ).style.backgroundColor = '#fff'
       }
     },
     cancelEdit() {
-      this.dialogEditVisible = false;
-      this.MySQLForm = {};
-      this.OracleForm = {};
-      this.MdbForm = {};
+      this.dialogEditVisible = false
+      this.MySQLForm = {}
+      this.OracleForm = {}
+      this.MdbForm = {}
     },
     // 下一步
     nextStep() {
       if (this.currentStep < 2) {
         if (this.sqlName !== '') {
-          this.currentStep++;
+          this.currentStep++
         } else {
-          this.$message.warning('请选择数据源类型');
+          this.$message.warning('请选择数据源类型')
         }
       }
-      console.log(this.currentStep);
+      console.log(this.currentStep)
     },
     // 双击下一步
     dbClickNext() {
       // window.clearTimeout(time) // 首先清除计时器
       if (this.currentStep < 2) {
         if (this.sqlName !== '') {
-          this.currentStep++;
+          this.currentStep++
         } else {
-          this.$message.warning('请选择数据源类型');
+          this.$message.warning('请选择数据源类型')
         }
       }
-      console.log(this.currentStep);
-      console.log('双击下一步');
+      console.log(this.currentStep)
+      console.log('双击下一步')
     },
     lastStep() {
-      console.log(this.currentStep);
+      console.log(this.currentStep)
       if (this.currentStep > 1) {
-        this.currentStep--;
+        this.currentStep--
       }
     },
     // 添加数据源（原方法）
@@ -2360,32 +2360,32 @@ export default {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
           datasourceApi.created(this.temp).then(() => {
-            this.fetchData();
-            this.dialogFormVisible = false;
+            this.fetchData()
+            this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
               message: 'Created Successfully',
               type: 'success',
               duration: 2000
-            });
-          });
+            })
+          })
         }
-      });
+      })
     },
     handleCreate() {
-      this.resetTemp();
-      this.dialogStatus = 'create';
-      this.dialogFormVisible = true;
+      this.resetTemp()
+      this.dialogStatus = 'create'
+      this.dialogFormVisible = true
       // this.$nextTick(() => {
       //   this.$refs['dataForm'].clearValidate();
       // });
     },
     // 添加数据源
     addData() {
-      const obj = {};
+      const obj = {}
       if (this.sqlName === 'MySQL') {
-        obj.datasourceName = this.MySQLForm.datasourceName;
-        obj.datasource = this.sqlName.toLowerCase();
+        obj.datasourceName = this.MySQLForm.datasourceName
+        obj.datasource = this.sqlName.toLowerCase()
         obj.jdbcUrl =
           'jdbc:' +
           this.sqlName.toLowerCase() +
@@ -2394,15 +2394,15 @@ export default {
           ':' +
           this.MySQLForm.serverPort +
           '/' +
-          this.MySQLForm.database;
-        obj.jdbcUsername = this.MySQLForm.username;
-        obj.jdbcPassword = this.MySQLForm.password;
-        obj.datasourceGroup = this.MySQLForm.datasourceGroup;
-        obj.comments = this.MySQLForm.comments;
-        obj.jdbcDriverClass = 'com.mysql.jdbc.Driver';
+          this.MySQLForm.database
+        obj.jdbcUsername = this.MySQLForm.username
+        obj.jdbcPassword = this.MySQLForm.password
+        obj.datasourceGroup = this.MySQLForm.datasourceGroup
+        obj.comments = this.MySQLForm.comments
+        obj.jdbcDriverClass = 'com.mysql.jdbc.Driver'
       } else if (this.sqlName === 'Oracle') {
-        obj.datasourceName = this.OracleForm.datasourceName;
-        obj.datasource = this.sqlName.toLowerCase();
+        obj.datasourceName = this.OracleForm.datasourceName
+        obj.datasource = this.sqlName.toLowerCase()
         obj.jdbcUrl =
           'jdbc:' +
           this.sqlName.toLowerCase() +
@@ -2411,27 +2411,27 @@ export default {
           ':' +
           this.OracleForm.serverPort +
           '/' +
-          this.OracleForm.database;
-        obj.jdbcUsername = this.OracleForm.username;
-        obj.jdbcPassword = this.OracleForm.password;
-        obj.datasourceGroup = this.OracleForm.datasourceGroup;
-        obj.comments = this.OracleForm.comments;
-        obj.jdbcDriverClass = 'oracle.jdbc.OracleDriver';
+          this.OracleForm.database
+        obj.jdbcUsername = this.OracleForm.username
+        obj.jdbcPassword = this.OracleForm.password
+        obj.datasourceGroup = this.OracleForm.datasourceGroup
+        obj.comments = this.OracleForm.comments
+        obj.jdbcDriverClass = 'oracle.jdbc.OracleDriver'
       } else if (this.sqlName === 'MongoDB') {
-        obj.datasourceName = this.MdbForm.datasourceName;
-        obj.datasource = this.sqlName.toLowerCase();
-        obj.jdbcUrl = this.MdbForm.serverUrl;
-        obj.datasourceGroup = this.MdbForm.datasourceGroup;
-        obj.comments = this.MdbForm.comments;
-        obj.databaseName = this.MdbForm.database;
-        obj.jdbcDriverClass = '';
+        obj.datasourceName = this.MdbForm.datasourceName
+        obj.datasource = this.sqlName.toLowerCase()
+        obj.jdbcUrl = this.MdbForm.serverUrl
+        obj.datasourceGroup = this.MdbForm.datasourceGroup
+        obj.comments = this.MdbForm.comments
+        obj.databaseName = this.MdbForm.database
+        obj.jdbcDriverClass = ''
       } else if (
         this.sqlName === 'Greenplum' ||
         this.sqlName === 'PostgreSQL'
       ) {
-        console.log(this.GPForm);
-        obj.datasourceName = this.GPForm.datasourceName;
-        obj.datasource = this.sqlName.toLowerCase();
+        console.log(this.GPForm)
+        obj.datasourceName = this.GPForm.datasourceName
+        obj.datasource = this.sqlName.toLowerCase()
         obj.jdbcUrl =
           'jdbc:' +
           this.sqlName.toLowerCase() +
@@ -2440,16 +2440,16 @@ export default {
           ':' +
           this.GPForm.serverPort +
           '/' +
-          this.GPForm.database;
-        obj.jdbcUsername = this.GPForm.username;
-        obj.jdbcPassword = this.GPForm.password;
-        obj.datasourceGroup = this.GPForm.datasourceGroup;
-        obj.comments = this.GPForm.comments;
-        obj.jdbcDriverClass = 'org.postgresql.Driver';
+          this.GPForm.database
+        obj.jdbcUsername = this.GPForm.username
+        obj.jdbcPassword = this.GPForm.password
+        obj.datasourceGroup = this.GPForm.datasourceGroup
+        obj.comments = this.GPForm.comments
+        obj.jdbcDriverClass = 'org.postgresql.Driver'
       } else if (this.sqlName === 'Sql Server') {
-        obj.datasourceName = this.ruleForm.datasourceName;
-        obj.datasourceGroup = this.ruleForm.datasourceGroup;
-        obj.datasource = this.sqlName.replace(/\s*/g, '').toLowerCase();
+        obj.datasourceName = this.ruleForm.datasourceName
+        obj.datasourceGroup = this.ruleForm.datasourceGroup
+        obj.datasource = this.sqlName.replace(/\s*/g, '').toLowerCase()
         obj.jdbcUrl =
           'jdbc:' +
           this.sqlName.replace(/\s*/g, '').toLowerCase() +
@@ -2458,16 +2458,16 @@ export default {
           ':' +
           this.ruleForm.serverPort +
           ';DatabaseName=' +
-          this.ruleForm.database;
-        obj.jdbcUsername = this.ruleForm.username;
-        obj.jdbcPassword = this.ruleForm.password;
-        obj.comments = this.ruleForm.comments;
-        obj.jdbcDriverClass = '';
+          this.ruleForm.database
+        obj.jdbcUsername = this.ruleForm.username
+        obj.jdbcPassword = this.ruleForm.password
+        obj.comments = this.ruleForm.comments
+        obj.jdbcDriverClass = ''
       } else if (this.sqlName === 'ClickHouse' || this.sqlName === 'HBase') {
-        obj.datasourceName = this.CHForm.datasourceName;
-        obj.datasourceGroup = this.CHForm.datasourceGroup;
+        obj.datasourceName = this.CHForm.datasourceName
+        obj.datasourceGroup = this.CHForm.datasourceGroup
         obj.datasource =
-          this.sqlName === 'HBase' ? 'phoenix' : this.sqlName.toLowerCase();
+          this.sqlName === 'HBase' ? 'phoenix' : this.sqlName.toLowerCase()
         this.sqlName === 'ClickHouse'
           ? (obj.jdbcUrl =
               'jdbc:clickhouse://' +
@@ -2482,16 +2482,16 @@ export default {
               ':' +
               this.CHForm.serverPort +
               '/' +
-              this.CHForm.database);
-        obj.jdbcUsername = this.CHForm.username;
-        obj.jdbcPassword = this.CHForm.password;
-        obj.comments = this.CHForm.comments;
+              this.CHForm.database)
+        obj.jdbcUsername = this.CHForm.username
+        obj.jdbcPassword = this.CHForm.password
+        obj.comments = this.CHForm.comments
         this.sqlName === 'ClickHouse'
           ? (obj.jdbcDriverClass = 'ru.yandex.clickhouse.ClickHouseDriver')
-          : (obj.jdbcDriverClass = 'org.apache.phoenix.jdbc.PhoenixDriver');
+          : (obj.jdbcDriverClass = 'org.apache.phoenix.jdbc.PhoenixDriver')
       } else if (this.sqlName === 'DB2') {
-        obj.datasourceName = this.DB2Form.datasourceName;
-        obj.datasource = this.sqlName.toLowerCase();
+        obj.datasourceName = this.DB2Form.datasourceName
+        obj.datasource = this.sqlName.toLowerCase()
         obj.jdbcUrl =
           'jdbc:' +
           this.sqlName.toLowerCase() +
@@ -2500,19 +2500,19 @@ export default {
           ':' +
           this.DB2Form.serverPort +
           '/' +
-          this.DB2Form.database;
-        obj.jdbcUsername = this.DB2Form.username;
-        obj.jdbcPassword = this.DB2Form.password;
-        obj.datasourceGroup = this.DB2Form.datasourceGroup;
-        obj.comments = this.DB2Form.comments;
-        obj.jdbcDriverClass = 'com.ibm.db2.jcc.DB2Driver';
+          this.DB2Form.database
+        obj.jdbcUsername = this.DB2Form.username
+        obj.jdbcPassword = this.DB2Form.password
+        obj.datasourceGroup = this.DB2Form.datasourceGroup
+        obj.comments = this.DB2Form.comments
+        obj.jdbcDriverClass = 'com.ibm.db2.jcc.DB2Driver'
       } else if (
         this.sqlName === 'Hive' ||
         this.sqlName === 'Impala' ||
         this.sqlName === 'Spark'
       ) {
-        obj.datasourceName = this.HiveForm.datasourceName;
-        obj.datasource = this.sqlName.toLowerCase();
+        obj.datasourceName = this.HiveForm.datasourceName
+        obj.datasource = this.sqlName.toLowerCase()
         obj.jdbcUrl =
           this.sqlName === 'Hive'
             ? 'jdbc:' +
@@ -2530,38 +2530,38 @@ export default {
               ':' +
               this.HiveForm.serverPort +
               '/' +
-              this.HiveForm.database;
-        obj.jdbcUsername = this.HiveForm.username;
-        obj.jdbcPassword = this.HiveForm.password;
-        obj.datasourceGroup = this.HiveForm.datasourceGroup;
-        obj.comments = this.HiveForm.comments;
+              this.HiveForm.database
+        obj.jdbcUsername = this.HiveForm.username
+        obj.jdbcPassword = this.HiveForm.password
+        obj.datasourceGroup = this.HiveForm.datasourceGroup
+        obj.comments = this.HiveForm.comments
         if (this.sqlName === 'Hive') {
-          obj.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver';
+          obj.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver'
         } else if (this.sqlName === 'Impala') {
-          obj.jdbcDriverClass = 'com.cloudera.impala.jdbc41.Driver';
+          obj.jdbcDriverClass = 'com.cloudera.impala.jdbc41.Driver'
         }
       }
-      obj.projectId = sessionStorage.getItem('projectId');
+      obj.projectId = sessionStorage.getItem('projectId')
       datasourceApi
         .created(obj)
         .then(() => {
-          this.fetchData();
-          this.dialogVisible = false;
+          this.fetchData()
+          this.dialogVisible = false
           this.$notify({
             title: '提示',
             message: '数据源添加成功',
             type: 'success',
             duration: 2000
-          });
-          this.MySQLForm = {};
-          this.OracleForm = {};
-          this.MdbForm = {};
-          this.ruleForm = {};
-          this.CHForm = {};
-          this.GPForm = {};
-          this.DB2Form = {};
-          this.currentStep = 1;
-          this.isBanAdd = true;
+          })
+          this.MySQLForm = {}
+          this.OracleForm = {}
+          this.MdbForm = {}
+          this.ruleForm = {}
+          this.CHForm = {}
+          this.GPForm = {}
+          this.DB2Form = {}
+          this.currentStep = 1
+          this.isBanAdd = true
         })
         .catch(err => {
           if (err) {
@@ -2570,16 +2570,16 @@ export default {
               message: '数据源添加失败',
               type: 'fail',
               duration: 2000
-            });
+            })
           }
-        });
+        })
     },
     // 测试连接
     testLink() {
-      const obj1 = {};
+      const obj1 = {}
       if (this.sqlName === 'MySQL') {
-        obj1.datasourceName = this.MySQLForm.datasourceName;
-        obj1.datasource = this.sqlName.toLowerCase();
+        obj1.datasourceName = this.MySQLForm.datasourceName
+        obj1.datasource = this.sqlName.toLowerCase()
         obj1.jdbcUrl =
           'jdbc:' +
           this.sqlName.toLowerCase() +
@@ -2588,15 +2588,15 @@ export default {
           ':' +
           this.MySQLForm.serverPort +
           '/' +
-          this.MySQLForm.database;
-        obj1.jdbcUsername = this.MySQLForm.username;
-        obj1.jdbcPassword = this.MySQLForm.password;
-        obj1.datasourceGroup = this.MySQLForm.datasourceGroup;
-        obj1.comments = this.MySQLForm.comments;
-        obj1.jdbcDriverClass = 'com.mysql.jdbc.Driver';
+          this.MySQLForm.database
+        obj1.jdbcUsername = this.MySQLForm.username
+        obj1.jdbcPassword = this.MySQLForm.password
+        obj1.datasourceGroup = this.MySQLForm.datasourceGroup
+        obj1.comments = this.MySQLForm.comments
+        obj1.jdbcDriverClass = 'com.mysql.jdbc.Driver'
       } else if (this.sqlName === 'Oracle') {
-        obj1.datasourceName = this.OracleForm.datasourceName;
-        obj1.datasource = this.sqlName.toLowerCase();
+        obj1.datasourceName = this.OracleForm.datasourceName
+        obj1.datasource = this.sqlName.toLowerCase()
         obj1.jdbcUrl =
           'jdbc:' +
           this.sqlName.toLowerCase() +
@@ -2605,27 +2605,27 @@ export default {
           ':' +
           this.OracleForm.serverPort +
           '/' +
-          this.OracleForm.database;
-        obj1.jdbcUsername = this.OracleForm.username;
-        obj1.jdbcPassword = this.OracleForm.password;
-        obj1.datasourceGroup = this.OracleForm.datasourceGroup;
-        obj1.comments = this.OracleForm.comments;
-        obj1.jdbcDriverClass = 'oracle.jdbc.OracleDriver';
+          this.OracleForm.database
+        obj1.jdbcUsername = this.OracleForm.username
+        obj1.jdbcPassword = this.OracleForm.password
+        obj1.datasourceGroup = this.OracleForm.datasourceGroup
+        obj1.comments = this.OracleForm.comments
+        obj1.jdbcDriverClass = 'oracle.jdbc.OracleDriver'
       } else if (this.sqlName === 'MongoDB') {
-        obj1.datasourceName = this.MdbForm.datasourceName;
-        obj1.datasource = this.sqlName.toLowerCase();
-        obj1.jdbcUrl = this.MdbForm.serverUrl;
-        obj1.datasourceGroup = this.MdbForm.datasourceGroup;
-        obj1.comments = this.MdbForm.comments;
-        obj1.databaseName = this.MdbForm.database;
-        obj1.jdbcDriverClass = '';
+        obj1.datasourceName = this.MdbForm.datasourceName
+        obj1.datasource = this.sqlName.toLowerCase()
+        obj1.jdbcUrl = this.MdbForm.serverUrl
+        obj1.datasourceGroup = this.MdbForm.datasourceGroup
+        obj1.comments = this.MdbForm.comments
+        obj1.databaseName = this.MdbForm.database
+        obj1.jdbcDriverClass = ''
       } else if (
         this.sqlName === 'Greenplum' ||
         this.sqlName === 'PostgreSQL'
       ) {
-        console.log(this.GPForm);
-        obj1.datasourceName = this.GPForm.datasourceName;
-        obj1.datasource = this.sqlName.toLowerCase();
+        console.log(this.GPForm)
+        obj1.datasourceName = this.GPForm.datasourceName
+        obj1.datasource = this.sqlName.toLowerCase()
         obj1.jdbcUrl =
           'jdbc:postgresql' +
           '://' +
@@ -2633,16 +2633,16 @@ export default {
           ':' +
           this.GPForm.serverPort +
           '/' +
-          this.GPForm.database;
-        obj1.jdbcUsername = this.GPForm.username;
-        obj1.jdbcPassword = this.GPForm.password;
-        obj1.datasourceGroup = this.GPForm.datasourceGroup;
-        obj1.comments = this.GPForm.comments;
-        obj1.jdbcDriverClass = 'org.postgresql.Driver';
+          this.GPForm.database
+        obj1.jdbcUsername = this.GPForm.username
+        obj1.jdbcPassword = this.GPForm.password
+        obj1.datasourceGroup = this.GPForm.datasourceGroup
+        obj1.comments = this.GPForm.comments
+        obj1.jdbcDriverClass = 'org.postgresql.Driver'
       } else if (this.sqlName === 'Sql Server') {
-        obj1.datasourceName = this.ruleForm.datasourceName;
-        obj1.datasourceGroup = this.ruleForm.datasourceGroup;
-        obj1.datasource = this.sqlName.replace(/\s*/g, '').toLowerCase();
+        obj1.datasourceName = this.ruleForm.datasourceName
+        obj1.datasourceGroup = this.ruleForm.datasourceGroup
+        obj1.datasource = this.sqlName.replace(/\s*/g, '').toLowerCase()
         obj1.jdbcUrl =
           'jdbc:' +
           this.sqlName.replace(/\s*/g, '').toLowerCase() +
@@ -2651,16 +2651,16 @@ export default {
           ':' +
           this.ruleForm.serverPort +
           ';DatabaseName=' +
-          this.ruleForm.database;
-        obj1.jdbcUsername = this.ruleForm.username;
-        obj1.jdbcPassword = this.ruleForm.password;
-        obj1.comments = this.ruleForm.comments;
-        obj1.jdbcDriverClass = 'com.microsoft.sqlserver.jdbc.SQLServerDriver';
+          this.ruleForm.database
+        obj1.jdbcUsername = this.ruleForm.username
+        obj1.jdbcPassword = this.ruleForm.password
+        obj1.comments = this.ruleForm.comments
+        obj1.jdbcDriverClass = 'com.microsoft.sqlserver.jdbc.SQLServerDriver'
       } else if (this.sqlName === 'ClickHouse' || this.sqlName === 'HBase') {
-        obj1.datasourceName = this.CHForm.datasourceName;
-        obj1.datasourceGroup = this.CHForm.datasourceGroup;
+        obj1.datasourceName = this.CHForm.datasourceName
+        obj1.datasourceGroup = this.CHForm.datasourceGroup
         obj1.datasource =
-          this.sqlName === 'HBase' ? 'phoenix' : this.sqlName.toLowerCase();
+          this.sqlName === 'HBase' ? 'phoenix' : this.sqlName.toLowerCase()
         this.sqlName === 'ClickHouse'
           ? (obj1.jdbcUrl = this.CHForm.jdbcUrl)
           : (obj1.jdbcUrl =
@@ -2669,20 +2669,20 @@ export default {
               ':' +
               this.CHForm.serverPort +
               '/' +
-              this.CHForm.database);
-        obj1.jdbcUsername = this.CHForm.username;
-        obj1.jdbcPassword = this.CHForm.password;
-        obj1.comments = this.CHForm.comments;
+              this.CHForm.database)
+        obj1.jdbcUsername = this.CHForm.username
+        obj1.jdbcPassword = this.CHForm.password
+        obj1.comments = this.CHForm.comments
         this.sqlName === 'ClickHouse'
           ? (obj1.jdbcDriverClass = 'ru.yandex.clickhouse.ClickHouseDriver')
-          : (obj1.jdbcDriverClass = 'org.apache.phoenix.jdbc.PhoenixDriver');
+          : (obj1.jdbcDriverClass = 'org.apache.phoenix.jdbc.PhoenixDriver')
       } else if (
         this.sqlName === 'Hive' ||
         this.sqlName === 'Impala' ||
         this.sqlName === 'Spark'
       ) {
-        obj1.datasourceName = this.HiveForm.datasourceName;
-        obj1.datasource = this.sqlName.toLowerCase();
+        obj1.datasourceName = this.HiveForm.datasourceName
+        obj1.datasource = this.sqlName.toLowerCase()
         obj1.jdbcUrl =
           this.sqlName === 'Hive'
             ? 'jdbc:' +
@@ -2700,19 +2700,19 @@ export default {
               ':' +
               this.HiveForm.serverPort +
               '/' +
-              this.HiveForm.database;
-        obj1.jdbcUsername = this.HiveForm.username;
-        obj1.jdbcPassword = this.HiveForm.password;
-        obj1.datasourceGroup = this.HiveForm.datasourceGroup;
-        obj1.comments = this.HiveForm.comments;
+              this.HiveForm.database
+        obj1.jdbcUsername = this.HiveForm.username
+        obj1.jdbcPassword = this.HiveForm.password
+        obj1.datasourceGroup = this.HiveForm.datasourceGroup
+        obj1.comments = this.HiveForm.comments
         if (this.sqlName === 'Hive') {
-          obj1.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver';
+          obj1.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver'
         } else if (this.sqlName === 'Impala') {
-          obj1.jdbcDriverClass = 'com.cloudera.impala.jdbc41.Driver';
+          obj1.jdbcDriverClass = 'com.cloudera.impala.jdbc41.Driver'
         }
       } else if (this.sqlName === 'DB2') {
-        obj1.datasourceName = this.DB2Form.datasourceName;
-        obj1.datasource = this.sqlName.toLowerCase();
+        obj1.datasourceName = this.DB2Form.datasourceName
+        obj1.datasource = this.sqlName.toLowerCase()
         obj1.jdbcUrl =
           'jdbc:' +
           this.sqlName.toLowerCase() +
@@ -2721,14 +2721,14 @@ export default {
           ':' +
           this.DB2Form.serverPort +
           '/' +
-          this.DB2Form.database;
-        obj1.jdbcUsername = this.DB2Form.username;
-        obj1.jdbcPassword = this.DB2Form.password;
-        obj1.datasourceGroup = this.DB2Form.datasourceGroup;
-        obj1.comments = this.DB2Form.comments;
-        obj1.jdbcDriverClass = 'com.ibm.db2.jcc.DB2Driver';
+          this.DB2Form.database
+        obj1.jdbcUsername = this.DB2Form.username
+        obj1.jdbcPassword = this.DB2Form.password
+        obj1.datasourceGroup = this.DB2Form.datasourceGroup
+        obj1.comments = this.DB2Form.comments
+        obj1.jdbcDriverClass = 'com.ibm.db2.jcc.DB2Driver'
       }
-      obj1.projectId = sessionStorage.getItem('projectId');
+      obj1.projectId = sessionStorage.getItem('projectId')
       datasourceApi.test(obj1).then(response => {
         if (response.data === false) {
           this.$notify({
@@ -2736,29 +2736,29 @@ export default {
             message: response.data.msg,
             type: 'fail',
             duration: 2000
-          });
+          })
         } else {
           this.$notify({
             title: '提示',
             message: '数据库测试连接成功',
             type: 'success',
             duration: 2000
-          });
-          this.isBanAdd = false;
+          })
+          this.isBanAdd = false
         }
-      });
+      })
     },
     // 编辑测试连接
     testDataSource() {
-      this.temp = {};
+      this.temp = {}
       if (this.selectType === 'mysql') {
-        this.temp = this.mysqlEdit;
-        this.temp.id = this.rowObj.id;
-        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass;
+        this.temp = this.mysqlEdit
+        this.temp.id = this.rowObj.id
+        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
       } else if (this.selectType === 'oracle') {
         this.temp = {
           ...this.oracleEdit
-        };
+        }
         this.temp.jdbcUrl =
           'jdbc:' +
           this.selectType +
@@ -2767,19 +2767,19 @@ export default {
           ':' +
           this.oracleEdit.serverPort +
           '/' +
-          this.oracleEdit.database;
-        this.temp.id = this.rowObj.id;
-        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass;
+          this.oracleEdit.database
+        this.temp.id = this.rowObj.id
+        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
       } else if (this.selectType === 'mongodb') {
         this.temp = {
           ...this.MdbEdit
-        };
-        this.temp.id = this.rowObj.id;
-        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass;
+        }
+        this.temp.id = this.rowObj.id
+        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
       } else if (this.selectType === 'sqlserver') {
         this.temp = {
           ...this.sqlserverEdit
-        };
+        }
         this.temp.jdbcUrl =
           'jdbc:' +
           this.selectType.replace(/\s*/g, '') +
@@ -2788,18 +2788,18 @@ export default {
           ':' +
           this.sqlserverEdit.serverPort +
           ';DatabaseName=' +
-          this.sqlserverEdit.database;
-        this.temp.databaseName = this.sqlserverEdit.database;
-        this.temp.datasource = this.selectType.replace(/\s*/g, '');
-        this.temp.id = this.rowObj.id;
-        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass;
+          this.sqlserverEdit.database
+        this.temp.databaseName = this.sqlserverEdit.database
+        this.temp.datasource = this.selectType.replace(/\s*/g, '')
+        this.temp.id = this.rowObj.id
+        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
       } else if (
         this.selectType === 'greenplum' ||
         this.selectType === 'postgresql'
       ) {
         this.temp = {
           ...this.GPEditForm
-        };
+        }
         this.temp.jdbcUrl =
           'jdbc:postgresql' +
           '://' +
@@ -2807,9 +2807,9 @@ export default {
           ':' +
           this.GPEditForm.serverPort +
           '/' +
-          this.GPEditForm.database;
-        this.temp.id = this.rowObj.id;
-        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass;
+          this.GPEditForm.database
+        this.temp.id = this.rowObj.id
+        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
       } else if (
         this.selectType === 'clickhouse' ||
         this.selectType === 'hbase' ||
@@ -2817,9 +2817,9 @@ export default {
       ) {
         this.temp = {
           ...this.chEdit
-        };
-        this.temp.id = this.rowObj.id;
-        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass;
+        }
+        this.temp.id = this.rowObj.id
+        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
       } else if (
         this.selectType === 'hive' ||
         this.selectType === 'spark' ||
@@ -2827,7 +2827,7 @@ export default {
       ) {
         this.temp = {
           ...this.hiveEdit
-        };
+        }
         if (this.selectType === 'hive') {
           this.temp.jdbcUrl =
             'jdbc:' +
@@ -2837,7 +2837,7 @@ export default {
             ':' +
             this.hiveEdit.serverPort +
             '/' +
-            this.hiveEdit.database;
+            this.hiveEdit.database
         } else {
           this.temp.jdbcUrl =
             'jdbc:' +
@@ -2847,14 +2847,14 @@ export default {
             ':' +
             this.hiveEdit.serverPort +
             '/' +
-            this.hiveEdit.database;
+            this.hiveEdit.database
         }
-        this.temp.id = this.rowObj.id;
-        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass;
+        this.temp.id = this.rowObj.id
+        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
       } else if (this.selectType === 'db2') {
         this.temp = {
           ...this.DB2Edit
-        };
+        }
         this.temp.jdbcUrl =
           'jdbc:' +
           this.selectType +
@@ -2863,11 +2863,11 @@ export default {
           ':' +
           this.DB2Edit.serverPort +
           '/' +
-          this.DB2Edit.database;
-        this.temp.id = this.rowObj.id;
-        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass;
+          this.DB2Edit.database
+        this.temp.id = this.rowObj.id
+        this.temp.jdbcDriverClass = this.rowObj.jdbcDriverClass
       }
-      this.temp.projectId = sessionStorage.getItem('projectId');
+      this.temp.projectId = sessionStorage.getItem('projectId')
       datasourceApi.test(this.temp).then(response => {
         if (response.data === false) {
           this.$notify({
@@ -2875,143 +2875,143 @@ export default {
             message: response.data.msg,
             type: 'fail',
             duration: 2000
-          });
+          })
         } else {
           this.$notify({
             title: '成功',
             message: '测试连接成功',
             type: 'success',
             duration: 2000
-          });
+          })
         }
-      });
+      })
     },
     // 显示编辑对话框回显数据
     handleUpdate(row) {
-      this.getShowStrategy(row.datasource);
-      this.temp = Object.assign({}, row); // copy obj
-      this.dialogStatus = 'update';
-      console.log(row, 'row________');
-      this.rowObj = row;
-      console.log(this.temp);
-      this.selectType = row.datasource;
+      this.getShowStrategy(row.datasource)
+      this.temp = Object.assign({}, row) // copy obj
+      this.dialogStatus = 'update'
+      console.log(row, 'row________')
+      this.rowObj = row
+      console.log(this.temp)
+      this.selectType = row.datasource
       // if (this.temp.datasource === 'phoenix') {
       //   this.temp.datasource = 'hbase'
       // }
       if (this.selectType === 'mysql') {
-        this.mysqlEdit.datasourceName = row.datasourceName;
-        this.mysqlEdit.datasource = row.datasource;
-        this.mysqlEdit.serverUrl = row.jdbcUrl.split('//')[1].split(':')[0];
+        this.mysqlEdit.datasourceName = row.datasourceName
+        this.mysqlEdit.datasource = row.datasource
+        this.mysqlEdit.serverUrl = row.jdbcUrl.split('//')[1].split(':')[0]
         this.mysqlEdit.serverPort = row.jdbcUrl
           .split('//')[1]
           .split(':')[1]
-          .split('/')[0];
-        this.mysqlEdit.database = row.jdbcUrl.split('//')[1].split('/')[1];
-        this.mysqlEdit.jdbcUsername = row.jdbcUsername;
-        this.mysqlEdit.jdbcPassword = row.jdbcPassword;
-        this.mysqlEdit.datasourceGroup = row.datasourceGroup;
-        this.mysqlEdit.comments = row.comments;
-        this.mysqlEdit.jdbcDriverClass = row.jdbcDriverClass;
-        this.mysqlEdit.serverTime = 'Asia/Shanghai';
+          .split('/')[0]
+        this.mysqlEdit.database = row.jdbcUrl.split('//')[1].split('/')[1]
+        this.mysqlEdit.jdbcUsername = row.jdbcUsername
+        this.mysqlEdit.jdbcPassword = row.jdbcPassword
+        this.mysqlEdit.datasourceGroup = row.datasourceGroup
+        this.mysqlEdit.comments = row.comments
+        this.mysqlEdit.jdbcDriverClass = row.jdbcDriverClass
+        this.mysqlEdit.serverTime = 'Asia/Shanghai'
       } else if (this.selectType === 'oracle') {
-        this.oracleEdit.datasourceName = row.datasourceName;
-        this.oracleEdit.datasource = row.datasource;
-        this.oracleEdit.master = row.jdbcUrl.split('//')[1].split(':')[0];
+        this.oracleEdit.datasourceName = row.datasourceName
+        this.oracleEdit.datasource = row.datasource
+        this.oracleEdit.master = row.jdbcUrl.split('//')[1].split(':')[0]
         this.oracleEdit.serverPort = row.jdbcUrl
           .split('//')[1]
           .split(':')[1]
-          .split('/')[0];
-        this.oracleEdit.database = row.jdbcUrl.split('//')[1].split('/')[1];
-        this.oracleEdit.jdbcUsername = row.jdbcUsername;
-        this.oracleEdit.jdbcPassword = row.jdbcPassword;
-        this.oracleEdit.datasourceGroup = row.datasourceGroup;
-        this.oracleEdit.comments = row.comments;
-        this.oracleEdit.jdbcDriverClass = row.jdbcDriverClass;
+          .split('/')[0]
+        this.oracleEdit.database = row.jdbcUrl.split('//')[1].split('/')[1]
+        this.oracleEdit.jdbcUsername = row.jdbcUsername
+        this.oracleEdit.jdbcPassword = row.jdbcPassword
+        this.oracleEdit.datasourceGroup = row.datasourceGroup
+        this.oracleEdit.comments = row.comments
+        this.oracleEdit.jdbcDriverClass = row.jdbcDriverClass
       } else if (this.selectType === 'mongodb') {
-        this.MdbEdit.datasourceName = row.datasourceName;
-        this.MdbEdit.serverUrl = row.jdbcUrl;
-        this.MdbEdit.datasource = row.datasource;
-        this.MdbEdit.datasourceGroup = row.datasourceGroup;
-        this.MdbEdit.comments = row.comments;
-        this.MdbEdit.database = row.databaseName;
+        this.MdbEdit.datasourceName = row.datasourceName
+        this.MdbEdit.serverUrl = row.jdbcUrl
+        this.MdbEdit.datasource = row.datasource
+        this.MdbEdit.datasourceGroup = row.datasourceGroup
+        this.MdbEdit.comments = row.comments
+        this.MdbEdit.database = row.databaseName
       } else if (this.selectType === 'sqlserver') {
-        this.sqlserverEdit.datasourceName = row.datasourceName;
+        this.sqlserverEdit.datasourceName = row.datasourceName
         this.sqlserverEdit.master = row.jdbcUrl
           .split('//')[1]
           .split(';')[0]
-          .split(':')[0];
+          .split(':')[0]
         this.sqlserverEdit.serverPort = row.jdbcUrl
           .split('//')[1]
           .split(';')[0]
-          .split(':')[1];
-        this.sqlserverEdit.database = row.jdbcUrl.split(';')[1].split('=')[1];
-        this.sqlserverEdit.datasource = row.datasource;
-        this.sqlserverEdit.datasourceGroup = row.datasourceGroup;
-        this.sqlserverEdit.comments = row.comments;
-        this.sqlserverEdit.jdbcUsername = row.jdbcUsername;
-        this.sqlserverEdit.jdbcPassword = row.jdbcPassword;
-        this.sqlserverEdit.authentication = 'master';
+          .split(':')[1]
+        this.sqlserverEdit.database = row.jdbcUrl.split(';')[1].split('=')[1]
+        this.sqlserverEdit.datasource = row.datasource
+        this.sqlserverEdit.datasourceGroup = row.datasourceGroup
+        this.sqlserverEdit.comments = row.comments
+        this.sqlserverEdit.jdbcUsername = row.jdbcUsername
+        this.sqlserverEdit.jdbcPassword = row.jdbcPassword
+        this.sqlserverEdit.authentication = 'master'
       } else if (
         this.selectType === 'greenplum' ||
         this.selectType === 'postgresql'
       ) {
-        this.GPEditForm.datasource = row.datasource;
-        this.GPEditForm.datasourceGroup = row.datasourceGroup;
-        this.GPEditForm.datasourceName = row.datasourceName;
-        this.GPEditForm.comments = row.comments;
-        this.GPEditForm.master = row.jdbcUrl.split('//')[1].split(':')[0];
+        this.GPEditForm.datasource = row.datasource
+        this.GPEditForm.datasourceGroup = row.datasourceGroup
+        this.GPEditForm.datasourceName = row.datasourceName
+        this.GPEditForm.comments = row.comments
+        this.GPEditForm.master = row.jdbcUrl.split('//')[1].split(':')[0]
         this.GPEditForm.serverPort = row.jdbcUrl
           .split('//')[1]
           .split(':')[1]
-          .split('/')[0];
+          .split('/')[0]
         this.GPEditForm.database = row.jdbcUrl
           .split('//')[1]
           .split(':')[1]
-          .split('/')[1];
-        this.GPEditForm.jdbcUsername = row.jdbcUsername;
-        this.GPEditForm.jdbcPassword = row.jdbcPassword;
+          .split('/')[1]
+        this.GPEditForm.jdbcUsername = row.jdbcUsername
+        this.GPEditForm.jdbcPassword = row.jdbcPassword
       } else if (
         this.selectType === 'clickhouse' ||
         this.selectType === 'hbase' ||
         this.selectType === 'phoenix'
       ) {
-        this.chEdit.datasource = row.datasource;
-        this.chEdit.datasourceGroup = row.datasourceGroup;
-        this.chEdit.datasourceName = row.datasourceName;
-        this.chEdit.comments = row.comments;
+        this.chEdit.datasource = row.datasource
+        this.chEdit.datasourceGroup = row.datasourceGroup
+        this.chEdit.datasourceName = row.datasourceName
+        this.chEdit.comments = row.comments
         this.chEdit.master =
           this.selectType === 'clickhouse'
             ? row.jdbcUrl.split('//')[1].split(':')[0]
-            : row.jdbcUrl.split('jdbc:phoenix:')[1].split(':')[0];
+            : row.jdbcUrl.split('jdbc:phoenix:')[1].split(':')[0]
         this.chEdit.serverPort =
           this.selectType === 'clickhouse'
             ? row.jdbcUrl
               .split('//')[1]
               .split(':')[1]
               .split('/')[0]
-            : row.jdbcUrl.split('jdbc:phoenix:')[1].split(':')[1];
+            : row.jdbcUrl.split('jdbc:phoenix:')[1].split(':')[1]
         this.chEdit.database =
           this.selectType === 'clickhouse'
             ? row.jdbcUrl
               .split('//')[1]
               .split(':')[1]
               .split('/')[1]
-            : row.databaseName;
-        this.chEdit.jdbcUsername = row.jdbcUsername;
-        this.chEdit.jdbcPassword = row.jdbcPassword;
+            : row.databaseName
+        this.chEdit.jdbcUsername = row.jdbcUsername
+        this.chEdit.jdbcPassword = row.jdbcPassword
       } else if (
         this.selectType === 'hive' ||
         this.selectType === 'spark' ||
         this.selectType === 'impala'
       ) {
-        this.hiveEdit.datasource = row.datasource;
-        this.hiveEdit.datasourceGroup = row.datasourceGroup;
-        this.hiveEdit.datasourceName = row.datasourceName;
-        this.hiveEdit.comments = row.comments;
+        this.hiveEdit.datasource = row.datasource
+        this.hiveEdit.datasourceGroup = row.datasourceGroup
+        this.hiveEdit.datasourceName = row.datasourceName
+        this.hiveEdit.comments = row.comments
         this.hiveEdit.master =
           this.selectType === 'hive'
             ? row.jdbcUrl.split('//')[1].split(':')[0]
-            : row.jdbcUrl.split('//')[1].split(':')[0];
+            : row.jdbcUrl.split('//')[1].split(':')[0]
         this.hiveEdit.serverPort =
           this.selectType === 'hive'
             ? row.jdbcUrl
@@ -3021,7 +3021,7 @@ export default {
             : row.jdbcUrl
               .split('//')[1]
               .split(':')[1]
-              .split('/')[0];
+              .split('/')[0]
         this.hiveEdit.database =
           this.selectType === 'hive'
             ? row.jdbcUrl
@@ -3031,31 +3031,31 @@ export default {
             : row.jdbcUrl
               .split('//')[1]
               .split(':')[1]
-              .split('/')[1];
-        this.hiveEdit.jdbcUsername = row.jdbcUsername;
-        this.hiveEdit.jdbcPassword = row.jdbcPassword;
+              .split('/')[1]
+        this.hiveEdit.jdbcUsername = row.jdbcUsername
+        this.hiveEdit.jdbcPassword = row.jdbcPassword
       } else if (this.selectType === 'db2') {
-        this.DB2Edit.datasource = row.datasource;
-        this.DB2Edit.datasourceGroup = row.datasourceGroup;
-        this.DB2Edit.datasourceName = row.datasourceName;
-        this.DB2Edit.comments = row.comments;
-        this.DB2Edit.master = row.jdbcUrl.split('//')[1].split(':')[0];
+        this.DB2Edit.datasource = row.datasource
+        this.DB2Edit.datasourceGroup = row.datasourceGroup
+        this.DB2Edit.datasourceName = row.datasourceName
+        this.DB2Edit.comments = row.comments
+        this.DB2Edit.master = row.jdbcUrl.split('//')[1].split(':')[0]
         this.DB2Edit.serverPort = row.jdbcUrl
           .split('//')[1]
           .split(':')[1]
-          .split('/')[0];
+          .split('/')[0]
         this.DB2Edit.database = row.jdbcUrl
           .split('//')[1]
           .split(':')[1]
-          .split('/')[1];
-        this.DB2Edit.jdbcUsername = row.jdbcUsername;
-        this.DB2Edit.jdbcPassword = row.jdbcPassword;
+          .split('/')[1]
+        this.DB2Edit.jdbcUsername = row.jdbcUsername
+        this.DB2Edit.jdbcPassword = row.jdbcPassword
       }
-      console.log(this.MySQLForm, 'mysqlform');
-      this.temp.userName = this.temp.jdbcUsername;
-      this.temp.password = this.temp.jdbcPassword;
+      console.log(this.MySQLForm, 'mysqlform')
+      this.temp.userName = this.temp.jdbcUsername
+      this.temp.password = this.temp.jdbcPassword
       // this.dialogFormVisible = true;
-      this.dialogEditVisible = true;
+      this.dialogEditVisible = true
       // this.$nextTick(() => {
       //   this.$refs['dataForm'].clearValidate();
       // });
@@ -3084,7 +3084,7 @@ export default {
           jdbcDriverClass: this.mysqlEdit.jdbcDriverClass,
           serverTime: 'Asia/Shanghai',
           id: this.rowObj.id
-        };
+        }
       } else if (this.selectType === 'oracle') {
         this.paramsData = {
           datasourceName: this.oracleEdit.datasourceName,
@@ -3105,7 +3105,7 @@ export default {
           comments: this.oracleEdit.comments,
           jdbcDriverClass: this.oracleEdit.jdbcDriverClass,
           id: this.rowObj.id
-        };
+        }
       } else if (this.selectType === 'mongodb') {
         this.paramsData = {
           datasourceName: this.MdbEdit.datasourceName,
@@ -3116,7 +3116,7 @@ export default {
           comments: this.MdbEdit.comments,
           jdbcDriverClass: this.MdbEdit.jdbcDriverClass,
           id: this.rowObj.id
-        };
+        }
       } else if (this.selectType.replace(/\s*/g, '') === 'sqlserver') {
         this.paramsData = {
           datasourceName: this.sqlserverEdit.datasourceName,
@@ -3137,7 +3137,7 @@ export default {
           jdbcUsername: this.sqlserverEdit.jdbcUsername,
           jdbcPassword: this.sqlserverEdit.jdbcPassword,
           id: this.rowObj.id
-        };
+        }
       } else if (
         this.selectType === 'greenplum' ||
         this.selectType === 'postgresql'
@@ -3160,7 +3160,7 @@ export default {
           jdbcUsername: this.GPEditForm.jdbcUsername,
           jdbcPassword: this.GPEditForm.jdbcPassword,
           id: this.rowObj.id
-        };
+        }
       } else if (
         this.selectType === 'clickhouse' ||
         this.selectType === 'hbase' ||
@@ -3185,7 +3185,7 @@ export default {
           jdbcUsername: this.chEdit.jdbcUsername,
           jdbcPassword: this.chEdit.jdbcPassword,
           id: this.rowObj.id
-        };
+        }
       } else if (
         this.selectType === 'hive' ||
         this.selectType === 'spark' ||
@@ -3219,7 +3219,7 @@ export default {
           jdbcUsername: this.hiveEdit.jdbcUsername,
           jdbcPassword: this.hiveEdit.jdbcPassword,
           id: this.rowObj.id
-        };
+        }
       } else if (this.selectType === 'db2') {
         this.paramsData = {
           datasourceName: this.DB2Edit.datasourceName,
@@ -3240,19 +3240,19 @@ export default {
           jdbcUsername: this.DB2Edit.jdbcUsername,
           jdbcPassword: this.DB2Edit.jdbcPassword,
           id: this.rowObj.id
-        };
+        }
       }
-      this.paramsData.projectId = sessionStorage.getItem('projectId');
+      this.paramsData.projectId = sessionStorage.getItem('projectId')
       datasourceApi.updated(this.paramsData).then(() => {
-        this.fetchData();
-        this.dialogEditVisible = false;
+        this.fetchData()
+        this.dialogEditVisible = false
         this.$notify({
           title: '成功',
           message: '编辑数据成功',
           type: 'success',
           duration: 2000
-        });
-      });
+        })
+      })
       // }
       // });
     },
@@ -3263,43 +3263,43 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          this.handleDelete(row);
+          this.handleDelete(row)
         })
         .catch(() => {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });
-        });
+          })
+        })
     },
     fetchData() {
-      this.listLoading = true;
-      this.listQuery.projectId = sessionStorage.getItem('projectId');
+      this.listLoading = true
+      this.listQuery.projectId = sessionStorage.getItem('projectId')
       datasourceApi.getJobList(this.listQuery).then(response => {
-        this.total = response.total;
-        this.list = response.records;
-        this.listLoading = false;
-        console.log(response);
-      });
+        this.total = response.total
+        this.list = response.records
+        this.listLoading = false
+        console.log(response)
+      })
     },
     getShowStrategy(datasource) {
       if (datasource === 'hbase') {
-        this.jdbc = this.mongodb = false;
-        this.hbase = true;
+        this.jdbc = this.mongodb = false
+        this.hbase = true
       } else if (datasource === 'mongodb') {
-        this.jdbc = this.hbase = false;
-        this.mongodb = true;
+        this.jdbc = this.hbase = false
+        this.mongodb = true
         this.temp.jdbcUrl =
-          'mongodb://[username:password@]host1[:port1][,...hostN[:portN]]][/[database][?options]]';
+          'mongodb://[username:password@]host1[:port1][,...hostN[:portN]]][/[database][?options]]'
       } else {
-        this.hbase = this.mongodb = false;
-        this.jdbc = true;
+        this.hbase = this.mongodb = false
+        this.jdbc = true
       }
     },
     handleDelete(row) {
-      console.log('删除');
-      const idList = [];
-      idList.push(row.id);
+      console.log('删除')
+      const idList = []
+      idList.push(row.id)
       // 拼成 idList=xx
       // 多个比较麻烦，这里不处理
       datasourceApi
@@ -3307,45 +3307,45 @@ export default {
           idList: row.id
         })
         .then(response => {
-          this.fetchData();
+          this.fetchData()
           this.$notify({
             title: '提示',
             message: '删除成功',
             type: 'success',
             duration: 2000
-          });
-        });
+          })
+        })
       // const index = this.list.indexOf(row)
     },
     handleFetchPv(id) {
       datasourceApi.fetched(id).then(response => {
-        this.pluginData = response;
-        this.dialogPvVisible = true;
-      });
+        this.pluginData = response
+        this.dialogPvVisible = true
+      })
     },
     formatJson(filterVal, jsonData) {
       return jsonData.map(v =>
         filterVal.map(j => {
           if (j === 'timestamp') {
-            return parseTime(v[j]);
+            return parseTime(v[j])
           } else {
-            return v[j];
+            return v[j]
           }
         })
-      );
+      )
     },
     changePass(value) {
-      this.visible = !(value === 'show');
+      this.visible = !(value === 'show')
     },
     /**
      * @description: 重置
      */
     reSet() {
-      this.listQuery.datasourceName = '';
-      this.fetchData();
+      this.listQuery.datasourceName = ''
+      this.fetchData()
     }
   }
-};
+}
 </script>
 
 <style lang="scss">

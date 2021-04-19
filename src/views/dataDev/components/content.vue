@@ -191,10 +191,8 @@ export default {
     runQuery(val) {
       console.log(val, '子传父')
       console.log(this.queryDsInfo)
+      // this.tableLoading = true
       this.$refs.table.queryData(this.queryDsInfo, val.code, {})
-      // this.code = val.code
-      // console.log(this.code)
-      // this.$refs.table.addTab();
     },
     previewData(dsInfo, params) {
       this.$refs.table.initData(dsInfo, params)

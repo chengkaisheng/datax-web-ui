@@ -421,26 +421,26 @@ export default {
   },
   watch: {
     sqlName: function(val) {
-      console.log(val);
-      console.log(this.params, '----------');
+      console.log(val)
+      console.log(this.params, '----------')
       if (val === 'MYSQL') {
-        this.params.jdbcUrl = 'jdbc:mysql://{host}:{port}/{database}';
-        console.log(this.params.jdbcUrl);
+        this.params.jdbcUrl = 'jdbc:mysql://{host}:{port}/{database}'
+        console.log(this.params.jdbcUrl)
       } else if (val === 'oracle') {
-        this.params.jdbcUrl = 'jdbc:oracle:thin:@//{host}:{port}/{database}';
+        this.params.jdbcUrl = 'jdbc:oracle:thin:@//{host}:{port}/{database}'
       } else if (val === 'postgresql') {
-        this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
-        this.ruleForm.driver = 'org.postgresql.Driver';
+        this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}'
+        this.ruleForm.driver = 'org.postgresql.Driver'
       } else if (val === 'greenplum') {
-        this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}';
-        this.ruleForm.driver = 'org.postgresql.Driver';
+        this.params.jdbcUrl = 'jdbc:postgresql://{host}:{port}/{database}'
+        this.ruleForm.driver = 'org.postgresql.Driver'
       } else if (val === 'sqlserver') {
         this.params.jdbcUrl =
-          'jdbc:sqlserver://{host}:{port};DatabaseName={database}';
+          'jdbc:sqlserver://{host}:{port};DatabaseName={database}'
       } else if (val === 'clickhouse') {
-        this.params.jdbcUrl = 'jdbc:clickhouse://{host}:{port}/{database}';
+        this.params.jdbcUrl = 'jdbc:clickhouse://{host}:{port}/{database}'
       } else if (val === 'hive') {
-        this.params.jdbcUrl = 'jdbc:hive2://{host}:{port}/{database}';
+        this.params.jdbcUrl = 'jdbc:hive2://{host}:{port}/{database}'
       }
     },
     'HiveForm.master': {
@@ -494,30 +494,30 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          console.log(row);
-          const param = {};
-          param.id = row.id;
-          console.log(param);
+          console.log(row)
+          const param = {}
+          param.id = row.id
+          console.log(param)
           meta.getDbMetadata(param).then((res) => {
-            console.log(res);
-            this.gathering = false;
+            console.log(res)
+            this.gathering = false
             this.$message({
               type: 'success',
               message: '元数据采集成功'
-            });
-          });
-          this.gathering = true;
+            })
+          })
+          this.gathering = true
           this.$message({
             type: 'info',
             message: '采集任务开始!'
-          });
+          })
         })
         .catch(() => {
           this.$message({
             type: 'warning',
             message: '已取消元数据采集'
-          });
-        });
+          })
+        })
     },
     selectDataSource(datasource) {
       if (datasource === 'MYSQL') {
@@ -569,7 +569,7 @@ export default {
       }
     },
     handleCreate() {
-      this.dialogVisible = true;
+      this.dialogVisible = true
     },
     searchSQL() {
       for (let i = 0; i < this.typeArr.length; i++) {
@@ -583,8 +583,8 @@ export default {
     },
     // tabs标签页方法
     handleClick(tab, event) {
-      console.log(tab.label);
-      console.log(tab.index);
+      console.log(tab.label)
+      console.log(tab.index)
       if (tab.index === '0') {
         this.lastSelect = ''
         this.currentSelect = ''
@@ -613,9 +613,9 @@ export default {
     },
     // 取消
     cancel() {
-      this.dialogVisible = false;
-      this.currentStep = 1;
-      console.log(this.currentStep, '1111111111111111111111');
+      this.dialogVisible = false
+      this.currentStep = 1
+      console.log(this.currentStep, '1111111111111111111111')
       this.MySQLForm = {}
       this.OracleForm = {}
       this.MdbForm = {}
@@ -628,18 +628,18 @@ export default {
     nextStep() {
       if (this.currentStep < 2) {
         if (this.sqlName !== '') {
-          this.currentStep++;
+          this.currentStep++
         } else {
-          this.$message.warning('请选择数据源类型');
+          this.$message.warning('请选择数据源类型')
         }
       }
-      console.log(this.currentStep);
+      console.log(this.currentStep)
     },
     // 上一步
     lastStep() {
-      console.log(this.currentStep);
+      console.log(this.currentStep)
       if (this.currentStep > 1) {
-        this.currentStep--;
+        this.currentStep--
       }
     },
     // 双击下一步
@@ -675,38 +675,38 @@ export default {
     addData() {
       const obj = {}
       if (this.sqlName === 'Hive') {
-        obj.datasourceName = this.HiveForm.datasourceName;
-        obj.datasource = this.sqlName.toLowerCase();
-        obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '2://' + this.HiveForm.master + ':' + this.HiveForm.serverPort + '/' + this.HiveForm.database;
-        obj.userName = this.HiveForm.username;
-        obj.password = this.HiveForm.password;
-        obj.datasourceGroup = this.HiveForm.datasourceGroup;
-        obj.comments = this.HiveForm.comments;
-        obj.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver';
+        obj.datasourceName = this.HiveForm.datasourceName
+        obj.datasource = this.sqlName.toLowerCase()
+        obj.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '2://' + this.HiveForm.master + ':' + this.HiveForm.serverPort + '/' + this.HiveForm.database
+        obj.userName = this.HiveForm.username
+        obj.password = this.HiveForm.password
+        obj.datasourceGroup = this.HiveForm.datasourceGroup
+        obj.comments = this.HiveForm.comments
+        obj.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver'
       }
       datasourceApi.created(obj).then(() => {
-        this.fetchData();
-        this.dialogVisible = false;
+        this.fetchData()
+        this.dialogVisible = false
         this.$notify({
           title: '成功',
           message: '添加成功',
           type: 'success',
           duration: 2000
-        });
-      });
+        })
+      })
     },
     // 测试连接
     testLink() {
       const test = {}
       if (this.sqlName === 'Hive') {
-        test.datasourceName = this.HiveForm.datasourceName;
-        test.datasource = this.sqlName.toLowerCase();
-        test.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '2://' + this.HiveForm.master + ':' + this.HiveForm.serverPort + '/' + this.HiveForm.database;
-        test.jdbcUsername = this.HiveForm.username;
-        test.jdbcPassword = this.HiveForm.password;
-        test.datasourceGroup = this.HiveForm.datasourceGroup;
-        test.comments = this.HiveForm.comments;
-        test.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver';
+        test.datasourceName = this.HiveForm.datasourceName
+        test.datasource = this.sqlName.toLowerCase()
+        test.jdbcUrl = 'jdbc:' + this.sqlName.toLowerCase() + '2://' + this.HiveForm.master + ':' + this.HiveForm.serverPort + '/' + this.HiveForm.database
+        test.jdbcUsername = this.HiveForm.username
+        test.jdbcPassword = this.HiveForm.password
+        test.datasourceGroup = this.HiveForm.datasourceGroup
+        test.comments = this.HiveForm.comments
+        test.jdbcDriverClass = 'org.apache.hive.jdbc.HiveDriver'
       }
       datasourceApi.test(test).then(response => {
         if (response.data === false) {
