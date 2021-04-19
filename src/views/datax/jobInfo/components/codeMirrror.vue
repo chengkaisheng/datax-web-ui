@@ -194,8 +194,8 @@ export default {
             sqlContent = editor.getValue()
             /* 将sql内容进行格式后放入编辑器中*/
             editor.setValue(sqlFormatter.format(sqlContent))
-          },
-        },
+          }
+        }
         // configureMouse() {
         //     console.log(window.getSelection());
         //     return {
@@ -318,8 +318,8 @@ export default {
      */
     setCode(code) {
       this.code = code
-    },
-  },
+    }
+  }
 }
 </script>
 

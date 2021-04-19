@@ -368,7 +368,11 @@ rkJggg=="
         @tab-remove="removeJobTab"
         @tab-click="JobTabClick"
       >
-        <el-tab-pane label="欢迎" name="欢迎">
+        <el-tab-pane
+          v-if="!$store.state.taskAdmin.taskDetailList.length"
+          label="欢迎"
+          name="欢迎"
+        >
           <div class="title_h3">一站式数据开发解决方案</div>
           <svg-icon
             style="width: 100%; height: 90%; margin-top: 25px"
@@ -998,6 +1002,7 @@ export default {
   },
 
   created() {
+    console.log('所有列表', this.$store.state.taskAdmin.taskDetailList)
     if (sessionStorage.getItem('level') === '2') {
       this.showAdmin = false
     } else {
@@ -1580,6 +1585,7 @@ export default {
                 if (res.content) {
                   console.log('content----->>>>', res.content.jobParam)
                   this.$store.commit('SETCODE', res.content.jobParam)
+
                   this.detailData = res.content
                   this.getJobDetail(res.content)
                 } else {
@@ -1738,13 +1744,12 @@ export default {
           console.log(this.List)
           const firstElement = content?.data[0] || {}
           const a = {}
-
           a.title = firstElement.jobDesc
           a.name = firstElement.jobDesc
           a.content = firstElement
           if (!this.firstTime) {
             if (!del) {
-              // this.$store.state.taskAdmin.taskDetailList.push(a);
+              this.$store.state.taskAdmin.taskDetailList.push(a)
               this.$store.commit('ADD_TASKDETAIL', a)
               this.jobDetailIdx = a.content.id + ''
             }
@@ -1798,11 +1803,11 @@ export default {
           a.name = this.List[eleIndex].jobDesc
           a.content = this.List[eleIndex]
           if (!this.firstTime) {
-            // if (!del) {
-            // this.$store.state.taskAdmin.taskDetailList.push(a);
-            this.$store.commit('ADD_TASKDETAIL', a)
-            this.jobDetailIdx = a.content.id + ''
-            // }
+            if (!del) {
+              this.$store.state.taskAdmin.taskDetailList.push(a)
+              this.$store.commit('ADD_TASKDETAIL', a)
+              this.jobDetailIdx = a.content.id + ''
+            }
           } else {
             this.firstTime = false
           }
