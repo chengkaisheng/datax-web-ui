@@ -128,6 +128,7 @@
               :allow-drag="allowDrag"
               draggable
               node-key="id"
+              :expand-on-click-node="false"
               @node-drag-start="handleDragStart"
               @node-drag-enter="handleDragEnter"
               @node-drag-leave="handleDragLeave"
@@ -221,7 +222,7 @@ rkJggg=="
                   <a href="javascript:" @click="showAllName('NORMAL')">
                     <svg-icon class="svg_icon" icon-class="NORMAL" /> 普通任务
                   </a>
-                  <a href="javascript:" @click="showAllName('IMPORT')">
+                  <!-- <a href="javascript:" @click="showAllName('IMPORT')">
                     <svg
                       id="Layer_1"
                       version="1.1"
@@ -263,15 +264,15 @@ rkJggg=="
                   </a>
                   <a href="javascript:" @click="showAllName('EXPORT')">
                     <svg-icon class="svg_icon" icon-class="EXPORT" />导出任务
-                  </a>
+                  </a> -->
                   <a href="javascript:" @click="showAllName('COMPUTE')">
                     <svg-icon class="svg_icon" icon-class="COMPUTE" />计算任务
                   </a>
-                  <a href="javascript:" @click="showAllName('SQLJOB')">
+                  <!-- <a href="javascript:" @click="showAllName('SQLJOB')">
                     <svg-icon class="svg_icon" icon-class="SQLJOB" />SQL任务
-                  </a>
+                  </a> -->
                   <a href="javascript:" @click="showAllName('SPARK')">
-                    <svg-icon class="svg_icon" icon-class="spark" />SPARK任务
+                    <svg-icon class="svg_icon" icon-class="SPARK" />SPARK任务
                   </a>
                   <a href="javascript:" @click="showAllName('DQCJOB')">
                     <svg-icon class="svg_icon" icon-class="DQCJOB" />质量任务
@@ -1347,7 +1348,7 @@ export default {
         this.$message.warning('该任务暂无版本信息')
       }
     },
-    //新增Hive任务
+    // 新增Hive任务
     ShowHives(data) {
       this.currentJob = data
       console.log('>>>>>>>>', this.currentJob)
@@ -1374,6 +1375,9 @@ export default {
       this.showHive = false
       this.allName = ''
       this.Rename = ''
+      this.chineseName = ''
+      this.englishName = ''
+      this.task = ''
     },
 
     // 拖拽tree
@@ -1384,6 +1388,7 @@ export default {
     handleDragEnter(draggingNode, dropNode, ev) {
       this.targetId = dropNode.key
       console.log('拖拽进入其他节点时触发的事件', this.targetId)
+      console.log('拖拽进入其他节点时触发的事件', dropNode)
     },
     handleDragLeave(draggingNode, dropNode, ev) {
       console.log('拖拽离开某个节点时触发的事件')
@@ -1395,22 +1400,27 @@ export default {
       console.log('拖拽成功完成时触发的事件')
     },
     handleDrop(draggingNode, dropNode, dropType, ev) {
-      job
-        .dragReName({
-          id: this.dropId,
-          parentId: this.targetId,
-        })
-        .then((res) => {
-          console.log(res)
-          if (res.code === 200) {
-            console.log(res.msg)
-          } else {
-            this.$message.err(res.msg)
-          }
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+      if (dropNode.data.type === 1) {
+        job
+          .dragReName({
+            id: this.dropId,
+            parentId: this.targetId,
+          })
+          .then((res) => {
+            console.log(res)
+            if (res.code === 200) {
+              console.log(res.msg)
+            } else {
+              this.$message.err(res.msg)
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      } else {
+        this.$message.error('拖拽失败，目标必须是文件夹')
+        this.getDataTree()
+      }
       console.log('tree drop: ', dropNode.label, dropType, draggingNode)
     },
     allowDrop(draggingNode, dropNode, type) {
@@ -1427,23 +1437,23 @@ export default {
     Preservation(val) {
       console.log('______>>>>>', val)
     },
-    //HIVE任务新建
+    // HIVE任务新建
     HivecreateHandl() {
       console.log('111')
       console.log('wert', this.selectRow)
       console.log('job---->', this.currentJob)
       const params = {
         name: this.chineseName,
-        ename: this.englishName,
-        specification: this.task,
         projectId: this.selectRow.projectId,
         parentId: this.selectRow.id,
         type: this.currentJob ? 2 : 1,
         jobType: this.currentJob,
       }
+      const ename = this.englishName
+      const specification = this.task
       console.log('p------>>>', params)
       job
-        .createNewFile(params)
+        .CreateFile(params, ename, specification)
         .then((res) => {
           console.log('pppppp>>>>>>>', res)
           if (res.code === 200) {
@@ -1458,15 +1468,23 @@ export default {
                 'this.$store.state.taskAdmin.GroupId'
               )
               this.showHive = false
+              this.chineseName = ''
+              this.englishName = ''
+              this.task = ''
               if (this.currentJob) {
                 this.createNewJob(this.currentJob)
                 this.currentJob = ''
               }
               this.chineseName = ''
+              this.englishName = ''
+              this.task = ''
               this.$message.success('新增成功')
             } else {
               this.$message.warning(res.content)
               this.showHive = false
+              this.chineseName = ''
+              this.englishName = ''
+              this.task = ''
             }
           } else {
             this.$message.error(res.content)
@@ -1475,6 +1493,9 @@ export default {
         })
         .catch((err) => {
           console.log(err)
+          this.chineseName = ''
+          this.englishName = ''
+          this.task = ''
         })
     },
     // 新建文件夹或任务
@@ -1492,6 +1513,7 @@ export default {
         .createNewFile(params)
         .then((res) => {
           if (res.code === 200) {
+            console.log('普通任务----》》》》', res)
             this.getDataTree()
             this.selectRow = {}
             if (res.content !== '请选择父级目录') {
@@ -1561,12 +1583,11 @@ export default {
     handleNodeClick(data) {
       console.log('任务数据', data)
       this.selectRow = data
-      this.jobType = data.jobType
       this.$store.commit('Singledata', data)
       this.$store.commit('SETPJTID', data.projectId)
-      this.jobType = data.jobType
       this.$store.commit('SETCODE', '')
       if (data.type === 2) {
+        this.jobType = data.jobType
         this.$store.commit('changeGroupData', data)
         this.$store.commit('changeGroupName', data.name)
         this.currentJobName = data.name
@@ -1596,6 +1617,7 @@ export default {
               console.log(err)
             })
         } else {
+          this.$store.commit('changeJobId', '')
           this.createNewJob(data.jobType)
         }
       } else {
