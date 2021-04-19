@@ -269,6 +269,20 @@ rkJggg=="
                   <a href="javascript:" @click="showAllName('COMPUTE')">
                     <svg-icon class="svg_icon" icon-class="COMPUTE" />计算任务
                   </a>
+                  <a id="level3" href="javascript:" @click="showAllName('COMPUTE')">
+                    <svg-icon class="svg_icon" icon-class="COMPUTE" />数据同步任务
+                    <i class="el-icon-arrow-right" />
+                    <vue-context-menu
+                      class="right-menu2"
+                      :target="contextMenu2Target"
+                      :show.sync="contextMenu2Visible"
+                      style="display: none"
+                    >
+                      <a href="javascript:" @click="showAllName('COMPUTE')">
+                        <svg-icon class="svg_icon" icon-class="COMPUTE" />计算任务
+                      </a>
+                    </vue-context-menu>
+                  </a>
                   <!-- <a href="javascript:" @click="showAllName('SQLJOB')">
                     <svg-icon class="svg_icon" icon-class="SQLJOB" />SQL任务
                   </a> -->
@@ -800,8 +814,10 @@ export default {
       treeList: [],
       contextMenuVisible: false,
       contextMenu1Visible: false,
+      contextMenu2Visible: false,
       contextMenuTarget: '',
       contextMenu1Target: '',
+      contextMenu2Target: '',
       selectedIndex: '',
       /** el-select选项 */
       options: [],
@@ -978,13 +994,24 @@ export default {
 
     const a = document.getElementById('newFile')
     const b = document.getElementsByClassName('right-menu1')
+    const c = document.getElementById('level3')
+    const d = document.getElementsByClassName('right-menu2')
     for (var i = 0; i < b.length; i++) {
       b[i].style.display = 'none'
+    }
+
+    for (var i = 0; i < d.length; i++) {
+      d[i].style.display = 'none'
     }
 
     a.onmouseover = function() {
       for (var i = 0; i < b.length; i++) {
         b[i].style.display = 'block'
+      }
+    }
+    c.onmouseover = function() {
+      for (var i = 0; i < d.length; i++) {
+        d[i].style.display = 'block'
       }
     }
 
@@ -993,10 +1020,20 @@ export default {
         b[i].style.display = 'none'
       }
     }
+    c.onmouseout = function() {
+      for (var i = 0; i < d.length; i++) {
+        d[i].style.display = 'none'
+      }
+    }
 
     b.onmouseover = function() {
       for (var i = 0; i < b.length; i++) {
         b[i].style.display = 'block'
+      }
+    }
+    d.onmouseover = function() {
+      for (var i = 0; i < d.length; i++) {
+        d[i].style.display = 'block'
       }
     }
   },
@@ -2077,7 +2114,7 @@ export default {
                 border: 1px solid #eee;
                 box-shadow: 0 0.5em 1em 0 rgba(0, 0, 0, 0.1);
                 height: 400px;
-                overflow-y: auto;
+                // overflow-y: auto;
                 border-radius: 1px;
                 display: block;
                 margin-left: 116px;
@@ -2108,6 +2145,64 @@ export default {
                   font-size: 13px;
                   i {
                     margin-left: 20px;
+                  }
+                }
+                #level3 {
+                  padding: 2px 15px;
+                  width: 176px;
+                  height: 28px;
+                  line-height: 28px;
+                  text-align: left;
+                  display: block;
+                  color: #1a1a1a;
+                  text-decoration: none;
+                  font-size: 13px;
+                  position: relative;
+                  .right-menu2 {
+                    border: 1px solid #eee;
+                    box-shadow: 0 0.5em 1em 0 rgba(0, 0, 0, 0.1);
+                    height: 50px;
+                    border-radius: 1px;
+                    display: block;
+                    margin-left: 116px;
+                    margin-top: 28px;
+                    left: 60px;
+                    top: -28px;
+                    font-family: Microsoft Yahei, Avenir, Helvetica, Arial,
+                      sans-serif;
+                    -webkit-font-smoothing: antialiased;
+                    -moz-osx-font-smoothing: grayscale;
+                    text-align: center;
+                    color: #2c3e50;
+                    position: absolute;
+                    background: #fff;
+                    border: 1px solid rgba(0, 0, 0, 0.2);
+                    border-radius: 3px;
+                    z-index: 999;
+                    display: block;
+                    padding: 2px;
+                    box-shadow: 5px 5px 10px gray;
+                    a {
+                      padding: 2px 15px;
+                      width: 176px;
+                      height: 28px;
+                      line-height: 28px;
+                      text-align: left;
+                      display: block;
+                      color: #1a1a1a;
+                      text-decoration: none;
+                      font-size: 13px;
+                      i {
+                        margin-left: 20px;
+                      }
+                    }
+                    a:hover {
+                      background: #42b983;
+                      color: #fff;
+                    }
+                    hr {
+                      color: #eee;
+                    }
                   }
                 }
                 a:hover {

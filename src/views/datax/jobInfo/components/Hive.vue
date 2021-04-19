@@ -31,8 +31,7 @@
                 isshow = true
               }
             "
-            >新增</el-button
-          >
+          >新增</el-button>
           <el-input
             v-show="isshow"
             v-model="input"
@@ -50,11 +49,12 @@
                   isshow = false
                 }
               "
-              >取消</el-button
-            >
-            <el-button size="small" style="margin-bottom: 20px" type="primary"
-              >保存</el-button
-            >
+            >取消</el-button>
+            <el-button
+              size="small"
+              style="margin-bottom: 20px"
+              type="primary"
+            >保存</el-button>
           </div>
         </div>
       </el-drawer>
@@ -147,12 +147,12 @@ export default {
   components: {
     JsonEditor,
     MarddownEditor,
-    CodeMirror,
+    CodeMirror
   },
   data() {
     return {
       numberValidateForm: {
-        age: '',
+        age: ''
       },
       first: 'first',
       dialogVisible: false,
@@ -164,10 +164,10 @@ export default {
         { FunctionDescription: 'd' },
         { FunctionDescription: 'e' },
         { FunctionDescription: 'f' },
-        { FunctionDescription: 'g' },
+        { FunctionDescription: 'g' }
       ],
       temp: {
-        triggerStatus: '1',
+        triggerStatus: '1'
       },
       drawer: false,
       isshow: false,
@@ -175,7 +175,7 @@ export default {
       ddd: [],
       code: {},
       SingleData: {},
-      taskParam: [],
+      taskParam: []
     }
   },
   created() {},
@@ -221,7 +221,7 @@ export default {
           replaceParam: '',
           replaceParamType: 'Timestamp',
           userId: 0,
-          id: this.$store.state.taskAdmin.GroupId,
+          id: this.$store.state.taskAdmin.GroupId
         }
         console.log('this.store', this.SingleData)
         console.log('------->', val)
@@ -264,7 +264,7 @@ export default {
           readerTable: '',
           replaceParam: '',
           replaceParamType: 'Timestamp',
-          userId: 0,
+          userId: 0
         }
         console.log('this.store', this.SingleData)
         console.log('------->', val)
@@ -293,8 +293,8 @@ export default {
     },
     handleClick(tab, event) {
       console.log(tab, event)
-    },
-  },
+    }
+  }
 }
 </script>
 
