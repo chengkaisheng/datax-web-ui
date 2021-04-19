@@ -1409,6 +1409,9 @@ export default {
       this.showHive = false
       this.allName = ''
       this.Rename = ''
+      this.chineseName = ''
+      this.englishName = ''
+      this.task = ''
     },
 
     // 拖拽tree
@@ -1475,16 +1478,16 @@ export default {
       console.log('job---->', this.currentJob)
       const params = {
         name: this.chineseName,
-        ename: this.englishName,
-        specification: this.task,
         projectId: this.selectRow.projectId,
         parentId: this.selectRow.id,
         type: this.currentJob ? 2 : 1,
         jobType: this.currentJob
       }
+      const ename = this.englishName
+      const specification = this.task
       console.log('p------>>>', params)
       job
-        .createNewFile(params)
+        .CreateFile(params, ename, specification)
         .then((res) => {
           console.log('pppppp>>>>>>>', res)
           if (res.code === 200) {
@@ -1499,15 +1502,23 @@ export default {
                 'this.$store.state.taskAdmin.GroupId'
               )
               this.showHive = false
+              this.chineseName = ''
+              this.englishName = ''
+              this.task = ''
               if (this.currentJob) {
                 this.createNewJob(this.currentJob)
                 this.currentJob = ''
               }
               this.chineseName = ''
+              this.englishName = ''
+              this.task = ''
               this.$message.success('新增成功')
             } else {
               this.$message.warning(res.content)
               this.showHive = false
+              this.chineseName = ''
+              this.englishName = ''
+              this.task = ''
             }
           } else {
             this.$message.error(res.content)
@@ -1516,6 +1527,9 @@ export default {
         })
         .catch((err) => {
           console.log(err)
+          this.chineseName = ''
+          this.englishName = ''
+          this.task = ''
         })
     },
     // 新建文件夹或任务
@@ -1533,6 +1547,7 @@ export default {
         .createNewFile(params)
         .then((res) => {
           if (res.code === 200) {
+            console.log('普通任务----》》》》', res)
             this.getDataTree()
             this.selectRow = {}
             if (res.content !== '请选择父级目录') {
@@ -1636,6 +1651,7 @@ export default {
               console.log(err)
             })
         } else {
+          this.$store.commit('changeJobId', '')
           this.createNewJob(data.jobType)
         }
       } else {

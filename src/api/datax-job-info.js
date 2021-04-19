@@ -186,7 +186,18 @@ export function createNewFile(data) {
     data
   })
 }
-
+// 新增hive和impala任务
+export function CreateFile(params, ename, specification) {
+  return request({
+    url: '/api/jobProjectGroup/addhive',
+    method: 'post',
+    data: params,
+    params: {
+      ename,
+      specification
+    }
+  })
+}
 // 删除文件或文件夹
 export function delFile(query) {
   return request({

@@ -63,19 +63,22 @@
       <template>
         <el-tabs
           v-model="first"
-          style="text-align: center"
+          style="text-align: center; height: 500px"
           type="card"
           @tab-click="handleClick"
         >
-          <el-tab-pane align="center" label="任务日志" name="first">
+          <el-tab-pane
+            style="text-align: left; height: 420px"
+            align="center"
+            label="任务日志"
+            name="first"
+          >
             <template>
               <el-table
                 :data="TableData"
                 style="width: 100%"
                 :header-cell-style="{
-                  background: '#eee',
                   fontSize: '16px',
-                  fontWeight: 800,
                   color: '#606266',
                 }"
               >
@@ -129,6 +132,11 @@
                 />
               </el-table>
             </template>
+            <el-pagination
+              background
+              layout="prev, pager, next"
+              :total="TableData.length"
+            />
           </el-tab-pane>
         </el-tabs>
       </template>
@@ -158,13 +166,13 @@ export default {
       dialogVisible: false,
       activeName: 'second',
       TableData: [
-        { FunctionDescription: 'a' },
-        { FunctionDescription: 'b' },
-        { FunctionDescription: 'c' },
-        { FunctionDescription: 'd' },
-        { FunctionDescription: 'e' },
-        { FunctionDescription: 'f' },
-        { FunctionDescription: 'g' }
+        // { FunctionDescription: 'a' },
+        // { FunctionDescription: 'b' },
+        // { FunctionDescription: 'c' },
+        // { FunctionDescription: 'd' },
+        // { FunctionDescription: 'e' },
+        // { FunctionDescription: 'f' },
+        // { FunctionDescription: 'g' },
       ],
       temp: {
         triggerStatus: '1'
@@ -178,7 +186,9 @@ export default {
       taskParam: []
     }
   },
-  created() {},
+  created() {
+    console.log('lang---->', this.TableData.length)
+  },
   methods: {
     runQuery(val) {
       console.log('------->', val)
@@ -223,13 +233,18 @@ export default {
           userId: 0,
           id: this.$store.state.taskAdmin.GroupId
         }
-        console.log('this.store', this.SingleData)
-        console.log('------->', val)
-        console.log('======>>>', jobinfo)
         this.code = val
-        job.updateJob(jobinfo).then((res) => {
-          console.log(res)
-        })
+        job
+          .updateJob(jobinfo)
+          .then((res) => {
+            console.log(res)
+            this.$message('保存成功')
+            this.$emit('gettreelist', jobinfo.projectId)
+          })
+          .catch((err) => {
+            console.log(err)
+            this.$message('保存失败')
+          })
       } else {
         this.SingleData = this.$store.state.taskAdmin.SingleData
         console.log('ID------>>>>>', this.$store.state.taskAdmin.SingleData)
@@ -276,9 +291,11 @@ export default {
             .AddHive(jobinfo)
             .then((res) => {
               console.log('----=====>>>>', res.content)
-              this.$emit('gettreelist', jobinfo.projectId)
+              this.$message('保存成功')
+              this.$emit('gettreelist', res.content.projectId)
             })
             .catch((err) => {
+              this.$message('保存失败')
               console.log(err)
             })
         }
@@ -307,7 +324,7 @@ export default {
 .elid {
   position: relative;
   width: 100%;
-  height: 450px;
+  height: 440px;
 }
 .drawer {
   position: absolute;
@@ -316,6 +333,6 @@ export default {
 }
 .log {
   width: 100%;
-  height: 400px;
+  height: auto;
 }
 </style>
