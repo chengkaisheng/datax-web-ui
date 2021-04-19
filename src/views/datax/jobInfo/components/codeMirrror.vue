@@ -28,11 +28,14 @@
     <div :style="{ height: `400px !important` }" class="sqlArea">
       <textarea
         ref="mycode"
-        v-model="code"
+        v-model="aaa"
         class="codesql"
         @onCursorActivity="SelectSQL"
         @click.native="chooseSql"
       />
+      <div v-if="lookup" class="lookup">
+        <span>查找：<input type="text" /> </span>
+      </div>
     </div>
   </div>
 </template>
@@ -58,7 +61,23 @@ export default {
   props: ['sqlHeight', 'columnList', 'tableList', 'sqlparams'],
   data() {
     return {
+      lookup: false,
       TIPS: false,
+      notes: `--============================程序说明================================================
+-- 脚本名称：HS_QHZ_CMP_P_CO_SETSAL_GAP_MONTH.HQL
+-- 功能说明：
+-- 查询原表：
+-- 目标表：
+-- 更新方式：
+-- 科室部门：
+-- 负责人：【登录账号】
+-- 创建日期：【${Math.round(new Date() / 1000)}】
+-- 运行周期：
+-- 例程：
+-- 备注：
+-- 脚本版本:       修改人:        修改日期:         修改内容:
+-- v1
+ ====================================================================================`,
       code: '',
       sqlLoading: false,
       tips: {},
@@ -68,8 +87,16 @@ export default {
       infoMsg: 0,
       editor: {},
       SingleData: {},
-      flag: true,
     }
+  },
+  computed: {
+    aaa() {
+      if (!this.code) {
+        return this.notes + '' || this.code
+      } else if (this.code) {
+        return this.code
+      }
+    },
   },
   watch: {
     code(val) {
@@ -132,19 +159,7 @@ export default {
     // console.log(this.tips, 'tips');
   },
   created() {
-    document.addEventListener('keyup', function (e) {
-      console.log('code---->', e.keyCode)
-    })
     this.code = this.$store.state.taskAdmin.setcode
-    document.addEventListener('onkeydown', function (e) {
-      var keyCode = e.keyCode || e.which || e.charCode
-      var ctrlKey = e.ctrlKey || e.metaKey
-      if (ctrlKey && keyCode == 83) {
-        alert('save')
-      }
-      e.preventDefault()
-      return false
-    })
   },
   mounted() {
     this.mountCodeMirror()
@@ -170,7 +185,8 @@ export default {
     /**
      * @description: 保存查询
      */
-    saveQuery() {
+    saveQuery(val) {
+      console.log('code---', val)
       this.TIPS = false
       console.log('保存查询')
       this.$emit('saveQuery', this.code)
@@ -370,6 +386,7 @@ export default {
 }
 
 .sqlArea {
+  position: relative;
   height: 400px;
   overflow: scroll;
 }
@@ -377,7 +394,12 @@ export default {
 .sqlArea::-webkit-scrollbar {
   display: none;
 }
-
+.lookup {
+  position: absolute;
+  top: 40px;
+  right: 50px;
+  border: 1px solid #ccc;
+}
 >>> .CodeMirror-gutters {
   background-color: #fff;
   border-right: none;

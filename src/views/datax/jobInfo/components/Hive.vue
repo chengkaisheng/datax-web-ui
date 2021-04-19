@@ -234,20 +234,17 @@ export default {
           userId: 0,
           id: this.$store.state.taskAdmin.GroupId,
         }
-        console.log('this.store', this.SingleData)
-        console.log('------->', val)
-        console.log('======>>>', jobinfo)
         this.code = val
         job
           .updateJob(jobinfo)
           .then((res) => {
             console.log(res)
-            this.$message('修改成功')
+            this.$message('保存成功')
             this.$emit('gettreelist', jobinfo.projectId)
           })
           .catch((err) => {
             console.log(err)
-            this.$message('修改失败')
+            this.$message('保存失败')
           })
       } else {
         this.SingleData = this.$store.state.taskAdmin.SingleData

@@ -42,8 +42,8 @@ module.exports = {
         ws: false,
         // target: `http://localhost:${apiPort}/api`,
         // target: 'http://47.103.79.104:9090',
-        target: 'http://183.194.64.166:9527',
-        // target: 'http://192.168.3.115:9527', //杨江主
+        //target: 'http://183.194.64.166:9527',
+        target: 'http://192.168.3.115:8080', //杨江主
         // target: 'http://192.168.3.83:8080', // 曹海生
         // target: 'http://192.168.3.70:8083', // 刘向前
         // target: 'http://192.168.3.39:8080', // 侯峰
