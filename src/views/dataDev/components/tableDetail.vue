@@ -187,6 +187,11 @@
             placement="top"
           />
         </span>
+        <!-- <el-input
+          v-model="search"
+          size="mini"
+          placeholder="输入关键字搜索"
+        /> -->
         <el-table
           ref="tableHisSql"
           v-loading="tableLoading"

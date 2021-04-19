@@ -243,7 +243,8 @@ export default {
       schemaTreeData: [],
       schemaTreeLoading: false,
       /** 数据源列表 */
-      dataSourceList: []
+      dataSourceList: [],
+      indexi: 0
     }
   },
   computed: {
@@ -302,6 +303,7 @@ export default {
     }
   },
   created() {
+    // this.datasourceSelectedId = this.dataSourceList[0].id
     if (sessionStorage.getItem('strParam')) {
       this.arrQuery.projectId = sessionStorage
         .getItem('strParam')
@@ -503,16 +505,22 @@ export default {
             res.records[i].datasourceName +
             ' - ' +
             res.records[i].jdbcUrl.split('//')[1].split('/')[0]
+          // if (this.schemaTreeData === '') {
+          //   // this.indexi += this.indexi
+          //   // console.log(this.indexi++)
+          // }
         }
         console.log(res.records)
         this.dataSourceList = res.records
+        this.datasourceSelectedId = res.records[this.indexi].id
         console.log('55555555555555555555555555' + this.dataSourceList)
         // 初始化数据库以及schema
-        this.datasourceSelectedId = ''
-        this.schemaTreeData = []
-        this.schemaTree = ''
+        // this.datasourceSelectedId = ''
+        // this.schemaTreeData = []
+        // this.schemaTree = ''
         this.schemaTreeLoading = false
         this.sourceList = res.records // 传给子组件的数据
+        this.getSchemas(this.datasourceSelectedId)
       })
     },
 
@@ -572,10 +580,16 @@ export default {
         (item) => item.id === id
       )
       this.schemaTreeLoading = true
+      // for (var i = 0; i < this.dataSourceList.length;i++) {
       getTableSchema({
         datasourceId: id
+        // datasourceId: this.dataSourceList[i].id
       })
         .then((response) => {
+          console.log(response)
+          if (response === '') {
+            // this.indexi++
+          }
           const arr = []
           for (let i = 0; i < response.length; i++) {
             arr.push({
@@ -589,8 +603,11 @@ export default {
         })
         .catch((err) => {
           console.log(err)
+          // this.indexi++
+          this.schemaTreeData = []
           this.schemaTreeLoading = false
         })
+      // }
     }
   }
 }
