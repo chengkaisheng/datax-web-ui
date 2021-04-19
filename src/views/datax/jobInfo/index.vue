@@ -127,6 +127,7 @@
               :allow-drag="allowDrag"
               draggable
               node-key="id"
+              :expand-on-click-node="false"
               @node-drag-start="handleDragStart"
               @node-drag-enter="handleDragEnter"
               @node-drag-leave="handleDragLeave"
@@ -222,7 +223,7 @@ rkJggg=="
                   <a href="javascript:" @click="showAllName('NORMAL')">
                     <svg-icon class="svg_icon" icon-class="NORMAL" /> 普通任务
                   </a>
-                  <a href="javascript:" @click="showAllName('IMPORT')">
+                  <!-- <a href="javascript:" @click="showAllName('IMPORT')">
                     <svg
                       id="Layer_1"
                       version="1.1"
@@ -264,15 +265,15 @@ rkJggg=="
                   </a>
                   <a href="javascript:" @click="showAllName('EXPORT')">
                     <svg-icon class="svg_icon" icon-class="EXPORT" />导出任务
-                  </a>
+                  </a> -->
                   <a href="javascript:" @click="showAllName('COMPUTE')">
                     <svg-icon class="svg_icon" icon-class="COMPUTE" />计算任务
                   </a>
-                  <a href="javascript:" @click="showAllName('SQLJOB')">
+                  <!-- <a href="javascript:" @click="showAllName('SQLJOB')">
                     <svg-icon class="svg_icon" icon-class="SQLJOB" />SQL任务
-                  </a>
+                  </a> -->
                   <a href="javascript:" @click="showAllName('SPARK')">
-                    <svg-icon class="svg_icon" icon-class="spark" />SPARK任务
+                    <svg-icon class="svg_icon" icon-class="SPARK" />SPARK任务
                   </a>
                   <a href="javascript:" @click="showAllName('DQCJOB')">
                     <svg-icon class="svg_icon" icon-class="DQCJOB" />质量任务
@@ -1376,6 +1377,7 @@ export default {
     handleDragEnter(draggingNode, dropNode, ev) {
       this.targetId = dropNode.key
       console.log('拖拽进入其他节点时触发的事件', this.targetId)
+      console.log('拖拽进入其他节点时触发的事件', dropNode)
     },
     handleDragLeave(draggingNode, dropNode, ev) {
       console.log('拖拽离开某个节点时触发的事件')
@@ -1387,22 +1389,27 @@ export default {
       console.log('拖拽成功完成时触发的事件')
     },
     handleDrop(draggingNode, dropNode, dropType, ev) {
-      job
-        .dragReName({
-          id: this.dropId,
-          parentId: this.targetId
-        })
-        .then((res) => {
-          console.log(res)
-          if (res.code === 200) {
-            console.log(res.msg)
-          } else {
-            this.$message.err(res.msg)
-          }
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+      if (dropNode.data.type === 1) {
+        job
+          .dragReName({
+            id: this.dropId,
+            parentId: this.targetId
+          })
+          .then((res) => {
+            console.log(res)
+            if (res.code === 200) {
+              console.log(res.msg)
+            } else {
+              this.$message.err(res.msg)
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      } else {
+        this.$message.error('拖拽失败，目标必须是文件夹')
+        this.getDataTree()
+      }
       console.log('tree drop: ', dropNode.label, dropType, draggingNode)
     },
     allowDrop(draggingNode, dropNode, type) {
@@ -1553,12 +1560,11 @@ export default {
     handleNodeClick(data) {
       console.log('任务数据', data)
       this.selectRow = data
-      this.jobType = data.jobType
       this.$store.commit('Singledata', data)
       this.$store.commit('SETPJTID', data.projectId)
-      this.jobType = data.jobType
       this.$store.commit('SETCODE', '')
       if (data.type === 2) {
+        this.jobType = data.jobType
         this.$store.commit('changeGroupData', data)
         this.$store.commit('changeGroupName', data.name)
         this.currentJobName = data.name
