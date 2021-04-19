@@ -31,7 +31,8 @@
                 isshow = true
               }
             "
-          >新增</el-button>
+            >新增</el-button
+          >
           <el-input
             v-show="isshow"
             v-model="input"
@@ -49,12 +50,11 @@
                   isshow = false
                 }
               "
-            >取消</el-button>
-            <el-button
-              size="small"
-              style="margin-bottom: 20px"
-              type="primary"
-            >保存</el-button>
+              >取消</el-button
+            >
+            <el-button size="small" style="margin-bottom: 20px" type="primary"
+              >保存</el-button
+            >
           </div>
         </div>
       </el-drawer>
@@ -90,13 +90,21 @@
                   label="查询原表"
                   width="100"
                 />
-                <el-table-column prop="TargetTable" label="目标表" width="100" />
+                <el-table-column
+                  prop="TargetTable"
+                  label="目标表"
+                  width="100"
+                />
                 <el-table-column
                   prop="UpdatMethod"
                   label="更新方式"
                   width="100"
                 />
-                <el-table-column prop="Department" label="科室部门" width="100" />
+                <el-table-column
+                  prop="Department"
+                  label="科室部门"
+                  width="100"
+                />
                 <el-table-column
                   prop="responsibilityPerson"
                   label="负责人"
@@ -139,12 +147,12 @@ export default {
   components: {
     JsonEditor,
     MarddownEditor,
-    CodeMirror
+    CodeMirror,
   },
   data() {
     return {
       numberValidateForm: {
-        age: ''
+        age: '',
       },
       first: 'first',
       dialogVisible: false,
@@ -156,10 +164,10 @@ export default {
         { FunctionDescription: 'd' },
         { FunctionDescription: 'e' },
         { FunctionDescription: 'f' },
-        { FunctionDescription: 'g' }
+        { FunctionDescription: 'g' },
       ],
       temp: {
-        triggerStatus: '1'
+        triggerStatus: '1',
       },
       drawer: false,
       isshow: false,
@@ -167,7 +175,7 @@ export default {
       ddd: [],
       code: {},
       SingleData: {},
-      taskParam: []
+      taskParam: [],
     }
   },
   created() {},
@@ -178,54 +186,102 @@ export default {
     saveQuery(val) {
       this.SingleData = this.$store.state.taskAdmin.SingleData
       console.log('ID------>>>>>', this.$store.state.taskAdmin.SingleData)
-      const jobinfo = {
-        jobParam: val,
-        alarmEmail: '',
-        childJobId: '',
-        childJobIdArr: [],
-        datasourceId: '',
-        executorBlockStrategy: 'SERIAL_EXECUTION',
-        executorFailRetryCount: 1,
-        executorHandler: 'executorJobHandler',
-        executorParam: '',
-        executorRouteStrategy: 'FIRST',
-        executorTimeout: 1,
-        glueSource: '',
-        glueType: 'GLUE_SHELL',
-        incStartId: '',
-        incStartTime: '',
-        incrementType: 0,
-        jobConfigId: '',
-        jobCron: '* * * ? * * *',
-        jobDesc: 'tt',
-        jobGroup: 1,
-        jobJson: '',
-        jobType: this.$store.state.taskAdmin.tabType,
-        jvmParam: '',
-        partitionInfo: '',
-        primaryKey: '',
-        projectGroupId: this.SingleData.id,
-        projectId: this.$store.state.taskAdmin.projectId,
-        readerTable: '',
-        replaceParam: '',
-        replaceParamType: 'Timestamp',
-        userId: 0
-      }
-      console.log('this.store', this.SingleData)
-      console.log('------->', val)
-      console.log('======>>>', jobinfo)
-      this.code = val
-      // const data = { jobInfo: jobinfo }
-      if (this.code) {
-        job
-          .AddHive(jobinfo)
-          .then((res) => {
-            console.log('----=====>>>>', res.content)
-            this.$emit('gettreelist', jobinfo.projectId)
-          })
-          .catch((err) => {
-            console.log(err)
-          })
+      if (this.$store.state.taskAdmin.GroupId) {
+        this.SingleData = this.$store.state.taskAdmin.SingleData
+        console.log('ID------>>>>>', this.$store.state.taskAdmin.SingleData)
+        const jobinfo = {
+          jobParam: val,
+          alarmEmail: '',
+          childJobId: '',
+          childJobIdArr: [],
+          datasourceId: '0',
+          executorBlockStrategy: 'SERIAL_EXECUTION',
+          executorFailRetryCount: 1,
+          executorHandler: 'executorJobHandler',
+          executorParam: '',
+          executorRouteStrategy: 'FIRST',
+          executorTimeout: 1,
+          glueSource: '',
+          glueType: 'GLUE_SHELL',
+          incStartId: '',
+          incStartTime: '',
+          incrementType: 0,
+          jobConfigId: '',
+          jobCron: '* * * ? * * *',
+          jobDesc: this.$store.state.taskAdmin.GroupName,
+          jobGroup: 1,
+          jobJson: '',
+          jobType: this.$store.state.taskAdmin.tabType,
+          jvmParam: '',
+          partitionInfo: '',
+          primaryKey: '',
+          projectGroupId: this.SingleData.id,
+          projectId: this.$store.state.taskAdmin.projectId,
+          readerTable: '',
+          replaceParam: '',
+          replaceParamType: 'Timestamp',
+          userId: 0,
+          id: this.$store.state.taskAdmin.GroupId,
+        }
+        console.log('this.store', this.SingleData)
+        console.log('------->', val)
+        console.log('======>>>', jobinfo)
+        this.code = val
+        job.updateJob(jobinfo).then((res) => {
+          console.log(res)
+        })
+      } else {
+        this.SingleData = this.$store.state.taskAdmin.SingleData
+        console.log('ID------>>>>>', this.$store.state.taskAdmin.SingleData)
+        const jobinfo = {
+          jobParam: val,
+          alarmEmail: '',
+          childJobId: '',
+          childJobIdArr: [],
+          datasourceId: '',
+          executorBlockStrategy: 'SERIAL_EXECUTION',
+          executorFailRetryCount: 1,
+          executorHandler: 'executorJobHandler',
+          executorParam: '',
+          executorRouteStrategy: 'FIRST',
+          executorTimeout: 1,
+          glueSource: '',
+          glueType: 'GLUE_SHELL',
+          incStartId: '',
+          incStartTime: '',
+          incrementType: 0,
+          jobConfigId: '',
+          jobCron: '* * * ? * * *',
+          jobDesc: this.$store.state.taskAdmin.GroupName,
+          jobGroup: 1,
+          jobJson: '',
+          jobType: this.$store.state.taskAdmin.tabType,
+          jvmParam: '',
+          partitionInfo: '',
+          primaryKey: '',
+          projectGroupId: this.SingleData.id,
+          projectId: this.$store.state.taskAdmin.projectId,
+          readerTable: '',
+          replaceParam: '',
+          replaceParamType: 'Timestamp',
+          userId: 0,
+        }
+        console.log('this.store', this.SingleData)
+        console.log('------->', val)
+        console.log('======>>>', jobinfo)
+        this.code = val
+        // const data = { jobInfo: jobinfo }
+        if (this.code) {
+          job
+            .AddHive(jobinfo)
+            .then((res) => {
+              console.log('----=====>>>>', res.content)
+              this.$emit('gettreelist', jobinfo.projectId)
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+        }
       }
     },
     handleEdit() {
@@ -237,8 +293,8 @@ export default {
     },
     handleClick(tab, event) {
       console.log(tab, event)
-    }
-  }
+    },
+  },
 }
 </script>
 

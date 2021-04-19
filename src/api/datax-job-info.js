@@ -62,11 +62,12 @@ export function getExecutorList() {
   })
 }
 
-export function updateJob(data) {
+export function updateJob(data, id) {
   return request({
-    url: '/api/job/update',
+    url: '/api/job/updatehive',
     method: 'post',
-    data
+    data: data,
+    params: id
   })
 }
 
