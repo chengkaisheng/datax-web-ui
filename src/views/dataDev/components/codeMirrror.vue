@@ -13,7 +13,7 @@
       </el-button> -->
       <ul>
         <li>
-          <a :loading="$store.state.graphQL.sqlBtnLoading" @click="fromChild">
+          <a @click="fromChild">
             <!-- <i class="el-icon-video-play" />运行查询 -->
             <i class="el-icon-video-play" />同步查询
             <!-- <i class="el-icon-refresh" /> -->

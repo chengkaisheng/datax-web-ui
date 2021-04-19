@@ -568,8 +568,10 @@ export default {
           type: 'warning',
           duration: 2000
         })
+        this.tableLoading = false
         return
       }
+      // else {
       this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', true) // 按钮状态
       // sql = sql.replace(';', '')
       console.log(sql, 'sql')
@@ -610,12 +612,13 @@ export default {
           })
           return
       }
-
+      console.log(databaseName)
       if (driverId === 'oracle:oracle_thin') {
         databaseName = queryDsInfo.jdbcUrl
           .split('//')[1]
           .split('/')[1]
       }
+      console.log(databaseName)
       // 1、创建链接
       const params1 = {
         config: {
@@ -653,21 +656,24 @@ export default {
           userPassword: password
         }
       }
-      var infoErr2 = ''
-      var success2 = ''
+      console.log(params2)
+      // var infoErr2 = ''
+      // var success2 = ''
       const resInitConnection = await initConnection(params2)
-        .then((res) => {
-          console.log(res, 'params2')
-          success2 = res
-        })
+        // .then((res) => {
+        //   console.log(res, 'params2')
+        //   success2 = res
+        // })
         .catch((err) => {
-          infoErr2 = err.message
+          // infoErr2 = err.message
           console.log(err)
+          this.$message.error(err.message)
+          this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
         })
-      if (infoErr2) {
-        this.$message.error(infoErr2)
-        this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
-      }
+      // if (infoErr2) {
+      //   this.$message.error(infoErr2)
+      //   this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
+      // }
       console.log(resInitConnection)
 
       const sqlarr = sql.split(';')
@@ -678,7 +684,7 @@ export default {
 
         // 3、创建sqlcontext
         const params3 = {
-          connectionId: success2.data.connection.id
+          connectionId: resInitConnection.data.connection.id
         }
         const resSqlContextCreate = await sqlContextCreate(params3)
         const params4 = {
