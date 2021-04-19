@@ -68,11 +68,11 @@ export default {
       infoMsg: 0,
       editor: {},
       SingleData: {},
+      flag: true,
     }
   },
   watch: {
     code(val) {
-      console.log(val, 'code1')
       this.TIPS = true
       if (val === '') {
         this.TIPS = false
@@ -132,11 +132,25 @@ export default {
     // console.log(this.tips, 'tips');
   },
   created() {
+    document.addEventListener('keyup', function (e) {
+      console.log('code---->', e.keyCode)
+    })
     this.code = this.$store.state.taskAdmin.setcode
+    document.addEventListener('onkeydown', function (e) {
+      var keyCode = e.keyCode || e.which || e.charCode
+      var ctrlKey = e.ctrlKey || e.metaKey
+      if (ctrlKey && keyCode == 83) {
+        alert('save')
+      }
+      e.preventDefault()
+      return false
+    })
   },
   mounted() {
     this.mountCodeMirror()
   },
+  destroyed() {},
+
   methods: {
     chooseSql() {
       console.log(window.getSelection())
@@ -194,8 +208,8 @@ export default {
             sqlContent = editor.getValue()
             /* 将sql内容进行格式后放入编辑器中*/
             editor.setValue(sqlFormatter.format(sqlContent))
-          }
-        }
+          },
+        },
         // configureMouse() {
         //     console.log(window.getSelection());
         //     return {
@@ -318,8 +332,8 @@ export default {
      */
     setCode(code) {
       this.code = code
-    }
-  }
+    },
+  },
 }
 </script>
 

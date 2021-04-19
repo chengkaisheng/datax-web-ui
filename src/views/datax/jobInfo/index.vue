@@ -1374,6 +1374,9 @@ export default {
       this.showHive = false
       this.allName = ''
       this.Rename = ''
+      this.chineseName = ''
+      this.englishName = ''
+      this.task = ''
     },
 
     // 拖拽tree
@@ -1458,15 +1461,23 @@ export default {
                 'this.$store.state.taskAdmin.GroupId'
               )
               this.showHive = false
+              this.chineseName = ''
+              this.englishName = ''
+              this.task = ''
               if (this.currentJob) {
                 this.createNewJob(this.currentJob)
                 this.currentJob = ''
               }
               this.chineseName = ''
+              this.englishName = ''
+              this.task = ''
               this.$message.success('新增成功')
             } else {
               this.$message.warning(res.content)
               this.showHive = false
+              this.chineseName = ''
+              this.englishName = ''
+              this.task = ''
             }
           } else {
             this.$message.error(res.content)
@@ -1475,6 +1486,9 @@ export default {
         })
         .catch((err) => {
           console.log(err)
+          this.chineseName = ''
+          this.englishName = ''
+          this.task = ''
         })
     },
     // 新建文件夹或任务
@@ -1596,6 +1610,7 @@ export default {
               console.log(err)
             })
         } else {
+          this.$store.commit('changeJobId', '')
           this.createNewJob(data.jobType)
         }
       } else {
