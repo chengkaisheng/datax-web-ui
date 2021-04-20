@@ -156,7 +156,7 @@ export default {
           jobDesc: this.$store.state.taskAdmin.GroupName,
           jobGroup: 1,
           jobJson: '',
-          jobType: this.$store.state.taskAdmin.tabType,
+          jobType: this.$store.state.taskAdmin.SingleData.jobType,
           jvmParam: '',
           partitionInfo: '',
           primaryKey: '',
