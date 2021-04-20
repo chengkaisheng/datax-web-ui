@@ -18,10 +18,7 @@
           </a>
         </li>
         <li>
-          <a @click="saveQuery">
-            <i class="el-icon-video-play" />保存
-            <i class="el-icon-star-on tips" v-if="TIPS" />
-          </a>
+          <a @click="saveQuery"> <i class="el-icon-video-play" />保存 </a>
         </li>
       </ul>
     </div>
@@ -62,21 +59,34 @@ export default {
   data() {
     return {
       lookup: false,
-      TIPS: false,
       notes: `--============================================程序说明================================================
--- 脚本名称：HS_QHZ_CMP_P_CO_SETSAL_GAP_MONTH.HQL
--- 功能说明：
--- 查询原表：
--- 目标表：
--- 更新方式：
--- 科室部门：
--- 负责人：【登录账号】
--- 创建日期：【${Math.round(new Date() / 1000)}】
--- 运行周期：
--- 例程：
--- 备注：
--- 脚本版本:       修改人:        修改日期:         修改内容:
+
+-- 脚 本 名 称   ：  HS_QHZ_CMP_P_CO_SETSAL_GAP_MONTH.HQL
+
+-- 功 能 说 明   ：
+
+-- 查 询 原 表   ：
+
+-- 目   标  表     ：
+
+-- 更 新 方 式   ：
+
+-- 科 室 部 门   ：
+
+-- 负  责  人      ：【登录账号】
+
+-- 创 建 日 期   ：【${Math.round(new Date() / 1000)}】
+
+-- 运 行 周 期   ：
+
+-- 例       程       ：
+
+-- 备       注       ：
+
+-- 脚 本 版 本    :       修 改 人  :        修 改 日 期  :         修 改 内 容  :
+
 -- v1
+
 -- ===================================================================================================`,
       code: '',
       sqlLoading: false,
@@ -100,13 +110,6 @@ export default {
   },
   watch: {
     code(val) {
-      this.TIPS = true
-      if (val === '') {
-        this.TIPS = false
-      }
-      if (val === this.$store.state.taskAdmin.setcode) {
-        this.TIPS = false
-      }
       this.infoMsg++
     },
     sqlparams(val) {
@@ -160,10 +163,10 @@ export default {
   },
   created() {
     this.code = this.$store.state.taskAdmin.setcode
+    // this.keyCodeForEvent()
   },
   mounted() {
     this.mountCodeMirror()
-    this.keyCodeForEvent()
   },
   destroyed() {},
 
@@ -174,7 +177,6 @@ export default {
         const keyCode = e.keyCode || e.which || e.charCode
         const ctrlKey = e.ctrlKey || e.metaKey
         if (ctrlKey && keyCode == 70) {
-          alert('save')
           self.lookup = true
         }
 

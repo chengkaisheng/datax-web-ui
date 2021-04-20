@@ -62,26 +62,6 @@
     <div class="logs">
       <div class="Navigation">
         <span
-          :class="{ color: color === 1 ? 'color' : '' }"
-          @click="
-            () => {
-              this.logs = false
-              this.color = 1
-            }
-          "
-          >任务详情</span
-        >
-        <span
-          :class="{ color: color === 2 ? 'color' : '' }"
-          @click="
-            () => {
-              this.logs = true
-              this.color = 2
-            }
-          "
-          >查看JSON</span
-        >
-        <span
           :class="{ color: color === 3 ? 'color' : '' }"
           @click="
             () => {
@@ -92,38 +72,9 @@
           >任务日志</span
         >
       </div>
-      <el-table v-show="logs" :data="tableData" border style="width: 100%">
+      <el-table v-show="logs" :data="TableData" border style="width: 100%">
       </el-table>
     </div>
-    <!-- <div class="log">
-      <template>
-        <el-tabs
-          v-model="first"
-          style="text-align: center; height: 100px"
-          type="card"
-          @tab-click="handleClick"
-        >
-          <el-tab-pane
-            style="text-align: left; height: 100px"
-            align="center"
-            label="任务日志"
-            name="first"
-          >
-            <template>
-              <el-table
-                :data="TableData"
-                style="width: 100%"
-                :header-cell-style="{
-                  fontSize: '13px',
-                  color: '#606266',
-                }"
-              >
-              </el-table>
-            </template>
-          </el-tab-pane>
-        </el-tabs>
-      </template>
-    </div> -->
   </div>
 </template>
 
