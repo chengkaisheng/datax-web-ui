@@ -1588,6 +1588,7 @@ export default {
       })
         .then(() => {
           job
+
             .delFile(this.selectRow.id)
             .then((res) => {
               console.log(res)

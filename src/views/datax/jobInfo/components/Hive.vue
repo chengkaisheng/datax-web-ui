@@ -31,7 +31,8 @@
                 isshow = true
               }
             "
-          >新增</el-button>
+            >新增</el-button
+          >
           <el-input
             v-show="isshow"
             v-model="input"
@@ -49,97 +50,29 @@
                   isshow = false
                 }
               "
-            >取消</el-button>
-            <el-button
-              size="small"
-              style="margin-bottom: 20px"
-              type="primary"
-            >保存</el-button>
+              >取消</el-button
+            >
+            <el-button size="small" style="margin-bottom: 20px" type="primary"
+              >保存</el-button
+            >
           </div>
         </div>
       </el-drawer>
     </div>
-    <div class="log">
-      <template>
-        <el-tabs
-          v-model="first"
-          style="text-align: center; height: 500px"
-          type="card"
-          @tab-click="handleClick"
+    <div class="logs">
+      <div class="Navigation">
+        <span
+          :class="{ color: color === 1 ? 'color' : '' }"
+          @click="
+            () => {
+              this.logs = true
+              this.color = 1
+            }
+          "
+          >任务日志</span
         >
-          <el-tab-pane
-            style="text-align: left; height: 420px"
-            align="center"
-            label="任务日志"
-            name="first"
-          >
-            <template>
-              <el-table
-                :data="TableData"
-                style="width: 100%"
-                :header-cell-style="{
-                  fontSize: '16px',
-                  color: '#606266',
-                }"
-              >
-                <el-table-column
-                  fixed
-                  prop="FunctionDescription"
-                  label="功能说明"
-                  width="100"
-                />
-                <el-table-column
-                  prop="QueryOriginalTable"
-                  label="查询原表"
-                  width="100"
-                />
-                <el-table-column
-                  prop="TargetTable"
-                  label="目标表"
-                  width="100"
-                />
-                <el-table-column
-                  prop="UpdatMethod"
-                  label="更新方式"
-                  width="100"
-                />
-                <el-table-column
-                  prop="Department"
-                  label="科室部门"
-                  width="100"
-                />
-                <el-table-column
-                  prop="responsibilityPerson"
-                  label="负责人"
-                  width="100"
-                />
-                <el-table-column
-                  prop="CreationDate"
-                  label="创建日期"
-                  width="100"
-                />
-                <el-table-column
-                  prop="OperationCycle"
-                  label="运行周期"
-                  width="100"
-                />
-                <el-table-column prop="routine" label="例程" width="100" />
-                <el-table-column prop="remarks" label="备注" width="100" />
-                <el-table-column
-                  prop="ScriptVersion"
-                  label="脚本版本"
-                  width="100"
-                />
-              </el-table>
-            </template>
-            <el-pagination
-              background
-              layout="prev, pager, next"
-              :total="TableData.length"
-            />
-          </el-tab-pane>
-        </el-tabs>
-      </template>
+      </div>
+      <div v-show="logs"></div>
     </div>
   </div>
 </template>
@@ -155,12 +88,14 @@ export default {
   components: {
     JsonEditor,
     MarddownEditor,
-    CodeMirror
+    CodeMirror,
   },
   data() {
     return {
+      color: '',
+      logs: false,
       numberValidateForm: {
-        age: ''
+        age: '',
       },
       first: 'first',
       dialogVisible: false,
@@ -175,7 +110,7 @@ export default {
         // { FunctionDescription: 'g' },
       ],
       temp: {
-        triggerStatus: '1'
+        triggerStatus: '1',
       },
       drawer: false,
       isshow: false,
@@ -183,7 +118,7 @@ export default {
       ddd: [],
       code: {},
       SingleData: {},
-      taskParam: []
+      taskParam: [],
     }
   },
   created() {
@@ -221,7 +156,7 @@ export default {
           jobDesc: this.$store.state.taskAdmin.GroupName,
           jobGroup: 1,
           jobJson: '',
-          jobType: this.$store.state.taskAdmin.tabType,
+          jobType: this.$store.state.taskAdmin.SingleData.jobType,
           jvmParam: '',
           partitionInfo: '',
           primaryKey: '',
@@ -231,7 +166,7 @@ export default {
           replaceParam: '',
           replaceParamType: 'Timestamp',
           userId: 0,
-          id: this.$store.state.taskAdmin.GroupId
+          id: this.$store.state.taskAdmin.GroupId,
         }
         this.code = val
         job
@@ -279,7 +214,7 @@ export default {
           readerTable: '',
           replaceParam: '',
           replaceParamType: 'Timestamp',
-          userId: 0
+          userId: 0,
         }
         console.log('this.store', this.SingleData)
         console.log('------->', val)
@@ -310,8 +245,8 @@ export default {
     },
     handleClick(tab, event) {
       console.log(tab, event)
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -331,8 +266,40 @@ export default {
   right: 5px;
   top: 3px;
 }
-.log {
+.logs {
   width: 100%;
   height: auto;
+}
+.Navigation {
+  height: 30px;
+  width: 100%;
+  background: #f5f7fa;
+}
+.Navigation .color {
+  font-weight: 400px;
+  cursor: pointer;
+  color: blue;
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+  display: inline-block;
+  line-height: 30px;
+  text-align: center;
+  width: 150px;
+  height: 30px;
+  background: #fff;
+}
+.Navigation span {
+  font-weight: 400px;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+  display: inline-block;
+  line-height: 30px;
+  text-align: center;
+  width: 150px;
+  height: 30px;
+  background: #f5f7fa;
 }
 </style>
