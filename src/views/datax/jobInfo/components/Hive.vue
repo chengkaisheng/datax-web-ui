@@ -61,19 +61,39 @@
     </div>
     <div class="logs">
       <div class="Navigation">
-        <ul>
-          <li
-            @click="
-              () => {
-                this.logs = true
-              }
-            "
-          >
-            任务日志
-          </li>
-        </ul>
+        <span
+          :class="{ color: color === 1 ? 'color' : '' }"
+          @click="
+            () => {
+              this.logs = false
+              this.color = 1
+            }
+          "
+          >任务详情</span
+        >
+        <span
+          :class="{ color: color === 2 ? 'color' : '' }"
+          @click="
+            () => {
+              this.logs = true
+              this.color = 2
+            }
+          "
+          >查看JSON</span
+        >
+        <span
+          :class="{ color: color === 3 ? 'color' : '' }"
+          @click="
+            () => {
+              this.logs = true
+              this.color = 3
+            }
+          "
+          >任务日志</span
+        >
       </div>
-      <el-table :data="tableData" border style="width: 100%"> </el-table>
+      <el-table v-show="logs" :data="tableData" border style="width: 100%">
+      </el-table>
     </div>
     <!-- <div class="log">
       <template>
@@ -122,6 +142,7 @@ export default {
   },
   data() {
     return {
+      color: '',
       logs: false,
       numberValidateForm: {
         age: '',
@@ -299,19 +320,36 @@ export default {
   width: 100%;
   height: auto;
 }
-.Navigation ul {
-  margin: 0;
-  padding: 0;
+.Navigation {
+  height: 30px;
   width: 100%;
-  height: auto;
-  float: left;
   background: #f5f7fa;
 }
-.Navigation ul li {
-  color: #909399;
+.Navigation .color {
+  font-weight: 400px;
+  cursor: pointer;
+  color: blue;
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+  display: inline-block;
+  line-height: 30px;
+  text-align: center;
   width: 150px;
   height: 30px;
-  text-align: center;
+  background: #fff;
+}
+.Navigation span {
+  font-weight: 400px;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+  display: inline-block;
   line-height: 30px;
+  text-align: center;
+  width: 150px;
+  height: 30px;
+  background: #f5f7fa;
 }
 </style>
