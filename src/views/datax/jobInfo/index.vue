@@ -30,8 +30,7 @@
                   v-for="item in options"
                   :key="item.id"
                   :command="item.id + '/' + item.name"
-                  >{{ item.name }}</el-dropdown-item
-                >
+                >{{ item.name }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
             <!-- <el-dropdown-menu slot="dropdown" placeholder="请选择">
@@ -205,8 +204,10 @@ rkJggg=="
               @update:show="(show) => (contextMenuVisible = show)"
             >
               <a href="javascript:" @click="showAllName">新建文件夹</a>
-              <a id="newFile" href="javascript:"
-                >新建任务<i class="el-icon-arrow-right" />
+              <a
+                id="newFile"
+                href="javascript:"
+              >新建任务<i class="el-icon-arrow-right" />
                 <vue-context-menu
                   class="right-menu1"
                   :target="contextMenu1Target"
@@ -268,6 +269,20 @@ rkJggg=="
                   <a href="javascript:" @click="showAllName('COMPUTE')">
                     <svg-icon class="svg_icon" icon-class="COMPUTE" />计算任务
                   </a>
+                  <a id="level3" href="javascript:" @click="showAllName('COMPUTE')">
+                    <svg-icon class="svg_icon" icon-class="COMPUTE" />数据同步任务
+                    <i class="el-icon-arrow-right" />
+                    <vue-context-menu
+                      class="right-menu2"
+                      :target="contextMenu2Target"
+                      :show.sync="contextMenu2Visible"
+                      style="display: none"
+                    >
+                      <a href="javascript:" @click="showAllName('COMPUTE')">
+                        <svg-icon class="svg_icon" icon-class="COMPUTE" />计算任务
+                      </a>
+                    </vue-context-menu>
+                  </a>
                   <!-- <a href="javascript:" @click="showAllName('SQLJOB')">
                     <svg-icon class="svg_icon" icon-class="SQLJOB" />SQL任务
                   </a> -->
@@ -277,7 +292,7 @@ rkJggg=="
                   <a href="javascript:" @click="showAllName('DQCJOB')">
                     <svg-icon class="svg_icon" icon-class="DQCJOB" />质量任务
                   </a>
-                  <hr style="padding: 0; margin: 0" />
+                  <hr style="padding: 0; margin: 0">
                   <a href="javascript:" @click="showAllName('METACOLLECT')">
                     <svg-icon
                       class="svg_icon"
@@ -290,7 +305,7 @@ rkJggg=="
                       icon-class="METACOMPARE"
                     />元数据比较任务
                   </a>
-                  <hr style="padding: 0; margin: 0" />
+                  <hr style="padding: 0; margin: 0">
                   <a href="javascript:" @click="showAllName('SHELL')">
                     <svg-icon class="svg_icon" icon-class="SHELL" />SHELL任务
                   </a>
@@ -303,7 +318,7 @@ rkJggg=="
                   <a href="javascript:" @click="showAllName('PYTHON')">
                     <svg-icon class="svg_icon" icon-class="PYTHON" />PYTHON任务
                   </a>
-                  <hr style="padding: 0; margin: 0" />
+                  <hr style="padding: 0; margin: 0">
                   <a href="javascript:" @click="showAllName('VJOB')">
                     <svg-icon class="svg_icon" icon-class="VJOB" />虚任务
                   </a>
@@ -337,24 +352,21 @@ rkJggg=="
                 v-show="selectRow.jobType !== 'wenjianjia'"
                 href="javascript:"
                 @click="ViewFile"
-                >查看文件信息</a
-              >
+              >查看文件信息</a>
               <a
                 v-show="selectRow.jobType !== 'wenjianjia'"
                 href="javascript:"
                 @click="ViewVersion"
-                >查看文件版本</a
-              >
+              >查看文件版本</a>
               <a href="javascript:" @click="resetName">重命名</a>
-              <hr style="padding: 0; margin: 0" />
+              <hr style="padding: 0; margin: 0">
               <a href="javascript:" @click="copyFile">复制(C)</a>
               <a href="javascript:" @click="pasteFile">粘贴(P)</a>
               <a
                 v-show="selectRow.parentId !== 0"
                 href="javascript:"
                 @click="delFolder"
-                >删除(D)</a
-              >
+              >删除(D)</a>
             </vue-context-menu>
           </el-scrollbar>
         </div>
@@ -437,8 +449,8 @@ rkJggg=="
           <JobDetailPro
             v-if="
               item.content.jobType !== 'VJOB' &&
-              item.content.jobType !== 'IMPALA' &&
-              item.content.jobType !== 'HIVE'
+                item.content.jobType !== 'IMPALA' &&
+                item.content.jobType !== 'HIVE'
             "
             :job-info="$store.state.taskAdmin.jobInfo"
             @deleteJob="getItem"
@@ -521,8 +533,8 @@ rkJggg=="
           <div
             v-if="
               jobType === 'NORMAL' ||
-              jobType === 'IMPORT' ||
-              jobType === 'EXPORT'
+                jobType === 'IMPORT' ||
+                jobType === 'EXPORT'
             "
             class="rg"
           >
@@ -590,16 +602,14 @@ rkJggg=="
       </el-tabs>
     </div>
     <el-dialog width="40%" title="重命名" :visible.sync="dialogRenameVisible">
-      <span style="margin-left: 20px">名称：</span
-      ><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
+      <span style="margin-left: 20px">名称：</span><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelDialog"> 取消 </el-button>
         <el-button type="goon" size="small" @click="sureRe"> 确定 </el-button>
       </div>
     </el-dialog>
     <el-dialog width="40%" title="新建" :visible.sync="dialogNameVisible">
-      <span style="margin-left: 20px">名称：</span
-      ><el-input v-model="allName" style="width: 60%; margin-left: 20px" />
+      <span style="margin-left: 20px">名称：</span><el-input v-model="allName" style="width: 60%; margin-left: 20px" />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelDialog"> 取消 </el-button>
         <el-button type="goon" size="small" @click="createFolder">
@@ -610,27 +620,27 @@ rkJggg=="
     <!--新增Hive任务-->
     <el-dialog width="40%" title="新建" :visible.sync="showHive">
       <div class="boxs">
-        <span style="margin-left: 20px; display: inline-block; width: 100px"
-          >任务中文名：</span
-        ><el-input
+        <span
+          style="margin-left: 20px; display: inline-block; width: 100px"
+        >任务中文名：</span><el-input
           v-model="chineseName"
           style="width: 60%; margin-left: 20px"
         />
       </div>
-      <br />
+      <br>
       <div class="boxs">
-        <span style="margin-left: 20px; display: inline-block; width: 100px"
-          >任务英文名：</span
-        ><el-input
+        <span
+          style="margin-left: 20px; display: inline-block; width: 100px"
+        >任务英文名：</span><el-input
           v-model="englishName"
           style="width: 60%; margin-left: 20px"
         />
       </div>
-      <br />
+      <br>
       <div class="boxs">
-        <span style="margin-left: 20px; display: inline-block; width: 100px"
-          >任务说明：</span
-        ><el-input v-model="task" style="width: 60%; margin-left: 20px" />
+        <span
+          style="margin-left: 20px; display: inline-block; width: 100px"
+        >任务说明：</span><el-input v-model="task" style="width: 60%; margin-left: 20px" />
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelDialog"> 取消 </el-button>
@@ -684,12 +694,13 @@ rkJggg=="
                 type="text"
                 size="small"
                 @click="showCode(row)"
-                >代码</el-button
-              >
+              >代码</el-button>
             </el-popover>
-            <el-button type="text" size="small" @click="rollback(row)"
-              >回滚</el-button
-            >
+            <el-button
+              type="text"
+              size="small"
+              @click="rollback(row)"
+            >回滚</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -776,7 +787,7 @@ export default {
     SparkJob,
     SqlJob,
     MetaCompare,
-    'vue-context-menu': VueContextMenu,
+    'vue-context-menu': VueContextMenu
   },
   data() {
     return {
@@ -789,8 +800,8 @@ export default {
       editableTabs: [
         {
           title: 'Untitled',
-          name: '1',
-        },
+          name: '1'
+        }
       ],
       dialogRenameVisible: false,
       dialogNameVisible: false,
@@ -803,8 +814,10 @@ export default {
       treeList: [],
       contextMenuVisible: false,
       contextMenu1Visible: false,
+      contextMenu2Visible: false,
       contextMenuTarget: '',
       contextMenu1Target: '',
+      contextMenu2Target: '',
       selectedIndex: '',
       /** el-select选项 */
       options: [],
@@ -816,7 +829,7 @@ export default {
         pageNo: 1,
         pageSize: 1000,
         searchVal: '',
-        userId: '',
+        userId: ''
       },
       /** 任务类型 */
       jobType: '',
@@ -831,7 +844,7 @@ export default {
       isFolder: true,
       defaultProps: {
         children: 'children',
-        label: 'name',
+        label: 'name'
       },
       selectRow: {},
       detailData: {},
@@ -840,7 +853,7 @@ export default {
       currentJob: '', // 当前任务类型
       currentJobName: '', // 当前任务名
       targetId: '', // 目标id
-      dropId: '', // 被拖拽id
+      dropId: '' // 被拖拽id
     }
   },
   computed: {
@@ -881,7 +894,7 @@ export default {
       } else {
         return '请选择'
       }
-    },
+    }
   },
   watch: {
     editableTabs(val) {
@@ -904,7 +917,7 @@ export default {
 
     '$store.state.project.currentItem': {
       deep: true,
-      handler: function (newValue, oldValue) {
+      handler: function(newValue, oldValue) {
         if (oldValue) {
           const commandId = newValue.split('/')[0]
           const commandName = newValue.split('/')[1]
@@ -919,7 +932,7 @@ export default {
             projectIds: commandId,
             triggerStatus: -1,
             jobDesc: '',
-            glueType: '',
+            glueType: ''
           }
           this.projectIds = commandId
 
@@ -936,37 +949,37 @@ export default {
             current: 1,
             size: 200,
             ascs: 'datasource_name',
-            projectId: commandId,
+            projectId: commandId
           }
           jdbcDsList(p).then((response) => {
             const { records } = response
             this.$store.commit('SET_DATASOURCE', records)
           })
         }
-      },
+      }
     },
 
     '$store.state.taskAdmin.watchStr': {
       deep: true,
-      handler: function (newValue, oldValue) {
+      handler: function(newValue, oldValue) {
         if (newValue !== oldValue) {
           this.getDataTree()
         }
-      },
+      }
     },
 
     '$store.state.taskAdmin.scheduleId': {
       deep: true,
-      handler: function (newValue, oldValue) {
+      handler: function(newValue, oldValue) {
         if (newValue !== oldValue) {
           this.removeJobTab(newValue)
         }
-      },
+      }
     },
 
-    search: function (val) {
+    search: function(val) {
       this.$refs.tree.filter(val)
-    },
+    }
   },
 
   mounted() {
@@ -975,31 +988,52 @@ export default {
     this.contextMenuTarget = myChartContainer
     this.contextMenu1Target = myChartContainer
     // 关闭浏览器右击默认菜单
-    myChartContainer.oncontextmenu = function (e) {
+    myChartContainer.oncontextmenu = function(e) {
       return false
     }
 
     const a = document.getElementById('newFile')
     const b = document.getElementsByClassName('right-menu1')
+    const c = document.getElementById('level3')
+    const d = document.getElementsByClassName('right-menu2')
     for (var i = 0; i < b.length; i++) {
       b[i].style.display = 'none'
     }
 
-    a.onmouseover = function () {
+    for (var i = 0; i < d.length; i++) {
+      d[i].style.display = 'none'
+    }
+
+    a.onmouseover = function() {
       for (var i = 0; i < b.length; i++) {
         b[i].style.display = 'block'
       }
     }
+    c.onmouseover = function() {
+      for (var i = 0; i < d.length; i++) {
+        d[i].style.display = 'block'
+      }
+    }
 
-    a.onmouseout = function () {
+    a.onmouseout = function() {
       for (var i = 0; i < b.length; i++) {
         b[i].style.display = 'none'
       }
     }
+    c.onmouseout = function() {
+      for (var i = 0; i < d.length; i++) {
+        d[i].style.display = 'none'
+      }
+    }
 
-    b.onmouseover = function () {
+    b.onmouseover = function() {
       for (var i = 0; i < b.length; i++) {
         b[i].style.display = 'block'
+      }
+    }
+    d.onmouseover = function() {
+      for (var i = 0; i < d.length; i++) {
+        d[i].style.display = 'block'
       }
     }
   },
@@ -1123,7 +1157,7 @@ export default {
         this.editableTabs.push({
           title: 'Untitled',
           name: newTabName,
-          content: 'New Tab content',
+          content: 'New Tab content'
         })
         this.editableTabsValue = newTabName
       }
@@ -1168,7 +1202,7 @@ export default {
       if (this.List.length < 1) {
         this.List.push({
           name: val.name,
-          data: val.data,
+          data: val.data
         })
       } else {
         for (let i = 0; i < this.List.length; i++) {
@@ -1177,7 +1211,7 @@ export default {
           } else {
             this.List.push({
               name: val.name,
-              data: val.data,
+              data: val.data
             })
           }
         }
@@ -1237,12 +1271,12 @@ export default {
         reParams = {
           id: this.selectRow.id,
           jobId: this.selectRow.jobId ? this.selectRow.jobId : '',
-          name: this.Rename,
+          name: this.Rename
         }
       } else {
         reParams = {
           id: this.selectRow.id,
-          name: this.Rename,
+          name: this.Rename
         }
       }
       job
@@ -1272,7 +1306,7 @@ export default {
         this.$notify({
           message: '不能复制整个根目录数据',
           type: 'warning',
-          duration: 1000,
+          duration: 1000
         })
         this.contextMenuVisible = false
       } else {
@@ -1281,7 +1315,7 @@ export default {
         this.$notify({
           message: '复制成功',
           type: 'success',
-          duration: 1000,
+          duration: 1000
         })
       }
     },
@@ -1302,7 +1336,7 @@ export default {
               this.$notify({
                 message: res.msg === '复制成功' ? '粘贴成功' : res.msg,
                 type: 'success',
-                duration: 1000,
+                duration: 1000
               })
               this.copyObj = ''
             } else {
@@ -1318,7 +1352,7 @@ export default {
         this.$notify({
           message: '请选中需要复制的文件夹或任务',
           type: 'warning',
-          duration: 1000,
+          duration: 1000
         })
       }
     },
@@ -1404,7 +1438,7 @@ export default {
         job
           .dragReName({
             id: this.dropId,
-            parentId: this.targetId,
+            parentId: this.targetId
           })
           .then((res) => {
             console.log(res)
@@ -1447,7 +1481,7 @@ export default {
         projectId: this.selectRow.projectId,
         parentId: this.selectRow.id,
         type: this.currentJob ? 2 : 1,
-        jobType: this.currentJob,
+        jobType: this.currentJob
       }
       const ename = this.englishName
       const specification = this.task
@@ -1507,7 +1541,7 @@ export default {
         parentId: this.selectRow.id,
         name: this.allName,
         type: this.currentJob ? 2 : 1,
-        jobType: this.currentJob ? this.currentJob : 'wenjianjia',
+        jobType: this.currentJob ? this.currentJob : 'wenjianjia'
       }
       job
         .createNewFile(params)
@@ -1550,7 +1584,7 @@ export default {
       this.$confirm('此操作将删除该文件夹, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning',
+        type: 'warning'
       })
         .then(() => {
           job
@@ -1563,7 +1597,7 @@ export default {
                 this.selectRow = {}
                 this.$message({
                   type: 'success',
-                  message: '删除成功!',
+                  message: '删除成功!'
                 })
               }
             })
@@ -1574,7 +1608,7 @@ export default {
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消删除',
+            message: '已取消删除'
           })
         })
     },
@@ -1637,7 +1671,7 @@ export default {
       this.$confirm('此操作将该任务信息回滚到选中版本, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning',
+        type: 'warning'
       })
         .then(() => {
           row.id = this.selectRow.jobId
@@ -1661,7 +1695,7 @@ export default {
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消回滚',
+            message: '已取消回滚'
           })
         })
     },
@@ -1719,7 +1753,7 @@ export default {
           } else {
             this.editableTabs.push({
               title: data.name,
-              name: (this.editableTabs.length + 1).toString(),
+              name: (this.editableTabs.length + 1).toString()
             })
             this.editableTabsValue = this.editableTabs[
               this.editableTabs.length - 1
@@ -1729,7 +1763,7 @@ export default {
       } else {
         this.editableTabs.push({
           title: data.name,
-          name: (this.editableTabs.length + 1).toString(),
+          name: (this.editableTabs.length + 1).toString()
         })
       }
     },
@@ -1752,7 +1786,7 @@ export default {
           // projectIds: '',
           triggerStatus: -1,
           jobDesc: '',
-          glueType: '',
+          glueType: ''
         }
         listQuery.projectIds = this.projectIds
           ? this.projectIds
@@ -1804,7 +1838,7 @@ export default {
           // projectIds: '',
           triggerStatus: -1,
           jobDesc: '',
-          glueType: '',
+          glueType: ''
         }
         listQuery.projectIds = this.projectIds
           ? this.projectIds
@@ -1846,7 +1880,7 @@ export default {
         projectIds: event,
         triggerStatus: -1,
         jobDesc: '',
-        glueType: '',
+        glueType: ''
       }
       this.projectIds = event
 
@@ -1861,7 +1895,7 @@ export default {
         current: 1,
         size: 200,
         ascs: 'datasource_name',
-        projectId: event,
+        projectId: event
       }
       jdbcDsList(p).then((response) => {
         const { records } = response
@@ -1893,7 +1927,7 @@ export default {
         projectIds: commandId,
         triggerStatus: -1,
         jobDesc: '',
-        glueType: '',
+        glueType: ''
       }
       this.projectIds = commandId
 
@@ -1908,7 +1942,7 @@ export default {
         current: 1,
         size: 200,
         ascs: 'datasource_name',
-        projectId: commandId,
+        projectId: commandId
       }
       jdbcDsList(p).then((response) => {
         const { records } = response
@@ -1924,8 +1958,8 @@ export default {
         this.jobDetailIdx =
           this.$store.state.taskAdmin.taskDetailList[0].content.id + ''
       }
-    },
-  },
+    }
+  }
 }
 </script>
 
@@ -2096,7 +2130,7 @@ export default {
                 border: 1px solid #eee;
                 box-shadow: 0 0.5em 1em 0 rgba(0, 0, 0, 0.1);
                 height: 400px;
-                overflow-y: auto;
+                // overflow-y: auto;
                 border-radius: 1px;
                 display: block;
                 margin-left: 116px;
@@ -2127,6 +2161,64 @@ export default {
                   font-size: 13px;
                   i {
                     margin-left: 20px;
+                  }
+                }
+                #level3 {
+                  padding: 2px 15px;
+                  width: 176px;
+                  height: 28px;
+                  line-height: 28px;
+                  text-align: left;
+                  display: block;
+                  color: #1a1a1a;
+                  text-decoration: none;
+                  font-size: 13px;
+                  position: relative;
+                  .right-menu2 {
+                    border: 1px solid #eee;
+                    box-shadow: 0 0.5em 1em 0 rgba(0, 0, 0, 0.1);
+                    height: 50px;
+                    border-radius: 1px;
+                    display: block;
+                    margin-left: 116px;
+                    margin-top: 28px;
+                    left: 60px;
+                    top: -28px;
+                    font-family: Microsoft Yahei, Avenir, Helvetica, Arial,
+                      sans-serif;
+                    -webkit-font-smoothing: antialiased;
+                    -moz-osx-font-smoothing: grayscale;
+                    text-align: center;
+                    color: #2c3e50;
+                    position: absolute;
+                    background: #fff;
+                    border: 1px solid rgba(0, 0, 0, 0.2);
+                    border-radius: 3px;
+                    z-index: 999;
+                    display: block;
+                    padding: 2px;
+                    box-shadow: 5px 5px 10px gray;
+                    a {
+                      padding: 2px 15px;
+                      width: 176px;
+                      height: 28px;
+                      line-height: 28px;
+                      text-align: left;
+                      display: block;
+                      color: #1a1a1a;
+                      text-decoration: none;
+                      font-size: 13px;
+                      i {
+                        margin-left: 20px;
+                      }
+                    }
+                    a:hover {
+                      background: #42b983;
+                      color: #fff;
+                    }
+                    hr {
+                      color: #eee;
+                    }
                   }
                 }
                 a:hover {
