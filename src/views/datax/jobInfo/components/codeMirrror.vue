@@ -34,7 +34,7 @@
         @click.native="chooseSql"
       />
       <div v-if="lookup" class="lookup">
-        <span>查找：<input type="text" /> </span>
+        <span>查找：<input type="text" /> <button>查找</button> </span>
       </div>
     </div>
   </div>
@@ -163,10 +163,25 @@ export default {
   },
   mounted() {
     this.mountCodeMirror()
+    this.keyCodeForEvent()
   },
   destroyed() {},
 
   methods: {
+    keyCodeForEvent() {
+      const self = this
+      document.onkeydown = function (e) {
+        const keyCode = e.keyCode || e.which || e.charCode
+        const ctrlKey = e.ctrlKey || e.metaKey
+        if (ctrlKey && keyCode == 70) {
+          alert('save')
+          self.lookup = true
+        }
+        e.preventDefault()
+        return false
+      }
+    },
+
     chooseSql() {
       console.log(window.getSelection())
     },
@@ -391,11 +406,13 @@ export default {
   overflow: scroll;
   overflow-x: hidden;
   font-size: 13px;
+  z-index: 1;
   .lookup {
     position: absolute;
     top: 40px;
     right: 50px;
     border: 1px solid #ccc;
+    z-index: 2;
   }
 }
 

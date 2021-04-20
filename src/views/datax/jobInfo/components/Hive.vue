@@ -59,16 +59,32 @@
         </div>
       </el-drawer>
     </div>
-    <div class="log">
+    <div class="logs">
+      <div class="Navigation">
+        <ul>
+          <li
+            @click="
+              () => {
+                this.logs = true
+              }
+            "
+          >
+            任务日志
+          </li>
+        </ul>
+      </div>
+      <el-table :data="tableData" border style="width: 100%"> </el-table>
+    </div>
+    <!-- <div class="log">
       <template>
         <el-tabs
           v-model="first"
-          style="text-align: center; height: 500px"
+          style="text-align: center; height: 100px"
           type="card"
           @tab-click="handleClick"
         >
           <el-tab-pane
-            style="text-align: left; height: 420px"
+            style="text-align: left; height: 100px"
             align="center"
             label="任务日志"
             name="first"
@@ -84,15 +100,10 @@
               >
               </el-table>
             </template>
-            <el-pagination
-              background
-              layout="prev, pager, next"
-              :total="TableData.length"
-            />
           </el-tab-pane>
         </el-tabs>
       </template>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -111,6 +122,7 @@ export default {
   },
   data() {
     return {
+      logs: false,
       numberValidateForm: {
         age: '',
       },
@@ -283,8 +295,23 @@ export default {
   right: 5px;
   top: 3px;
 }
-.log {
+.logs {
   width: 100%;
   height: auto;
+}
+.Navigation ul {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: auto;
+  float: left;
+  background: #f5f7fa;
+}
+.Navigation ul li {
+  color: #909399;
+  width: 150px;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
 }
 </style>

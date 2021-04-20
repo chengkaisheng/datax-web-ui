@@ -468,14 +468,14 @@ rkJggg=="
             @deleteJob="getItem"
             @deleteDetailTab="clearJobTab"
           />
-          <div v-if="item.content.jobType === 'HIVE'" class="rg">
+          <div v-if="item.content.jobType === 'HIVE'" class="Hive">
             <Hive
               job-type="GLUE_HIVE"
               job-type-label="HIVE任务"
               @gettreelist="Gettreelist"
             />
           </div>
-          <div v-if="item.content.jobType === 'IMPALA'" class="rg">
+          <div v-if="item.content.jobType === 'IMPALA'" class="Hive">
             <Hive
               job-type="GLUE_IMPALA"
               job-type-label="IMPALA任务"
@@ -553,7 +553,7 @@ rkJggg=="
             <JsonBuild @cancel="closeCreate" />
           </div>
 
-          <div v-if="jobType === 'HIVE'" class="rg">
+          <div v-if="jobType === 'HIVE'" class="Hive">
             <Hive
               job-type="GLUE_HIVE"
               job-type-label="HIVE任务"
@@ -561,7 +561,7 @@ rkJggg=="
             />
           </div>
 
-          <div v-if="jobType === 'IMPALA'" class="rg">
+          <div v-if="jobType === 'IMPALA'" class="Hive">
             <Hive
               job-type="GLUE_IMPALA"
               job-type-label="IMPALA任务"
@@ -2248,7 +2248,71 @@ export default {
       }
     }
   }
+  .Hive {
+    height: auto;
+    width: 100%;
+    flex: 1;
+    .el-tabs {
+      .el-tabs__content {
+        height: calc(100vh - 80px);
+        overflow-y: auto;
+        overflow-x: auto;
+        // background-color: #f7f9fb;
+      }
+      .el-tabs__header {
+        height: 32px;
+        line-height: 32px;
+        .el-tabs__nav {
+          width: 200px;
+          border-top: 1px solid #f8f8fa;
+          .el-tabs__item {
+            width: 100%;
+            border: none;
+            border-top: 1px solid #f8f8fa;
+            border-radius: 6px 6px 0px 0px;
+            height: 32px;
+            line-height: 32px;
+            position: relative;
+            overflow: hidden;
+            vertical-align: bottom;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            .el-icon-close {
+              position: absolute;
+              right: 10px;
+              top: 50%;
+              transform: translateY(-50%);
+            }
+          }
+        }
+      }
 
+      .el-tabs__item.is-active {
+        background-color: #ffffff;
+        // border-bottom-color:  #3d5eff;
+      }
+      // .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active {
+      //   height: 50px;
+      //   line-height: 50px;
+      // }
+      .el-tab-pane {
+        // padding: 10px;
+        height: 100%;
+        position: relative;
+        .job_detail {
+          height: 100%;
+        }
+        .title_h3 {
+          position: absolute;
+          font-size: 24px;
+          font-weight: 700;
+          font-family: '楷体';
+          left: 24px;
+          top: 30px;
+        }
+      }
+    }
+  }
   .rg {
     width: 100%;
     height: 100%;
