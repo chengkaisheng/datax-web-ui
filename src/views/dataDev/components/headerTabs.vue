@@ -301,6 +301,12 @@ export default {
       },
       immediate: true
     }
+    // projectArray: {
+    //   handler(val) {
+    //     this.$store.commit('SET_SQL_PROJECTARRY', val)
+    //   },
+    //   immediate: true
+    // }
   },
   created() {
     if (sessionStorage.getItem('strParam')) {
@@ -469,9 +475,12 @@ export default {
       this.listQuery.userId = parseInt(localStorage.getItem('userId'))
       try {
         const { records } = await jobProjectApi.list(this.listQuery)
+        localStorage.setItem('records', records)
         this.projectArray = records
+        this.$store.commit('SET_SQL_PROJECTARRY', this.projectArray)
         console.log(this.projectArray, 'projectArray')
         console.log(records)
+
         if (this.selectValue === '') {
           console.log(this.projectArray[0].name, 'name')
           this.selectValue = this.projectArray[0].name
@@ -507,7 +516,10 @@ export default {
         }
         console.log(res.records)
         this.dataSourceList = res.records
-        this.datasourceSelectedId = res.records[this.indexi].id
+        if (this.dataSourceList !== '') {
+          this.datasourceSelectedId = res.records[this.indexi].id
+        }
+
         console.log('55555555555555555555555555' + this.dataSourceList)
         // 初始化数据库以及schema
         // this.datasourceSelectedId = ''
@@ -579,7 +591,7 @@ export default {
         datasourceId: id
       })
         .then((response) => {
-          console.log(response)
+          // console.log(response)
           const arr = []
           for (let i = 0; i < response.length; i++) {
             arr.push({
@@ -593,7 +605,7 @@ export default {
         })
         .catch((err) => {
           console.log(err)
-          this.schemaTreeData = []
+          // this.schemaTreeData = []
           this.schemaTreeLoading = false
         })
       // }

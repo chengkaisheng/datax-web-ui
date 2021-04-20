@@ -72,7 +72,7 @@
             :all-users="users"
             :content="item"
             style="cursor: pointer"
-            @click.native="handleLink(item)"
+            @click.native.stop="handleLink(item)"
           >
             <div slot="top">
               <el-tooltip placement="left" content="操作" @click.native.stop>

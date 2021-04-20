@@ -30,7 +30,7 @@ import { list } from '@/api/datax-jdbcDatasource'
 import {
   // getTables,
   getTableColumns,
-  // getTableSchema,
+  getTableSchema,
   // getTableList,
   getTableListWithComment
 } from '@/api/metadata-query'
@@ -96,36 +96,36 @@ export default {
       this.queryDsInfo = qp
     },
 
-    // handleChangeSQL(value) {
-    //   console.log(value)
-    //   this.datasourcewidth = value.length
-    // },
-    // handleChange(value) {
-    //   console.log(value)
-    //   getTableSchema({
-    //     datasourceId: value
-    //   })
-    //     .then((res) => {
-    //       console.log(res)
-    //       this.options1 = res
-    //     })
-    //     .catch((err) => {
-    //       console.log(err)
-    //       this.options1 = []
-    //       this.sqlName = ''
-    //     })
-    // },
+    handleChangeSQL(value) {
+      console.log(value)
+      this.datasourcewidth = value.length
+    },
+    handleChange(value) {
+      console.log(value)
+      getTableSchema({
+        datasourceId: value
+      })
+        .then((res) => {
+          console.log(res)
+          this.options1 = res
+        })
+        .catch((err) => {
+          console.log(err)
+          this.options1 = []
+          this.sqlName = ''
+        })
+    },
     // // 获取数据库列表
-    // getDataBaseList() {
-    //   list({
-    //     current: 1,
-    //     size: 100000
-    //   }).then((res) => {
-    //     this.dataBaseList = res.records
-    //     this.dataBaseid = res.records[0].id
-    //     // this.getSchema()
-    //   })
-    // },
+    getDataBaseList() {
+      list({
+        current: 1,
+        size: 100000
+      }).then((res) => {
+        this.dataBaseList = res.records
+        this.dataBaseid = res.records[0].id
+        // this.getSchema()
+      })
+    },
 
     // 获取schema
     // getSchema() {

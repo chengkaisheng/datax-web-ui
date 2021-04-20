@@ -178,6 +178,9 @@ const mutations = {
   SET_DATASOURCE: (state, arr) => {
     state.dataSourceList = arr
   },
+  SET_SQL_PROJECTARRY: (state, arr) => {
+    state.projectArray = arr
+  },
 
   SET_READER_DATASOURCE_ID: (state, id) => {
     state.readerDataSourceID = id

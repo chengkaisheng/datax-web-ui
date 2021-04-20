@@ -92,6 +92,46 @@
             </el-dropdown-menu>
           </el-dropdown>
         </span>
+        <!-- <el-input
+          v-model="search"
+          size="mini"
+          placeholder="输入关键字搜索"
+        /> -->
+        <!-- <el-row>
+          <el-col :span="6"><div class="grid-content bg-purple" /></el-col>
+          <el-col :span="6"><div class="grid-content bg-purple-light" /></el-col>
+          <el-col :span="6"><div class="grid-content bg-purple" /></el-col>
+          <el-col :span="6"><div class="grid-content bg-purple-light" /></el-col>
+        </el-row> -->
+        <el-form ref="formInline" :inline="true" :model="formInline" size="mini" class="demo-input-size">
+          <el-form-item size="mini" label="执行语句">
+            <el-input v-model="formInline.sqlContent" placeholder="执行语句" size="mini" clearable> />
+            </el-input></el-form-item>
+          <el-form-item label="数据源" size="mini">
+            <el-select
+              v-model="formInline.projectId"
+              placeholder="数据源"
+              size="mini"
+              clearable
+            >
+              <el-option
+                v-for="item in datasourcelist"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="开始时间">
+            <el-date-picker v-model="formInline.submitTimeBegin" type="date" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期" style="width: 100%;" size="mini" />
+          </el-form-item>
+          <el-form-item label="结束时间" size="mini">
+            <el-date-picker v-model="formInline.submitTimeEnd" type="date" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期" style="width: 100%;" size="mini" />
+          </el-form-item>
+          <el-form-item size="mini">
+            <el-button type="primary" size="mini" @click="onSubmit('formInline')">查询</el-button>
+          </el-form-item>
+        </el-form>
         <el-table
           ref="tableHisSql"
           v-loading="tableLoading"
@@ -129,8 +169,9 @@
             label="提交时间"
             width="150"
             align="center"
+            value-format="yyyy-MM-dd HH:mm:ss"
           />
-          <el-table-column width="150" align="center">
+          <!-- <el-table-column width="150" align="center">
             <template slot="header">
               <el-select v-model="isSaveMode" @change="getSqlList">
                 <el-option :value="0" label="SQL临时查询" />
@@ -142,9 +183,9 @@
                 scope.row.isSaved === 0 ? "SQL临时查询" : "已保存SQL查询"
               }}</span>
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <!-- <el-table-column prop="sqlResult" label="执行结果" width="150" align="center" /> -->
-          <el-table-column
+          <!-- <el-table-column
             v-if="isSaveMode === 1"
             label="操作"
             width="150"
@@ -165,7 +206,7 @@
                 删除
               </el-button>
             </template>
-          </el-table-column>
+          </el-table-column> -->
         </el-table>
         <el-pagination
           style="text-align: right; margin: 10px 0"
@@ -181,21 +222,16 @@
       <el-tab-pane name="asynctask">
         <span slot="label">
           {{ tabLabel["asynctask"] }}
-          <el-dropdown
-            v-if="tabsActive === 'asynctask' && tableData.length > 0"
+          <!-- <el-dropdown
+            v-if="tabsActive === 'asynctask' && sqlHistoryData1.length > 0"
             style="margin-left: 10px"
             placement="top"
-          />
+          /> -->
         </span>
-        <!-- <el-input
-          v-model="search"
-          size="mini"
-          placeholder="输入关键字搜索"
-        /> -->
         <el-table
           ref="tableHisSql"
           v-loading="tableLoading"
-          :data="sqlHistoryData"
+          :data="sqlHistoryData1"
           height="245"
           :row-style="{ height: '33px' }"
           :cell-style="{ padding: '0' }"
@@ -230,7 +266,7 @@
             width="150"
             align="center"
           />
-          <el-table-column width="150" align="center">
+          <!-- <el-table-column width="150" align="center">
             <template slot="header">
               <el-select v-model="isSaveMode" @change="getSqlList">
                 <el-option :value="0" label="SQL临时查询" />
@@ -242,15 +278,32 @@
                 scope.row.isSaved === 0 ? "SQL临时查询" : "已保存SQL查询"
               }}</span>
             </template>
-          </el-table-column> -->
+          </el-table-column> --> -->
           <!-- <el-table-column prop="sqlResult" label="执行结果" width="150" align="center" /> -->
           <el-table-column
-            v-if="isSaveMode === 1"
             label="操作"
             width="150"
             align="center"
           >
             <template slot-scope="scope">
+              <el-button type="text" size="small" @click="handleClick1(scope.row)">查看</el-button>
+              <!-- <el-popover
+                placement="right"
+                width="400"
+                trigger="click"
+              >
+                <el-table :data="scope.row">
+                  <el-table-column width="150" property="scope.row" label="日期" />
+                  <el-table-column width="100" property="name" label="姓名" />
+                  <el-table-column width="300" property="address" label="地址" />
+                </el-table>
+                <el-button slot="reference">click 激活</el-button>
+              </el-popover> -->
+              <el-button
+                type="text"
+                icon="el-icon-refresh"
+                @click="handleClick(scope.row.id)"
+              />
               <el-button
                 type="text"
                 icon="el-icon-delete"
@@ -339,7 +392,7 @@
         <span slot="label">
           {{ tabLabel["res"] }}
           <el-dropdown
-            v-if="tabsActive === 'res' && item.tableData.length > 0"
+            v-if="tabsActive === item.name&& item.tableData.length > 0"
             style="margin-left: 10px"
             placement="top"
           >
@@ -456,7 +509,15 @@ export default {
       port: '',
       userName: '',
       password: '',
-      databaseName: ''
+      databaseName: '',
+      search: '',
+      formInline: {
+        projectId: '',
+        submitTimeBegin: '',
+        submitTimeEnd: '',
+        sqlContent: ''
+      },
+      datasourcelist: this.$store.state.taskAdmin.projectArray
     }
   },
   computed: {
@@ -483,9 +544,9 @@ export default {
           case 'hisSql':
             this.getSqlList()
             break
-          // case 'asynctask':
-          //   this.getSqlList()
-          //   break
+          case 'asynctask':
+            this.getSqlListSaved()
+            break
           default:
             break
         }
@@ -496,19 +557,36 @@ export default {
     // this.getcreateConnec(),
   },
   methods: {
+    // sql历史查询
+    onSubmit(formInline) {
+      sqlhisApi
+        .getSqlListTemp({
+          submitUser: parseInt(localStorage.getItem('userId')), // 提交用户id
+          size: this.pagination.size,
+          current: this.pagination.current,
+          ...this.formInline,
+          isSaved: 0
+        })
+        .then((response) => {
+          if (response.code === 200) {
+            this.sqlHistoryData = response.content.records
+            this.pagination.total = response.content.total
+          }
+          this.tableLoading = false
+        })
+        .catch((error) => {
+          console.log(error)
+          this.tableLoading = false
+        })
+    },
     handleClick(tab) {
-      // if (tab.name === 'first') {
-      //   this.isFirst = true
-      //   this.isSecond = false
-      // } else if (tab.name === 'second') {
-      //   this.isFirst = false
-      //   this.isSecond = true
-      // }
+      this.getSqlListSaved()
     },
     // 查看
-    // handleClick(row) {
-    //   console.log(row)
-    // },
+    handleClick1(row) {
+      console.log(row)
+      alert(row.id)
+    },
     // 新增查询结果
     addTab(targetName) {
       const newTabName = ++this.tabIndex + ''
@@ -904,49 +982,71 @@ export default {
       //   Object.assign({}, this.getPagination),
       //   this.getBasedInfo
       // );
-      if (this.isSaveMode === 0) {
-        sqlhisApi
-          .getSqlListTemp({
-            size: this.pagination.size,
-            current: this.pagination.current,
-            projectId: this.$store.state.taskAdmin.sqlParams.projectId,
-            datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId,
-            databaseSchema: this.$store.state.taskAdmin.sqlParams.schema,
-            isSaved: 0
-          })
-          .then((response) => {
-            if (response.code === 200) {
-              this.sqlHistoryData = response.content.records
-              this.pagination.total = response.content.total
-            }
-            this.tableLoading = false
-          })
-          .catch((error) => {
-            console.log(error)
-            this.tableLoading = false
-          })
-      } else {
-        sqlhisApi
-          .getSqlListSaved({
-            size: this.pagination.size,
-            current: this.pagination.current,
-            projectId: this.$store.state.taskAdmin.sqlParams.projectId,
-            datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId,
-            databaseSchema: this.$store.state.taskAdmin.sqlParams.schema,
-            isSaved: 1
-          })
-          .then((response) => {
-            if (response.code === 200) {
-              this.sqlHistoryData = response.content.records
-              this.pagination.total = response.content.total
-            }
-            this.tableLoading = false
-          })
-          .catch((error) => {
-            console.log(error)
-            this.tableLoading = false
-          })
-      }
+      // if (this.isSaveMode === 0) {
+      sqlhisApi
+        .getSqlListTemp({
+          size: this.pagination.size,
+          current: this.pagination.current,
+          projectId: this.$store.state.taskAdmin.sqlParams.projectId,
+          datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId,
+          databaseSchema: this.$store.state.taskAdmin.sqlParams.schema,
+          isSaved: 0
+        })
+        .then((response) => {
+          if (response.code === 200) {
+            this.sqlHistoryData = response.content.records
+            this.pagination.total = response.content.total
+          }
+          this.tableLoading = false
+        })
+        .catch((error) => {
+          console.log(error)
+          this.tableLoading = false
+        })
+      // } else {
+      // sqlhisApi
+      //   .getSqlListSaved({
+      //     size: this.pagination.size,
+      //     current: this.pagination.current,
+      //     projectId: this.$store.state.taskAdmin.sqlParams.projectId,
+      //     datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId,
+      //     databaseSchema: this.$store.state.taskAdmin.sqlParams.schema,
+      //     isSaved: 1
+      //   })
+      //   .then((response) => {
+      //     if (response.code === 200) {
+      //       this.sqlHistoryData1 = response.content.records
+      //       this.pagination.total = response.content.total
+      //     }
+      //     this.tableLoading = false
+      //   })
+      //   .catch((error) => {
+      //     console.log(error)
+      //     this.tableLoading = false
+      //   })
+      // }
+    },
+    getSqlListSaved() {
+      sqlhisApi
+        .getSqlListSaved({
+          size: this.pagination.size,
+          current: this.pagination.current,
+          projectId: this.$store.state.taskAdmin.sqlParams.projectId,
+          datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId,
+          databaseSchema: this.$store.state.taskAdmin.sqlParams.schema,
+          isSaved: 1
+        })
+        .then((response) => {
+          if (response.code === 200) {
+            this.sqlHistoryData1 = response.content.records
+            this.pagination.total = response.content.total
+          }
+          this.tableLoading = false
+        })
+        .catch((error) => {
+          console.log(error)
+          this.tableLoading = false
+        })
     },
     /**
      * @description: 删除手动保存
@@ -955,21 +1055,15 @@ export default {
       sqlhisApi
         .deleteSaved(id)
         .then((response) => {
-          if (response.code === 0) {
+          if (response.code === 200) {
             this.$notify({
               title: '成功',
               message: response.msg,
               type: 'success',
               duration: 2000
             })
-          } else {
-            this.$notify({
-              title: '错误',
-              message: '删除失败',
-              type: 'error',
-              duration: 2000
-            })
           }
+          this.getSqlListSaved()
         })
         .catch((_) => {
           this.$notify({
