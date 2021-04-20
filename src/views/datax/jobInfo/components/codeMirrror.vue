@@ -63,7 +63,7 @@ export default {
     return {
       lookup: false,
       TIPS: false,
-      notes: `--============================程序说明================================================
+      notes: `--============================================程序说明================================================
 -- 脚本名称：HS_QHZ_CMP_P_CO_SETSAL_GAP_MONTH.HQL
 -- 功能说明：
 -- 查询原表：
@@ -77,7 +77,7 @@ export default {
 -- 备注：
 -- 脚本版本:       修改人:        修改日期:         修改内容:
 -- v1
- ====================================================================================`,
+-- ===================================================================================================`,
       code: '',
       sqlLoading: false,
       tips: {},
@@ -389,6 +389,14 @@ export default {
   position: relative;
   height: 400px;
   overflow: scroll;
+  overflow-x: hidden;
+  font-size: 13px;
+  .lookup {
+    position: absolute;
+    top: 40px;
+    right: 50px;
+    border: 1px solid #ccc;
+  }
 }
 
 .sqlArea::-webkit-scrollbar {

@@ -31,7 +31,8 @@
                 isshow = true
               }
             "
-          >新增</el-button>
+            >新增</el-button
+          >
           <el-input
             v-show="isshow"
             v-model="input"
@@ -49,12 +50,11 @@
                   isshow = false
                 }
               "
-            >取消</el-button>
-            <el-button
-              size="small"
-              style="margin-bottom: 20px"
-              type="primary"
-            >保存</el-button>
+              >取消</el-button
+            >
+            <el-button size="small" style="margin-bottom: 20px" type="primary"
+              >保存</el-button
+            >
           </div>
         </div>
       </el-drawer>
@@ -78,58 +78,10 @@
                 :data="TableData"
                 style="width: 100%"
                 :header-cell-style="{
-                  fontSize: '16px',
+                  fontSize: '13px',
                   color: '#606266',
                 }"
               >
-                <el-table-column
-                  fixed
-                  prop="FunctionDescription"
-                  label="功能说明"
-                  width="100"
-                />
-                <el-table-column
-                  prop="QueryOriginalTable"
-                  label="查询原表"
-                  width="100"
-                />
-                <el-table-column
-                  prop="TargetTable"
-                  label="目标表"
-                  width="100"
-                />
-                <el-table-column
-                  prop="UpdatMethod"
-                  label="更新方式"
-                  width="100"
-                />
-                <el-table-column
-                  prop="Department"
-                  label="科室部门"
-                  width="100"
-                />
-                <el-table-column
-                  prop="responsibilityPerson"
-                  label="负责人"
-                  width="100"
-                />
-                <el-table-column
-                  prop="CreationDate"
-                  label="创建日期"
-                  width="100"
-                />
-                <el-table-column
-                  prop="OperationCycle"
-                  label="运行周期"
-                  width="100"
-                />
-                <el-table-column prop="routine" label="例程" width="100" />
-                <el-table-column prop="remarks" label="备注" width="100" />
-                <el-table-column
-                  prop="ScriptVersion"
-                  label="脚本版本"
-                  width="100"
-                />
               </el-table>
             </template>
             <el-pagination
@@ -155,12 +107,12 @@ export default {
   components: {
     JsonEditor,
     MarddownEditor,
-    CodeMirror
+    CodeMirror,
   },
   data() {
     return {
       numberValidateForm: {
-        age: ''
+        age: '',
       },
       first: 'first',
       dialogVisible: false,
@@ -175,7 +127,7 @@ export default {
         // { FunctionDescription: 'g' },
       ],
       temp: {
-        triggerStatus: '1'
+        triggerStatus: '1',
       },
       drawer: false,
       isshow: false,
@@ -183,7 +135,7 @@ export default {
       ddd: [],
       code: {},
       SingleData: {},
-      taskParam: []
+      taskParam: [],
     }
   },
   created() {
@@ -231,7 +183,7 @@ export default {
           replaceParam: '',
           replaceParamType: 'Timestamp',
           userId: 0,
-          id: this.$store.state.taskAdmin.GroupId
+          id: this.$store.state.taskAdmin.GroupId,
         }
         this.code = val
         job
@@ -279,7 +231,7 @@ export default {
           readerTable: '',
           replaceParam: '',
           replaceParamType: 'Timestamp',
-          userId: 0
+          userId: 0,
         }
         console.log('this.store', this.SingleData)
         console.log('------->', val)
@@ -310,8 +262,8 @@ export default {
     },
     handleClick(tab, event) {
       console.log(tab, event)
-    }
-  }
+    },
+  },
 }
 </script>
 
