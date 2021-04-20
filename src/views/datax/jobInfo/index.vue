@@ -1981,11 +1981,11 @@ export default {
 <style lang="scss">
 .RedDot {
   display: inline-block;
-  height: 10px;
-  width: 10px;
+  height: 5px;
+  width: 5px;
   border-radius: 50%;
   background: red;
-  margin-left: 30px;
+  margin-left: 100px;
 }
 .Management {
   display: flex;

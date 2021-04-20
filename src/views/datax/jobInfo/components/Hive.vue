@@ -62,18 +62,17 @@
     <div class="logs">
       <div class="Navigation">
         <span
-          :class="{ color: color === 3 ? 'color' : '' }"
+          :class="{ color: color === 1 ? 'color' : '' }"
           @click="
             () => {
               this.logs = true
-              this.color = 3
+              this.color = 1
             }
           "
           >任务日志</span
         >
       </div>
-      <el-table v-show="logs" :data="TableData" border style="width: 100%">
-      </el-table>
+      <div v-show="logs"></div>
     </div>
   </div>
 </template>
