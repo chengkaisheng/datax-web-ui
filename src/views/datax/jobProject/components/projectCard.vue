@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { ContextMenuTool } from 'gojs';
+import { ContextMenuTool } from 'gojs'
 export default {
   name: 'ProjectCard',
   props: {
@@ -61,13 +61,13 @@ export default {
     return {
       labelWidth: '90px',
       users: []
-    };
+    }
   },
   created() {
-    this.users = this.allUsers;
-    console.log('222222222222222222222' + this.content.name);
+    this.users = this.allUsers
+    console.log('222222222222222222222' + this.content.name)
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

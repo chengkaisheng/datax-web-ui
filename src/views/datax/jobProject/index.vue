@@ -257,15 +257,15 @@
 </template>
 
 <script>
-import * as jobProjectApi from '@/api/datax-job-project';
-import waves from '@/directive/waves';
-import Pagination from '@/components/Pagination';
+import * as jobProjectApi from '@/api/datax-job-project'
+import waves from '@/directive/waves'
+import Pagination from '@/components/Pagination'
 // import * as datasourceApi from '@/api/datax-jdbcDatasource';
-import { translaterMaster } from '@/utils/dictionary';
-import { getAllUser } from '@/api/datax-user';
-import ProjectCard from './components/projectCard';
-import Member from './components/member';
-import { objList } from '@/utils/sortArr';
+import { translaterMaster } from '@/utils/dictionary'
+import { getAllUser } from '@/api/datax-user'
+import ProjectCard from './components/projectCard'
+import Member from './components/member'
+import { objList } from '@/utils/sortArr'
 
 export default {
   name: 'JobProject',
@@ -283,8 +283,8 @@ export default {
         published: 'success',
         draft: 'gray',
         deleted: 'danger'
-      };
-      return statusMap[status];
+      }
+      return statusMap[status]
     }
   },
   data() {
@@ -334,35 +334,36 @@ export default {
       visible: true,
       users: [], // 用户列表
       memberShow: false
-    };
+    }
   },
   computed: {
     // 在用户列表通过id找username
     getNameById() {
       return (id) => {
-        const temp = this.users.filter((item) => item.id === id);
-        return temp[0]?.username;
-      };
+        const temp = this.users.filter((item) => item.id === id)
+        console.log(temp)
+        return temp[0]?.username
+      }
     }
   },
   created() {
     getAllUser().then((response) => {
-      this.users = response;
-    });
-    this.fetchData();
+      this.users = response
+    })
+    this.fetchData()
   },
   methods: {
     fetchData() {
-      this.listQuery.userId = JSON.parse(localStorage.getItem('userId'));
-      this.listLoading = true;
+      this.listQuery.userId = JSON.parse(localStorage.getItem('userId'))
+      this.listLoading = true
       jobProjectApi.list(this.listQuery).then((response) => {
-        const { records } = response;
-        const { total } = response;
-        this.total = total;
-        this.list = records;
-        this.list = objList(this.list, 'name');
-        this.listLoading = false;
-      });
+        const { records } = response
+        const { total } = response
+        this.total = total
+        this.list = records
+        this.list = objList(this.list, 'name')
+        this.listLoading = false
+      })
     },
     resetTemp() {
       this.temp = {
@@ -370,92 +371,95 @@ export default {
         name: '',
         description: '',
         userIds: []
-      };
+      }
     },
     handleCreate() {
-      this.resetTemp();
-      this.dialogStatus = 'create';
-      this.dialogFormVisible = true;
+      this.resetTemp()
+      this.dialogStatus = 'create'
+      this.dialogFormVisible = true
       this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate();
-      });
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           jobProjectApi.created(this.temp).then((response) => {
-            this.fetchData();
-            this.dialogFormVisible = false;
+            this.fetchData()
+            this.dialogFormVisible = false
             this.$notify({
               title: '成功',
               message: '添加成功',
               type: 'success',
               duration: 2000
-            });
-          });
+            })
+          })
         }
-      });
+      })
     },
     handleLink(item) {
-      console.log(JSON.parse(localStorage.getItem('permission')));
-      const myLeft = JSON.parse(localStorage.getItem('permission'));
-      const strParam = item.id + '/' + item.name;
-      sessionStorage.setItem('strParam', strParam);
-      const arr = [];
+      console.log(item)
+      console.log(JSON.parse(localStorage.getItem('permission')))
+      const myLeft = JSON.parse(localStorage.getItem('permission'))
+      const strParam = item.id + '/' + item.name
+      sessionStorage.setItem('strParam', strParam)
+      console.log(myLeft)
+      const arr = []
       for (let i = 0; i < myLeft.length; i++) {
         if (
           myLeft[i].menuId !== 2 &&
           myLeft[i].menuId !== 4 &&
           myLeft[i].menuId !== 61
         ) {
-          arr.push(myLeft[i]);
+          arr.push(myLeft[i])
         }
       }
+      console.log(arr)
       for (let i = 0; i < arr.length; i++) {
         if (arr[i].path) {
-          window.open('#' + arr[0].path + '?level=2');
+          window.open('#' + arr[0].path + '?level=2')
         } else {
-          window.open('#' + arr[0].children[0].path + '?level=2');
+          window.open('#' + arr[0].children[0].path + '?level=2')
         }
       }
-      console.log('#' + arr[0].path + '');
-      console.log(arr);
+      console.log('#' + arr[0].path + '')
+      console.log(arr)
     },
     handleUpdate(row) {
       jobProjectApi.getInfoById(row.id).then((response) => {
         // console.log(response);
-        this.temp = Object.assign({}, response);
-      });
+        this.temp = Object.assign({}, response)
+      })
       // console.log(row)
       // this.temp = Object.assign({}, row); // copy obj
-      this.dialogStatus = 'update';
-      this.dialogFormVisible = true;
+      this.dialogStatus = 'update'
+      this.dialogFormVisible = true
       this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate();
-      });
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     handleDataSource(row) {
-      console.log(row);
-      sessionStorage.setItem('JobName', row.name);
-      sessionStorage.setItem('projectId', row.id);
-      this.$router.push('/datax/datasource/jdbcDatasource');
+      console.log(row)
+      sessionStorage.setItem('JobName', row.name)
+      sessionStorage.setItem('projectId', row.id)
+      this.$router.push('/datax/datasource/jdbcDatasource')
     },
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.temp);
+          const tempData = Object.assign({}, this.temp)
           jobProjectApi.updated(tempData).then(() => {
-            this.fetchData();
-            this.dialogFormVisible = false;
+            this.fetchData()
+            this.dialogFormVisible = false
             this.$notify({
               title: '成功',
               message: '编辑成功',
               type: 'success',
               duration: 2000
-            });
-          });
+            })
+          })
         }
-      });
+      })
     },
     handleDelete(row) {
       this.$confirm('确定删除吗？', '提示', {
@@ -463,42 +467,42 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        const idList = [];
-        idList.push(row.id);
+        const idList = []
+        idList.push(row.id)
         jobProjectApi
           .deleted({
             idList: row.id
           })
           .then((response) => {
-            this.fetchData();
+            this.fetchData()
             this.$notify({
               title: '成功',
               message: '删除成功',
               type: 'success',
               duration: 2000
-            });
+            })
           })
           .catch(() => {
             this.$message({
               type: 'info',
               message: '已取消删除'
-            });
-          });
-      });
+            })
+          })
+      })
     },
     handleShowMember(item) {
-      this.temp = item;
-      this.memberShow = true;
+      this.temp = item
+      this.memberShow = true
     },
     /**
      * @description: 重置
      */
     reSet() {
-      this.listQuery.searchVal = '';
-      this.fetchData();
+      this.listQuery.searchVal = ''
+      this.fetchData()
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
