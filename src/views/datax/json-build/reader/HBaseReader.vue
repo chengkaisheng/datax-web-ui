@@ -84,7 +84,7 @@
 
 <script>
 import * as dsQueryApi from '@/api/metadata-query'
-import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
+import { getJobList as jdbcDsList } from '@/api/datax-jdbcDatasource'
 import Bus from '../busReader'
 import { finder, dashOrValue } from '../private'
 
@@ -161,10 +161,14 @@ export default {
     // 获取可用数据源
     getJdbcDs() {
       this.loading = true
+      this.jdbcDsQuery.projectId = this.$store.state.taskAdmin.projectId
       jdbcDsList(this.jdbcDsQuery).then(response => {
         const { records } = response
+        console.log(records, response, '数据源')
         this.rDsList = records
         this.loading = false
+        this.$store.commit('SET_DATASOURCE', records)
+        console.log('RH_____', this.dataSourceCompute)
       })
     },
     // 获取表名
@@ -184,6 +188,7 @@ export default {
       // 清空
       this.readerForm.tableName = ''
       this.readerForm.datasourceId = e
+      console.log(e, 'eeeee')
       this.rDsList.find((item) => {
         if (item.id === e) {
           this.dataSource = item.datasource

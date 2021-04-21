@@ -110,9 +110,9 @@
 </template>
 
 <script>
-import * as dsQueryApi from '@/api/metadata-query';
-import { list as jdbcDsList } from '@/api/datax-jdbcDatasource';
-import Bus from '../busWriter';
+import * as dsQueryApi from '@/api/metadata-query'
+import { getJobList as jdbcDsList } from '@/api/datax-jdbcDatasource'
+import Bus from '../busWriter'
 import { translaterMaster } from '@/utils/dictionary'
 
 export default {
@@ -180,121 +180,122 @@ export default {
           label: 'nonConflict 目录下有fileName前缀的文件，直接报错'
         }
       ]
-    };
+    }
   },
   watch: {
     'writerForm.datasourceId': function(oldVal, newVal) {
-      this.getTables('hiveWriter');
+      this.getTables('hiveWriter')
     },
     'writerForm.fromTableName'(val) {
-      this.writerForm.tableName = val;
-      this.fromColumnList = [];
-      this.writerForm.columns = [];
-      this.getColumns('writer');
+      this.writerForm.tableName = val
+      this.fromColumnList = []
+      this.writerForm.columns = []
+      this.getColumns('writer')
     }
   },
   created() {
-    this.getJdbcDs();
+    this.getJdbcDs()
   },
   methods: {
     // 获取可用数据源
     getJdbcDs(type) {
-      this.loading = true;
+      this.loading = true
+      this.jdbcDsQuery.projectId = this.$store.state.taskAdmin.projectId
       jdbcDsList(this.jdbcDsQuery).then((response) => {
-        const { records } = response;
-        this.wDsList = records;
-        this.loading = false;
-      });
+        const { records } = response
+        this.wDsList = records
+        this.loading = false
+      })
     },
     // 获取表名
     getTables(type) {
       if (type === 'hiveWriter') {
         const obj = {
           datasourceId: this.writerForm.datasourceId
-        };
+        }
         // 组装
         dsQueryApi.getTables(obj).then((response) => {
-          this.wTbList = response;
+          this.wTbList = response
           this.writerForm.fromTableName = this.wTbList[0]
         }).catch((error) => {
           console.log(error)
-          this.wTbList = [];
+          this.wTbList = []
           this.writerForm.fromTableName = ''
         })
       }
     },
     wDsChange(e) {
       // 清空
-      this.writerForm.tableName = '';
-      this.writerForm.datasourceId = e;
+      this.writerForm.tableName = ''
+      this.writerForm.datasourceId = e
       this.wDsList.find((item) => {
         if (item.id === e) {
-          this.dataSource = item.datasource;
+          this.dataSource = item.datasource
         }
-      });
-      Bus.dataSourceId = e;
-      this.$emit('selectDataSource', this.dataSource);
+      })
+      Bus.dataSourceId = e
+      this.$emit('selectDataSource', this.dataSource)
       // 获取可用表
-      this.getTables();
+      this.getTables()
     },
     // 获取表字段
     getColumns() {
       const obj = {
         datasourceId: this.writerForm.datasourceId,
         tableName: this.writerForm.tableName
-      };
+      }
       dsQueryApi.getColumns(obj).then((response) => {
-        this.fromColumnList = response;
-        this.writerForm.columns = response;
-        this.writerForm.checkAll = true;
-        this.writerForm.isIndeterminate = false;
-      });
+        this.fromColumnList = response
+        this.writerForm.columns = response
+        this.writerForm.checkAll = true
+        this.writerForm.isIndeterminate = false
+      })
     },
     // 表切换
     wTbChange(t) {
-      this.writerForm.tableName = t;
-      this.fromColumnList = [];
-      this.writerForm.columns = [];
-      this.getColumns('writer');
+      this.writerForm.tableName = t
+      this.fromColumnList = []
+      this.writerForm.columns = []
+      this.getColumns('writer')
     },
     wHandleCheckAllChange(val) {
-      this.writerForm.columns = val ? this.fromColumnList : [];
-      this.writerForm.isIndeterminate = false;
+      this.writerForm.columns = val ? this.fromColumnList : []
+      this.writerForm.isIndeterminate = false
     },
     wHandleCheckedChange(value) {
-      const checkedCount = value.length;
-      this.writerForm.checkAll = checkedCount === this.fromColumnList.length;
+      const checkedCount = value.length
+      this.writerForm.checkAll = checkedCount === this.fromColumnList.length
       this.writerForm.isIndeterminate =
-        checkedCount > 0 && checkedCount < this.fromColumnList.length;
+        checkedCount > 0 && checkedCount < this.fromColumnList.length
     },
     createTableCheckedChange(val) {
-      this.writerForm.tableName = val ? this.readerForm.tableName : '';
-      this.fromColumnList = this.readerForm.columns;
-      this.writerForm.columns = this.readerForm.columns;
-      this.writerForm.checkAll = true;
-      this.writerForm.isIndeterminate = false;
+      this.writerForm.tableName = val ? this.readerForm.tableName : ''
+      this.fromColumnList = this.readerForm.columns
+      this.writerForm.columns = this.readerForm.columns
+      this.writerForm.checkAll = true
+      this.writerForm.isIndeterminate = false
     },
     getData() {
       if (Bus.dataSourceId) {
-        this.writerForm.datasourceId = Bus.dataSourceId;
+        this.writerForm.datasourceId = Bus.dataSourceId
       }
-      return this.writerForm;
+      return this.writerForm
     },
     getReaderData() {
-      return this.$parent.getReaderData();
+      return this.$parent.getReaderData()
     },
     getTableName() {
-      return this.writerForm.fromTableName;
+      return this.writerForm.fromTableName
     },
     createTable() {
-      const tableName = this.writerForm.fromTableName;
-      const datasourceId = this.writerForm.datasourceId;
-      const columns = this.fromColumnList;
-      const jsonString = {};
-      jsonString['datasourceId'] = datasourceId;
-      jsonString['tableName'] = tableName;
-      jsonString['columns'] = columns;
-      console.info(jsonString);
+      const tableName = this.writerForm.fromTableName
+      const datasourceId = this.writerForm.datasourceId
+      const columns = this.fromColumnList
+      const jsonString = {}
+      jsonString['datasourceId'] = datasourceId
+      jsonString['tableName'] = tableName
+      jsonString['columns'] = columns
+      console.info(jsonString)
       dsQueryApi
         .createTable(jsonString)
         .then((response) => {
@@ -303,10 +304,10 @@ export default {
             message: 'Create Table Successfully',
             type: 'success',
             duration: 2000
-          });
+          })
         })
-        .catch(() => console.log('promise catch err'));
+        .catch(() => console.log('promise catch err'))
     }
   }
-};
+}
 </script>

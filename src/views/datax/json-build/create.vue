@@ -275,14 +275,14 @@
 </template>
 
 <script>
-import * as job from '@/api/datax-job-info';
-import * as jobProjectApi from '@/api/datax-job-project';
-import * as datasourceApi from '@/api/datax-jdbcDatasource';
-import Cron from '@/components/Cron';
+import * as job from '@/api/datax-job-info'
+import * as jobProjectApi from '@/api/datax-job-project'
+import * as datasourceApi from '@/api/datax-jdbcDatasource'
+import Cron from '@/components/Cron'
 
-import ShellEditor from '@/components/ShellEditor';
-import PythonEditor from '@/components/PythonEditor';
-import PowershellEditor from '@/components/PowershellEditor';
+import ShellEditor from '@/components/ShellEditor'
+import PythonEditor from '@/components/PythonEditor'
+import PowershellEditor from '@/components/PowershellEditor'
 
 export default {
   name: 'Create',
@@ -379,7 +379,7 @@ export default {
         { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' }
       ],
       showStrategy: false
-    };
+    }
   },
 
   watch: {
@@ -394,10 +394,10 @@ export default {
   },
 
   beforeMount() {
-    this.getExecutor();
-    this.getJobProject();
-    this.getJobIdList();
-    this.getDataSourceList();
+    this.getExecutor()
+    this.getJobProject()
+    this.getJobIdList()
+    // this.getDataSourceList()
     // 默认值
     this.$set(this.temp, 'executorRouteStrategy', this.routeStrategies.length > 0 ? this.routeStrategies[0].value : '')
     this.$set(this.temp, 'executorBlockStrategy', this.blockStrategies.length > 0 ? this.blockStrategies[0].value : '')
@@ -411,59 +411,60 @@ export default {
      */
     getExecutor() {
       job.getExecutorList().then((response) => {
-        const { content } = response;
-        this.executorList = content;
+        const { content } = response
+        this.executorList = content
         this.$set(this.temp, 'jobGroup', this.executorList.length > 0 ? this.executorList[0].id : '')
-      });
+      })
     },
 
     getJobProject() {
       jobProjectApi.getJobProjectList().then((response) => {
-        this.jobProjectList = response;
-      });
+        this.jobProjectList = response
+      })
     },
     /**
      * @description: 获取子任务列表
      */
     getJobIdList() {
       job.getJobIdList().then((response) => {
-        const { content } = response;
-        this.jobIdList = content;
+        const { content } = response
+        this.jobIdList = content
         // 默认子任务
         // const t = []
         // if (this.jobIdList.length > 0) {
         //   t.push(this.jobIdList[0].id)
         // }
         // this.$set(this.temp, 'childJobIdArr', t)
-      });
+      })
     },
     /**
      * @description: 获取数据源列表
      */
     getDataSourceList() {
       datasourceApi.getDataSourceList().then((response) => {
-        this.dataSourceList = response;
-      });
+        this.dataSourceList = response
+        console.log(response, 'response')
+      })
     },
 
     createTask() {
-      this.temp.jobJson = JSON.stringify(this.fjson, null, 2);
-      this.temp.projectId = this.$store.state.taskAdmin.projectId;
-      let str = '';
+      this.temp.jobJson = JSON.stringify(this.fjson, null, 2)
+      this.temp.projectId = this.$store.state.taskAdmin.projectId
+      let str = ''
       this.temp.childJobIdArr.forEach((ele) => {
-        str = str + ele + ',';
-      });
-      this.temp.childJobId = str;
+        str = str + ele + ','
+      })
+      this.temp.childJobId = str
       this.temp.executorHandler =
         this.temp.glueType === 'BEAN'
           ? 'executorJobHandler'
-          : 'executorJobHandler';
+          : 'executorJobHandler'
 
-      this.temp.jobType = this.$store.state.taskAdmin.tabType;
+      this.temp.jobType = this.$store.state.taskAdmin.tabType
 
-      this.temp.jobParam = this.$store.state.taskAdmin.jobParam;
+      this.temp.jobParam = this.$store.state.taskAdmin.jobParam
       console.log(this.$store.state.taskAdmin.GroupId, 'this.$store.state.taskAdmin.GroupId')
-      this.temp.projectGroupId = this.$store.state.taskAdmin.GroupId;
+      this.temp.projectGroupId = this.$store.state.taskAdmin.GroupId
       console.log(this.temp, 'temp')
       job.createJob(this.temp).then(response => {
         this.$notify({
@@ -471,16 +472,16 @@ export default {
           message: 'Created Successfully',
           type: 'success',
           duration: 2000
-        });
+        })
         this.$store.commit('changeWatch', 1)
         this.temp = {}
         this.$store.dispatch('getTaskList', true)
-        this.$store.commit('SET_TAB_TYPE', '');
-      });
+        this.$store.commit('SET_TAB_TYPE', '')
+      })
     }
 
   }
-};
+}
 </script>
 
 <style scoped>
