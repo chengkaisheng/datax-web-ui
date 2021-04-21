@@ -1125,6 +1125,7 @@ export default {
 
     JobTabClick(ele) {
       console.log(ele)
+      console.log(this.List, '>>>>>>>>>>>>>>>>>>>>>')
       this.jobType = ele.name
       const t = this.List.filter(
         (item) => item.id === parseInt(this.jobDetailIdx)
@@ -1909,7 +1910,7 @@ export default {
       this.$store.commit('SET_READER_ISEDIT', false)
       this.$store.commit('SET_TAB_TYPE', command)
       this.jobType = command
-      this.jobDetailIdx = this.selectRow.id + ''
+      this.jobDetailIdx = command
     },
 
     // 切换项目
