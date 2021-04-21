@@ -97,40 +97,45 @@
           size="mini"
           placeholder="输入关键字搜索"
         /> -->
-        <!-- <el-row>
-          <el-col :span="6"><div class="grid-content bg-purple" /></el-col>
-          <el-col :span="6"><div class="grid-content bg-purple-light" /></el-col>
-          <el-col :span="6"><div class="grid-content bg-purple" /></el-col>
-          <el-col :span="6"><div class="grid-content bg-purple-light" /></el-col>
-        </el-row> -->
-        <el-form ref="formInline" :inline="true" :model="formInline" size="mini" class="demo-input-size">
-          <el-form-item size="mini" label="执行语句">
-            <el-input v-model="formInline.sqlContent" placeholder="执行语句" size="mini" clearable> />
-            </el-input></el-form-item>
-          <el-form-item label="数据源" size="mini">
-            <el-select
-              v-model="formInline.projectId"
-              placeholder="数据源"
-              size="mini"
-              clearable
-            >
-              <el-option
-                v-for="item in datasourcelist"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="开始时间">
-            <el-date-picker v-model="formInline.submitTimeBegin" type="date" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期" style="width: 100%;" size="mini" />
-          </el-form-item>
-          <el-form-item label="结束时间" size="mini">
-            <el-date-picker v-model="formInline.submitTimeEnd" type="date" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期" style="width: 100%;" size="mini" />
-          </el-form-item>
-          <el-form-item size="mini">
-            <el-button type="primary" size="mini" @click="onSubmit('formInline')">查询</el-button>
-          </el-form-item>
+
+        <el-form ref="formInline" :inline="true" :model="formInline" size="mini" class="demo-input-size" label-width="80px">
+          <el-row :gutter="20">
+            <el-col :span="5"><div class="grid-content bg-purple" />
+              <el-form-item size="mini" label="执行语句">
+                <el-input v-model="formInline.sqlContent" placeholder="执行语句" size="mini" clearable> />
+                </el-input></el-form-item>
+            </el-col>
+            <el-col :span="5"><div class="grid-content bg-purple-light" />
+
+              <el-form-item label="数据源" size="mini">
+                <el-select
+                  v-model="formInline.projectId"
+                  placeholder="数据源"
+                  size="mini"
+                  clearable
+                >
+                  <el-option
+                    v-for="item in datasourcelist"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  />
+                </el-select>
+              </el-form-item></el-col>
+            <el-col :span="5"><div class="grid-content bg-purple" />
+
+              <el-form-item label="开始时间">
+                <el-date-picker v-model="formInline.submitTimeBegin" type="date" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期" style="width: 90%;" size="mini" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="5"><div class="grid-content bg-purple-light" /><el-form-item label="结束时间" size="mini">
+              <el-date-picker v-model="formInline.submitTimeEnd" type="date" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期" style="width: 90%;" size="mini" />
+            </el-form-item></el-col>
+            <el-col :span="4"><div class="grid-content bg-purple-light" /><el-form-item size="mini">
+              <el-button type="primary" size="mini" style="margin-top: 27px;" @click="onSubmit('formInline')">查询</el-button>
+            </el-form-item></el-col>
+          </el-row>
+
         </el-form>
         <el-table
           ref="tableHisSql"
@@ -286,19 +291,33 @@
             align="center"
           >
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="handleClick1(scope.row)">查看</el-button>
-              <!-- <el-popover
-                placement="right"
+              <!-- <el-button slot="reference" type="text" size="small" @click="handleClick1(scope.row)">查看</el-button> -->
+              <el-popover
+                placement="top"
                 width="400"
                 trigger="click"
               >
-                <el-table :data="scope.row">
-                  <el-table-column width="150" property="scope.row" label="日期" />
-                  <el-table-column width="100" property="name" label="姓名" />
-                  <el-table-column width="300" property="address" label="地址" />
+                <h3>执行结果</h3>
+                <el-table
+                  v-loading="tableLoading"
+                  style="padding: 0px; margin-right: 10px"
+                  :data="JSON.parse(scope.row.sqlResult).tableData"
+                  height="245"
+                  :row-style="{ height: '33px' }"
+                  :cell-style="{ padding: '0' }"
+                  :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
+                >
+                  <el-table-column
+                    v-for="item in JSON.parse(scope.row.sqlResult).columns"
+                    :key="item.label"
+                    :prop="item.label"
+                    :label="item.label"
+                    show-overflow-tooltip
+                    align="center"
+                  />
                 </el-table>
-                <el-button slot="reference">click 激活</el-button>
-              </el-popover> -->
+                <el-button slot="reference" type="text" size="small">查看</el-button>
+              </el-popover>
               <el-button
                 type="text"
                 icon="el-icon-refresh"
@@ -315,73 +334,6 @@
           </el-table-column>
         </el-table>
       </el-tab-pane>
-      <!-- <el-tab-pane name="res">
-        <span slot="label">
-          {{ tabLabel["res"] }}
-          <el-dropdown
-            v-if="tabsActive === 'res' && tableData.length > 0"
-            style="margin-left: 10px"
-            placement="top"
-          >
-            <span class="el-dropdown-link">
-              <i class="el-icon-more" />
-            </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item
-                @click.native.stop="fileSaver('tableRes1', 'xlsx')"
-              >导出为Excel</el-dropdown-item>
-              <el-dropdown-item
-                @click.native.stop="fileSaver('tableRes1', 'csv')"
-              >导出为CSV</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </span>
-        <el-table
-          v-show="firstShow"
-          ref="tableRes1"
-          v-loading="tableLoading"
-          style="padding: 0px; margin-right: 10px"
-          :data="tableData"
-          height="245"
-          :row-style="{ height: '33px' }"
-          :cell-style="{ padding: '0' }"
-          :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
-        >
-          <el-table-column
-            v-for="item in columns"
-            :key="item.label"
-            :prop="item.label"
-            :width="item.label.toUpperCase().length * 10 + 60"
-            :label="item.label"
-            show-overflow-tooltip
-            align="center"
-          />
-        </el-table>
-        <el-table
-          v-show="secondShow"
-          ref="tableRes2"
-          v-loading="tableLoading"
-          style="padding: 0px; margin-right: 10px"
-          :data="secondData"
-          height="245"
-          :row-style="{ height: '33px' }"
-          :cell-style="{ padding: '0' }"
-          :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
-        >
-          <el-table-column
-            prop="name"
-            label="name"
-            width="200"
-            align="center"
-          />
-          <el-table-column
-            prop="value"
-            label="value"
-            width="400"
-            align="center"
-          />
-        </el-table>
-      </el-tab-pane>  -->
       <el-tab-pane
         v-for="item in editableTabs"
         :key="item.name"
@@ -531,7 +483,8 @@ export default {
       return {
         projectId: this.$store.state.taskAdmin.sqlParams.projectId,
         datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId,
-        databaseSchema: this.$store.state.taskAdmin.sqlParams.schema
+        databaseSchema: this.$store.state.taskAdmin.sqlParams.schema,
+        datasourcelist: this.$store.state.taskAdmin.projectArray
       }
     }
   },
@@ -551,9 +504,15 @@ export default {
             break
         }
       }
+    },
+    datasourcelist: {
+      handler(val) {
+        this.datasourcelist = this.$store.state.taskAdmin.projectArraythis
+      }
     }
   },
   created: {
+    //  this.datasourcelist = this.$store.state.taskAdmin.projectArraythis.$store.state.taskAdmin.projectArray
     // this.getcreateConnec(),
   },
   methods: {
@@ -585,7 +544,7 @@ export default {
     // 查看
     handleClick1(row) {
       console.log(row)
-      alert(row.id)
+      // alert(row.id)
     },
     // 新增查询结果
     addTab(targetName) {
@@ -653,7 +612,8 @@ export default {
     //   }
     // },
     initData(dsInfo, node) {
-      console.log('dsInfo', dsInfo)
+      this.datasourcelist = this.$store.state.taskAdmin.projectArraythis
+        .console.log('dsInfo', dsInfo)
       console.log('node', node)
       var queryDsInfo = {}
       queryDsInfo.jdbcUrl = dsInfo.jdbcUrl
@@ -1128,6 +1088,14 @@ export default {
 .table {
   .el-tabs {
     .el-tab-pane {
+      .demo-input-size{
+        padding: 10px;
+        margin: 0 auto;
+        >>> .el-input .el-input__inner{
+          height: 28px ;
+          line-height: 28px;
+        }
+      }
       .el-table {
         .el-table-column {
           .el-select {

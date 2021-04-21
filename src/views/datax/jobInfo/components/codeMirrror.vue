@@ -18,20 +18,48 @@
           </a>
         </li>
         <li>
-          <a @click="saveQuery"> <i class="el-icon-video-play" />保存 </a>
+          <a @click="saveQuery"> <i class="el-icon-s-claim" />保存 </a>
         </li>
       </ul>
     </div>
     <div :style="{ height: `400px !important` }" class="sqlArea">
       <textarea
         ref="mycode"
-        v-model="aaa"
+        v-model="DataMerging"
         class="codesql"
         @onCursorActivity="SelectSQL"
         @click.native="chooseSql"
       />
       <div v-if="lookup" class="lookup">
-        <span>查找：<input type="text" /> <button>查找</button> </span>
+        <span class="new_lookup">
+          <span
+            @click="
+              () => {
+                this.ReplaceBox = !ReplaceBox
+              }
+            "
+            class="el-icon-arrow-right"
+          ></span>
+          <input class="inputs" style="border: none" type="text" />
+          <span>查找</span>
+        </span>
+        <span
+          class="el-icon-circle-close"
+          @click="
+            () => {
+              this.lookup = false
+              this.ReplaceBox = false
+            }
+          "
+        ></span>
+        <br />
+        <span
+          style="border-top: 1px solid #ccc"
+          v-show="ReplaceBox"
+          class="ReplaceBox"
+        >
+          <input class="inputs" type="text" /> <i class="el-icon-refresh"></i>
+        </span>
       </div>
     </div>
   </div>
@@ -52,41 +80,28 @@ require('codemirror/addon/hint/sql-hint')
 export default {
   name: 'CodeMirror',
   props: {
-    aaa: String,
+    DataMerging: String,
     require: true,
   },
   props: ['sqlHeight', 'columnList', 'tableList', 'sqlparams'],
   data() {
     return {
+      ReplaceBox: false,
       lookup: false,
       notes: `--============================================程序说明================================================
-
 -- 脚 本 名 称   ：  HS_QHZ_CMP_P_CO_SETSAL_GAP_MONTH.HQL
-
 -- 功 能 说 明   ：
-
 -- 查 询 原 表   ：
-
 -- 目   标  表     ：
-
 -- 更 新 方 式   ：
-
 -- 科 室 部 门   ：
-
 -- 负  责  人      ：【登录账号】
-
 -- 创 建 日 期   ：【${Math.round(new Date() / 1000)}】
-
 -- 运 行 周 期   ：
-
 -- 例       程       ：
-
 -- 备       注       ：
-
 -- 脚 本 版 本    :       修 改 人  :        修 改 日 期  :         修 改 内 容  :
-
 -- v1
-
 -- ===================================================================================================`,
       code: '',
       sqlLoading: false,
@@ -96,11 +111,11 @@ export default {
       rightShow: true,
       infoMsg: 0,
       editor: {},
-      SingleData: {},
+      SingleData: {}
     }
   },
   computed: {
-    aaa() {
+    DataMerging() {
       if (!this.code) {
         return this.notes + '' || this.code
       } else if (this.code) {
@@ -110,6 +125,12 @@ export default {
   },
   watch: {
     code(val) {
+      this.$store.commit('SETREDDOT', true)
+      if (this.$store.state.taskAdmin.setcode !== val) {
+        this.$store.commit('SETREDDOT', true)
+      } else {
+        this.$store.commit('SETREDDOT', false)
+      }
       this.infoMsg++
     },
     sqlparams(val) {
@@ -147,7 +168,7 @@ export default {
       // }
       this.tips = Object.assign(this.tips, tableObj)
       console.log(this.tips, 'tips2')
-    },
+    }
   },
   beforeMount() {
     // const columeObj = {};
@@ -163,28 +184,21 @@ export default {
   },
   created() {
     this.code = this.$store.state.taskAdmin.setcode
-    // this.keyCodeForEvent()
   },
   mounted() {
     this.mountCodeMirror()
+    window.addEventListener('keydown', this.handelkeydown)
   },
   destroyed() {},
 
   methods: {
-    keyCodeForEvent() {
-      const self = this
-      document.onkeydown = function (e) {
-        const keyCode = e.keyCode || e.which || e.charCode
-        const ctrlKey = e.ctrlKey || e.metaKey
-        if (ctrlKey && keyCode == 70) {
-          self.lookup = true
-        }
-
-        e.preventDefault()
-        return false
+    handelkeydown(event) {
+      const _this = this
+      const e = event || window.event || arguments.callee.caller.arguments[0]
+      if (e.ctrlKey && e.keyCode === 70) {
+        _this.lookup = true
       }
     },
-
     chooseSql() {
       console.log(window.getSelection())
     },
@@ -422,11 +436,37 @@ export default {
 .sqlArea::-webkit-scrollbar {
   display: none;
 }
+
 .lookup {
+  width: 300px;
+  height: auto;
+  border-radius: 7px;
+  padding-right: 10px;
+  text-align: center;
   position: absolute;
   top: 40px;
   right: 50px;
   border: 1px solid #ccc;
+  span {
+    margin: 0;
+    padding: 0;
+  }
+  .new_lookup {
+    width: 100%;
+  }
+  .ReplaceBox {
+    display: block;
+    width: 100%;
+    height: 25px;
+  }
+  .inputs {
+    display: inline-block;
+    width: 200px;
+    height: 25px;
+    border: 0; // 去除未选中状态边框
+    outline: none; // 去除选中状态边框
+    background-color: rgba(0, 0, 0, 0); // 透明背景
+  }
 }
 >>> .CodeMirror-gutters {
   background-color: #fff;

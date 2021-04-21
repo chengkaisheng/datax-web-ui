@@ -475,8 +475,9 @@ export default {
       this.listQuery.userId = parseInt(localStorage.getItem('userId'))
       try {
         const { records } = await jobProjectApi.list(this.listQuery)
-        localStorage.setItem('records', records)
+
         this.projectArray = records
+        // localStorage.setItem('records', records)
         this.$store.commit('SET_SQL_PROJECTARRY', this.projectArray)
         console.log(this.projectArray, 'projectArray')
         console.log(records)

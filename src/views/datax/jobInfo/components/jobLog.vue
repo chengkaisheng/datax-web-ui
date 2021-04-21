@@ -122,8 +122,8 @@
 </template>
 
 <script>
-import * as log from '@/api/datax-job-log';
-import * as job from '@/api/datax-job-info';
+import * as log from '@/api/datax-job-log'
+import * as job from '@/api/datax-job-info'
 
 export default {
   props: ['id'],
@@ -172,42 +172,42 @@ export default {
           label: '无'
         }
       ]
-    };
+    }
   },
 
   created() {
-    this.fetchData();
+    this.fetchData()
   },
   methods: {
     fetchData() {
-      this.listLoading = true;
-      const param = Object.assign({}, this.listQuery);
+      this.listLoading = true
+      const param = Object.assign({}, this.listQuery)
       log.getList(param).then(response => {
-        const { content } = response;
-        this.total = content.recordsTotal;
-        this.list = content.data;
-        this.listLoading = false;
-      });
+        const { content } = response
+        this.total = content.recordsTotal
+        this.list = content.data
+        this.listLoading = false
+      })
     },
 
     // 查看日志
     handleViewJobLog(row) {
       // const str = location.href.split('#')[0]
       // window.open(`${str}#/ router的name `)
-      this.dialogVisible = true;
+      this.dialogVisible = true
 
-      this.jobLogQuery.executorAddress = row.executorAddress;
-      this.jobLogQuery.id = row.id;
-      this.jobLogQuery.triggerTime = Date.parse(row.triggerTime);
+      this.jobLogQuery.executorAddress = row.executorAddress
+      this.jobLogQuery.id = row.id
+      this.jobLogQuery.triggerTime = Date.parse(row.triggerTime)
       if (this.logShow === false) {
-        this.logShow = true;
+        this.logShow = true
       }
       // window.open(`#/data/log?executorAddress=${this.jobLogQuery.executorAddress}&triggerTime=${this.jobLogQuery.triggerTime}&id=${this.jobLogQuery.id}&fromLineNum=${this.jobLogQuery.fromLineNum}`)
-      this.loadLog();
+      this.loadLog()
     },
     // 获取日志
     loadLog() {
-      this.logLoading = true;
+      this.logLoading = true
       // log.viewJobLog(this.jobLogQuery.executorAddress, this.jobLogQuery.triggerTime, this.jobLogQuery.id,
       //     this.jobLogQuery.fromLineNum).then(response => {
       //     // 判断是否是 '\n'，如果是表示显示完成，不重新加载
@@ -239,10 +239,10 @@ export default {
               //   this.loadLog()
               // }, 2000);
             } else {
-              this.logContent = response.content.logContent;
+              this.logContent = response.content.logContent
             }
-            this.logLoading = false;
-          });
+            this.logLoading = false
+          })
       } else if (this.$store.state.taskAdmin.logViewType === 1) {
         log
           .viewJobLogVirtual(
@@ -260,17 +260,17 @@ export default {
               //   this.loadLog()
               // }, 2000);
             } else {
-              this.logContent = response.content.logContent;
+              this.logContent = response.content.logContent
             }
-            this.logLoading = false;
-          });
+            this.logLoading = false
+          })
       }
     },
     test(info) {
-      console.log(info);
+      console.log(info)
     }
   }
-};
+}
 </script>
 
 <style scoped>
