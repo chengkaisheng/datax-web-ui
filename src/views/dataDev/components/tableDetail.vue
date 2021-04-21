@@ -8,67 +8,25 @@
             v-if="tabsActive === 'querylog' && tableData.length > 0"
             style="margin-left: 10px"
             placement="top"
-          >
-            <!-- <span class="el-dropdown-link">
-              <i class="el-icon-more" />
-            </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item
-                @click.native.stop="fileSaver('tableRes1', 'xlsx')"
-                >导出为Excel</el-dropdown-item
-              >
-              <el-dropdown-item
-                @click.native.stop="fileSaver('tableRes1', 'csv')"
-                >导出为CSV</el-dropdown-item
-              >
-            </el-dropdown-menu> -->
-          </el-dropdown>
+          />
         </span>
-        <!-- <el-table
-          v-show="firstShow"
-          ref="tableRes1"
-          v-loading="tableLoading"
-          style="padding: 0px; margin-right: 10px"
-          :data="tableData"
-          height="245"
-          :row-style="{ height: '33px' }"
-          :cell-style="{ padding: '0' }"
-          :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
-        >
-          <el-table-column
-            v-for="item in columns"
-            :key="item.label"
-            :prop="item.label"
-            :width="item.label.toUpperCase().length * 10 + 60"
-            :label="item.label"
-            show-overflow-tooltip
-            align="center"
-          />
-        </el-table>
-        <el-table
-          v-show="secondShow"
-          ref="tableRes2"
-          v-loading="tableLoading"
-          style="padding: 0px; margin-right: 10px"
-          :data="secondData"
-          height="245"
-          :row-style="{ height: '33px' }"
-          :cell-style="{ padding: '0' }"
-          :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
-        >
-          <el-table-column
-            prop="name"
-            label="name"
-            width="200"
-            align="center"
-          />
-          <el-table-column
-            prop="value"
-            label="value"
-            width="400"
-            align="center"
-          />
-        </el-table> -->
+        <!-- <div>
+          <div />
+          <span />>>{{ new Date() }};[content] : {{ item.content }} <br>
+          <span class="line1">>>[ressult]:{{ item.tableData }}</span>
+          <br>
+          <br>
+          <span />>>{{ new Date() }};[content] : {{ item.content }} <br>
+          <span class="line1">>>[EXCEPTION]:{{ item.tableData }}</span>
+        </div> -->
+        <span />>>{{ new Date() }};[content] : {{ content }} <br>
+        <span class="line1">>>[ressult]:{{ tableData }}</span>
+        <br>
+        <br>
+        <span />>>{{ new Date() }};[content] : {{ content }} <br>
+        <span class="line1">>>[EXCEPTION]:{{ tableData }}</span>
+
+        <!-- {{ tableData }} -->
       </el-tab-pane>
 
       <el-tab-pane name="hisSql">
@@ -92,12 +50,6 @@
             </el-dropdown-menu>
           </el-dropdown>
         </span>
-        <!-- <el-input
-          v-model="search"
-          size="mini"
-          placeholder="输入关键字搜索"
-        /> -->
-
         <el-form ref="formInline" :inline="true" :model="formInline" size="mini" class="demo-input-size" label-width="80px">
           <el-row :gutter="20">
             <el-col :span="5"><div class="grid-content bg-purple" />
@@ -227,11 +179,6 @@
       <el-tab-pane name="asynctask">
         <span slot="label">
           {{ tabLabel["asynctask"] }}
-          <!-- <el-dropdown
-            v-if="tabsActive === 'asynctask' && sqlHistoryData1.length > 0"
-            style="margin-left: 10px"
-            placement="top"
-          /> -->
         </span>
         <el-table
           ref="tableHisSql"
@@ -271,20 +218,6 @@
             width="150"
             align="center"
           />
-          <!-- <el-table-column width="150" align="center">
-            <template slot="header">
-              <el-select v-model="isSaveMode" @change="getSqlList">
-                <el-option :value="0" label="SQL临时查询" />
-                <el-option :value="1" label="已保存SQL查询" />
-              </el-select>
-            </template>
-            <template slot-scope="scope">
-              <span>{{
-                scope.row.isSaved === 0 ? "SQL临时查询" : "已保存SQL查询"
-              }}</span>
-            </template>
-          </el-table-column> --> -->
-          <!-- <el-table-column prop="sqlResult" label="执行结果" width="150" align="center" /> -->
           <el-table-column
             label="操作"
             width="150"
@@ -298,7 +231,7 @@
                 trigger="click"
               >
                 <h3>执行结果</h3>
-                <el-table
+                <!-- <el-table
                   v-loading="tableLoading"
                   style="padding: 0px; margin-right: 10px"
                   :data="JSON.parse(scope.row.sqlResult).tableData"
@@ -315,7 +248,7 @@
                     show-overflow-tooltip
                     align="center"
                   />
-                </el-table>
+                </el-table> -->
                 <el-button slot="reference" type="text" size="small">查看</el-button>
               </el-popover>
               <el-button
@@ -375,9 +308,9 @@
           <el-table-column
             v-for="item in item.columns"
             :key="item.label"
-            :prop="item.label"
+            :prop="item.name"
             :width="item.label.toUpperCase().length * 10 + 60"
-            :label="item.label"
+            :label="item.name"
             show-overflow-tooltip
             align="center"
           />
@@ -469,7 +402,8 @@ export default {
         submitTimeEnd: '',
         sqlContent: ''
       },
-      datasourcelist: this.$store.state.taskAdmin.projectArray
+      datasourcelist: this.$store.state.taskAdmin.projectArray,
+      content: ''
     }
   },
   computed: {
@@ -543,7 +477,7 @@ export default {
     },
     // 查看
     handleClick1(row) {
-      console.log(row)
+      // console.log(row)
       // alert(row.id)
     },
     // 新增查询结果
@@ -554,10 +488,12 @@ export default {
         name: newTabName,
         tableData: this.tableData,
         secondData: this.secondData,
-        columns: this.columns
+        columns: this.columns,
+        content: this.content
       })
       console.log(this.editableTabs)
       this.tabsActive = newTabName
+      console.log(this.editableTabs)
     },
     removeTab(targetName) {
       if (this.editableTabs.length > 0) {
@@ -613,7 +549,7 @@ export default {
     // },
     initData(dsInfo, node) {
       this.datasourcelist = this.$store.state.taskAdmin.projectArraythis
-        .console.log('dsInfo', dsInfo)
+      console.log('dsInfo', dsInfo)
       console.log('node', node)
       var queryDsInfo = {}
       queryDsInfo.jdbcUrl = dsInfo.jdbcUrl
@@ -747,7 +683,7 @@ export default {
         })
 
       console.log(resInitConnection)
-
+      this.content = sql
       const sqlarr = sql.split(';')
       for (var i = 0; i < sqlarr.length; i++) {
         const sqlOne = sqlarr[i]
@@ -760,7 +696,7 @@ export default {
         const params3 = {
           connectionId: resInitConnection.data.connection.id
         }
-        const resSqlContextCreate = await sqlContextCreate(params3)
+        const resSqlContextCreate = await sqlContextCreate(params3).catch((err) => { console.log(err) })
         const params4 = {
           connectionId: this.connectionId,
           contextId: resSqlContextCreate.data.context.id,
@@ -866,10 +802,11 @@ export default {
           datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId, // 数据源id
           projectId: this.$store.state.taskAdmin.sqlParams.projectId, // 项目id
           databaseSchema: this.$store.state.taskAdmin.sqlParams.schema, // 数据库schema
-          sqlResult: JSON.stringify({
-            columns: this.columns,
-            tableData: this.tableData
-          }), // sql执行结果
+          sqlResult: '',
+          // sqlResult: JSON.stringify({
+          //   columns: this.columns,
+          //   tableData: this.tableData
+          // }), // sql执行结果
           sqlStatus: 1, // 1：成功  0：失败
           sqlContent: sql, // sql语句
           submitUser: parseInt(localStorage.getItem('userId')) // 提交用户id
@@ -910,10 +847,11 @@ export default {
           datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId, // 数据源id
           projectId: this.$store.state.taskAdmin.sqlParams.projectId, // 项目id
           databaseSchema: this.$store.state.taskAdmin.sqlParams.schema, // 数据库schema
-          sqlResult: JSON.stringify({
-            columns: this.columns,
-            tableData: this.tableData
-          }), // sql执行结果
+          // sqlResult: JSON.stringify({
+          //   columns: this.columns,
+          //   tableData: this.tableData
+          // }), // sql执行结果
+          sqlResult: '',
           sqlStatus: 1, // 1：成功  0：失败
           sqlContent: sql, // sql语句
           submitUser: parseInt(localStorage.getItem('userId')) // 提交用户id
@@ -1148,4 +1086,12 @@ export default {
 .el-tabs--border-card > .el-tabs__header {
   border-bottom: none;
 }
+.line1{
+	overflow : hidden;
+  text-overflow: ellipsis;//当对象内文本溢出时显示省略标记
+  display: -webkit-box;
+  -webkit-line-clamp:2;//这边的2指的是两行
+  -webkit-box-orient: vertical;
+}
+
 </style>
