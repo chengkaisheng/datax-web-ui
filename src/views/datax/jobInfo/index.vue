@@ -1493,7 +1493,7 @@ export default {
           if (res.code === 200) {
             this.getDataTree()
             this.selectRow = {}
-            if (res.content != '请选择父级目录') {
+            if (res.content !== '请选择父级目录') {
               this.$store.commit('changeGroupName', this.chineseName)
               this.$store.commit('changeJobId', parseInt(res.content))
               console.log(res.content)
