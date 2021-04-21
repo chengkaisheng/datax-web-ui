@@ -457,7 +457,10 @@ rkJggg=="
               />
             </svg>
             {{ item.title }}
-            <span class="RedDot"></span>
+            <span
+              v-if="selectRow.jobId == jobDetailIdx ? true : false"
+              class="RedDot"
+            ></span>
           </span>
           <JobDetailPro
             v-if="
@@ -639,6 +642,7 @@ rkJggg=="
         <span style="margin-left: 20px; display: inline-block; width: 100px"
           >任务中文名：</span
         ><el-input
+          size="mini"
           v-model="chineseName"
           style="width: 60%; margin-left: 20px"
         />
@@ -648,6 +652,7 @@ rkJggg=="
         <span style="margin-left: 20px; display: inline-block; width: 100px"
           >任务英文名：</span
         ><el-input
+          size="mini"
           v-model="englishName"
           style="width: 60%; margin-left: 20px"
         />
@@ -656,7 +661,11 @@ rkJggg=="
       <div class="boxs">
         <span style="margin-left: 20px; display: inline-block; width: 100px"
           >任务说明：</span
-        ><el-input v-model="task" style="width: 60%; margin-left: 20px" />
+        ><el-input
+          size="mini"
+          v-model="task"
+          style="width: 60%; margin-left: 20px"
+        />
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelDialog"> 取消 </el-button>
@@ -806,6 +815,7 @@ export default {
   },
   data() {
     return {
+      RedDot: false,
       showHive: false,
       chineseName: '',
       englishName: '',
@@ -912,6 +922,12 @@ export default {
     },
   },
   watch: {
+    '$store.state.taskAdmin.setRedDot'(val) {
+      this.RedDot = val
+    },
+    jobDetailIdx(val) {
+      console.log('jobDetailIdx--->>>>', this.selectRow.id, val)
+    },
     editableTabs(val) {
       console.log(val)
       if (val.length === 1) {
@@ -1102,7 +1118,7 @@ export default {
 
     // 获取tree数据结构
     getDataTree() {
-      console.log(this.$store.state.project.currentItem, 'currentItem')
+      console.log(this.$store.state.project.currentItem, 'currentItem===<>')
       if (this.$store.state.project.currentItem) {
         const projectId = this.$store.state.project.currentItem.split('/')[0]
         job
@@ -1139,7 +1155,8 @@ export default {
     },
 
     JobTabClick(ele) {
-      console.log(ele)
+      console.log('----', ele)
+      console.log('----.>>>', this.List)
       this.jobType = ele.name
       const t = this.List.filter(
         (item) => item.id === parseInt(this.jobDetailIdx)
@@ -1487,9 +1504,6 @@ export default {
     },
     // HIVE任务新建
     HivecreateHandl() {
-      console.log('111')
-      console.log('wert', this.selectRow)
-      console.log('job---->', this.currentJob)
       const params = {
         name: this.chineseName,
         projectId: this.selectRow.projectId,
@@ -1506,6 +1520,7 @@ export default {
           console.log('pppppp>>>>>>>', res)
           if (res.code === 200) {
             this.getDataTree()
+            console.log('gettree----->>>', this.getDataTree())
             this.selectRow = {}
             if (res.content != '请选择父级目录') {
               this.$store.commit('changeGroupName', this.chineseName)
@@ -1735,8 +1750,8 @@ export default {
       this.$store.commit('getJobDetail', data)
       this.$store.commit('SET_TASKDETAIL_ID', data.id + '')
       const a = {}
-      a.title = data.jobDesc
-      a.name = data.jobDesc
+      a.title = data.name
+      a.name = data.name
       a.content = data
 
       if (
@@ -1981,11 +1996,10 @@ export default {
 <style lang="scss">
 .RedDot {
   display: inline-block;
-  height: 5px;
-  width: 5px;
+  height: 8px;
+  width: 8px;
   border-radius: 50%;
   background: red;
-  margin-left: 100px;
 }
 .Management {
   display: flex;
