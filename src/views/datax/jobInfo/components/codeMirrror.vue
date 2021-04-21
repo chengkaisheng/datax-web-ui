@@ -40,11 +40,19 @@
             "
             class="el-icon-arrow-right"
           ></span>
-          <input class="inputs" style="border: none" type="text" />
-          <span>查找</span>
+          <input
+            class="inputs"
+            v-model="lookupdata"
+            style="border: none"
+            type="text"
+          />
+          <span @click="LookUp">查找</span>
+          <span v-if="isdata">{{ DataLength }}</span>
         </span>
+        <i class="el-icon-bottom"></i>
+        <i class="el-icon-top"></i>
         <span
-          class="el-icon-circle-close"
+          class="el-icon-close"
           @click="
             () => {
               this.lookup = false
@@ -86,6 +94,9 @@ export default {
   props: ['sqlHeight', 'columnList', 'tableList', 'sqlparams'],
   data() {
     return {
+      datalength: false,
+      isdata: false,
+      lookupdata: '',
       ReplaceBox: false,
       lookup: false,
       notes: `--============================================程序说明================================================
@@ -111,7 +122,7 @@ export default {
       rightShow: true,
       infoMsg: 0,
       editor: {},
-      SingleData: {}
+      SingleData: {},
     }
   },
   computed: {
@@ -122,8 +133,15 @@ export default {
         return this.code
       }
     },
+    DataLength() {
+      if (this.datalenght) {
+        this.isdata = true
+        return this.datalength + '个'
+      }
+    },
   },
   watch: {
+    datalength() {},
     code(val) {
       this.$store.commit('SETREDDOT', true)
       if (this.$store.state.taskAdmin.setcode !== val) {
@@ -168,7 +186,7 @@ export default {
       // }
       this.tips = Object.assign(this.tips, tableObj)
       console.log(this.tips, 'tips2')
-    }
+    },
   },
   beforeMount() {
     // const columeObj = {};
@@ -192,6 +210,16 @@ export default {
   destroyed() {},
 
   methods: {
+    LookUp() {
+      const str = this.code
+      const reg = eval('/' + `${this.lookupdata}` + '/ig')
+      console.log(reg)
+      console.log(this.code.match(reg).length)
+      this.datalenght = this.code.match(reg).length
+      this.code.replace(this.code.match(reg).lenght, 2)
+      console.log(reg.exec(this.code))
+    },
+    //查找按键事件
     handelkeydown(event) {
       const _this = this
       const e = event || window.event || arguments.callee.caller.arguments[0]
@@ -218,7 +246,6 @@ export default {
      * @description: 保存查询
      */
     saveQuery(val) {
-      console.log('code---', val)
       this.TIPS = false
       console.log('保存查询')
       this.$emit('saveQuery', this.code)
@@ -353,7 +380,6 @@ export default {
         }
 
         _this.code = editor.getRange(startPos, endPos)
-        console.log(_this.code, ' -- SQL')
       })
 
       editor.on('change', function (editor, change) {
@@ -440,7 +466,7 @@ export default {
 .lookup {
   width: 300px;
   height: auto;
-  border-radius: 7px;
+  border-radius: 3px;
   padding-right: 10px;
   text-align: center;
   position: absolute;
@@ -457,11 +483,13 @@ export default {
   .ReplaceBox {
     display: block;
     width: 100%;
-    height: 25px;
+    height: 24px;
+    text-align: left;
+    padding-left: 23px;
   }
   .inputs {
     display: inline-block;
-    width: 200px;
+    width: 180px;
     height: 25px;
     border: 0; // 去除未选中状态边框
     outline: none; // 去除选中状态边框
