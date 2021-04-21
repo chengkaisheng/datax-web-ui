@@ -16,7 +16,7 @@
         参数配置
       </el-button>
       <el-drawer
-        title="内容新增"
+        title="新增参数"
         size="400px"
         :visible.sync="drawer"
         :with-header="true"
@@ -33,17 +33,40 @@
             "
             >新增</el-button
           >
-          <el-input
+          <div
+            class="DraWer"
             v-show="isshow"
-            v-model="input"
-            size="mini"
-            placeholder="请输入参数"
-          />
+            v-for="(itme, index) in arrayData"
+            :key="itme.id"
+          >
+            <el-input
+              style="widht: 50px"
+              v-show="isshow"
+              v-model="itme.data"
+              size="mini"
+              placeholder="请输入参数"
+            />
+            <el-button
+              @click="Delete(index)"
+              size="small"
+              style="margin-bottom: 20px"
+              type="danger"
+              icon="el-icon-delete"
+              circle
+            ></el-button>
+          </div>
           <div v-show="isshow" style="margin-top: 20px">
+            <el-button
+              @click="Addhandel"
+              size="small"
+              style="margin-bottom: 20px"
+              type="success"
+              >+</el-button
+            >
             <el-button
               size="small"
               style="margin-bottom: 20px"
-              type="primary"
+              type="danger"
               @click="
                 () => {
                   drawer = false
@@ -52,7 +75,7 @@
               "
               >取消</el-button
             >
-            <el-button size="small" style="margin-bottom: 20px" type="primary"
+            <el-button size="small" style="margin-bottom: 20px" type="success"
               >保存</el-button
             >
           </div>
@@ -92,7 +115,14 @@ export default {
   },
   data() {
     return {
-      color: '',
+      arrayData: [
+        {
+          id: 0,
+          data: '',
+        },
+      ],
+      dataNum: 1,
+      color: 1,
       logs: false,
       numberValidateForm: {
         age: '',
@@ -125,6 +155,20 @@ export default {
     console.log('lang---->', this.TableData.length)
   },
   methods: {
+    Delete(index) {
+      console.log('index---->>>', index)
+      if (this.arrayData.length <= 1) {
+        //如果只有一个输入框则不可以删除
+        return false
+      }
+      this.arrayData.splice(index, 1) //删除了数组中对应的数据也就将这个位置的输入框删除
+    },
+    Addhandel() {
+      this.arrayData.push({
+        id: this.dataNum++,
+        data: '',
+      })
+    },
     runQuery(val) {
       console.log('------->', val)
     },
@@ -173,6 +217,7 @@ export default {
           .updateJob(jobinfo)
           .then((res) => {
             console.log(res)
+            this.$store.commit('SETREDDOT', false)
             this.$message('保存成功')
             this.$emit('gettreelist', jobinfo.projectId)
           })
@@ -255,7 +300,9 @@ export default {
   width: 100%;
   height: auto;
 }
-
+.DraWer {
+  display: flex;
+}
 .elid {
   position: relative;
   width: 100%;

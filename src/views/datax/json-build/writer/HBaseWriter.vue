@@ -68,7 +68,7 @@
 
 <script>
 import * as dsQueryApi from '@/api/metadata-query'
-import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
+import { getJobList as jdbcDsList } from '@/api/datax-jdbcDatasource'
 import Bus from '../busWriter'
 export default {
   name: 'HBaseWriter',
@@ -159,10 +159,12 @@ export default {
     // 获取可用数据源
     getJdbcDs(type) {
       this.loading = true
+      this.jdbcDsQuery.projectId = this.$store.state.taskAdmin.projectId
       jdbcDsList(this.jdbcDsQuery).then(response => {
         const { records } = response
         this.wDsList = records
         this.loading = false
+        console.log('WH_____', this.dataSourceCompute)
       })
     },
     // 获取表名

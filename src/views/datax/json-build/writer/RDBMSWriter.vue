@@ -106,7 +106,7 @@
 
 <script>
 import * as dsQueryApi from '@/api/metadata-query'
-import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
+import { getJobList as jdbcDsList } from '@/api/datax-jdbcDatasource'
 import Bus from '../busWriter'
 export default {
   name: 'RDBMSWriter',
@@ -170,12 +170,12 @@ export default {
       this.getTables('rdbmsWriter')
     },
     'writerForm.columns'(val) {
-      this.$store.commit('SET_SELECT_WRITERCOLUMN', this.writerForm.columns);
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', this.writerForm.columns)
     }
   },
   created() {
     this.getJdbcDs()
-    this.readerForm = this.$parent.getReaderData();
+    this.readerForm = this.$parent.getReaderData()
   },
   methods: {
     // 获取可用数据源
@@ -186,6 +186,7 @@ export default {
         const { records } = response
         this.wDsList = records
         this.loading = false
+        console.log('WRDBM_____', this.dataSourceCompute)
       })
     },
     radioSelect(val) {
@@ -233,7 +234,7 @@ export default {
       this.getTables('rdbmsWriter')
     },
     wDsChange(e) {
-      this.datasourceId = e;
+      this.datasourceId = e
       this.$store.commit('SET_WRITER_DATASOURCE_ID', e)
       // 清空
       this.writerForm.tableName = ''
@@ -271,13 +272,13 @@ export default {
     wHandleCheckAllChange(val) {
       this.writerForm.columns = val ? this.fromColumnList : []
       this.writerForm.isIndeterminate = false
-      this.$store.commit('SET_SELECT_WRITERCOLUMN', this.writerForm.columns);
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', this.writerForm.columns)
     },
     wHandleCheckedChange(value) {
       const checkedCount = value.length
       this.writerForm.checkAll = checkedCount === this.fromColumnList.length
       this.writerForm.isIndeterminate = checkedCount > 0 && checkedCount < this.fromColumnList.length
-      this.$store.commit('SET_SELECT_WRITERCOLUMN', value);
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', value)
     },
     getData() {
       if (Bus.dataSourceId) {

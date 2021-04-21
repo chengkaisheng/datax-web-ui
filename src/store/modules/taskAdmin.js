@@ -124,11 +124,15 @@ const state = {
     datasourceId: '', // 数据源ID
     schema: '' // 数据库名
   },
-  setcode: ''
+  setcode: '',
+  setRedDot: ''//设置红点提示
   // projectId: ''
 }
 
 const mutations = {
+  SETREDDOT: (state, payload) => {
+    state.setRedDot = payload
+  },
   SET_TAB_TYPE: (state, type) => {
     state.tabType = type
   },
