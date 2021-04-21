@@ -84,7 +84,7 @@
 
 <script>
 import * as dsQueryApi from '@/api/metadata-query'
-import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
+import { getJobList as jdbcDsList } from '@/api/datax-jdbcDatasource'
 import Bus from '../busReader'
 import { finder, dashOrValue } from '../private'
 
@@ -170,6 +170,7 @@ export default {
         const { records } = response
         this.rDsList = records
         this.loading = false
+        console.log('RH_____', this.dataSourceCompute)
       })
     },
     // 获取表名
@@ -189,6 +190,7 @@ export default {
       // 清空
       this.readerForm.tableName = ''
       this.readerForm.datasourceId = e
+      console.log(e, 'eeeee')
       this.rDsList.find((item) => {
         if (item.id === e) {
           this.dataSource = item.datasource
@@ -209,7 +211,7 @@ export default {
         this.readerForm.columns = response
         this.readerForm.checkAll = true
         this.readerForm.isIndeterminate = false
-        this.$store.commit('SET_READER_COLUMNS', response);
+        this.$store.commit('SET_READER_COLUMNS', response)
       })
     },
     getColumnsByQuerySql() {

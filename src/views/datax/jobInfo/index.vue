@@ -763,7 +763,7 @@ import MetaCompare from '@/views/datax/jobInfo/components/metaCompare'
 import _ from 'lodash'
 import { component as VueContextMenu } from '@xunlei/vue-context-menu'
 
-import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
+import { getJobList as jdbcDsList } from '@/api/datax-jdbcDatasource'
 
 import { objList } from '@/utils/sortArr'
 
@@ -905,6 +905,7 @@ export default {
 
     taskList(val) {
       this.List = val
+      console.log(val, 'this.list___________________')
     },
 
     taskDetailID(val) {
@@ -950,6 +951,7 @@ export default {
           }
           jdbcDsList(p).then((response) => {
             const { records } = response
+            console.log(records, 'records01', commandId)
             this.$store.commit('SET_DATASOURCE', records)
           })
         }
@@ -1047,6 +1049,18 @@ export default {
     setTimeout(() => {
       this.getDataTree()
     }, 600)
+
+    const p = {
+      current: 1,
+      size: 200,
+      ascs: 'datasource_name',
+      projectId: this.$store.state.project.currentItem ? this.$store.state.project.currentItem.split('/')[0] : ''
+    }
+    jdbcDsList(p).then((response) => {
+      const { records } = response
+      console.log(records, 'records________________________')
+      this.$store.commit('SET_DATASOURCE', records)
+    })
   },
   methods: {
     /**
@@ -1056,10 +1070,15 @@ export default {
     Gettreelist() {
       this.getDataTree()
     },
+
+    // 删除任务Tabs窗口
     removeJobTab(targetId) {
       const targetIdInt = parseInt(targetId)
       console.log(targetId, 'targetId')
       console.log(this.$store.state.taskAdmin.taskDetailList)
+      if (this.$store.state.taskAdmin.taskDetailList.length === 0) {
+        this.jobDetailIdx = '欢迎'
+      }
       const removeIndex = this.$store.state.taskAdmin.taskDetailList.findIndex(
         (ele) => ele.content.id === targetIdInt
       )
@@ -1186,7 +1205,7 @@ export default {
           this.editableTabsValue = this.editableTabs[i].name
         }
       }
-      console.log(this.editableTabsValue)
+      console.log(this.editableTabsValue, 'changTab')
     },
 
     getChild(v) {
@@ -1561,6 +1580,7 @@ export default {
               )
               this.dialogNameVisible = false
               if (this.currentJob) {
+                console.log(this.currentJob, 'this.currentJob_____________')
                 this.createNewJob(this.currentJob)
                 this.currentJob = ''
               }
@@ -1901,6 +1921,7 @@ export default {
       }
       jdbcDsList(p).then((response) => {
         const { records } = response
+        console.log(records, 'records02', commandId)
         this.$store.commit('SET_DATASOURCE', records)
       })
     },
@@ -1948,6 +1969,7 @@ export default {
       }
       jdbcDsList(p).then((response) => {
         const { records } = response
+        console.log(records, 'records03', commandId)
         this.$store.commit('SET_DATASOURCE', records)
       })
     },

@@ -119,7 +119,7 @@
 
 <script>
 import * as dsQueryApi from '@/api/metadata-query'
-import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
+import { getJobList as jdbcDsList } from '@/api/datax-jdbcDatasource'
 import Bus from '../busWriter'
 export default {
   name: 'HiveWriter',
@@ -191,7 +191,7 @@ export default {
       this.getTables('hiveWriter')
     },
     'writerForm.columns'(val) {
-      this.$store.commit('SET_SELECT_WRITERCOLUMN', this.writerForm.columns);
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', this.writerForm.columns)
     }
   },
   created() {
@@ -207,6 +207,7 @@ export default {
         const { records } = response
         this.wDsList = records
         this.loading = false
+        console.log('WH_____', this.dataSourceCompute)
       })
     },
 

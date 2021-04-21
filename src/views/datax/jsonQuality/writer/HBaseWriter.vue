@@ -62,7 +62,7 @@
 
 <script>
 import * as dsQueryApi from '@/api/metadata-query'
-import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
+import { getJobList as jdbcDsList } from '@/api/datax-jdbcDatasource'
 import Bus from '../busWriter'
 import { translaterMaster } from '@/utils/dictionary'
 
@@ -133,10 +133,10 @@ export default {
       this.getTables('hbaseWriter')
     },
     fromTableName(val) {
-      this.writerForm.tableName = val;
-      this.fromColumnList = [];
-      this.writerForm.columns = [];
-      this.getColumns('writer');
+      this.writerForm.tableName = val
+      this.fromColumnList = []
+      this.writerForm.columns = []
+      this.getColumns('writer')
     }
   },
   created() {
@@ -146,6 +146,7 @@ export default {
     // 获取可用数据源
     getJdbcDs(type) {
       this.loading = true
+      this.jdbcDsQuery.projectId = this.$store.state.taskAdmin.projectId
       jdbcDsList(this.jdbcDsQuery).then(response => {
         const { records } = response
         this.wDsList = records
@@ -160,11 +161,11 @@ export default {
         }
         // 组装
         dsQueryApi.getTables(obj).then(response => {
-          this.wTbList = response;
+          this.wTbList = response
           this.fromTableName = this.wTbList[0]
         }).catch((error) => {
           console.log(error)
-          this.wTbList = [];
+          this.wTbList = []
           this.fromTableName = ''
         })
       }

@@ -134,10 +134,10 @@
 </template>
 
 <script>
-import * as dsQueryApi from '@/api/metadata-query';
-import { list as jdbcDsList } from '@/api/datax-jdbcDatasource';
-import Bus from '../busReader';
-import { finder, dashOrValue } from '../private';
+import * as dsQueryApi from '@/api/metadata-query'
+import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
+import Bus from '../busReader'
+import { finder, dashOrValue } from '../private'
 
 export default {
   name: 'RDBMSReader',
@@ -186,20 +186,20 @@ export default {
           { required: true, message: '请选择Schema', trigger: 'change' }
         ]
       }
-    };
+    }
   },
   computed: {
     dataSourceCompute() {
       if (this.$store.state.taskAdmin.tabType === 'NORMAL' || this.$store.state.taskAdmin.tabType === '') {
-        return this.$store.state.taskAdmin.dataSourceList;
+        return this.$store.state.taskAdmin.dataSourceList
       } else if (this.$store.state.taskAdmin.tabType === 'IMPORT') {
         return this.$store.state.taskAdmin.dataSourceList.filter(item => {
-          return item.datasource !== 'impala' && item.datasource !== 'hive';
-        });
+          return item.datasource !== 'impala' && item.datasource !== 'hive'
+        })
       } else {
         return this.$store.state.taskAdmin.dataSourceList.filter(item => {
-          return item.datasource === 'impala' || item.datasource === 'hive';
-        });
+          return item.datasource === 'impala' || item.datasource === 'hive'
+        })
       }
     },
     /** 显示Schema */
@@ -211,23 +211,23 @@ export default {
   watch: {
     'readerForm.datasourceId': function(oldVal, newVal) {
       if (this.hasSchema) {
-        this.getSchema();
+        this.getSchema()
       }
-      this.getTables('rdbmsReader');
+      this.getTables('rdbmsReader')
     },
     'readerForm.columns'(val) {
-      this.$store.commit('SET_SELECT_READERCOLUMN', this.readerForm.columns);
+      this.$store.commit('SET_SELECT_READERCOLUMN', this.readerForm.columns)
     }
   },
   created() {
     this.readerForm.tableSchema = this.$store.state.taskAdmin.readerIsEdit ? this.$store.state.taskAdmin.readerSchema : ''
   },
   mounted() {
-    this.getTableColumns();
-    this.getTables('rdbmsReader');
+    this.getTableColumns()
+    this.getTables('rdbmsReader')
     this.$store.state.taskAdmin.dataSourceList.find(item => {
       if (item.id === this.$store.state.taskAdmin.readerDataSourceID) {
-        this.dataSource = item.datasource;
+        this.dataSource = item.datasource
       }
     })
   },
@@ -236,123 +236,123 @@ export default {
     // 获取表名
     getTables(type) {
       if (type === 'rdbmsReader') {
-        let obj = {};
+        let obj = {}
         if (this.hasSchema) {
           obj = {
             datasourceId: this.readerForm.datasourceId,
             tableSchema: this.readerForm.tableSchema
-          };
+          }
         } else {
           obj = {
             datasourceId: this.$store.state.taskAdmin.readerDataSourceID
-          };
+          }
         }
         // 组装
         dsQueryApi.getTables(obj).then(response => {
           if (response) {
-            this.rTbList = response;
+            this.rTbList = response
           }
-        });
+        })
       }
     },
     getSchema() {
       const obj = {
         datasourceId: this.readerForm.datasourceId
-      };
+      }
       dsQueryApi.getTableSchema(obj).then(response => {
-        this.schemaList = response;
-      });
+        this.schemaList = response
+      })
     },
     // schema 切换
     schemaChange(e) {
-      this.readerForm.tableSchema = e;
+      this.readerForm.tableSchema = e
       this.$store.commit('SET_READER_SCHEMA', e)
       // 获取可用表
-      this.getTables('rdbmsReader');
+      this.getTables('rdbmsReader')
     },
     // reader 数据源切换
     rDsChange(e) {
-      this.datasourceId = e;
-      this.$store.commit('SET_READER_DATASOURCE_ID', e);
+      this.datasourceId = e
+      this.$store.commit('SET_READER_DATASOURCE_ID', e)
       // 清空
-      this.readerForm.tableName = '';
-      this.readerForm.datasourceId = e;
-      this.rDsList = this.$store.state.taskAdmin.dataSourceList;
+      this.readerForm.tableName = ''
+      this.readerForm.datasourceId = e
+      this.rDsList = this.$store.state.taskAdmin.dataSourceList
       this.rDsList.find(item => {
         if (item.id === e) {
-          this.dataSource = item.datasource;
+          this.dataSource = item.datasource
         }
-      });
-      Bus.dataSourceId = e;
-      this.$emit('selectDataSource', this.dataSource);
+      })
+      Bus.dataSourceId = e
+      this.$emit('selectDataSource', this.dataSource)
     },
     getTableColumns() {
       const obj = {
         datasourceId: this.$store.state.taskAdmin.readerDataSourceID,
         tableName: this.$store.state.taskAdmin.readerTableName
-      };
+      }
 
       dsQueryApi.getColumns(obj).then(response => {
-        this.rColumnList = response;
-        this.readerForm.columns = response;
-        this.readerForm.checkAll = true;
-        this.readerForm.isIndeterminate = false;
+        this.rColumnList = response
+        this.readerForm.columns = response
+        this.readerForm.checkAll = true
+        this.readerForm.isIndeterminate = false
 
-        this.$store.commit('SET_READER_COLUMNS', response);
-      });
+        this.$store.commit('SET_READER_COLUMNS', response)
+      })
     },
     getColumnsByQuerySql() {
       const obj = {
         datasourceId: this.readerForm.datasourceId,
         querySql: this.readerForm.querySql
-      };
+      }
       dsQueryApi.getColumnsByQuerySql(obj).then(response => {
-        this.rColumnList = response;
-        this.readerForm.columns = response;
-        this.readerForm.checkAll = true;
-        this.readerForm.isIndeterminate = false;
-      });
+        this.rColumnList = response
+        this.readerForm.columns = response
+        this.readerForm.checkAll = true
+        this.readerForm.isIndeterminate = false
+      })
     },
     // 获取表字段
     getColumns(type) {
       if (type === 'reader') {
         if (this.readerForm.querySql !== '') {
-          this.getColumnsByQuerySql();
+          this.getColumnsByQuerySql()
         } else {
-          this.getTableColumns();
+          this.getTableColumns()
         }
       }
     },
     // 表切换
     rTbChange(t) {
-      this.readerForm.tableName = t;
-      this.rColumnList = [];
-      this.readerForm.columns = [];
-      this.getColumns('reader');
-      this.$store.commit('SET_READER_TABLENAME', t);
+      this.readerForm.tableName = t
+      this.rColumnList = []
+      this.readerForm.columns = []
+      this.getColumns('reader')
+      this.$store.commit('SET_READER_TABLENAME', t)
     },
 
     rHandleCheckAllChange(val) {
-      this.readerForm.columns = val ? this.rColumnList : [];
-      this.readerForm.isIndeterminate = false;
-      this.$store.commit('SET_SELECT_READERCOLUMN', this.readerForm.columns);
+      this.readerForm.columns = val ? this.rColumnList : []
+      this.readerForm.isIndeterminate = false
+      this.$store.commit('SET_SELECT_READERCOLUMN', this.readerForm.columns)
     },
     rHandleCheckedChange(value) {
-      const checkedCount = value.length;
-      this.readerForm.checkAll = checkedCount === this.rColumnList.length;
+      const checkedCount = value.length
+      this.readerForm.checkAll = checkedCount === this.rColumnList.length
       this.readerForm.isIndeterminate =
-        checkedCount > 0 && checkedCount < this.rColumnList.length;
+        checkedCount > 0 && checkedCount < this.rColumnList.length
       // this.$store.commit('SET_READER_COLUMNS',value)
-      this.$store.commit('SET_SELECT_READERCOLUMN', value);
+      this.$store.commit('SET_SELECT_READERCOLUMN', value)
     },
     getData() {
       if (Bus.dataSourceId) {
-        this.readerForm.datasourceId = Bus.dataSourceId;
+        this.readerForm.datasourceId = Bus.dataSourceId
       }
-      return this.readerForm;
+      return this.readerForm
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
