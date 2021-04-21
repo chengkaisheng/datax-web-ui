@@ -219,63 +219,13 @@ rkJggg=="
                   <a href="javascript:" @click="ShowHives('IMPALA')">
                     <svg-icon class="svg_icon" icon-class="IMPALA" /> Impala任务
                   </a>
-                  <a href="javascript:" @click="showAllName('NORMAL')">
-                    <svg-icon class="svg_icon" icon-class="NORMAL" /> 普通任务
-                  </a>
-                  <!-- <a href="javascript:" @click="showAllName('IMPORT')">
-                    <svg
-                      id="Layer_1"
-                      version="1.1"
-                      xmlns="http://www.w3.org/2000/svg"
-                      xmlns:xlink="http://www.w3.org/1999/xlink"
-                      x="0px"
-                      y="3px"
-                      style="margin-right: 3px"
-                      width="15px"
-                      height="15px"
-                      viewBox="0 3 15 15"
-                      enable-background="new 0 3 15 15"
-                      xml:space="preserve"
-                    >
-                      <image
-                        id="image0"
-                        width="15"
-                        height="15"
-                        x="0"
-                        y="6"
-                        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
-AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAXVBMVEX/////kUj/kkj/kUj/
-lUr/i0b/k0b/kkf/kkf/kEf/k0f/k0b/kkf/kkf/kUj/kkf/kEj/lEf/kUf/kUf/kUj/j0f/kUb/
-k0j/kkf/lkv/kUj/kUf//wD/kUf///+LAJe9AAAAHXRSTlMAw9mjGAtQcP7pYUnnto7pYzLrQaQZ
-smrwEeTaAcB/ix4AAAABYktHRACIBR1IAAAAB3RJTUUH5QIFADcDzk1yTQAAAE1JREFUGNNjYCAD
-MMoiAUaggCyyrCw2ASYQg5kFIcDAwMrGzsHJhRDg5uHlk+UXgAsICgkzMIiIIrSIiaMZKiGJJiDF
-wCCN4jAZUr0GALWzBTkD4ue4AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIxLTAyLTA0VDE2OjU1OjAz
-KzA4OjAw5fkjmwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMS0wMi0wNFQxNjo1NTowMyswODowMJSk
-mycAAAAgdEVYdHNvZnR3YXJlAGh0dHBzOi8vaW1hZ2VtYWdpY2sub3JnvM8dnQAAABh0RVh0VGh1
-bWI6OkRvY3VtZW50OjpQYWdlcwAxp/+7LwAAABd0RVh0VGh1bWI6OkltYWdlOjpIZWlnaHQAMTYd
-r15vAAAAFnRFWHRUaHVtYjo6SW1hZ2U6OldpZHRoADE25QCe4gAAABl0RVh0VGh1bWI6Ok1pbWV0
-eXBlAGltYWdlL3BuZz+yVk4AAAAXdEVYdFRodW1iOjpNVGltZQAxNjEyNDI4OTAz6wc9eAAAABF0
-RVh0VGh1bWI6OlNpemUAMjk4QkK3drNWAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8vYXBwL3Rt
-cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
-rkJggg=="
-                      />
-                    </svg>
-                    引入任务
-                  </a>
-                  <a href="javascript:" @click="showAllName('EXPORT')">
-                    <svg-icon class="svg_icon" icon-class="EXPORT" />导出任务
-                  </a> -->
                   <a href="javascript:" @click="showAllName('COMPUTE')">
                     <svg-icon class="svg_icon" icon-class="COMPUTE" />计算任务
                   </a>
-                  <a
-                    id="level3"
-                    href="javascript:"
-                    @click="showAllName('COMPUTE')"
-                  >
+                  <a id="level3" href="javascript:">
                     <svg-icon
                       class="svg_icon"
-                      icon-class="COMPUTE"
+                      icon-class="NORMAL"
                     />数据同步任务
                     <i class="el-icon-arrow-right" />
                     <vue-context-menu
@@ -284,11 +234,55 @@ rkJggg=="
                       :show.sync="contextMenu2Visible"
                       style="display: none"
                     >
-                      <a href="javascript:" @click="showAllName('COMPUTE')">
+                      <a href="javascript:" @click="showAllName('NORMAL')">
+                        <svg-icon class="svg_icon" icon-class="NORMAL" />
+                        普通任务
+                      </a>
+                      <a href="javascript:" @click="showAllName('IMPORT')">
+                        <svg
+                          id="Layer_1"
+                          version="1.1"
+                          xmlns="http://www.w3.org/2000/svg"
+                          xmlns:xlink="http://www.w3.org/1999/xlink"
+                          x="0px"
+                          y="3px"
+                          style="margin-right: 3px"
+                          width="15px"
+                          height="15px"
+                          viewBox="0 3 15 15"
+                          enable-background="new 0 3 15 15"
+                          xml:space="preserve"
+                        >
+                          <image
+                            id="image0"
+                            width="15"
+                            height="15"
+                            x="0"
+                            y="6"
+                            href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
+    AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAXVBMVEX/////kUj/kkj/kUj/
+    lUr/i0b/k0b/kkf/kkf/kEf/k0f/k0b/kkf/kkf/kUj/kkf/kEj/lEf/kUf/kUf/kUj/j0f/kUb/
+    k0j/kkf/lkv/kUj/kUf//wD/kUf///+LAJe9AAAAHXRSTlMAw9mjGAtQcP7pYUnnto7pYzLrQaQZ
+    smrwEeTaAcB/ix4AAAABYktHRACIBR1IAAAAB3RJTUUH5QIFADcDzk1yTQAAAE1JREFUGNNjYCAD
+    MMoiAUaggCyyrCw2ASYQg5kFIcDAwMrGzsHJhRDg5uHlk+UXgAsICgkzMIiIIrSIiaMZKiGJJiDF
+    wCCN4jAZUr0GALWzBTkD4ue4AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIxLTAyLTA0VDE2OjU1OjAz
+    KzA4OjAw5fkjmwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMS0wMi0wNFQxNjo1NTowMyswODowMJSk
+    mycAAAAgdEVYdHNvZnR3YXJlAGh0dHBzOi8vaW1hZ2VtYWdpY2sub3JnvM8dnQAAABh0RVh0VGh1
+    bWI6OkRvY3VtZW50OjpQYWdlcwAxp/+7LwAAABd0RVh0VGh1bWI6OkltYWdlOjpIZWlnaHQAMTYd
+    r15vAAAAFnRFWHRUaHVtYjo6SW1hZ2U6OldpZHRoADE25QCe4gAAABl0RVh0VGh1bWI6Ok1pbWV0
+    eXBlAGltYWdlL3BuZz+yVk4AAAAXdEVYdFRodW1iOjpNVGltZQAxNjEyNDI4OTAz6wc9eAAAABF0
+    RVh0VGh1bWI6OlNpemUAMjk4QkK3drNWAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8vYXBwL3Rt
+    cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
+    rkJggg=="
+                          />
+                        </svg>
+                        引入任务
+                      </a>
+                      <a href="javascript:" @click="showAllName('EXPORT')">
                         <svg-icon
                           class="svg_icon"
-                          icon-class="COMPUTE"
-                        />计算任务
+                          icon-class="EXPORT"
+                        />导出任务
                       </a>
                     </vue-context-menu>
                   </a>
@@ -498,7 +492,6 @@ rkJggg=="
 
         <el-tab-pane
           v-if="$store.state.taskAdmin.tabType"
-          :label="$store.state.taskAdmin.tabType"
           :name="$store.state.taskAdmin.tabType"
         >
           <span slot="label">
@@ -1003,6 +996,7 @@ export default {
       deep: true,
       handler: function (newValue, oldValue) {
         if (newValue !== oldValue) {
+          console.log(newValue, 'newValue12')
           this.removeJobTab(newValue)
         }
       },
@@ -1091,11 +1085,13 @@ export default {
     },
     removeJobTab(targetId) {
       const targetIdInt = parseInt(targetId)
+      console.log(targetId, 'targetId')
       console.log(this.$store.state.taskAdmin.taskDetailList)
       const removeIndex = this.$store.state.taskAdmin.taskDetailList.findIndex(
         (ele) => ele.content.id === targetIdInt
       )
       console.log(removeIndex, 'removeIndex')
+      console.log(this.jobDetailIdx, 'this.jobDetailIdx')
       if (this.jobDetailIdx === targetId) {
         this.jobDetailIdx =
           (this.$store.state.taskAdmin.taskDetailList[removeIndex + 1]?.content
@@ -1155,12 +1151,13 @@ export default {
     },
 
     JobTabClick(ele) {
-      console.log('----', ele)
-      console.log('----.>>>', this.List)
+      console.log(ele)
+      console.log(this.List, '>>>>>>>>>>>>>>>>>>>>>')
       this.jobType = ele.name
       const t = this.List.filter(
         (item) => item.id === parseInt(this.jobDetailIdx)
       )
+      console.log(t, 'tttttttttttttttttttttttttt')
       this.$store.commit('SET_JOB_INFO', t[0])
     },
 
@@ -1522,7 +1519,7 @@ export default {
             this.getDataTree()
             console.log('gettree----->>>', this.getDataTree())
             this.selectRow = {}
-            if (res.content != '请选择父级目录') {
+            if (res.content !== '请选择父级目录') {
               this.$store.commit('changeGroupName', this.chineseName)
               this.$store.commit('changeJobId', parseInt(res.content))
               console.log(res.content)
@@ -1617,6 +1614,7 @@ export default {
       })
         .then(() => {
           job
+
             .delFile(this.selectRow.id)
             .then((res) => {
               console.log(res)
@@ -1664,7 +1662,7 @@ export default {
               console.log(res, 'content')
               if (res.code === 200) {
                 if (res.content) {
-                  console.log('content----->>>>', res.content)
+                  console.log('content----->>>>', res.content.jobParam)
                   this.$store.commit('SETCODE', res.content.jobParam)
 
                   this.detailData = res.content
@@ -1800,7 +1798,6 @@ export default {
     getItem(del) {
       this.listQuery.userId = JSON.parse(localStorage.getItem('userId'))
       jobProjectApi.list(this.listQuery).then((response) => {
-        console.log('hahahahhahahhha----->>>>>', response)
         const { records } = response
         const { total } = response
         this.total = total
@@ -2166,7 +2163,7 @@ export default {
               .right-menu1 {
                 border: 1px solid #eee;
                 box-shadow: 0 0.5em 1em 0 rgba(0, 0, 0, 0.1);
-                height: 400px;
+                height: 516px;
                 // overflow-y: auto;
                 border-radius: 1px;
                 display: block;
@@ -2214,7 +2211,7 @@ export default {
                   .right-menu2 {
                     border: 1px solid #eee;
                     box-shadow: 0 0.5em 1em 0 rgba(0, 0, 0, 0.1);
-                    height: 50px;
+                    height: 90px;
                     border-radius: 1px;
                     display: block;
                     margin-left: 116px;
@@ -2272,6 +2269,7 @@ export default {
       }
     }
   }
+
   .rg {
     width: 100%;
     height: 100%;

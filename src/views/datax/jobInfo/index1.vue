@@ -593,8 +593,8 @@ export default {
       })
     },
     handlerUpdate(row) {
-      console.log(row);
-      handlerUpdate.call(this, row);
+      console.log(row)
+      handlerUpdate.call(this, row)
     },
     updateData() {
       this.temp.jobJson = typeof (this.jobJson) !== 'string' ? JSON.stringify(this.jobJson) : this.jobJson
@@ -639,7 +639,7 @@ export default {
         })
     },
     handlerExecute(row) {
-      handlerExecute.call(this, row);
+      handlerExecute.call(this, row)
     },
     // 查看日志
     handlerViewLog(row) {
@@ -661,7 +661,7 @@ export default {
       })
     },
     loadById(row) {
-      loadById.call(this, row);
+      loadById.call(this, row)
     }
   }
 }

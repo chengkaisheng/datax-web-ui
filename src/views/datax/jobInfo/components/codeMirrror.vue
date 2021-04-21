@@ -111,7 +111,7 @@ export default {
       rightShow: true,
       infoMsg: 0,
       editor: {},
-      SingleData: {},
+      SingleData: {}
     }
   },
   computed: {
@@ -168,7 +168,7 @@ export default {
       // }
       this.tips = Object.assign(this.tips, tableObj)
       console.log(this.tips, 'tips2')
-    },
+    }
   },
   beforeMount() {
     // const columeObj = {};

@@ -301,9 +301,14 @@ export default {
       },
       immediate: true
     }
+    // projectArray: {
+    //   handler(val) {
+    //     this.$store.commit('SET_SQL_PROJECTARRY', val)
+    //   },
+    //   immediate: true
+    // }
   },
   created() {
-    // this.datasourceSelectedId = this.dataSourceList[0].id
     if (sessionStorage.getItem('strParam')) {
       this.arrQuery.projectId = sessionStorage
         .getItem('strParam')
@@ -470,9 +475,13 @@ export default {
       this.listQuery.userId = parseInt(localStorage.getItem('userId'))
       try {
         const { records } = await jobProjectApi.list(this.listQuery)
+
         this.projectArray = records
+        // localStorage.setItem('records', records)
+        this.$store.commit('SET_SQL_PROJECTARRY', this.projectArray)
         console.log(this.projectArray, 'projectArray')
         console.log(records)
+
         if (this.selectValue === '') {
           console.log(this.projectArray[0].name, 'name')
           this.selectValue = this.projectArray[0].name
@@ -505,19 +514,18 @@ export default {
             res.records[i].datasourceName +
             ' - ' +
             res.records[i].jdbcUrl.split('//')[1].split('/')[0]
-          // if (this.schemaTreeData === '') {
-          //   // this.indexi += this.indexi
-          //   // console.log(this.indexi++)
-          // }
         }
         console.log(res.records)
         this.dataSourceList = res.records
-        this.datasourceSelectedId = res.records[this.indexi].id
+        if (this.dataSourceList !== '') {
+          this.datasourceSelectedId = res.records[this.indexi].id
+        }
+
         console.log('55555555555555555555555555' + this.dataSourceList)
         // 初始化数据库以及schema
         // this.datasourceSelectedId = ''
-        // this.schemaTreeData = []
-        // this.schemaTree = ''
+        this.schemaTreeData = []
+        this.schemaTree = ''
         this.schemaTreeLoading = false
         this.sourceList = res.records // 传给子组件的数据
         this.getSchemas(this.datasourceSelectedId)
@@ -580,16 +588,11 @@ export default {
         (item) => item.id === id
       )
       this.schemaTreeLoading = true
-      // for (var i = 0; i < this.dataSourceList.length;i++) {
       getTableSchema({
         datasourceId: id
-        // datasourceId: this.dataSourceList[i].id
       })
         .then((response) => {
-          console.log(response)
-          if (response === '') {
-            // this.indexi++
-          }
+          // console.log(response)
           const arr = []
           for (let i = 0; i < response.length; i++) {
             arr.push({
@@ -603,8 +606,7 @@ export default {
         })
         .catch((err) => {
           console.log(err)
-          // this.indexi++
-          this.schemaTreeData = []
+          // this.schemaTreeData = []
           this.schemaTreeLoading = false
         })
       // }
