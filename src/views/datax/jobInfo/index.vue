@@ -451,10 +451,10 @@ rkJggg=="
               />
             </svg>
             {{ item.title }}
-            <span
+            <!-- <span
               v-if="selectRow.jobId == jobDetailIdx ? true : false"
               class="RedDot"
-            ></span>
+            ></span> -->
           </span>
           <JobDetailPro
             v-if="
