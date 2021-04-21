@@ -31,38 +31,36 @@
                 isshow = true
               }
             "
-            >新增</el-button
-          >
+          >新增</el-button>
           <div
-            class="DraWer"
-            v-show="isshow"
             v-for="(itme, index) in arrayData"
+            v-show="isshow"
             :key="itme.id"
+            class="DraWer"
           >
             <el-input
-              style="widht: 50px"
               v-show="isshow"
               v-model="itme.data"
+              style="widht: 50px"
               size="mini"
               placeholder="请输入参数"
             />
             <el-button
-              @click="Delete(index)"
               size="small"
               style="margin-bottom: 20px"
               type="danger"
               icon="el-icon-delete"
               circle
-            ></el-button>
+              @click="Delete(index)"
+            />
           </div>
           <div v-show="isshow" style="margin-top: 20px">
             <el-button
-              @click="Addhandel"
               size="small"
               style="margin-bottom: 20px"
               type="success"
-              >+</el-button
-            >
+              @click="Addhandel"
+            >+</el-button>
             <el-button
               size="small"
               style="margin-bottom: 20px"
@@ -73,11 +71,12 @@
                   isshow = false
                 }
               "
-              >取消</el-button
-            >
-            <el-button size="small" style="margin-bottom: 20px" type="success"
-              >保存</el-button
-            >
+            >取消</el-button>
+            <el-button
+              size="small"
+              style="margin-bottom: 20px"
+              type="success"
+            >保存</el-button>
           </div>
         </div>
       </el-drawer>
@@ -92,10 +91,9 @@
               this.color = 1
             }
           "
-          >任务日志</span
-        >
+        >任务日志</span>
       </div>
-      <div v-show="logs"></div>
+      <div v-show="logs" />
     </div>
   </div>
 </template>
@@ -111,21 +109,21 @@ export default {
   components: {
     JsonEditor,
     MarddownEditor,
-    CodeMirror,
+    CodeMirror
   },
   data() {
     return {
       arrayData: [
         {
           id: 0,
-          data: '',
-        },
+          data: ''
+        }
       ],
       dataNum: 1,
       color: 1,
       logs: false,
       numberValidateForm: {
-        age: '',
+        age: ''
       },
       first: 'first',
       dialogVisible: false,
@@ -140,7 +138,7 @@ export default {
         // { FunctionDescription: 'g' },
       ],
       temp: {
-        triggerStatus: '1',
+        triggerStatus: '1'
       },
       drawer: false,
       isshow: false,
@@ -148,7 +146,7 @@ export default {
       ddd: [],
       code: {},
       SingleData: {},
-      taskParam: [],
+      taskParam: []
     }
   },
   created() {
@@ -158,15 +156,15 @@ export default {
     Delete(index) {
       console.log('index---->>>', index)
       if (this.arrayData.length <= 1) {
-        //如果只有一个输入框则不可以删除
+        // 如果只有一个输入框则不可以删除
         return false
       }
-      this.arrayData.splice(index, 1) //删除了数组中对应的数据也就将这个位置的输入框删除
+      this.arrayData.splice(index, 1) // 删除了数组中对应的数据也就将这个位置的输入框删除
     },
     Addhandel() {
       this.arrayData.push({
         id: this.dataNum++,
-        data: '',
+        data: ''
       })
     },
     runQuery(val) {
@@ -210,7 +208,7 @@ export default {
           replaceParam: '',
           replaceParamType: 'Timestamp',
           userId: 0,
-          id: this.$store.state.taskAdmin.GroupId,
+          id: this.$store.state.taskAdmin.GroupId
         }
         this.code = val
         job
@@ -259,7 +257,7 @@ export default {
           readerTable: '',
           replaceParam: '',
           replaceParamType: 'Timestamp',
-          userId: 0,
+          userId: 0
         }
         console.log('this.store', this.SingleData)
         console.log('------->', val)
@@ -290,8 +288,8 @@ export default {
     },
     handleClick(tab, event) {
       console.log(tab, event)
-    },
-  },
+    }
+  }
 }
 </script>
 

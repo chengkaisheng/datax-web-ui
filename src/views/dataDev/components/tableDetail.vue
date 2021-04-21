@@ -10,21 +10,23 @@
             placement="top"
           />
         </span>
-        <!-- <div>
-          <div />
-          <span />>>{{ new Date() }};[content] : {{ item.content }} <br>
-          <span class="line1">>>[ressult]:{{ item.tableData }}</span>
-          <br>
-          <br>
-          <span />>>{{ new Date() }};[content] : {{ item.content }} <br>
-          <span class="line1">>>[EXCEPTION]:{{ item.tableData }}</span>
-        </div> -->
-        <span />>>{{ new Date() }};[content] : {{ content }} <br>
+        <table style="heith:300px" class="Navigation">
+          <div v-for="item in editableTabs" :key="index" style="padding:20px" onload="window.scrollTo(0,document.table.scrollHeight);">
+            <span style="fontWeigth:700">>>{{ new Date() }};[content] : {{ item.content }}</span>
+            <br>
+            <span class="line1">>>[ressult]:{{ item.tableData }}</span>
+            <br>
+            <br>
+            <span>>>{{ new Date() }};[content] : {{ err }}</span> <br>
+            <span class="line1">>>[EXCEPTION]:{{ err }}</span>
+          </div>
+        </table>
+        <!-- <span />>>{{ new Date() }};[content] : {{ content }} <br>
         <span class="line1">>>[ressult]:{{ tableData }}</span>
         <br>
         <br>
         <span />>>{{ new Date() }};[content] : {{ content }} <br>
-        <span class="line1">>>[EXCEPTION]:{{ tableData }}</span>
+        <span class="line1">>>[EXCEPTION]:{{ tableData }}</span> -->
 
         <!-- {{ tableData }} -->
       </el-tab-pane>
@@ -1092,6 +1094,43 @@ export default {
   display: -webkit-box;
   -webkit-line-clamp:2;//这边的2指的是两行
   -webkit-box-orient: vertical;
+}
+.Navigation {
+  padding: 10px;
+  height: 30px;
+  width: 100%;
+  background: #f5f7fa;
+}
+.Navigation .color {
+  font-weight: 400px;
+  cursor: pointer;
+  color: blue;
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+  display: inline-block;
+  line-height: 30px;
+  text-align: center;
+  width: 150px;
+  height: 30px;
+  background: #fff;
+}
+.Navigation span {
+  font-weight: 400px;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+  display: inline-block;
+  line-height: 20px;
+  // text-align: center;
+  // width: 150px;
+  // height: 30px;
+  background: #f5f7fa;
+}
+.logs {
+  width: 100%;
+  height: auto;
 }
 
 </style>
