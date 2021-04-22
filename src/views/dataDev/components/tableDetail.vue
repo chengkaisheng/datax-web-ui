@@ -1,6 +1,6 @@
 <template>
   <div class="table">
-    <el-tabs v-model="tabsActive" type="border-card" @tab-remove="removeTab">
+    <el-tabs v-model="tabsActive" type="border-card" @tab-click="handleClickTabs" @tab-remove="removeTab">
       <el-tab-pane name="querylog">
         <span slot="label">
           {{ tabLabel["querylog"] }}
@@ -10,25 +10,34 @@
             placement="top"
           />
         </span>
-        <table style="heith:300px" class="Navigation">
-          <div v-for="item in editableTabs" :key="index" style="padding:20px" onload="window.scrollTo(0,document.table.scrollHeight);">
+        <div id="last" ref="querylog" style="heith:150px" class="Navigation" onload="window.scrollTo(0,document.getElemetnById('last').scrollHeight);">
+          <!-- <pre v-text="editableTabs" /> -->
+          <div v-for="item in editableTabs" :key="item.id">
+            <span style="fontWeigth:700">>>{{ new Date() }} <span />;[content] : {{ item.content }}
+              <br>
+              <span class="line1">>>[ressult]:{{ item.tableData }}</span>
+              <br>
+              <span>>>{{ new Date() }}; </span> [content] :<span class="err1">{{ item.error }}</span>
+              <br>
+              <span class="line1">>>[EXCEPTION]:{{ item.error.__typename }}</span>
+              <br>
+            </span>
+          </div>
+          <!-- <span id="last" style="height:2px;" /> -->
+        </div>
+        <!-- <div v-if="editableTabs.length<0">
+          <div onload="window.scrollTo(0,document.table.scrollHeight);">
             <span style="fontWeigth:700">>>{{ new Date() }};[content] : {{ item.content }}</span>
             <br>
             <span class="line1">>>[ressult]:{{ item.tableData }}</span>
             <br>
+            <span>>>{{ new Date() }};[content] : </span>
             <br>
-            <span>>>{{ new Date() }};[content] : {{ err }}</span> <br>
-            <span class="line1">>>[EXCEPTION]:{{ err }}</span>
+            <span class="line1">>>[EXCEPTION]:</span>
+            <br>
           </div>
-        </table>
-        <!-- <span />>>{{ new Date() }};[content] : {{ content }} <br>
-        <span class="line1">>>[ressult]:{{ tableData }}</span>
-        <br>
-        <br>
-        <span />>>{{ new Date() }};[content] : {{ content }} <br>
-        <span class="line1">>>[EXCEPTION]:{{ tableData }}</span> -->
+        </div> -->
 
-        <!-- {{ tableData }} -->
       </el-tab-pane>
 
       <el-tab-pane name="hisSql">
@@ -405,7 +414,9 @@ export default {
         sqlContent: ''
       },
       datasourcelist: this.$store.state.taskAdmin.projectArray,
-      content: ''
+      content: '',
+      err: '',
+      loglist: []
     }
   },
   computed: {
@@ -447,10 +458,10 @@ export default {
       }
     }
   },
-  created: {
-    //  this.datasourcelist = this.$store.state.taskAdmin.projectArraythis.$store.state.taskAdmin.projectArray
-    // this.getcreateConnec(),
-  },
+  // created: {
+  //   //  this.datasourcelist = this.$store.state.taskAdmin.projectArraythis.$store.state.taskAdmin.projectArray
+  //   // this.getcreateConnec(),
+  // },
   methods: {
     // sql历史查询
     onSubmit(formInline) {
@@ -491,11 +502,26 @@ export default {
         tableData: this.tableData,
         secondData: this.secondData,
         columns: this.columns,
-        content: this.content
+        content: this.content,
+        error: this.err
       })
       console.log(this.editableTabs)
       this.tabsActive = newTabName
       console.log(this.editableTabs)
+    },
+    // 点击tab
+    handleClickTabs(tab) {
+      // console.log(tab)
+      if (tab.name === 'querylog') {
+        // window.scrollTo({
+        //   top: 0,
+        //   behavior: 'smooth'
+        // })
+        // const dom = document.querySelector('#last')
+        // console.log(dom)
+        // dom.scrollIntoView()
+        // document.getElemetnById('last').scrollIntoView(true)
+      }
     },
     removeTab(targetName) {
       if (this.editableTabs.length > 0) {
@@ -686,6 +712,9 @@ export default {
 
       console.log(resInitConnection)
       this.content = sql
+      // this.loglsit.push({
+      //   content: this.content
+      // })
       const sqlarr = sql.split(';')
       for (var i = 0; i < sqlarr.length; i++) {
         const sqlOne = sqlarr[i]
@@ -720,6 +749,8 @@ export default {
           resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
           queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
           if (resGetAsyncTaskInfo.data.taskInfo.error) {
+            this.err = resGetAsyncTaskInfo.data.taskInfo.error.message
+            console.log(resGetAsyncTaskInfo.data.taskInfo.error.message)
             this.$message.error(resGetAsyncTaskInfo.data.taskInfo.error)
             this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
             break
@@ -731,7 +762,12 @@ export default {
         }
         const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
           params6
-        )
+        ).catch((error) => {
+          console.log(error)
+          // this.err = error
+          // this.loglist.push({ err: this.err })
+        })
+        console.log(resGetSqlExecuteTaskResults)
         if (resGetSqlExecuteTaskResults) {
           this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
           console.log(
@@ -769,6 +805,7 @@ export default {
         const rows =
         resGetSqlExecuteTaskResults.data.result.results[0].resultSet.rows
         this.columns = columns
+
         this.tableData = rows.map((ele) => {
           const obj = {}
           ele.forEach((fieldVal, index) => {
@@ -776,6 +813,10 @@ export default {
           })
           return obj
         })
+        this.loglist.push({
+          tableData: this.tableData
+        })
+        console.log(this.loglist)
         this.autoSaveSql(sql)
         this.tableLoading = false
         this.firstShow = true
@@ -1088,7 +1129,7 @@ export default {
 .el-tabs--border-card > .el-tabs__header {
   border-bottom: none;
 }
-.line1{
+.Navigation .line1{
 	overflow : hidden;
   text-overflow: ellipsis;//当对象内文本溢出时显示省略标记
   display: -webkit-box;
@@ -1096,10 +1137,12 @@ export default {
   -webkit-box-orient: vertical;
 }
 .Navigation {
-  padding: 10px;
-  height: 30px;
+  padding: 20px;
+  // height: 30px;
+  overflow: scroll;
   width: 100%;
-  background: #f5f7fa;
+  background: #fff;
+  height: calc(50vh - 157px);
 }
 .Navigation .color {
   font-weight: 400px;
@@ -1115,6 +1158,9 @@ export default {
   height: 30px;
   background: #fff;
 }
+.Navigation .err1{
+    color: red;
+  }
 .Navigation span {
   font-weight: 400px;
   cursor: pointer;
@@ -1127,6 +1173,7 @@ export default {
   // width: 150px;
   // height: 30px;
   background: #f5f7fa;
+
 }
 .logs {
   width: 100%;
