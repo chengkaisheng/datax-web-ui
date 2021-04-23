@@ -58,7 +58,7 @@ if (process.env.NODE_ENV === 'production') {
 const EventBus = new Vue()
 Object.defineProperties(Vue.prototype, {
   $bus: {
-    get: function() {
+    get: function () {
       return EventBus
     }
   }
@@ -77,11 +77,11 @@ Object.keys(filters).forEach(key => {
 
 // 添加请求拦截器
 axios.interceptors.request.use(
-  function(config) {
+  function (config) {
     // 在发送请求之前做些什么
     return config
   },
-  function(error) {
+  function (error) {
     // 对请求错误做些什么
     return Promise.reject(error)
   }
