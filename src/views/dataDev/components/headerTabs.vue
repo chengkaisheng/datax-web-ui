@@ -50,6 +50,7 @@
           </el-col>
         </el-row>
       </div>
+
       <div class="tree">
         <el-select
           v-if="dataSourceList.length > 0"
@@ -84,6 +85,15 @@
             clearable
           />
         </div>
+        <div style="height: 20px">
+          <el-switch
+            v-model="value1"
+            style="float: right"
+            active-text="物理"
+            inactive-text="逻辑"
+          />
+        </div>
+
         <div class="treeData">
           <el-tree
             ref="schemaTree"
@@ -181,6 +191,7 @@ export default {
   },
   data() {
     return {
+      value1: true,
       editableTabsValue: '2',
       editableTabs: [],
       tabIndex: 0,
@@ -592,7 +603,7 @@ export default {
         datasourceId: id
       })
         .then((response) => {
-          // console.log(response)
+          console.log(response)
           const arr = []
           for (let i = 0; i < response.length; i++) {
             arr.push({

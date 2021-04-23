@@ -157,9 +157,10 @@
               <cron v-model="scheduleForm.cron" />
               <span slot="footer" class="dialog-footer">
                 <el-button @click="showCronBox = false">关闭</el-button>
-                <el-button type="primary" @click="showCronBox = false"
-                  >确 定</el-button
-                >
+                <el-button
+                  type="primary"
+                  @click="showCronBox = false"
+                >确 定</el-button>
               </span>
             </el-dialog>
           </el-form-item>
@@ -211,11 +212,11 @@
             />
           </el-form-item>
           <el-form-item label="失败重试次数" prop="retry">
-            <br />
+            <br>
             <el-input-number v-model="scheduleForm.retry" :min="0" />
           </el-form-item>
           <el-form-item label="超时时间" prop="timeout">
-            <br />
+            <br>
             <el-input-number v-model="scheduleForm.timeout" :min="0" />（分钟）
           </el-form-item>
         </el-form>
@@ -225,19 +226,16 @@
         <el-button
           class="drawer-btn-temp"
           @click="closeScheduleForm('scheduleForm')"
-          >取消</el-button
-        >
+        >取消</el-button>
         <el-button
           class="drawer-btn-temp"
           @click="resetScheduleForm('scheduleForm')"
-          >重置</el-button
-        >
+        >重置</el-button>
         <el-button
           class="drawer-btn-temp"
           type="primary"
           @click="submitScheduleForm('scheduleForm')"
-          >提交</el-button
-        >
+        >提交</el-button>
       </div>
     </el-drawer>
     <!-- gojs任务联系 -->
@@ -301,15 +299,14 @@ rkJggg=="
               v-show="
                 this.$store.state.taskAdmin.jobDataDetail.jobType ===
                   'IMPORT' ||
-                this.$store.state.taskAdmin.jobDataDetail.jobType ===
+                  this.$store.state.taskAdmin.jobDataDetail.jobType ===
                   'NORMAL' ||
-                this.$store.state.taskAdmin.jobDataDetail.jobType === 'EXPORT'
+                  this.$store.state.taskAdmin.jobDataDetail.jobType === 'EXPORT'
               "
               type="text"
               icon="el-icon-edit"
               @click="showEdit(currentTask)"
-              >编辑</el-button
-            >
+            >编辑</el-button>
           </template>
           <template slot="context">
             <!-- <description-items keys="执行器" :values="jobGroupName" /> -->
@@ -382,29 +379,29 @@ rkJggg=="
 </template>
 
 <script>
-import * as dsQueryApi from "@/api/metadata-query";
-import * as infoApi from "@/api/datax-job-info";
+import * as dsQueryApi from '@/api/metadata-query'
+import * as infoApi from '@/api/datax-job-info'
 // logApi
-import { getList as logGetList, viewJobLog } from "@/api/datax-job-log";
-import waves from "@/directive/waves"; // waves directive
-import Cron from "@/components/Cron";
-import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-import JsonEditor from "@/components/JsonEditor";
-import ShellEditor from "@/components/ShellEditor";
-import PythonEditor from "@/components/PythonEditor";
-import PowershellEditor from "@/components/PowershellEditor";
-import { getDataSourceList } from "@/api/datax-jdbcDatasource";
-import { getJobProjectList } from "@/api/datax-job-project";
-import { updateJob } from "@/api/datax-job-info";
-import reader from "@/views/datax/json-build/reader";
-import writer from "@/views/datax/json-build/writer";
-import qualityReader from "../../jsonQuality/reader";
-import qualityWriter from "../../jsonQuality/writer";
-import mapper from "@/views/datax/json-build/mapper";
-import { isJSON } from "@/utils/validate";
-import jobLog from "./jobLog";
-import jobResult from "./jobResult";
-import { getTableSchema } from "@/api/metadata-query";
+import { getList as logGetList, viewJobLog } from '@/api/datax-job-log'
+import waves from '@/directive/waves' // waves directive
+import Cron from '@/components/Cron'
+import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import JsonEditor from '@/components/JsonEditor'
+import ShellEditor from '@/components/ShellEditor'
+import PythonEditor from '@/components/PythonEditor'
+import PowershellEditor from '@/components/PowershellEditor'
+import { getDataSourceList } from '@/api/datax-jdbcDatasource'
+import { getJobProjectList } from '@/api/datax-job-project'
+import { updateJob } from '@/api/datax-job-info'
+import reader from '@/views/datax/json-build/reader'
+import writer from '@/views/datax/json-build/writer'
+import qualityReader from '../../jsonQuality/reader'
+import qualityWriter from '../../jsonQuality/writer'
+import mapper from '@/views/datax/json-build/mapper'
+import { isJSON } from '@/utils/validate'
+import jobLog from './jobLog'
+import jobResult from './jobResult'
+import { getTableSchema } from '@/api/metadata-query'
 
 import {
   handlerExecute,
@@ -414,18 +411,18 @@ import {
   handlerStop,
   loadById,
   nextTriggerTime,
-  handlerUpdate,
-} from "../method";
-import { translaterMaster } from "@/utils/dictionary";
-import Description from "@/components/Description/index";
-import DescriptionItems from "@/components/Description/components/items";
-import go from "gojs";
-import JobDetailProEdit from "./editDialog/jobDetailProEdit";
+  handlerUpdate
+} from '../method'
+import { translaterMaster } from '@/utils/dictionary'
+import Description from '@/components/Description/index'
+import DescriptionItems from '@/components/Description/components/items'
+import go from 'gojs'
+import JobDetailProEdit from './editDialog/jobDetailProEdit'
 
-let timer = null;
+let timer = null
 
 export default {
-  name: "SimpleJob",
+  name: 'SimpleJob',
   components: {
     Pagination,
     JsonEditor,
@@ -442,37 +439,37 @@ export default {
     mapper,
     Description,
     DescriptionItems,
-    JobDetailProEdit,
+    JobDetailProEdit
   },
   directives: {
-    waves,
+    waves
   },
   filters: {
     statusFilter(status) {
       const statusMap = {
-        published: "success",
-        draft: "gray",
-        deleted: "danger",
-      };
-      return statusMap[status];
-    },
+        published: 'success',
+        draft: 'gray',
+        deleted: 'danger'
+      }
+      return statusMap[status]
+    }
   },
   props: {
-    jobInfo: { type: Object, default: () => ({}) },
+    jobInfo: { type: Object, default: () => ({}) }
   },
   data() {
     const validateIncParam = (rule, value, callback) => {
       if (!value) {
-        callback(new Error("Increment parameters is required"));
+        callback(new Error('Increment parameters is required'))
       }
-      callback();
-    };
+      callback()
+    }
     const validatePartitionParam = (rule, value, callback) => {
       if (!this.partitionField) {
-        callback(new Error("Partition parameters is required"));
+        callback(new Error('Partition parameters is required'))
       }
-      callback();
-    };
+      callback()
+    }
     return {
       tableData: [],
       mapperJson: {},
@@ -483,49 +480,49 @@ export default {
       ruleSettings: [],
       temp: {
         id: undefined,
-        jobGroup: "",
-        jobCron: "",
-        jobDesc: "",
-        executorRouteStrategy: "",
-        executorBlockStrategy: "",
-        childJobId: "",
-        executorFailRetryCount: "",
-        alarmEmail: "",
-        executorTimeout: "",
+        jobGroup: '',
+        jobCron: '',
+        jobDesc: '',
+        executorRouteStrategy: '',
+        executorBlockStrategy: '',
+        childJobId: '',
+        executorFailRetryCount: '',
+        alarmEmail: '',
+        executorTimeout: '',
         userId: 0,
-        jobConfigId: "",
-        executorHandler: "",
-        glueType: "",
-        glueSource: "",
-        jobJson: "",
-        executorParam: "",
-        replaceParam: "",
-        replaceParamType: "Timestamp",
-        jvmParam: "",
-        incStartTime: "",
-        partitionInfo: "",
+        jobConfigId: '',
+        executorHandler: '',
+        glueType: '',
+        glueSource: '',
+        jobJson: '',
+        executorParam: '',
+        replaceParam: '',
+        replaceParamType: 'Timestamp',
+        jvmParam: '',
+        incStartTime: '',
+        partitionInfo: '',
         incrementType: 0,
-        incStartId: "",
-        primaryKey: "",
-        projectId: "",
-        datasourceId: "",
-        readerTable: "",
+        incStartId: '',
+        primaryKey: '',
+        projectId: '',
+        datasourceId: '',
+        readerTable: ''
       }, // 任务调度参数
       blockStrategies: [
-        { value: "SERIAL_EXECUTION", label: "单机串行" },
-        { value: "DISCARD_LATER", label: "丢弃后续调度" },
-        { value: "COVER_EARLY", label: "覆盖之前调度" },
+        { value: 'SERIAL_EXECUTION', label: '单机串行' },
+        { value: 'DISCARD_LATER', label: '丢弃后续调度' },
+        { value: 'COVER_EARLY', label: '覆盖之前调度' }
       ],
       routeStrategies: [
-        { value: "FIRST", label: "第一个" },
-        { value: "LAST", label: "最后一个" },
-        { value: "ROUND", label: "轮询" },
-        { value: "RANDOM", label: "随机" },
-        { value: "CONSISTENT_HASH", label: "一致性HASH" },
-        { value: "LEAST_FREQUENTLY_USED", label: "最不经常使用" },
-        { value: "LEAST_RECENTLY_USED", label: "最近最久未使用" },
-        { value: "FAILOVER", label: "故障转移" },
-        { value: "BUSYOVER", label: "忙碌转移" },
+        { value: 'FIRST', label: '第一个' },
+        { value: 'LAST', label: '最后一个' },
+        { value: 'ROUND', label: '轮询' },
+        { value: 'RANDOM', label: '随机' },
+        { value: 'CONSISTENT_HASH', label: '一致性HASH' },
+        { value: 'LEAST_FREQUENTLY_USED', label: '最不经常使用' },
+        { value: 'LEAST_RECENTLY_USED', label: '最近最久未使用' },
+        { value: 'FAILOVER', label: '故障转移' },
+        { value: 'BUSYOVER', label: '忙碌转移' }
         // { value: 'SHARDING_BROADCAST', label: '分片广播' }
       ],
       readerForm: {
@@ -534,7 +531,7 @@ export default {
         rules: [],
         lcheckAll: false,
         rcheckAll: false,
-        isIndeterminate: true,
+        isIndeterminate: true
       },
       /** 数据库-表-列 */
       fromColumnList: [],
@@ -542,19 +539,19 @@ export default {
       writerForm: {
         checkAll: false,
         isIndeterminate: true,
-        ifCreateTable: false,
+        ifCreateTable: false
       },
       rColumnList: [],
       rTbList: [],
       jsonshow: false,
-      newstlogContent: "",
-      jobId: "",
+      newstlogContent: '',
+      jobId: '',
       logview: false,
       logData: [],
       editFrom: true,
       switchVal: 1,
       showLog: false,
-      projectIds: "",
+      projectIds: '',
       /** 任务列表 */
       list: [],
       listLoading: true,
@@ -564,10 +561,10 @@ export default {
         current: 1,
         size: 10000,
         jobGroup: 0,
-        projectIds: "",
+        projectIds: '',
         triggerStatus: -1,
-        jobDesc: "",
-        glueType: "",
+        jobDesc: '',
+        glueType: ''
       },
       showCronBox: false,
       dialogPluginVisible: false,
@@ -576,227 +573,227 @@ export default {
       editPanelShow: false,
       /** 传到编辑页面的ID */
       editPanelId: 0,
-      dialogStatus: "",
+      dialogStatus: '',
       rules: {
         jobGroup: [
           {
             required: true,
-            message: "jobGroup is required",
-            trigger: "change",
-          },
+            message: 'jobGroup is required',
+            trigger: 'change'
+          }
         ],
         executorRouteStrategy: [
           {
             required: true,
-            message: "executorRouteStrategy is required",
-            trigger: "change",
-          },
+            message: 'executorRouteStrategy is required',
+            trigger: 'change'
+          }
         ],
         executorBlockStrategy: [
           {
             required: true,
-            message: "executorBlockStrategy is required",
-            trigger: "change",
-          },
+            message: 'executorBlockStrategy is required',
+            trigger: 'change'
+          }
         ],
         glueType: [
-          { required: true, message: "jobType is required", trigger: "change" },
+          { required: true, message: 'jobType is required', trigger: 'change' }
         ],
         projectId: [
           {
             required: true,
-            message: "projectId is required",
-            trigger: "change",
-          },
+            message: 'projectId is required',
+            trigger: 'change'
+          }
         ],
         jobDesc: [
-          { required: true, message: "jobDesc is required", trigger: "blur" },
+          { required: true, message: 'jobDesc is required', trigger: 'blur' }
         ],
         jobProject: [
           {
             required: true,
-            message: "jobProject is required",
-            trigger: "blur",
-          },
+            message: 'jobProject is required',
+            trigger: 'blur'
+          }
         ],
         jobCron: [
-          { required: true, message: "jobCron is required", trigger: "blur" },
+          { required: true, message: 'jobCron is required', trigger: 'blur' }
         ],
-        incStartId: [{ trigger: "blur", validator: validateIncParam }],
-        replaceParam: [{ trigger: "blur", validator: validateIncParam }],
-        primaryKey: [{ trigger: "blur", validator: validateIncParam }],
-        incStartTime: [{ trigger: "change", validator: validateIncParam }],
-        replaceParamType: [{ trigger: "change", validator: validateIncParam }],
+        incStartId: [{ trigger: 'blur', validator: validateIncParam }],
+        replaceParam: [{ trigger: 'blur', validator: validateIncParam }],
+        primaryKey: [{ trigger: 'blur', validator: validateIncParam }],
+        incStartTime: [{ trigger: 'change', validator: validateIncParam }],
+        replaceParamType: [{ trigger: 'change', validator: validateIncParam }],
         partitionField: [
-          { trigger: "blur", validator: validatePartitionParam },
+          { trigger: 'blur', validator: validatePartitionParam }
         ],
-        datasourceId: [{ trigger: "change", validator: validateIncParam }],
-        readerTable: [{ trigger: "blur", validator: validateIncParam }],
+        datasourceId: [{ trigger: 'change', validator: validateIncParam }],
+        readerTable: [{ trigger: 'blur', validator: validateIncParam }]
       },
       currentTask: {
         id: undefined,
-        jobGroup: "",
-        jobCron: "",
-        jobDesc: "",
-        executorRouteStrategy: "",
-        executorBlockStrategy: "",
-        childJobId: "",
-        childJobIdArr: "",
-        executorFailRetryCount: "",
-        alarmEmail: "",
-        executorTimeout: "",
+        jobGroup: '',
+        jobCron: '',
+        jobDesc: '',
+        executorRouteStrategy: '',
+        executorBlockStrategy: '',
+        childJobId: '',
+        childJobIdArr: '',
+        executorFailRetryCount: '',
+        alarmEmail: '',
+        executorTimeout: '',
         userId: 0,
-        jobConfigId: "",
-        executorHandler: "",
-        glueType: "",
-        glueSource: "",
-        jobJson: "",
-        executorParam: "",
-        replaceParam: "",
-        replaceParamType: "Timestamp",
-        jvmParam: "",
-        incStartTime: "",
-        partitionInfo: "",
+        jobConfigId: '',
+        executorHandler: '',
+        glueType: '',
+        glueSource: '',
+        jobJson: '',
+        executorParam: '',
+        replaceParam: '',
+        replaceParamType: 'Timestamp',
+        jvmParam: '',
+        incStartTime: '',
+        partitionInfo: '',
         incrementType: 0,
-        incStartId: "",
-        primaryKey: "",
-        projectId: "",
-        datasourceId: "",
-        readerTable: "",
-        jobType: "",
+        incStartId: '',
+        primaryKey: '',
+        projectId: '',
+        datasourceId: '',
+        readerTable: '',
+        jobType: ''
       },
       executorList: [],
-      jobIdList: "",
-      jobProjectList: "",
-      dataSourceList: "",
-      triggerNextTimes: "",
+      jobIdList: '',
+      jobProjectList: '',
+      dataSourceList: '',
+      triggerNextTimes: '',
       registerNode: [],
-      jobJson: "",
-      glueSource: "",
+      jobJson: '',
+      glueSource: '',
       timeOffset: 0,
-      timeFormatType: "yyyy-MM-dd",
-      partitionField: "",
-      dataSource: "",
+      timeFormatType: 'yyyy-MM-dd',
+      partitionField: '',
+      dataSource: '',
       resultView: false, // 结果查看
       /** 折叠面板激活项 */
-      collapseActiveName: "result",
+      collapseActiveName: 'result',
       /** gojs面板 */
-      myDiagram: "",
+      myDiagram: '',
       /** 任务Id */
-      myId: "",
-      jsons: "",
-      stop_start_name: "上线",
+      myId: '',
+      jsons: '',
+      stop_start_name: '上线',
       scheduleForm: {
-        cron: "",
-        blockStrategy: "",
-        alarmEmail: "",
-        executor: "",
+        cron: '',
+        blockStrategy: '',
+        alarmEmail: '',
+        executor: '',
         retry: 0,
         timeout: 0,
-        routeStrategy: "",
-        subTask: [],
+        routeStrategy: '',
+        subTask: []
       },
       scheduleRules: {
         executor: [
-          { required: true, message: "请选择执行器", trigger: "change" },
+          { required: true, message: '请选择执行器', trigger: 'change' }
         ],
         cron: [
-          { required: true, message: "请输入Cron表达式", trigger: "blur" },
+          { required: true, message: '请输入Cron表达式', trigger: 'blur' }
         ],
         blockStrategy: [
-          { required: false, message: "请选择阻塞处理策略", trigger: "change" },
+          { required: false, message: '请选择阻塞处理策略', trigger: 'change' }
         ],
         alarmEmail: [
-          { required: false, message: "请输入报警邮箱", trigger: "blur" },
+          { required: false, message: '请输入报警邮箱', trigger: 'blur' }
         ],
         retry: [
-          { required: true, message: "请输入失败重试次数", trigger: "blur" },
+          { required: true, message: '请输入失败重试次数', trigger: 'blur' }
         ],
         timeout: [
-          { required: true, message: "请输入超时时间", trigger: "blur" },
+          { required: true, message: '请输入超时时间', trigger: 'blur' }
         ],
         routeStrategy: [
-          { required: false, message: "请选择路由策略", trigger: "change" },
+          { required: false, message: '请选择路由策略', trigger: 'change' }
         ],
         subTask: [
-          { required: false, message: "请选择子任务", trigger: "change" },
-        ],
+          { required: false, message: '请选择子任务', trigger: 'change' }
+        ]
       },
       scheduleShow: false,
-      detailActiveName: "detail",
-    };
+      detailActiveName: 'detail'
+    }
   },
 
   computed: {
     /** 判断当前任务类型 */
     jobType() {
       return (type) => {
-        return this.jobInfo.jobType === type;
-      };
+        return this.jobInfo.jobType === type
+      }
     },
 
     /** 执行器 */
     jobGroupName() {
       return this.executorList.find(
         (element) => element.id === this.currentTask.jobGroup
-      )?.title;
+      )?.title
     },
 
     /** 所属项目名称 */
     projectName() {
-      const t = this.$store.state.project.currentItem;
-      const i = this.$store.state.project.currentItem.indexOf("/");
+      const t = this.$store.state.project.currentItem
+      const i = this.$store.state.project.currentItem.indexOf('/')
       if (i > -1) {
-        return t.substring(i + 1, t.length);
+        return t.substring(i + 1, t.length)
       }
-      return t;
+      return t
     },
 
     /** 子任务对象 */
     childJob() {
-      const t = typeof this.currentTask.childJobId === "string";
+      const t = typeof this.currentTask.childJobId === 'string'
       if (t) {
-        const a = this.currentTask.childJobId.split(",");
-        const b = [];
+        const a = this.currentTask.childJobId.split(',')
+        const b = []
         for (const aa of a) {
           const c = this.$store.state.taskAdmin.taskList.find(
             (ele) => ele.id === parseInt(aa)
-          );
+          )
           if (c) {
-            b.push(c);
+            b.push(c)
           }
         }
-        return b;
+        return b
       } else {
         return [
           this.$store.state.taskAdmin.taskList.find(
             (ele) => ele.id === this.currentTask.childJobId
-          ),
-        ];
+          )
+        ]
       }
     },
 
     /** 值不为空 */
     isVal() {
       return (val) => {
-        return val !== "" && val !== undefined && val !== null;
-      };
+        return val !== '' && val !== undefined && val !== null
+      }
     },
 
     jobParam() {
-      return JSON.parse(this.jobInfo.jobParam);
+      return JSON.parse(this.jobInfo.jobParam)
     },
 
     ruleArr() {
-      return this.readerForm.rules;
+      return this.readerForm.rules
     },
 
     readerColumns() {
-      return this.$store.state.taskAdmin.selectReaderColumn;
+      return this.$store.state.taskAdmin.selectReaderColumn
     },
 
     writerColumns() {
-      return this.$store.state.taskAdmin.writerColumns;
+      return this.$store.state.taskAdmin.writerColumns
     },
 
     /**
@@ -809,15 +806,15 @@ export default {
      */
     finder() {
       return (item, sets, attr, distAttr) => {
-        let t = "";
+        let t = ''
         if (sets) {
-          t = sets.find((ele) => ele[attr] === item);
+          t = sets.find((ele) => ele[attr] === item)
         }
         if (!t) {
-          return "";
+          return ''
         }
-        return t[distAttr];
-      };
+        return t[distAttr]
+      }
     },
 
     /** res中是否有属性item */
@@ -825,176 +822,176 @@ export default {
       return (res, item) => {
         if (res) {
           if (res.hasOwnProperty(item)) {
-            return res[item];
+            return res[item]
           } else {
-            return "";
+            return ''
           }
         } else {
-          return "";
+          return ''
         }
-      };
+      }
     },
 
     jsonString() {
-      return JSON.parse(this.currentTask.jobJson);
+      return JSON.parse(this.currentTask.jobJson)
     },
 
     /** 是否为普通、引入、导出、SHELL、POWERSHELL、PYTHON任务 */
     showProjectName() {
       return (
-        this.jobType === "NORMAL" ||
-        this.jobType === "IMPORT" ||
-        this.jobType === "EXPORT" ||
-        this.jobType === "SHELL" ||
-        this.jobType === "POWERSHELL" ||
-        this.jobType === "PYTHON"
-      );
+        this.jobType === 'NORMAL' ||
+        this.jobType === 'IMPORT' ||
+        this.jobType === 'EXPORT' ||
+        this.jobType === 'SHELL' ||
+        this.jobType === 'POWERSHELL' ||
+        this.jobType === 'PYTHON'
+      )
     },
 
     /** 唯一标识码 */
     guid() {
-      return "xxxxxxxxxxxxxxxxxxx"
+      return 'xxxxxxxxxxxxxxxxxxx'
         .concat(new Date().valueOf().toString())
-        .replace(/[xy]/g, function (c) {
-          var r = (Math.random() * 16) | 0;
-          var v = c === "x" ? r : (r & 0x3) | 0x8;
-          return v.toString(16);
-        });
+        .replace(/[xy]/g, function(c) {
+          var r = (Math.random() * 16) | 0
+          var v = c === 'x' ? r : (r & 0x3) | 0x8
+          return v.toString(16)
+        })
     },
 
     hasSchema() {
       return (
-        this.dataSource === "postgresql" ||
-        this.dataSource === "greenplum" ||
-        this.dataSource === "oracle" ||
-        this.dataSource === "sqlserver"
-      );
-    },
+        this.dataSource === 'postgresql' ||
+        this.dataSource === 'greenplum' ||
+        this.dataSource === 'oracle' ||
+        this.dataSource === 'sqlserver'
+      )
+    }
   },
 
   watch: {
     fromColumnsListChecked(newval) {
-      const arr = [];
+      const arr = []
       newval.forEach((element, index) => {
         const obj = {
           sourceField: this.readerForm.lcolumns[index],
           clearRule: this.readerForm.rules[index],
           targetField: this.readerForm.rcolumns[index],
-          index: index,
-        };
-        arr.push(obj);
-      });
-      this.$store.commit("SET_TABLEDATA", arr);
+          index: index
+        }
+        arr.push(obj)
+      })
+      this.$store.commit('SET_TABLEDATA', arr)
     },
 
     readerColumns(val) {
-      console.log("val", val);
-      this.readerForm.lcolumns = JSON.parse(JSON.stringify(val));
-      this.fromColumnsList = val;
-      this.tableData = [];
+      console.log('val', val)
+      this.readerForm.lcolumns = JSON.parse(JSON.stringify(val))
+      this.fromColumnsList = val
+      this.tableData = []
       val.forEach((row, index) => {
         const obj = {
           column: row,
-          index,
-        };
-        this.tableData.push(obj);
-      });
+          index
+        }
+        this.tableData.push(obj)
+      })
     },
 
     writerColumns(val) {
-      this.readerForm.rcolumns = JSON.parse(JSON.stringify(val));
-      this.toColumnsList = val;
+      this.readerForm.rcolumns = JSON.parse(JSON.stringify(val))
+      this.toColumnsList = val
     },
 
-    "currentTask.triggerStatus"(val) {
+    'currentTask.triggerStatus'(val) {
       if (val === 1) {
-        this.stop_start_name = "上线";
+        this.stop_start_name = '上线'
       } else {
-        this.stop_start_name = "下线";
+        this.stop_start_name = '下线'
       }
     },
 
     detailActiveName(val) {
-      if (val === "" || val === undefined || val === null) {
-        this.detailActiveName = "detail";
-      } else if (val === "json") {
-        this.jsons = this.jsonString;
+      if (val === '' || val === undefined || val === null) {
+        this.detailActiveName = 'detail'
+      } else if (val === 'json') {
+        this.jsons = this.jsonString
       }
     },
 
     /**
      * @description: 等待trigger执行完再获取log列表
      */
-    "$store.state.taskAdmin.logWatch"(val) {
+    '$store.state.taskAdmin.logWatch'(val) {
       timer = setInterval(() => {
-        this.logList();
-      }, 1000);
-    },
+        this.logList()
+      }, 1000)
+    }
   },
 
   created() {
-    this.fetchData();
-    this.getExecutor();
-    this.getJobIdList();
-    this.getJobProject();
-    this.getDataSourceList();
-    this.currentTask = this.jobInfo;
-    this.myId = this.guid;
-    this.temp = this.$store.state.taskAdmin.jobDataDetail;
+    this.fetchData()
+    this.getExecutor()
+    this.getJobIdList()
+    this.getJobProject()
+    this.getDataSourceList()
+    this.currentTask = this.jobInfo
+    this.myId = this.guid
+    this.temp = this.$store.state.taskAdmin.jobDataDetail
   },
   mounted() {
-    this.initGoJs();
+    this.initGoJs()
   },
   beforeDestroy() {
-    clearInterval(timer);
-    timer = null;
+    clearInterval(timer)
+    timer = null
   },
 
   methods: {
     getReaderData() {
-      return this.$refs.reader.getData();
+      return this.$refs.reader.getData()
     },
 
     showJobSchedule() {
-      this.scheduleForm.cron = this.$store.state.taskAdmin.jobDataDetail.jobCron;
-      this.scheduleForm.timeout = this.$store.state.taskAdmin.jobDataDetail.executorTimeout;
-      this.scheduleForm.alarmEmail = this.$store.state.taskAdmin.jobDataDetail.alarmEmail;
-      this.scheduleForm.blockStrategy = this.$store.state.taskAdmin.jobDataDetail.executorBlockStrategy;
+      this.scheduleForm.cron = this.$store.state.taskAdmin.jobDataDetail.jobCron
+      this.scheduleForm.timeout = this.$store.state.taskAdmin.jobDataDetail.executorTimeout
+      this.scheduleForm.alarmEmail = this.$store.state.taskAdmin.jobDataDetail.alarmEmail
+      this.scheduleForm.blockStrategy = this.$store.state.taskAdmin.jobDataDetail.executorBlockStrategy
       if (this.$store.state.taskAdmin.jobDataDetail.childJobId) {
         this.scheduleForm.subTask = this.$store.state.taskAdmin.jobDataDetail.childJobId.split(
-          ","
-        );
-        const childarr = [];
+          ','
+        )
+        const childarr = []
         for (let i = 0; i < this.scheduleForm.subTask.length; i++) {
-          childarr.push(parseInt(this.scheduleForm.subTask[i]));
+          childarr.push(parseInt(this.scheduleForm.subTask[i]))
         }
-        this.scheduleForm.subTask = childarr;
-        console.log(childarr, "childarr");
+        this.scheduleForm.subTask = childarr
+        console.log(childarr, 'childarr')
       }
-      this.scheduleForm.retry = this.$store.state.taskAdmin.jobDataDetail.executorFailRetryCount;
-      this.scheduleForm.routeStrategy = this.$store.state.taskAdmin.jobDataDetail.executorRouteStrategy; // 路由
-      this.scheduleForm.executor = this.$store.state.taskAdmin.jobDataDetail.jobGroup; // 执行器
-      this.scheduleShow = true;
+      this.scheduleForm.retry = this.$store.state.taskAdmin.jobDataDetail.executorFailRetryCount
+      this.scheduleForm.routeStrategy = this.$store.state.taskAdmin.jobDataDetail.executorRouteStrategy // 路由
+      this.scheduleForm.executor = this.$store.state.taskAdmin.jobDataDetail.jobGroup // 执行器
+      this.scheduleShow = true
     },
 
     selectChange(val) {
-      console.log(val, "val");
-      this.scheduleForm.subTask = val;
-      this.temp.childJobId = "";
-      console.log(this.temp.childJobId, "1");
+      console.log(val, 'val')
+      this.scheduleForm.subTask = val
+      this.temp.childJobId = ''
+      console.log(this.temp.childJobId, '1')
       if (val.length > 0) {
         for (let i = 0; i < val.length; i++) {
           if (i === 0) {
-            this.temp.childJobId = val[i];
+            this.temp.childJobId = val[i]
           } else {
-            this.temp.childJobId += "," + val[i];
+            this.temp.childJobId += ',' + val[i]
           }
         }
       } else {
-        this.temp.childJobId = "";
+        this.temp.childJobId = ''
       }
-      console.log(this.temp.childJobId, "2");
-      console.log(this.temp, "console.log(this.temp)");
+      console.log(this.temp.childJobId, '2')
+      console.log(this.temp, 'console.log(this.temp)')
     },
 
     /**
@@ -1003,19 +1000,19 @@ export default {
      */
     handlerExecute(taskInfo) {
       handlerExecute.call(this, taskInfo).then((response) => {
-        this.newstlogContent = "";
-        this.showLog = true;
-        this.jsonshow = false;
-      });
+        this.newstlogContent = ''
+        this.showLog = true
+        this.jsonshow = false
+      })
     },
 
     /**
      * @description: 查看结果
      */
     handlerViewResult(taskInfo) {
-      this.resultView = true;
-      this.jobId = taskInfo.id;
-      this.$refs.jobResult?.fetchData();
+      this.resultView = true
+      this.jobId = taskInfo.id
+      this.$refs.jobResult?.fetchData()
     },
 
     /**
@@ -1023,11 +1020,11 @@ export default {
      */
     handlerViewLog(taskInfo) {
       // handlerViewLog.call(this, taskInfo);
-      this.jobId = taskInfo.id;
-      this.$store.commit("SET_LOGVIEW_TYPE", 0);
-      this.logview = true;
+      this.jobId = taskInfo.id
+      this.$store.commit('SET_LOGVIEW_TYPE', 0)
+      this.logview = true
       // console.log(taskInfo);
-      this.$refs.jobLog?.fetchData();
+      this.$refs.jobLog?.fetchData()
     },
 
     /**
@@ -1037,17 +1034,17 @@ export default {
       handlerDelete
         .call(this, taskInfo)
         .then(() => {
-          this.$emit("deleteDetailTab", taskInfo.id);
-          this.$emit("deleteJob", true);
+          this.$emit('deleteDetailTab', taskInfo.id)
+          this.$emit('deleteJob', true)
         })
-        .then(() => {});
+        .then(() => {})
     },
 
     /**
      * @description: 启停
      */
     changeSwitch(taskInfo) {
-      console.log(this.currentTask.triggerStatus, "currentTask.triggerStatus");
+      console.log(this.currentTask.triggerStatus, 'currentTask.triggerStatus')
       // if (this.currentTask.triggerStatus === 1) {
       //   this.stop_start_name = '上线'
       // } else {
@@ -1055,21 +1052,21 @@ export default {
       // }
       taskInfo.triggerStatus === 1
         ? handlerStart.call(this, taskInfo)
-        : handlerStop.call(this, taskInfo);
+        : handlerStop.call(this, taskInfo)
     },
 
     /**
      * @description: 注册节点
      */
     loadById(row) {
-      loadById.call(this, row);
+      loadById.call(this, row)
     },
 
     /**
      * @description: 下次触发时间
      */
     nextTriggerTime(row) {
-      nextTriggerTime.call(this, row);
+      nextTriggerTime.call(this, row)
     },
 
     /**
@@ -1082,18 +1079,18 @@ export default {
         jobGroup: 0,
         jobId: this.currentTask?.id,
         logStatus: -1,
-        filterTime: "",
-      };
-      let status = 0;
+        filterTime: ''
+      }
+      let status = 0
 
       logGetList(param).then((response) => {
-        const newestLog = response.content.data[0] || {};
+        const newestLog = response.content.data[0] || {}
         if (!newestLog?.executorAddress) {
-          return;
+          return
         }
-        status = newestLog.handleCode;
+        status = newestLog.handleCode
         /** 触发时间 */
-        const triggerTime = new Date().getTime(newestLog?.triggerTime);
+        const triggerTime = new Date().getTime(newestLog?.triggerTime)
         /** 获取日志详情 */
         viewJobLog(
           newestLog?.executorAddress,
@@ -1101,13 +1098,14 @@ export default {
           newestLog?.id,
           1
         ).then((response) => {
-          this.newstlogContent = response.content.logContent;
+          this.newstlogContent = response.content.logContent
+          console.log(this.newstlogContent)
           if (status !== 0) {
-            clearInterval(timer);
-            timer = null;
+            clearInterval(timer)
+            timer = null
           }
-        });
-      });
+        })
+      })
     },
 
     /**
@@ -1115,20 +1113,20 @@ export default {
      */
     getExecutor() {
       infoApi.getExecutorList().then((response) => {
-        const { content } = response;
-        this.executorList = content;
-        console.log(this.executorList, "this.executorList");
-      });
+        const { content } = response
+        this.executorList = content
+        console.log(this.executorList, 'this.executorList')
+      })
     },
     /**
      * @description: 获取所有任务列表
      */
     getJobIdList() {
       infoApi.getJobIdList().then((response) => {
-        const { content } = response;
-        this.jobIdList = content;
-        console.log(this.jobIdList, "子任务");
-      });
+        const { content } = response
+        this.jobIdList = content
+        console.log(this.jobIdList, '子任务')
+      })
     },
 
     /**
@@ -1136,8 +1134,8 @@ export default {
      */
     getJobProject() {
       getJobProjectList().then((response) => {
-        this.jobProjectList = response;
-      });
+        this.jobProjectList = response
+      })
     },
 
     /**
@@ -1145,294 +1143,294 @@ export default {
      */
     getDataSourceList() {
       getDataSourceList().then((response) => {
-        this.dataSourceList = response;
-      });
+        this.dataSourceList = response
+      })
     },
 
     fetchData() {
-      this.listLoading = true;
-      this.listQuery.projectIds = this.$store.state.taskAdmin.projectId;
+      this.listLoading = true
+      this.listQuery.projectIds = this.$store.state.taskAdmin.projectId
       infoApi.getList(this.listQuery).then((response) => {
-        const { content } = response;
-        this.total = content.recordsTotal;
-        this.list = content.data;
-        this.listLoading = false;
-        this.$store.commit("SET_TASKLIST", this.list);
+        const { content } = response
+        this.total = content.recordsTotal
+        this.list = content.data
+        this.listLoading = false
+        this.$store.commit('SET_TASKLIST', this.list)
         const t = this.list.filter(
           (item) => item.id === this.$store.state.taskAdmin.jobInfo.id
-        );
-        this.$store.commit("SET_JOB_INFO", t[0]);
-      });
+        )
+        this.$store.commit('SET_JOB_INFO', t[0])
+      })
     },
     incStartTimeFormat(vData) {},
 
     updateData() {},
 
     viewJson() {
-      this.jsonshow = !this.jsonshow;
+      this.jsonshow = !this.jsonshow
       if (this.showLog) {
-        this.showLog = false;
+        this.showLog = false
       }
     },
 
     showRunLogDetails() {
-      this.showLog = !this.showLog;
+      this.showLog = !this.showLog
       if (this.jsonshow) {
-        this.jsonshow = false;
+        this.jsonshow = false
       }
     },
 
     lHandleSelect(index, v) {},
     cHandleSelect(index, v) {},
     rHandleSelect(index, v) {
-      console.log(index, v);
+      console.log(index, v)
     },
 
     bHandleClick(index, v) {
-      this.fromColumnsListChecked.splice(index, 1);
-      this.toColumnsListChecked.splice(index, 1);
+      this.fromColumnsListChecked.splice(index, 1)
+      this.toColumnsListChecked.splice(index, 1)
 
-      this.readerForm.lcolumns.splice(index, 1);
-      this.readerForm.rcolumns.splice(index, 1);
-      this.tableData.splice(index, 1);
+      this.readerForm.lcolumns.splice(index, 1)
+      this.readerForm.rcolumns.splice(index, 1)
+      this.tableData.splice(index, 1)
     },
 
     getLColumns() {
-      return this.readerForm.lcolumns;
+      return this.readerForm.lcolumns
     },
     getRColumns() {
-      return this.readerForm.rcolumns;
+      return this.readerForm.rcolumns
     },
     getRules() {
-      return this.readerForm.rules;
+      return this.readerForm.rules
     },
     exStatus(param) {
-      param = !param;
+      param = !param
     },
     translaterMaster,
     /**
      * @description: 点击Schema触发表改变
      */
     schemaChange() {
-      this.getTables("rdbmsWriter");
+      this.getTables('rdbmsWriter')
     },
     /**
      * @description: 重置当前展示任务
      */
     resetCurrentTask() {
-      this.currentTask = this.$options.data().currentTask;
-      this.jobJson = "";
-      this.glueSource = "";
-      this.timeOffset = 0;
-      this.timeFormatType = "yyyy-MM-dd";
-      this.partitionField = "";
+      this.currentTask = this.$options.data().currentTask
+      this.jobJson = ''
+      this.glueSource = ''
+      this.timeOffset = 0
+      this.timeFormatType = 'yyyy-MM-dd'
+      this.partitionField = ''
     },
     /**
      * @description: 初始化gojs
      */
     initGoJs() {
-      var $ = go.GraphObject.make; // 构建
+      var $ = go.GraphObject.make // 构建
       this.myDiagram = $(
         go.Diagram,
-        "myDiagramDiv" + this.myId, // create a Diagram for the DIV HTML element
+        'myDiagramDiv' + this.myId, // create a Diagram for the DIV HTML element
         {
-          "undoManager.isEnabled": true, // enable undo & redo
+          'undoManager.isEnabled': true // enable undo & redo
         }
-      );
+      )
       /** 右键面板 */
       const myContextMenu = $(
-        "ContextMenu",
+        'ContextMenu',
         $(
-          "ContextMenuButton",
-          $(go.TextBlock, "查看详情", {
+          'ContextMenuButton',
+          $(go.TextBlock, '查看详情', {
             alignment: go.Spot.Center,
             margin: 5,
-            font: "12px sans-serif",
+            font: '12px sans-serif',
             opacity: 0.75,
-            stroke: "#404040",
+            stroke: '#404040'
           }),
           {
             click: (e, obj) => {
-              this.checkInfo(obj);
-            },
+              this.checkInfo(obj)
+            }
           }
         ),
         $(
-          "ContextMenuButton",
-          $(go.TextBlock, this.stop_start_name + "/下线", {
+          'ContextMenuButton',
+          $(go.TextBlock, this.stop_start_name + '/下线', {
             alignment: go.Spot.Center,
             margin: 5,
-            font: "12px sans-serif",
+            font: '12px sans-serif',
             opacity: 0.75,
-            stroke: "#404040",
+            stroke: '#404040'
           }),
           {
             click: (e, obj) => {
-              this.online(obj);
-            },
+              this.online(obj)
+            }
           }
         ),
         $(
-          "ContextMenuButton",
-          $(go.TextBlock, "删除", {
+          'ContextMenuButton',
+          $(go.TextBlock, '删除', {
             alignment: go.Spot.Center,
             margin: 5,
-            font: "12px sans-serif",
+            font: '12px sans-serif',
             opacity: 0.75,
-            stroke: "#404040",
+            stroke: '#404040'
           }),
           {
             click: (e, obj) => {
-              this.deleteTask(obj);
-            },
+              this.deleteTask(obj)
+            }
           }
         ),
         $(
-          "ContextMenuButton",
-          $(go.TextBlock, "查看任务操作日志", {
+          'ContextMenuButton',
+          $(go.TextBlock, '查看任务操作日志', {
             alignment: go.Spot.Center,
             margin: 5,
-            font: "12px sans-serif",
+            font: '12px sans-serif',
             opacity: 0.75,
-            stroke: "#404040",
+            stroke: '#404040'
           }),
           {
             click: (e, obj) => {
-              this.checkLog(obj);
-            },
+              this.checkLog(obj)
+            }
           }
         ),
         $(
-          "ContextMenuButton",
-          $(go.TextBlock, "编辑任务属性", {
+          'ContextMenuButton',
+          $(go.TextBlock, '编辑任务属性', {
             alignment: go.Spot.Center,
             margin: 5,
-            font: "12px sans-serif",
+            font: '12px sans-serif',
             opacity: 0.75,
-            stroke: "#404040",
+            stroke: '#404040'
           }),
           {
             click: (e, obj) => {
-              this.editTask(obj);
-            },
+              this.editTask(obj)
+            }
           }
         ),
         $(
-          "ContextMenuButton",
-          $(go.TextBlock, "导出任务", {
+          'ContextMenuButton',
+          $(go.TextBlock, '导出任务', {
             alignment: go.Spot.Center,
             margin: 5,
-            font: "12px sans-serif",
+            font: '12px sans-serif',
             opacity: 0.75,
-            stroke: "#404040",
+            stroke: '#404040'
           }),
           {
             click: (e, obj) => {
-              this.exportTask(obj);
-            },
+              this.exportTask(obj)
+            }
           }
         )
-      );
+      )
       // define a simple Node template
       this.myDiagram.nodeTemplate = $(
         go.Node,
-        "Auto", // the Shape will go around the TextBlock
+        'Auto', // the Shape will go around the TextBlock
         { contextMenu: myContextMenu },
         $(
           go.Shape,
-          "RoundedRectangle",
+          'RoundedRectangle',
           // Shape.fill is bound to Node.data.color
-          new go.Binding("fill", "color") // 在 model 的 nodes 中通过 color 属性来指定 Node 的 fill 属性
+          new go.Binding('fill', 'color') // 在 model 的 nodes 中通过 color 属性来指定 Node 的 fill 属性
         ),
         $(
           go.TextBlock,
           { margin: 3 }, // some room around the text
           // TextBlock.text is bound to Node.data.key
-          new go.Binding("text", "text"),
-          new go.Binding("key", "key")
+          new go.Binding('text', 'text'),
+          new go.Binding('key', 'key')
         )
-      );
+      )
       const paramItem = [
         {
           text: this.currentTask.jobDesc,
           key: this.currentTask.id,
           data: this.currentTask,
-          color: "lightblue",
-        },
-      ];
+          color: 'lightblue'
+        }
+      ]
       if (this.isVal(this.currentTask.childJobId)) {
         for (const i of this.childJob) {
           paramItem.push({
-            text: this.hasVal(i, "jobDesc"),
-            key: parseInt(this.hasVal(i, "id")),
+            text: this.hasVal(i, 'jobDesc'),
+            key: parseInt(this.hasVal(i, 'id')),
             data: i,
-            color: "orange",
-          });
+            color: 'orange'
+          })
         }
       }
-      const paramLine = [];
+      const paramLine = []
       if (this.isVal(this.currentTask.childJobId)) {
         for (const i of this.childJob) {
           paramLine.push({
             from: this.currentTask.id,
-            to: parseInt(this.hasVal(i, "id")),
-          });
+            to: parseInt(this.hasVal(i, 'id'))
+          })
         }
       }
-      this.myDiagram.model = new go.GraphLinksModel(paramItem, paramLine);
+      this.myDiagram.model = new go.GraphLinksModel(paramItem, paramLine)
     },
     /**
      * @description: 查看详情
      */
     checkInfo(obj) {
-      this.currentTask = obj.part.data.data;
-      this.detailActiveName = "detail";
+      this.currentTask = obj.part.data.data
+      this.detailActiveName = 'detail'
     },
     /**
      * @description: 上线、下线
      */
     online(obj) {
       this.currentTask.triggerStatus =
-        this.currentTask.triggerStatus === 0 ? 1 : 0;
-      this.changeSwitch(obj.part.data.data);
+        this.currentTask.triggerStatus === 0 ? 1 : 0
+      this.changeSwitch(obj.part.data.data)
     },
     /**
      * @description: 删除任务
      */
     deleteTask(obj) {
-      this.handlerDelete(obj.part.data.data);
+      this.handlerDelete(obj.part.data.data)
     },
     /**
      * @description: 查看任务操作日志
      */
     checkLog(obj) {
-      this.handlerViewLog(obj?.part.data.data);
+      this.handlerViewLog(obj?.part.data.data)
     },
     /**
      * @description: 编辑任务属性
      */
     editTask(obj) {
-      this.showEdit(obj?.part.data.data);
+      this.showEdit(obj?.part.data.data)
     },
     /**
      * @description: 导出任务
      */
     exportTask(obj) {
-      console.log(obj.part.data);
+      console.log(obj.part.data)
     },
     /**
      * @description: 编辑
      */
     showEdit(currentTask) {
-      console.log(currentTask);
-      console.log(this.jobInfo.jobType, "this.jobInfo.jobType");
-      this.$store.commit("SET_JOBINFO_TYPE", this.jobInfo.jobType);
-      this.editPanelId = currentTask.id;
-      this.editPanelShow = true;
-      console.log(this.editPanelId, "this.editPanelId");
+      console.log(currentTask)
+      console.log(this.jobInfo.jobType, 'this.jobInfo.jobType')
+      this.$store.commit('SET_JOBINFO_TYPE', this.jobInfo.jobType)
+      this.editPanelId = currentTask.id
+      this.editPanelShow = true
+      console.log(this.editPanelId, 'this.editPanelId')
     },
     closeEdit() {
-      this.editPanelShow = false;
+      this.editPanelShow = false
     },
     /**
      * @description: 提交调度参数修改
@@ -1440,49 +1438,49 @@ export default {
     submitScheduleForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.temp.id = this.$store.state.taskAdmin.jobDataDetail.id;
-          this.temp.jobCron = this.scheduleForm.cron;
-          this.temp.executorTimeout = this.scheduleForm.timeout;
-          this.temp.alarmEmail = this.scheduleForm.alarmEmail;
-          this.temp.executorBlockStrategy = this.scheduleForm.blockStrategy;
-          console.log(this.temp.childJobId, "this.temp.childJobId");
-          this.temp.executorFailRetryCount = this.scheduleForm.retry;
-          this.temp.executorRouteStrategy = this.scheduleForm.routeStrategy;
-          this.temp.jobGroup = this.scheduleForm.executor;
-          console.log(this.temp);
+          this.temp.id = this.$store.state.taskAdmin.jobDataDetail.id
+          this.temp.jobCron = this.scheduleForm.cron
+          this.temp.executorTimeout = this.scheduleForm.timeout
+          this.temp.alarmEmail = this.scheduleForm.alarmEmail
+          this.temp.executorBlockStrategy = this.scheduleForm.blockStrategy
+          console.log(this.temp.childJobId, 'this.temp.childJobId')
+          this.temp.executorFailRetryCount = this.scheduleForm.retry
+          this.temp.executorRouteStrategy = this.scheduleForm.routeStrategy
+          this.temp.jobGroup = this.scheduleForm.executor
+          console.log(this.temp)
           updateJob(this.temp)
             .then((res) => {
-              console.log(res, "任务调度。。。。");
-              this.scheduleShow = false;
-              this.$store.commit("setScheduleId", this.temp.id);
+              console.log(res, '任务调度。。。。')
+              this.scheduleShow = false
+              this.$store.commit('setScheduleId', this.temp.id)
               this.$notify({
-                title: "成功",
-                message: "调度修改成功",
-                type: "success",
-                duration: 2000,
-              });
+                title: '成功',
+                message: '调度修改成功',
+                type: 'success',
+                duration: 2000
+              })
             })
             .catch((err) => {
-              console.log(err);
-            });
-          console.log(this.scheduleForm);
-          console.log(this.$store.state.taskAdmin.jobDataDetail, "data");
+              console.log(err)
+            })
+          console.log(this.scheduleForm)
+          console.log(this.$store.state.taskAdmin.jobDataDetail, 'data')
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     resetScheduleForm(formName) {
-      this.$refs[formName].resetFields();
-      this.scheduleForm.cron = "";
+      this.$refs[formName].resetFields()
+      this.scheduleForm.cron = ''
     },
     closeScheduleForm(formName) {
-      this.$refs[formName].resetFields();
-      this.scheduleForm.cron = "";
-      this.scheduleShow = false;
-    },
-  },
-};
+      this.$refs[formName].resetFields()
+      this.scheduleForm.cron = ''
+      this.scheduleShow = false
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

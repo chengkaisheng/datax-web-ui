@@ -49,11 +49,7 @@
             </span>
           </div>
           <div v-show="isshow" style="margin-top: 20px">
-            <el-button
-              @click="Addhandel"
-              size="small"
-              style="margin-bottom: 20px"
-              type="success"
+            <el-button size="small" style="margin-bottom: 20px" type="success"
               >添加</el-button
             >
             <el-button
@@ -87,7 +83,7 @@
           >任务日志</span
         >
       </div>
-      <div v-show="logs"></div>
+      <div v-show="logs" />
     </div>
   </div>
 </template>
@@ -150,10 +146,10 @@ export default {
     Delete(index) {
       console.log('index---->>>', index)
       if (this.arrayData.length <= 1) {
-        //如果只有一个输入框则不可以删除
+        // 如果只有一个输入框则不可以删除
         return false
       }
-      this.arrayData.splice(index, 1) //删除了数组中对应的数据也就将这个位置的输入框删除
+      this.arrayData.splice(index, 1) // 删除了数组中对应的数据也就将这个位置的输入框删除
     },
     Addhandel() {
       this.arrayData.push({
