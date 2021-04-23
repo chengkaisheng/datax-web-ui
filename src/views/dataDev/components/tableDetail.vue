@@ -10,51 +10,21 @@
             placement="top"
           />
         </span>
-        <!-- <div id="last" ref="querylog" style="heith:150px" class="Navigation" onload="window.scrollTo(0,document.getElemetnById('last').scrollHeight);">
-          <div v-for="item in editableTabs" :key="item.id">
-            <span style="fontWeigth:700">>>{{ new Date() }} <span />;[content] : {{ item.content }}
-              <br>
-              <span class="line1">>>[ressult]:{{ item.tableData }}</span>
-              <br>
-              <span>>>{{ new Date() }}; </span> [content] :<span class="err1">{{ item.error }}</span>
-              <br>
-              <span class="line1">>>[EXCEPTION]:{{ item.error.__typename }}</span>
-              <br>
-            </span>
-          </div>
-        </div> -->
         <div id="last" ref="querylog" style="heith:150px" class="Navigation" onload="window.scrollTo(0,document.getElemetnById('last').scrollHeight);">
-          <!-- <pre v-text="editableTabs" /> -->
           <div v-for="item in loglist" :key="item.id">
-            <div v-if="item.tableData !==''">
-              <span style="fontWeigth:700">>>{{ new Date() }} </span>;[content] : {{ item.content }}
-              <br>
+            <div v-if="item.tableData">
+              <span style="fontWeigth:700">>>{{ new Date() }} </span>;[content] : <span>{{ item.content }}</span>
               <span class="line1">>>[ressult]:{{ item.tableData }}</span>
               <br>
             </div>
-            <div v-show="item.error !==''">
+            <div v-if="item.error">
               <span>>>{{ new Date() }}; </span> [content] : <span class="err1">{{ item.content }}</span>
-              <br>
               <span class="line1">>>[EXCEPTION] : <span class="err1">{{ item.error }}</span></span>
               <br>
             </div>
-            <hr>
           </div>
           <!-- <span id="last" style="height:2px;" /> -->
         </div>
-        <!-- <div v-if="editableTabs.length<0">
-          <div onload="window.scrollTo(0,document.table.scrollHeight);">
-            <span style="fontWeigth:700">>>{{ new Date() }};[content] : {{ item.content }}</span>
-            <br>
-            <span class="line1">>>[ressult]:{{ item.tableData }}</span>
-            <br>
-            <span>>>{{ new Date() }};[content] : </span>
-            <br>
-            <span class="line1">>>[EXCEPTION]:</span>
-            <br>
-          </div>
-        </div> -->
-
       </el-tab-pane>
 
       <el-tab-pane name="hisSql">
@@ -207,6 +177,23 @@
       <el-tab-pane name="asynctask">
         <span slot="label">
           {{ tabLabel["asynctask"] }}
+          <el-dropdown
+            v-if="tabsActive === 'asynctask' && sqlHistoryData1.length > 0"
+            style="margin-left: 10px"
+            placement="top"
+          >
+            <span class="el-dropdown-link">
+              <i class="el-icon-more" />
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item
+                @click.native.stop="fileSaver('tableHisSql', 'xlsx')"
+              >导出为Excel</el-dropdown-item>
+              <el-dropdown-item
+                @click.native.stop="fileSaver('tableHisSql', 'csv')"
+              >导出为CSV</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </span>
         <el-table
           ref="tableHisSql"
@@ -301,6 +288,7 @@
         closable
         :label="item.title"
         :name="item.name"
+        @click="click_fun($event,index,item.title)"
       >
         <span slot="label">
           {{ tabLabel["res"] }}
@@ -314,17 +302,17 @@
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item
-                @click.native.stop="fileSaver('tableRes1', 'xlsx')"
+                @click.native.stop="fileSaver(item.key, 'xlsx')"
               >导出为Excel</el-dropdown-item>
               <el-dropdown-item
-                @click.native.stop="fileSaver('tableRes1', 'csv')"
+                @click.native.stop="fileSaver('tableRes2', 'csv')"
               >导出为CSV</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </span>
         <el-table
           v-show="firstShow"
-          ref="tableRes1"
+          :ref="item.key"
           v-loading="tableLoading"
           style="padding: 0px; margin-right: 10px"
           :data="item.tableData"
@@ -480,6 +468,11 @@ export default {
   //   // this.getcreateConnec(),
   // },
   methods: {
+    // click_fun: function($event, index, title) { // 点击
+    //   console.log($event)// MouseEvent {isTrusted: true, screenX: 147, screenY: 146, clientX: 147, clientY: 53, …}
+    //   console.log(index)// 1
+    //   console.log(title)// 中间
+    // },
     // sql历史查询
     onSubmit(formInline) {
       sqlhisApi
@@ -527,18 +520,19 @@ export default {
       // console.log(this.editableTabs)
     },
     // 点击tab
-    handleClickTabs(tab) {
-      // console.log(tab)
-      if (tab.name === 'querylog') {
-        // window.scrollTo({
-        //   top: 0,
-        //   behavior: 'smooth'
-        // })
-        // const dom = document.querySelector('#last')
-        // console.log(dom)
-        // dom.scrollIntoView()
-        // document.getElemetnById('last').scrollIntoView(true)
-      }
+    handleClickTabs(tab, event) {
+      console.log(event)
+      console.log(tab)
+      // if (tab.name === 'querylog') {
+      //   // window.scrollTo({
+      //   //   top: 0,
+      //   //   behavior: 'smooth'
+      //   // })
+      //   // const dom = document.querySelector('#last')
+      //   // console.log(dom)
+      //   // dom.scrollIntoView()
+      //   // document.getElemetnById('last').scrollIntoView(true)
+      // }
     },
     removeTab(targetName) {
       if (this.editableTabs.length > 0) {
@@ -678,7 +672,7 @@ export default {
           .split('//')[1]
           .split('/')[1]
       }
-      console.log(this.databaseName)
+      // console.log(this.databaseName)
       // 1、创建链接
       const params1 = {
         config: {
@@ -1044,8 +1038,11 @@ export default {
      * @description: 文件导出
      */
     fileSaver(tableRef, exportType) {
+      console.log(tableRef)
+      console.log(this.$refs[tableRef].$el)
       this.$nextTick(() => {
         const wb = XLSX.utils.table_to_book(this.$refs[tableRef].$el)
+        console.log(wb)
         const wbout = XLSX.write(wb, {
           bookType: exportType,
           bookSST: true,

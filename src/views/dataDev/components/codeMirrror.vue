@@ -164,15 +164,16 @@ export default {
       this.$emit('saveQuery', this.code)
     },
     sqlJobBuild() {
-      console.log('1233    ' + this.code)
-      this.$refs.mycode.text = ''
-      this.code = ''
-      this.editor = ''
-      // this.$router.push({
-      //   path: '/datax/job/JobInfo'
-      // });
-      this.mountCodeMirror()
-      // this.setCode()
+      this.editor.setValue('')
+      // console.log('1233    ' + this.code)
+      // this.$refs.mycode.text = ''
+      // this.code = ''
+      // this.editor = ''
+      // // this.$router.push({
+      // //   path: '/datax/job/JobInfo'
+      // // });
+      // this.mountCodeMirror()
+      // // this.setCode()
     },
 
     mountCodeMirror(code) {
