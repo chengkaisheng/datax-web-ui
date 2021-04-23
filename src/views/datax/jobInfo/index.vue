@@ -611,7 +611,12 @@ rkJggg=="
         </el-tab-pane>
       </el-tabs>
     </div>
-    <el-dialog width="40%" title="重命名" :visible.sync="dialogRenameVisible">
+    <el-dialog
+      class="Boxs"
+      width="40%"
+      title="重命名"
+      :visible.sync="dialogRenameVisible"
+    >
       <span style="margin-left: 20px">名称：</span
       ><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
       <div slot="footer" class="dialog-footer">
@@ -619,50 +624,81 @@ rkJggg=="
         <el-button type="goon" size="small" @click="sureRe"> 确定 </el-button>
       </div>
     </el-dialog>
-    <el-dialog width="40%" title="新建" :visible.sync="dialogNameVisible">
-      <span style="margin-left: 20px">名称：</span
-      ><el-input v-model="allName" style="width: 60%; margin-left: 20px" />
+    <el-dialog width="30%" title="新建" :visible.sync="dialogNameVisible">
+      <span style="margin-left: 50px; font-size: 12px">名称：</span
+      ><el-input
+        v-model="allName"
+        style="width: 60%; height: 30px; margin-left: 20px"
+      />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-        <el-button type="goon" size="small" @click="createFolder">
+        <el-button
+          :disabled="IsButton"
+          type="goon"
+          size="small"
+          @click="createFolder"
+        >
           确定
         </el-button>
       </div>
     </el-dialog>
     <!--新增Hive任务-->
-    <el-dialog width="40%" title="新建" :visible.sync="showHive">
+    <el-dialog width="35%" title="新建任务" :visible.sync="showHive">
       <div class="boxs">
-        <span style="margin-left: 20px; display: inline-block; width: 100px"
+        <span
+          style="
+            margin-left: 20px;
+            font-size: 12px;
+            display: inline-block;
+            width: 100px;
+          "
           >任务中文名：</span
         ><el-input
           size="mini"
           v-model="chineseName"
-          style="width: 60%; margin-left: 20px"
+          style="width: 60%; margin-left: 5px"
         />
       </div>
       <br />
       <div class="boxs">
-        <span style="margin-left: 20px; display: inline-block; width: 100px"
+        <span
+          style="
+            margin-left: 20px;
+            font-size: 12px;
+            display: inline-block;
+            width: 100px;
+          "
           >任务英文名：</span
         ><el-input
           size="mini"
           v-model="englishName"
-          style="width: 60%; margin-left: 20px"
+          style="width: 60%; margin-left: 5px"
         />
       </div>
       <br />
       <div class="boxs">
-        <span style="margin-left: 20px; display: inline-block; width: 100px"
+        <span
+          style="
+            margin-left: 20px;
+            font-size: 12px;
+            display: inline-block;
+            width: 100px;
+          "
           >任务说明：</span
         ><el-input
           size="mini"
           v-model="task"
-          style="width: 60%; margin-left: 20px"
+          style="width: 60%; margin-left: 5px"
         />
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-        <el-button type="goon" size="small" @click="HivecreateHandl()">
+        <el-button
+          :disabled="isbutton"
+          type="goon"
+          size="small"
+          @click="HivecreateHandl()"
+        >
           确定
         </el-button>
       </div>
@@ -808,6 +844,8 @@ export default {
   },
   data() {
     return {
+      IsButton: false,
+      isbutton: false,
       RedDot: false,
       showHive: false,
       chineseName: '',
@@ -915,6 +953,20 @@ export default {
     },
   },
   watch: {
+    allName(val) {
+      if (val === '') {
+        this.IsButton = true
+      } else {
+        this.IsButton = false
+      }
+    },
+    chineseName(val) {
+      if (val === '') {
+        this.isbutton = true
+      } else {
+        this.isbutton = false
+      }
+    },
     '$store.state.taskAdmin.setRedDot'(val) {
       this.RedDot = val
     },
@@ -1081,7 +1133,9 @@ export default {
       current: 1,
       size: 200,
       ascs: 'datasource_name',
-      projectId: this.$store.state.project.currentItem ? this.$store.state.project.currentItem.split('/')[0] : ''
+      projectId: this.$store.state.project.currentItem
+        ? this.$store.state.project.currentItem.split('/')[0]
+        : '',
     }
     jdbcDsList(p).then((response) => {
       const { records } = response
@@ -1434,16 +1488,19 @@ export default {
       this.currentJob = data
       console.log('>>>>>>>>', this.currentJob)
       this.showHive = true
+      this.isbutton = true
     },
 
     // 新增命名文件夹
     showAllName(type) {
       if (typeof type === 'string') {
         this.dialogNameVisible = true
+        this.IsButton = true
         this.currentJob = type
         console.log(type, 'type')
       } else {
         this.dialogNameVisible = true
+        this.IsButton = true
       }
     },
 
@@ -1520,6 +1577,7 @@ export default {
     },
     // HIVE任务新建
     HivecreateHandl() {
+      this.isbutton = true
       const params = {
         name: this.chineseName,
         projectId: this.selectRow.projectId,
@@ -1535,6 +1593,7 @@ export default {
         .then((res) => {
           console.log('pppppp>>>>>>>', res)
           if (res.code === 200) {
+            this.isbutton = false
             this.getDataTree()
             console.log('gettree----->>>', this.getDataTree())
             this.selectRow = {}
@@ -1561,17 +1620,20 @@ export default {
             } else {
               this.$message.warning(res.content)
               this.showHive = false
+              this.isbutton = false
               this.chineseName = ''
               this.englishName = ''
               this.task = ''
             }
           } else {
             this.$message.error(res.content)
+            this.isbutton = false
           }
           console.log(res)
         })
         .catch((err) => {
           console.log(err)
+          this.isbutton = false
           this.chineseName = ''
           this.englishName = ''
           this.task = ''
@@ -1682,9 +1744,7 @@ export default {
               console.log(res, 'content')
               if (res.code === 200) {
                 if (res.content) {
-                  console.log('content----->>>>', res.content.jobParam)
                   this.$store.commit('SETCODE', res.content.jobParam)
-
                   this.detailData = res.content
                   this.getJobDetail(res.content)
                 } else {
@@ -2011,8 +2071,14 @@ export default {
   },
 }
 </script>
-
 <style lang="scss">
+.el-input .el-input__inner {
+  height: 26px;
+}
+.boxs .el-input__inner {
+  width: 266px;
+}
+
 .RedDot {
   display: inline-block;
   height: 8px;
@@ -2027,7 +2093,6 @@ export default {
   // margin: 24px;
   // box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.1);
   // border-radius: 8px;
-
   .lt {
     width: 360px;
     // min-height: 660px;
@@ -2041,20 +2106,17 @@ export default {
     // border-top-left-radius: 8px;
     // border-bottom-left-radius: 8px;
     // border-right: 1px solid #f0eded;
-
     .top {
       height: 42px;
       line-height: 34px;
       margin-bottom: 20px;
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-
       .el-row {
         .el-col {
           i {
             cursor: pointer;
             margin-left: 20px;
           }
-
           // .el-select {
           //   .el-input__inner {
           //     border: none;
@@ -2063,7 +2125,6 @@ export default {
         }
       }
     }
-
     .bottom {
       height: 100%;
       overflow-x: hidden;
@@ -2291,13 +2352,11 @@ export default {
       }
     }
   }
-
   .rg {
     width: 100%;
     height: 100%;
     flex: 1;
     // min-height: 630px;
-
     .el-tabs {
       .el-tabs__content {
         height: calc(100vh - 80px);
@@ -2332,7 +2391,6 @@ export default {
           }
         }
       }
-
       .el-tabs__item.is-active {
         background-color: #ffffff;
         // border-bottom-color:  #3d5eff;
@@ -2359,17 +2417,14 @@ export default {
       }
     }
   }
-
   .rt {
     // overflow-x: scroll;
     overflow-x: hidden;
     overflow-y: hidden;
   }
-
   .input_serach > .el-input__prefix > .el-input__icon {
     line-height: 35px !important;
   }
-
   .el-dialog__body {
     .boxs {
       border: none;
@@ -2398,34 +2453,28 @@ export default {
   }
 }
 </style>
-
 <style scoped>
 .el-bar-tab >>> .el-tabs__nav-scroll {
   background: #f8f8fa;
 }
-
 .el-bar-tab >>> .el-tabs__content {
   height: 660px;
   overflow: scroll;
   padding: 0;
 }
-
 .el-tree >>> .el-tree-node {
   margin: 0px 0px;
 }
-
 .el-bar-tab {
   border: 0;
   box-shadow: 0 0;
 }
-
 .task_icon {
   width: 16px;
   float: left;
   margin-top: 10px;
   margin-right: 8px;
 }
-
 .task_img {
   width: 16px;
   float: left;
@@ -2441,7 +2490,6 @@ export default {
 .top-icon:hover {
   color: #3d5eff;
 }
-
 ::v-deep .el-scrollbar__wrap {
   overflow-x: hidden !important;
 }

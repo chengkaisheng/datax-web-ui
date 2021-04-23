@@ -21,39 +21,32 @@
         :visible.sync="drawer"
         :with-header="true"
       >
-        <div style="padding: 20px">
-          <el-button
-            style="margin-bottom: 20px"
-            type="primary"
-            size="small"
-            @click="
-              () => {
-                isshow = true
-              }
-            "
-            >新增</el-button
-          >
+        <div style="padding-left: 26px">
           <div
+            style="margin-top: 20px"
             class="DraWer"
             v-show="isshow"
             v-for="(itme, index) in arrayData"
             :key="itme.id"
           >
-            <el-input
-              style="widht: 50px"
-              v-show="isshow"
-              v-model="itme.data"
-              size="mini"
-              placeholder="请输入参数"
-            />
-            <el-button
-              @click="Delete(index)"
-              size="small"
-              style="margin-bottom: 20px"
-              type="danger"
-              icon="el-icon-delete"
-              circle
-            ></el-button>
+            <span style="font-size: 14px; color: #ccc">
+              参数：
+              <el-input
+                style="width: 260px"
+                v-show="isshow"
+                v-model="itme.data"
+                size="mini"
+                placeholder="请输入参数"
+              />
+              <el-button
+                @click="Delete(index)"
+                size="small"
+                style="margin-left: 10px"
+                type="danger"
+                icon="el-icon-delete"
+                circle
+              ></el-button>
+            </span>
           </div>
           <div v-show="isshow" style="margin-top: 20px">
             <el-button
@@ -61,7 +54,7 @@
               size="small"
               style="margin-bottom: 20px"
               type="success"
-              >+</el-button
+              >添加</el-button
             >
             <el-button
               size="small"
@@ -70,7 +63,6 @@
               @click="
                 () => {
                   drawer = false
-                  isshow = false
                 }
               "
               >取消</el-button
@@ -143,7 +135,7 @@ export default {
         triggerStatus: '1',
       },
       drawer: false,
-      isshow: false,
+      isshow: true,
       input: '',
       ddd: [],
       code: {},
@@ -174,7 +166,7 @@ export default {
     },
     saveQuery(val) {
       this.SingleData = this.$store.state.taskAdmin.SingleData
-      console.log('ID------>>>>>', this.$store.state.taskAdmin.SingleData)
+      console.log('ID------>>>>>', this.SingleData)
       if (this.$store.state.taskAdmin.GroupId) {
         this.SingleData = this.$store.state.taskAdmin.SingleData
         console.log('ID------>>>>>', this.$store.state.taskAdmin.SingleData)
