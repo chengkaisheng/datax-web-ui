@@ -10,8 +10,7 @@
             placement="top"
           />
         </span>
-        <div id="last" ref="querylog" style="heith:150px" class="Navigation" onload="window.scrollTo(0,document.getElemetnById('last').scrollHeight);">
-          <!-- <pre v-text="editableTabs" /> -->
+        <!-- <div id="last" ref="querylog" style="heith:150px" class="Navigation" onload="window.scrollTo(0,document.getElemetnById('last').scrollHeight);">
           <div v-for="item in editableTabs" :key="item.id">
             <span style="fontWeigth:700">>>{{ new Date() }} <span />;[content] : {{ item.content }}
               <br>
@@ -22,6 +21,24 @@
               <span class="line1">>>[EXCEPTION]:{{ item.error.__typename }}</span>
               <br>
             </span>
+          </div>
+        </div> -->
+        <div id="last" ref="querylog" style="heith:150px" class="Navigation" onload="window.scrollTo(0,document.getElemetnById('last').scrollHeight);">
+          <!-- <pre v-text="editableTabs" /> -->
+          <div v-for="item in loglist" :key="item.id">
+            <div v-if="item.tableData !==''">
+              <span style="fontWeigth:700">>>{{ new Date() }} </span>;[content] : {{ item.content }}
+              <br>
+              <span class="line1">>>[ressult]:{{ item.tableData }}</span>
+              <br>
+            </div>
+            <div v-show="item.error !==''">
+              <span>>>{{ new Date() }}; </span> [content] : <span class="err1">{{ item.content }}</span>
+              <br>
+              <span class="line1">>>[EXCEPTION] : <span class="err1">{{ item.error }}</span></span>
+              <br>
+            </div>
+            <hr>
           </div>
           <!-- <span id="last" style="height:2px;" /> -->
         </div>
@@ -502,12 +519,12 @@ export default {
         tableData: this.tableData,
         secondData: this.secondData,
         columns: this.columns,
-        content: this.content,
-        error: this.err
+        content: this.content
+        // error: this.err
       })
       console.log(this.editableTabs)
       this.tabsActive = newTabName
-      console.log(this.editableTabs)
+      // console.log(this.editableTabs)
     },
     // 点击tab
     handleClickTabs(tab) {
@@ -712,9 +729,6 @@ export default {
 
       console.log(resInitConnection)
       this.content = sql
-      // this.loglsit.push({
-      //   content: this.content
-      // })
       const sqlarr = sql.split(';')
       for (var i = 0; i < sqlarr.length; i++) {
         const sqlOne = sqlarr[i]
@@ -748,9 +762,19 @@ export default {
         while (queryStatus !== 'Finished') {
           resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
           queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
+          console.log(resGetAsyncTaskInfo)
           if (resGetAsyncTaskInfo.data.taskInfo.error) {
             this.err = resGetAsyncTaskInfo.data.taskInfo.error.message
             console.log(resGetAsyncTaskInfo.data.taskInfo.error.message)
+            this.loglist.push({
+              title: '错误sql返回',
+              // tableData: this.tableData,
+              // secondData: this.secondData,
+              // columns: this.columns,
+              content: this.content,
+              error: this.err
+            })
+            console.log(this.loglist, this.loglist)
             this.$message.error(resGetAsyncTaskInfo.data.taskInfo.error)
             this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
             break
@@ -814,6 +838,7 @@ export default {
           return obj
         })
         this.loglist.push({
+          content: this.content,
           tableData: this.tableData
         })
         console.log(this.loglist)

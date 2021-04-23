@@ -122,7 +122,7 @@ export default {
       rightShow: true,
       infoMsg: 0,
       editor: {},
-      SingleData: {},
+      SingleData: {}
     }
   },
   computed: {
@@ -138,7 +138,7 @@ export default {
         this.isdata = true
         return this.datalength + '个'
       }
-    },
+    }
   },
   watch: {
     datalength() {},
