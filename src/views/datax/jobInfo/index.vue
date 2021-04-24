@@ -609,10 +609,8 @@ rkJggg=="
         </el-tab-pane>
       </el-tabs>
     </div>
-    <<<<<<< HEAD
     <el-dialog width="40%" title="重命名" :visible.sync="dialogRenameVisible">
       <span style="margin-left: 20px">名称：</span><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
-      =======
       <el-dialog
         class="Boxs"
         width="40%"
@@ -620,22 +618,18 @@ rkJggg=="
         :visible.sync="dialogRenameVisible"
       >
         <span style="margin-left: 20px">名称：</span><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
-        >>>>>>> 47adfe3dc0a479f20301c236c95578730ac15fbc
         <div slot="footer" class="dialog-footer">
           <el-button size="small" @click="cancelDialog"> 取消 </el-button>
           <el-button type="goon" size="small" @click="sureRe"> 确定 </el-button>
         </div>
       </el-dialog>
-      <<<<<<< HEAD
       <el-dialog width="40%" title="新建" :visible.sync="dialogNameVisible">
         <span style="margin-left: 20px">名称：</span><el-input v-model="allName" style="width: 60%; margin-left: 20px" />
-        =======
         <el-dialog width="30%" title="新建" :visible.sync="dialogNameVisible">
           <span style="margin-left: 50px; font-size: 12px">名称：</span><el-input
             v-model="allName"
             style="width: 60%; height: 30px; margin-left: 20px"
           />
-          >>>>>>> 47adfe3dc0a479f20301c236c95578730ac15fbc
           <div slot="footer" class="dialog-footer">
             <el-button size="small" @click="cancelDialog"> 取消 </el-button>
             <el-button
