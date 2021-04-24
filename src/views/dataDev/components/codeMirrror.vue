@@ -1,16 +1,6 @@
 <template>
   <div>
     <div class="btnContent">
-      <!-- <el-button size="mini" type="goon" :loading="$store.state.graphQL.sqlBtnLoading" @click="fromChild">
-        <i class="el-icon-refresh" /> 运行查询
-      </el-button>
-      <el-button size="mini" @click="saveQuery">
-        <i class="el-icon-copy-document" /> 保存查询
-      </el-button>
-
-      <el-button size="mini" @click="sqlJobBuild">
-        <i class="el-icon-copy-document" /> 构建sql任务
-      </el-button> -->
       <ul>
         <li>
           <a @click="fromChild">
@@ -174,15 +164,16 @@ export default {
       this.$emit('saveQuery', this.code)
     },
     sqlJobBuild() {
-      console.log('1233    ' + this.code)
-      this.$refs.mycode.text = ''
-      this.code = ''
-      this.editor = ''
-      // this.$router.push({
-      //   path: '/datax/job/JobInfo'
-      // });
-      this.mountCodeMirror()
-      // this.setCode()
+      this.editor.setValue('')
+      // console.log('1233    ' + this.code)
+      // this.$refs.mycode.text = ''
+      // this.code = ''
+      // this.editor = ''
+      // // this.$router.push({
+      // //   path: '/datax/job/JobInfo'
+      // // });
+      // this.mountCodeMirror()
+      // // this.setCode()
     },
 
     mountCodeMirror(code) {

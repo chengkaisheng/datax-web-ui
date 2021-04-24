@@ -1,6 +1,6 @@
 <template>
   <div class="table">
-    <el-tabs v-model="tabsActive" type="border-card" @tab-remove="removeTab">
+    <el-tabs v-model="tabsActive" type="border-card" @tab-click="handleClickTabs" @tab-remove="removeTab">
       <el-tab-pane name="querylog">
         <span slot="label">
           {{ tabLabel["querylog"] }}
@@ -10,25 +10,21 @@
             placement="top"
           />
         </span>
-        <table style="heith:300px" class="Navigation">
-          <div v-for="item in editableTabs" :key="index" style="padding:20px" onload="window.scrollTo(0,document.table.scrollHeight);">
-            <span style="fontWeigth:700">>>{{ new Date() }};[content] : {{ item.content }}</span>
-            <br>
-            <span class="line1">>>[ressult]:{{ item.tableData }}</span>
-            <br>
-            <br>
-            <span>>>{{ new Date() }};[content] : {{ err }}</span> <br>
-            <span class="line1">>>[EXCEPTION]:{{ err }}</span>
+        <div id="last" ref="querylog" style="heith:150px" class="Navigation" onload="window.scrollTo(0,document.getElemetnById('last').scrollHeight);">
+          <div v-for="item in loglist" :key="item.id">
+            <div v-if="item.tableData">
+              <span style="fontWeigth:700">>>{{ new Date() }} </span>;[content] : <span>{{ item.content }}</span>
+              <span class="line1">>>[ressult]:{{ item.tableData }}</span>
+              <br>
+            </div>
+            <div v-if="item.error">
+              <span>>>{{ new Date() }}; </span> [content] : <span class="err1">{{ item.content }}</span>
+              <span class="line1">>>[EXCEPTION] : <span class="err1">{{ item.error }}</span></span>
+              <br>
+            </div>
           </div>
-        </table>
-        <!-- <span />>>{{ new Date() }};[content] : {{ content }} <br>
-        <span class="line1">>>[ressult]:{{ tableData }}</span>
-        <br>
-        <br>
-        <span />>>{{ new Date() }};[content] : {{ content }} <br>
-        <span class="line1">>>[EXCEPTION]:{{ tableData }}</span> -->
-
-        <!-- {{ tableData }} -->
+          <!-- <span id="last" style="height:2px;" /> -->
+        </div>
       </el-tab-pane>
 
       <el-tab-pane name="hisSql">
@@ -181,6 +177,23 @@
       <el-tab-pane name="asynctask">
         <span slot="label">
           {{ tabLabel["asynctask"] }}
+          <el-dropdown
+            v-if="tabsActive === 'asynctask' && sqlHistoryData1.length > 0"
+            style="margin-left: 10px"
+            placement="top"
+          >
+            <span class="el-dropdown-link">
+              <i class="el-icon-more" />
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item
+                @click.native.stop="fileSaver('tableHisSql', 'xlsx')"
+              >导出为Excel</el-dropdown-item>
+              <el-dropdown-item
+                @click.native.stop="fileSaver('tableHisSql', 'csv')"
+              >导出为CSV</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </span>
         <el-table
           ref="tableHisSql"
@@ -275,6 +288,7 @@
         closable
         :label="item.title"
         :name="item.name"
+        @click="click_fun($event,index,item.title)"
       >
         <span slot="label">
           {{ tabLabel["res"] }}
@@ -288,17 +302,17 @@
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item
-                @click.native.stop="fileSaver('tableRes1', 'xlsx')"
+                @click.native.stop="fileSaver(item.key, 'xlsx')"
               >导出为Excel</el-dropdown-item>
               <el-dropdown-item
-                @click.native.stop="fileSaver('tableRes1', 'csv')"
+                @click.native.stop="fileSaver('tableRes2', 'csv')"
               >导出为CSV</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </span>
         <el-table
           v-show="firstShow"
-          ref="tableRes1"
+          :ref="item.key"
           v-loading="tableLoading"
           style="padding: 0px; margin-right: 10px"
           :data="item.tableData"
@@ -405,7 +419,9 @@ export default {
         sqlContent: ''
       },
       datasourcelist: this.$store.state.taskAdmin.projectArray,
-      content: ''
+      content: '',
+      err: '',
+      loglist: []
     }
   },
   computed: {
@@ -447,11 +463,16 @@ export default {
       }
     }
   },
-  created: {
-    //  this.datasourcelist = this.$store.state.taskAdmin.projectArraythis.$store.state.taskAdmin.projectArray
-    // this.getcreateConnec(),
-  },
+  // created: {
+  //   //  this.datasourcelist = this.$store.state.taskAdmin.projectArraythis.$store.state.taskAdmin.projectArray
+  //   // this.getcreateConnec(),
+  // },
   methods: {
+    // click_fun: function($event, index, title) { // 点击
+    //   console.log($event)// MouseEvent {isTrusted: true, screenX: 147, screenY: 146, clientX: 147, clientY: 53, …}
+    //   console.log(index)// 1
+    //   console.log(title)// 中间
+    // },
     // sql历史查询
     onSubmit(formInline) {
       sqlhisApi
@@ -492,10 +513,26 @@ export default {
         secondData: this.secondData,
         columns: this.columns,
         content: this.content
+        // error: this.err
       })
       console.log(this.editableTabs)
       this.tabsActive = newTabName
-      console.log(this.editableTabs)
+      // console.log(this.editableTabs)
+    },
+    // 点击tab
+    handleClickTabs(tab, event) {
+      console.log(event)
+      console.log(tab)
+      // if (tab.name === 'querylog') {
+      //   // window.scrollTo({
+      //   //   top: 0,
+      //   //   behavior: 'smooth'
+      //   // })
+      //   // const dom = document.querySelector('#last')
+      //   // console.log(dom)
+      //   // dom.scrollIntoView()
+      //   // document.getElemetnById('last').scrollIntoView(true)
+      // }
     },
     removeTab(targetName) {
       if (this.editableTabs.length > 0) {
@@ -635,7 +672,7 @@ export default {
           .split('//')[1]
           .split('/')[1]
       }
-      console.log(this.databaseName)
+      // console.log(this.databaseName)
       // 1、创建链接
       const params1 = {
         config: {
@@ -719,7 +756,19 @@ export default {
         while (queryStatus !== 'Finished') {
           resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
           queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
+          console.log(resGetAsyncTaskInfo)
           if (resGetAsyncTaskInfo.data.taskInfo.error) {
+            this.err = resGetAsyncTaskInfo.data.taskInfo.error.message
+            console.log(resGetAsyncTaskInfo.data.taskInfo.error.message)
+            this.loglist.push({
+              title: '错误sql返回',
+              // tableData: this.tableData,
+              // secondData: this.secondData,
+              // columns: this.columns,
+              content: this.content,
+              error: this.err
+            })
+            console.log(this.loglist, this.loglist)
             this.$message.error(resGetAsyncTaskInfo.data.taskInfo.error)
             this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
             break
@@ -731,7 +780,12 @@ export default {
         }
         const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
           params6
-        )
+        ).catch((error) => {
+          console.log(error)
+          // this.err = error
+          // this.loglist.push({ err: this.err })
+        })
+        console.log(resGetSqlExecuteTaskResults)
         if (resGetSqlExecuteTaskResults) {
           this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
           console.log(
@@ -769,6 +823,7 @@ export default {
         const rows =
         resGetSqlExecuteTaskResults.data.result.results[0].resultSet.rows
         this.columns = columns
+
         this.tableData = rows.map((ele) => {
           const obj = {}
           ele.forEach((fieldVal, index) => {
@@ -776,6 +831,11 @@ export default {
           })
           return obj
         })
+        this.loglist.push({
+          content: this.content,
+          tableData: this.tableData
+        })
+        console.log(this.loglist)
         this.autoSaveSql(sql)
         this.tableLoading = false
         this.firstShow = true
@@ -978,8 +1038,11 @@ export default {
      * @description: 文件导出
      */
     fileSaver(tableRef, exportType) {
+      console.log(tableRef)
+      console.log(this.$refs[tableRef].$el)
       this.$nextTick(() => {
         const wb = XLSX.utils.table_to_book(this.$refs[tableRef].$el)
+        console.log(wb)
         const wbout = XLSX.write(wb, {
           bookType: exportType,
           bookSST: true,
@@ -1088,7 +1151,7 @@ export default {
 .el-tabs--border-card > .el-tabs__header {
   border-bottom: none;
 }
-.line1{
+.Navigation .line1{
 	overflow : hidden;
   text-overflow: ellipsis;//当对象内文本溢出时显示省略标记
   display: -webkit-box;
@@ -1096,10 +1159,12 @@ export default {
   -webkit-box-orient: vertical;
 }
 .Navigation {
-  padding: 10px;
-  height: 30px;
+  padding: 20px;
+  // height: 30px;
+  overflow: scroll;
   width: 100%;
-  background: #f5f7fa;
+  background: #fff;
+  height: calc(50vh - 157px);
 }
 .Navigation .color {
   font-weight: 400px;
@@ -1115,6 +1180,9 @@ export default {
   height: 30px;
   background: #fff;
 }
+.Navigation .err1{
+    color: red;
+  }
 .Navigation span {
   font-weight: 400px;
   cursor: pointer;
@@ -1127,6 +1195,7 @@ export default {
   // width: 150px;
   // height: 30px;
   background: #f5f7fa;
+
 }
 .logs {
   width: 100%;

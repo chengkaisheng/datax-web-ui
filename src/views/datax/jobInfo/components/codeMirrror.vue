@@ -66,7 +66,8 @@
           v-show="ReplaceBox"
           class="ReplaceBox"
         >
-          <input class="inputs" type="text" /> <i class="el-icon-refresh"></i>
+          <input v-model="replaceData" class="inputs" type="text" />
+          <i @click="ReplaceData" class="el-icon-refresh"></i>
         </span>
       </div>
     </div>
@@ -96,6 +97,7 @@ export default {
     return {
       datalength: false,
       isdata: false,
+      replaceData: '',
       lookupdata: '',
       ReplaceBox: false,
       lookup: false,
@@ -128,20 +130,16 @@ export default {
   computed: {
     DataMerging() {
       if (!this.code) {
-        return this.notes + '' || this.code
+        return this.notes + (this.code || '')
       } else if (this.code) {
         return this.code
       }
     },
-    DataLength() {
-      if (this.datalenght) {
-        this.isdata = true
-        return this.datalength + '个'
-      }
-    },
   },
   watch: {
-    datalength() {},
+    '$store.state.taskAdmin.setcode': function () {
+      this.code = this.$store.state.taskAdmin.setcode //你需要执行的代码
+    },
     code(val) {
       this.$store.commit('SETREDDOT', true)
       if (this.$store.state.taskAdmin.setcode !== val) {
@@ -210,14 +208,40 @@ export default {
   destroyed() {},
 
   methods: {
+    //替换
+    ReplaceData() {
+      const reg = new RegExp(this.lookupdata, 'g')
+      console.log('1', this.code)
+      const Code = this.code.replace(reg, this.replaceData)
+      this.editor.setValue(sqlFormatter.format(Code))
+      console.log('2', this.code)
+    },
+    //节流函数
+    throttle(fn, delay = 2000) {
+      let timer = null
+      let firstTime = true
+
+      return function (...args) {
+        if (firstTime) {
+          // 第一次加载
+          fn.apply(this, args)
+          return (firstTime = false)
+        }
+        if (timer) {
+          // 定时器正在执行中，跳过
+          return
+        }
+        timer = setTimeout(() => {
+          clearTimeout(timer)
+          timer = null
+          fn.apply(this, args)
+        }, delay)
+      }
+    },
+    //点击查找
     LookUp() {
-      const str = this.code
-      const reg = eval('/' + `${this.lookupdata}` + '/ig')
-      console.log(reg)
-      console.log(this.code.match(reg).length)
-      this.datalenght = this.code.match(reg).length
-      this.code.replace(this.code.match(reg).lenght, 2)
-      console.log(reg.exec(this.code))
+      const reg = new RegExp(this.lookupdata, 'g')
+      console.log(this.code)
     },
     //查找按键事件
     handelkeydown(event) {
@@ -225,14 +249,14 @@ export default {
       const e = event || window.event || arguments.callee.caller.arguments[0]
       if (e.ctrlKey && e.keyCode === 70) {
         _this.lookup = true
+        e.preventDefault()
+      } else if (e.ctrlKey && e.keyCode === 83) {
+        _this.throttle(_this.saveQuery(), 2000)
+        e.preventDefault()
       }
     },
-    chooseSql() {
-      console.log(window.getSelection())
-    },
-    SelectSQL(instance) {
-      console.log(instance, '.....................')
-    },
+    chooseSql() {},
+    SelectSQL(instance) {},
     /**
      * @description: 运行查询
      */
@@ -245,10 +269,10 @@ export default {
     /**
      * @description: 保存查询
      */
-    saveQuery(val) {
+    saveQuery() {
       this.TIPS = false
-      console.log('保存查询')
       this.$emit('saveQuery', this.code)
+      console.log('code---=====', this.code)
     },
     sqlJobBuild() {
       // this.$route.push('/datax/job/JobInfo')
@@ -384,7 +408,6 @@ export default {
 
       editor.on('change', function (editor, change) {
         // 触发autocomplete
-        console.log(change)
         if (change.origin === '+input') {
           var text = change.text
           if (
@@ -404,9 +427,6 @@ export default {
     /**
      * @description: 回显sql
      */
-    setCode(code) {
-      this.code = code
-    },
   },
 }
 </script>
