@@ -609,229 +609,200 @@ rkJggg=="
         </el-tab-pane>
       </el-tabs>
     </div>
-<<<<<<< HEAD
+    <<<<<<< HEAD
     <el-dialog width="40%" title="重命名" :visible.sync="dialogRenameVisible">
       <span style="margin-left: 20px">名称：</span><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
-=======
-    <el-dialog
-      class="Boxs"
-      width="40%"
-      title="重命名"
-      :visible.sync="dialogRenameVisible"
-    >
-      <span style="margin-left: 20px">名称：</span
-      ><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
->>>>>>> 47adfe3dc0a479f20301c236c95578730ac15fbc
-      <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-        <el-button type="goon" size="small" @click="sureRe"> 确定 </el-button>
-      </div>
-    </el-dialog>
-<<<<<<< HEAD
-    <el-dialog width="40%" title="新建" :visible.sync="dialogNameVisible">
-      <span style="margin-left: 20px">名称：</span><el-input v-model="allName" style="width: 60%; margin-left: 20px" />
-=======
-    <el-dialog width="30%" title="新建" :visible.sync="dialogNameVisible">
-      <span style="margin-left: 50px; font-size: 12px">名称：</span
-      ><el-input
-        v-model="allName"
-        style="width: 60%; height: 30px; margin-left: 20px"
-      />
->>>>>>> 47adfe3dc0a479f20301c236c95578730ac15fbc
-      <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-        <el-button
-          :disabled="IsButton"
-          type="goon"
-          size="small"
-          @click="createFolder"
-        >
-          确定
-        </el-button>
-      </div>
-    </el-dialog>
-    <!--新增Hive任务-->
-    <el-dialog width="35%" title="新建任务" :visible.sync="showHive">
-      <div class="boxs">
-        <span
-<<<<<<< HEAD
-          style="margin-left: 20px; display: inline-block; width: 100px"
-        >任务中文名：</span><el-input
-          v-model="chineseName"
-          size="mini"
-          style="width: 60%; margin-left: 20px"
-=======
-          style="
-            margin-left: 20px;
-            font-size: 12px;
-            display: inline-block;
-            width: 100px;
-          "
-          >任务中文名：</span
-        ><el-input
-          size="mini"
-          v-model="chineseName"
-          style="width: 60%; margin-left: 5px"
->>>>>>> 47adfe3dc0a479f20301c236c95578730ac15fbc
-        />
-      </div>
-      <br>
-      <div class="boxs">
-        <span
-<<<<<<< HEAD
-          style="margin-left: 20px; display: inline-block; width: 100px"
-        >任务英文名：</span><el-input
-          v-model="englishName"
-          size="mini"
-          style="width: 60%; margin-left: 20px"
-=======
-          style="
-            margin-left: 20px;
-            font-size: 12px;
-            display: inline-block;
-            width: 100px;
-          "
-          >任务英文名：</span
-        ><el-input
-          size="mini"
-          v-model="englishName"
-          style="width: 60%; margin-left: 5px"
->>>>>>> 47adfe3dc0a479f20301c236c95578730ac15fbc
-        />
-      </div>
-      <br>
-      <div class="boxs">
-        <span
-<<<<<<< HEAD
-          style="margin-left: 20px; display: inline-block; width: 100px"
-        >任务说明：</span><el-input
-          v-model="task"
-          size="mini"
-          style="width: 60%; margin-left: 20px"
-=======
-          style="
-            margin-left: 20px;
-            font-size: 12px;
-            display: inline-block;
-            width: 100px;
-          "
-          >任务说明：</span
-        ><el-input
-          size="mini"
-          v-model="task"
-          style="width: 60%; margin-left: 5px"
->>>>>>> 47adfe3dc0a479f20301c236c95578730ac15fbc
-        />
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-        <el-button
-          :disabled="isbutton"
-          type="goon"
-          size="small"
-          @click="HivecreateHandl()"
-        >
-          确定
-        </el-button>
-      </div>
-    </el-dialog>
-
-    <!-- 查看文件版本 -->
-    <el-dialog
-      width="60%"
-      title="查看文件版本信息"
-      :visible.sync="dialogVersionVisible"
-    >
-      <el-table
-        :data="versionList"
-        height="250"
-        border
-        :header-cell-style="{ background: '#F5F7FA', color: '#606266' }"
-        style="width: 100%"
-        @selection-change="handleSelectionChange"
+      =======
+      <el-dialog
+        class="Boxs"
+        width="40%"
+        title="重命名"
+        :visible.sync="dialogRenameVisible"
       >
-        <!-- <el-table-column
+        <span style="margin-left: 20px">名称：</span><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
+        >>>>>>> 47adfe3dc0a479f20301c236c95578730ac15fbc
+        <div slot="footer" class="dialog-footer">
+          <el-button size="small" @click="cancelDialog"> 取消 </el-button>
+          <el-button type="goon" size="small" @click="sureRe"> 确定 </el-button>
+        </div>
+      </el-dialog>
+      <<<<<<< HEAD
+      <el-dialog width="40%" title="新建" :visible.sync="dialogNameVisible">
+        <span style="margin-left: 20px">名称：</span><el-input v-model="allName" style="width: 60%; margin-left: 20px" />
+        =======
+        <el-dialog width="30%" title="新建" :visible.sync="dialogNameVisible">
+          <span style="margin-left: 50px; font-size: 12px">名称：</span><el-input
+            v-model="allName"
+            style="width: 60%; height: 30px; margin-left: 20px"
+          />
+          >>>>>>> 47adfe3dc0a479f20301c236c95578730ac15fbc
+          <div slot="footer" class="dialog-footer">
+            <el-button size="small" @click="cancelDialog"> 取消 </el-button>
+            <el-button
+              :disabled="IsButton"
+              type="goon"
+              size="small"
+              @click="createFolder"
+            >
+              确定
+            </el-button>
+          </div>
+        </el-dialog>
+        <!--新增Hive任务-->
+        <el-dialog width="35%" title="新建任务" :visible.sync="showHive">
+          <div class="boxs">
+            <span
+              style="
+            margin-left: 20px;
+            font-size: 12px;
+            display: inline-block;
+            width: 100px;
+          "
+            >任务中文名：</span><el-input
+              v-model="chineseName"
+              size="mini"
+              style="width: 60%; margin-left: 5px"
+            />
+          </div>
+          <br>
+          <div class="boxs">
+            <span
+              style="
+            margin-left: 20px;
+            font-size: 12px;
+            display: inline-block;
+            width: 100px;
+          "
+            >任务英文名：</span><el-input
+              v-model="englishName"
+              size="mini"
+              style="width: 60%; margin-left: 5px"
+            />
+          </div>
+          <br>
+          <div class="boxs">
+            <span
+              style="
+            margin-left: 20px;
+            font-size: 12px;
+            display: inline-block;
+            width: 100px;
+          "
+            >任务说明：</span><el-input
+              v-model="task"
+              size="mini"
+              style="width: 60%; margin-left: 5px"
+            />
+          </div>
+          <div slot="footer" class="dialog-footer">
+            <el-button size="small" @click="cancelDialog"> 取消 </el-button>
+            <el-button
+              :disabled="isbutton"
+              type="goon"
+              size="small"
+              @click="HivecreateHandl()"
+            >
+              确定
+            </el-button>
+          </div>
+        </el-dialog>
+
+        <!-- 查看文件版本 -->
+        <el-dialog
+          width="60%"
+          title="查看文件版本信息"
+          :visible.sync="dialogVersionVisible"
+        >
+          <el-table
+            :data="versionList"
+            height="250"
+            border
+            :header-cell-style="{ background: '#F5F7FA', color: '#606266' }"
+            style="width: 100%"
+            @selection-change="handleSelectionChange"
+          >
+            <!-- <el-table-column
           type="selection"
           width="55"
         /> -->
-        <el-table-column prop="jobDesc" label="任务名称" />
-        <el-table-column prop="jobType" label="任务类型" />
-        <el-table-column prop="versionTime" label="版本创建时间" width="200" />
-        <el-table-column label="操作" width="100">
-          <template v-slot:default="{ row }">
-            <el-popover
-              placement="right"
-              title="代码"
-              width="400"
-              trigger="click"
-            >
-              <div
-                class="code"
-                style="
+            <el-table-column prop="jobDesc" label="任务名称" />
+            <el-table-column prop="jobType" label="任务类型" />
+            <el-table-column prop="versionTime" label="版本创建时间" width="200" />
+            <el-table-column label="操作" width="100">
+              <template v-slot:default="{ row }">
+                <el-popover
+                  placement="right"
+                  title="代码"
+                  width="400"
+                  trigger="click"
+                >
+                  <div
+                    class="code"
+                    style="
                   height: 300px;
                   background-color: #eee;
                   border-radius: 4px;
                 "
-              >
-                <pre style="white-space: normal">{{ row.jobJson }}</pre>
-              </div>
-              <el-button
-                slot="reference"
-                type="text"
-                size="small"
-                @click="showCode(row)"
-              >代码</el-button>
-            </el-popover>
-            <el-button
-              type="text"
-              size="small"
-              @click="rollback(row)"
-            >回滚</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div slot="footer" class="dialog-footer">
-        <!-- <el-button size="small" @click="compare">
+                  >
+                    <pre style="white-space: normal">{{ row.jobJson }}</pre>
+                  </div>
+                  <el-button
+                    slot="reference"
+                    type="text"
+                    size="small"
+                    @click="showCode(row)"
+                  >代码</el-button>
+                </el-popover>
+                <el-button
+                  type="text"
+                  size="small"
+                  @click="rollback(row)"
+                >回滚</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <div slot="footer" class="dialog-footer">
+            <!-- <el-button size="small" @click="compare">
           对比
         </el-button> -->
-        <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-      </div>
-    </el-dialog>
-    <!-- 查看文件信息 -->
-    <el-dialog width="40%" title="查看" :visible.sync="dialogViewVisible">
-      <div class="box">
-        <el-row :gutter="20">
-          <el-col :span="8" style="margin-top: 0">
-            <span>名称:</span>
-          </el-col>
-          <el-col :span="16" style="margin-top: 0">
-            {{ detailData.jobDesc }}
-          </el-col>
-          <el-col :span="8">
-            <span>任务类型:</span>
-          </el-col>
-          <el-col :span="16">
-            {{ $store.state.taskAdmin.allTabType[detailData.jobType] }}
-          </el-col>
-          <el-col :span="8">
-            <span>创建日期:</span>
-          </el-col>
-          <el-col :span="16">
-            {{ detailData.addTime }}
-          </el-col>
-          <el-col :span="8">
-            <span>最近修改日期:</span>
-          </el-col>
-          <el-col :span="16">
-            {{ detailData.updateTime }}
-          </el-col>
-        </el-row>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-      </div>
-    </el-dialog>
-  </div>
+            <el-button size="small" @click="cancelDialog"> 取消 </el-button>
+          </div>
+        </el-dialog>
+        <!-- 查看文件信息 -->
+        <el-dialog width="40%" title="查看" :visible.sync="dialogViewVisible">
+          <div class="box">
+            <el-row :gutter="20">
+              <el-col :span="8" style="margin-top: 0">
+                <span>名称:</span>
+              </el-col>
+              <el-col :span="16" style="margin-top: 0">
+                {{ detailData.jobDesc }}
+              </el-col>
+              <el-col :span="8">
+                <span>任务类型:</span>
+              </el-col>
+              <el-col :span="16">
+                {{ $store.state.taskAdmin.allTabType[detailData.jobType] }}
+              </el-col>
+              <el-col :span="8">
+                <span>创建日期:</span>
+              </el-col>
+              <el-col :span="16">
+                {{ detailData.addTime }}
+              </el-col>
+              <el-col :span="8">
+                <span>最近修改日期:</span>
+              </el-col>
+              <el-col :span="16">
+                {{ detailData.updateTime }}
+              </el-col>
+            </el-row>
+          </div>
+          <div slot="footer" class="dialog-footer">
+            <el-button size="small" @click="cancelDialog"> 取消 </el-button>
+          </div>
+        </el-dialog>
+      </el-dialog></el-dialog></div>
 </template>
 
 <script>
@@ -1199,7 +1170,7 @@ export default {
       ascs: 'datasource_name',
       projectId: this.$store.state.project.currentItem
         ? this.$store.state.project.currentItem.split('/')[0]
-        : '',
+        : ''
     }
     jdbcDsList(p).then((response) => {
       const { records } = response
