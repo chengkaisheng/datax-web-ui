@@ -610,16 +610,11 @@ rkJggg=="
         <el-button type="goon" size="small" @click="sureRe"> 确定 </el-button>
       </div>
     </el-dialog>
-<<<<<<< HEAD
     <el-dialog width="30%" title="新建" :visible.sync="dialogNameVisible">
       <span style="margin-left: 50px; font-size: 12px">名称：</span><el-input
         v-model="allName"
         style="width: 60%; height: 30px; margin-left: 20px"
       />
-=======
-    <el-dialog width="40%" title="新建" :visible.sync="dialogNameVisible">
-      <span style="margin-left: 20px">名称：</span><el-input v-model="allName" style="width: 60%; margin-left: 20px" />
->>>>>>> 40b597c1ab144c025932a10dc5d201974e5ad396
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelDialog"> 取消 </el-button>
         <el-button type="goon" size="small" @click="createFolder">
@@ -631,7 +626,6 @@ rkJggg=="
     <el-dialog width="40%" title="新建" :visible.sync="showHive">
       <div class="boxs">
         <span
-<<<<<<< HEAD
           style="
             margin-left: 20px;
             font-size: 12px;
@@ -642,18 +636,11 @@ rkJggg=="
           v-model="chineseName"
           size="mini"
           style="width: 60%; margin-left: 5px"
-=======
-          style="margin-left: 20px; display: inline-block; width: 100px"
-        >任务中文名：</span><el-input
-          v-model="chineseName"
-          style="width: 60%; margin-left: 20px"
->>>>>>> 40b597c1ab144c025932a10dc5d201974e5ad396
         />
       </div>
       <br>
       <div class="boxs">
         <span
-<<<<<<< HEAD
           style="
             margin-left: 20px;
             font-size: 12px;
@@ -664,18 +651,11 @@ rkJggg=="
           v-model="englishName"
           size="mini"
           style="width: 60%; margin-left: 5px"
-=======
-          style="margin-left: 20px; display: inline-block; width: 100px"
-        >任务英文名：</span><el-input
-          v-model="englishName"
-          style="width: 60%; margin-left: 20px"
->>>>>>> 40b597c1ab144c025932a10dc5d201974e5ad396
         />
       </div>
       <br>
       <div class="boxs">
         <span
-<<<<<<< HEAD
           style="
             margin-left: 20px;
             font-size: 12px;
@@ -687,10 +667,6 @@ rkJggg=="
           size="mini"
           style="width: 60%; margin-left: 5px"
         />
-=======
-          style="margin-left: 20px; display: inline-block; width: 100px"
-        >任务说明：</span><el-input v-model="task" style="width: 60%; margin-left: 20px" />
->>>>>>> 40b597c1ab144c025932a10dc5d201974e5ad396
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelDialog"> 取消 </el-button>
@@ -1027,10 +1003,6 @@ export default {
         }
       }
     },
-<<<<<<< HEAD
-
-=======
->>>>>>> 40b597c1ab144c025932a10dc5d201974e5ad396
     search: function(val) {
       this.$refs.tree.filter(val)
     }
@@ -1045,8 +1017,6 @@ export default {
 
     // 关闭浏览器右击默认菜单
     myChartContainer.oncontextmenu = function(e) {
-<<<<<<< HEAD
-=======
       return false
     }
     const _this = this
@@ -1058,7 +1028,6 @@ export default {
         console.log(_this.Ycoords, 'this')
       }
       console.log(menu[1].style.top)
->>>>>>> 40b597c1ab144c025932a10dc5d201974e5ad396
       return false
     }
 
@@ -1073,10 +1042,6 @@ export default {
     for (var i = 0; i < d.length; i++) {
       d[i].style.display = 'none'
     }
-<<<<<<< HEAD
-
-=======
->>>>>>> 40b597c1ab144c025932a10dc5d201974e5ad396
     a.onmouseover = function() {
       for (var i = 0; i < b.length; i++) {
         b[i].style.display = 'block'
@@ -1087,10 +1052,6 @@ export default {
         d[i].style.display = 'block'
       }
     }
-<<<<<<< HEAD
-
-=======
->>>>>>> 40b597c1ab144c025932a10dc5d201974e5ad396
     a.onmouseout = function() {
       for (var i = 0; i < b.length; i++) {
         b[i].style.display = 'none'
@@ -1101,10 +1062,6 @@ export default {
         d[i].style.display = 'none'
       }
     }
-<<<<<<< HEAD
-
-=======
->>>>>>> 40b597c1ab144c025932a10dc5d201974e5ad396
     b.onmouseover = function() {
       for (var i = 0; i < b.length; i++) {
         b[i].style.display = 'block'
@@ -1131,13 +1088,9 @@ export default {
       current: 1,
       size: 200,
       ascs: 'datasource_name',
-<<<<<<< HEAD
       projectId: this.$store.state.project.currentItem
         ? this.$store.state.project.currentItem.split('/')[0]
         : ''
-=======
-      projectId: this.$store.state.project.currentItem ? this.$store.state.project.currentItem.split('/')[0] : ''
->>>>>>> 40b597c1ab144c025932a10dc5d201974e5ad396
     }
     jdbcDsList(p).then((response) => {
       const { records } = response
