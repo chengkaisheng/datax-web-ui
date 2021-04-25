@@ -224,10 +224,7 @@ rkJggg=="
                     <svg-icon class="svg_icon" icon-class="COMPUTE" />计算任务
                   </a>
                   <a id="level3" href="javascript:">
-                    <svg-icon
-                      class="svg_icon"
-                      icon-class="NORMAL"
-                    />数据同步任务
+                    <svg-icon class="svg_icon" icon-class="NORMAL" />数据同步任务
                     <i class="el-icon-arrow-right" />
                     <vue-context-menu
                       class="right-menu2"
@@ -236,8 +233,7 @@ rkJggg=="
                       style="display: none"
                     >
                       <a href="javascript:" @click="showAllName('NORMAL')">
-                        <svg-icon class="svg_icon" icon-class="NORMAL" />
-                        普通任务
+                        <svg-icon class="svg_icon" icon-class="NORMAL" /> 普通任务
                       </a>
                       <a href="javascript:" @click="showAllName('IMPORT')">
                         <svg
@@ -280,10 +276,7 @@ rkJggg=="
                         引入任务
                       </a>
                       <a href="javascript:" @click="showAllName('EXPORT')">
-                        <svg-icon
-                          class="svg_icon"
-                          icon-class="EXPORT"
-                        />导出任务
+                        <svg-icon class="svg_icon" icon-class="EXPORT" />导出任务
                       </a>
                     </vue-context-menu>
                   </a>
@@ -449,10 +442,6 @@ rkJggg=="
               />
             </svg>
             {{ item.title }}
-            <!-- <span
-              v-if="selectRow.jobId == jobDetailIdx ? true : false"
-              class="RedDot"
-            ></span> -->
           </span>
           <JobDetailPro
             v-if="
@@ -611,192 +600,149 @@ rkJggg=="
     </div>
     <el-dialog width="40%" title="重命名" :visible.sync="dialogRenameVisible">
       <span style="margin-left: 20px">名称：</span><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
-      <el-dialog
-        class="Boxs"
-        width="40%"
-        title="重命名"
-        :visible.sync="dialogRenameVisible"
-      >
-        <span style="margin-left: 20px">名称：</span><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
-        <div slot="footer" class="dialog-footer">
-          <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-          <el-button type="goon" size="small" @click="sureRe"> 确定 </el-button>
-        </div>
-      </el-dialog>
-      <el-dialog width="40%" title="新建" :visible.sync="dialogNameVisible">
-        <span style="margin-left: 20px">名称：</span><el-input v-model="allName" style="width: 60%; margin-left: 20px" />
-        <el-dialog width="30%" title="新建" :visible.sync="dialogNameVisible">
-          <span style="margin-left: 50px; font-size: 12px">名称：</span><el-input
-            v-model="allName"
-            style="width: 60%; height: 30px; margin-left: 20px"
-          />
-          <div slot="footer" class="dialog-footer">
-            <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-            <el-button
-              :disabled="IsButton"
-              type="goon"
-              size="small"
-              @click="createFolder"
-            >
-              确定
-            </el-button>
-          </div>
-        </el-dialog>
-        <!--新增Hive任务-->
-        <el-dialog width="35%" title="新建任务" :visible.sync="showHive">
-          <div class="boxs">
-            <span
-              style="
-            margin-left: 20px;
-            font-size: 12px;
-            display: inline-block;
-            width: 100px;
-          "
-            >任务中文名：</span><el-input
-              v-model="chineseName"
-              size="mini"
-              style="width: 60%; margin-left: 5px"
-            />
-          </div>
-          <br>
-          <div class="boxs">
-            <span
-              style="
-            margin-left: 20px;
-            font-size: 12px;
-            display: inline-block;
-            width: 100px;
-          "
-            >任务英文名：</span><el-input
-              v-model="englishName"
-              size="mini"
-              style="width: 60%; margin-left: 5px"
-            />
-          </div>
-          <br>
-          <div class="boxs">
-            <span
-              style="
-            margin-left: 20px;
-            font-size: 12px;
-            display: inline-block;
-            width: 100px;
-          "
-            >任务说明：</span><el-input
-              v-model="task"
-              size="mini"
-              style="width: 60%; margin-left: 5px"
-            />
-          </div>
-          <div slot="footer" class="dialog-footer">
-            <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-            <el-button
-              :disabled="isbutton"
-              type="goon"
-              size="small"
-              @click="HivecreateHandl()"
-            >
-              确定
-            </el-button>
-          </div>
-        </el-dialog>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="cancelDialog"> 取消 </el-button>
+        <el-button type="goon" size="small" @click="sureRe"> 确定 </el-button>
+      </div>
+    </el-dialog>
+    <el-dialog width="40%" title="新建" :visible.sync="dialogNameVisible">
+      <span style="margin-left: 20px">名称：</span><el-input v-model="allName" style="width: 60%; margin-left: 20px" />
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="cancelDialog"> 取消 </el-button>
+        <el-button type="goon" size="small" @click="createFolder">
+          确定
+        </el-button>
+      </div>
+    </el-dialog>
+    <!--新增Hive任务-->
+    <el-dialog width="40%" title="新建" :visible.sync="showHive">
+      <div class="boxs">
+        <span
+          style="margin-left: 20px; display: inline-block; width: 100px"
+        >任务中文名：</span><el-input
+          v-model="chineseName"
+          style="width: 60%; margin-left: 20px"
+        />
+      </div>
+      <br>
+      <div class="boxs">
+        <span
+          style="margin-left: 20px; display: inline-block; width: 100px"
+        >任务英文名：</span><el-input
+          v-model="englishName"
+          style="width: 60%; margin-left: 20px"
+        />
+      </div>
+      <br>
+      <div class="boxs">
+        <span
+          style="margin-left: 20px; display: inline-block; width: 100px"
+        >任务说明：</span><el-input v-model="task" style="width: 60%; margin-left: 20px" />
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="cancelDialog"> 取消 </el-button>
+        <el-button type="goon" size="small" @click="HivecreateHandl()">
+          确定
+        </el-button>
+      </div>
+    </el-dialog>
 
-        <!-- 查看文件版本 -->
-        <el-dialog
-          width="60%"
-          title="查看文件版本信息"
-          :visible.sync="dialogVersionVisible"
-        >
-          <el-table
-            :data="versionList"
-            height="250"
-            border
-            :header-cell-style="{ background: '#F5F7FA', color: '#606266' }"
-            style="width: 100%"
-            @selection-change="handleSelectionChange"
-          >
-            <!-- <el-table-column
+    <!-- 查看文件版本 -->
+    <el-dialog
+      width="60%"
+      title="查看文件版本信息"
+      :visible.sync="dialogVersionVisible"
+    >
+      <el-table
+        :data="versionList"
+        height="250"
+        border
+        :header-cell-style="{ background: '#F5F7FA', color: '#606266' }"
+        style="width: 100%"
+        @selection-change="handleSelectionChange"
+      >
+        <!-- <el-table-column
           type="selection"
           width="55"
         /> -->
-            <el-table-column prop="jobDesc" label="任务名称" />
-            <el-table-column prop="jobType" label="任务类型" />
-            <el-table-column prop="versionTime" label="版本创建时间" width="200" />
-            <el-table-column label="操作" width="100">
-              <template v-slot:default="{ row }">
-                <el-popover
-                  placement="right"
-                  title="代码"
-                  width="400"
-                  trigger="click"
-                >
-                  <div
-                    class="code"
-                    style="
+        <el-table-column prop="jobDesc" label="任务名称" />
+        <el-table-column prop="jobType" label="任务类型" />
+        <el-table-column prop="versionTime" label="版本创建时间" width="200" />
+        <el-table-column label="操作" width="100">
+          <template v-slot:default="{ row }">
+            <el-popover
+              placement="right"
+              title="代码"
+              width="400"
+              trigger="click"
+            >
+              <div
+                class="code"
+                style="
                   height: 300px;
                   background-color: #eee;
                   border-radius: 4px;
                 "
-                  >
-                    <pre style="white-space: normal">{{ row.jobJson }}</pre>
-                  </div>
-                  <el-button
-                    slot="reference"
-                    type="text"
-                    size="small"
-                    @click="showCode(row)"
-                  >代码</el-button>
-                </el-popover>
-                <el-button
-                  type="text"
-                  size="small"
-                  @click="rollback(row)"
-                >回滚</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-          <div slot="footer" class="dialog-footer">
-            <!-- <el-button size="small" @click="compare">
+              >
+                <pre style="white-space: normal">{{ row.jobJson }}</pre>
+              </div>
+              <el-button
+                slot="reference"
+                type="text"
+                size="small"
+                @click="showCode(row)"
+              >代码</el-button>
+            </el-popover>
+            <el-button
+              type="text"
+              size="small"
+              @click="rollback(row)"
+            >回滚</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <!-- <el-button size="small" @click="compare">
           对比
         </el-button> -->
-            <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-          </div>
-        </el-dialog>
-        <!-- 查看文件信息 -->
-        <el-dialog width="40%" title="查看" :visible.sync="dialogViewVisible">
-          <div class="box">
-            <el-row :gutter="20">
-              <el-col :span="8" style="margin-top: 0">
-                <span>名称:</span>
-              </el-col>
-              <el-col :span="16" style="margin-top: 0">
-                {{ detailData.jobDesc }}
-              </el-col>
-              <el-col :span="8">
-                <span>任务类型:</span>
-              </el-col>
-              <el-col :span="16">
-                {{ $store.state.taskAdmin.allTabType[detailData.jobType] }}
-              </el-col>
-              <el-col :span="8">
-                <span>创建日期:</span>
-              </el-col>
-              <el-col :span="16">
-                {{ detailData.addTime }}
-              </el-col>
-              <el-col :span="8">
-                <span>最近修改日期:</span>
-              </el-col>
-              <el-col :span="16">
-                {{ detailData.updateTime }}
-              </el-col>
-            </el-row>
-          </div>
-          <div slot="footer" class="dialog-footer">
-            <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-          </div>
-        </el-dialog>
-      </el-dialog></el-dialog></div>
+        <el-button size="small" @click="cancelDialog"> 取消 </el-button>
+      </div>
+    </el-dialog>
+    <!-- 查看文件信息 -->
+    <el-dialog width="40%" title="查看" :visible.sync="dialogViewVisible">
+      <div class="box">
+        <el-row :gutter="20">
+          <el-col :span="8" style="margin-top: 0">
+            <span>名称:</span>
+          </el-col>
+          <el-col :span="16" style="margin-top: 0">
+            {{ detailData.jobDesc }}
+          </el-col>
+          <el-col :span="8">
+            <span>任务类型:</span>
+          </el-col>
+          <el-col :span="16">
+            {{ $store.state.taskAdmin.allTabType[detailData.jobType] }}
+          </el-col>
+          <el-col :span="8">
+            <span>创建日期:</span>
+          </el-col>
+          <el-col :span="16">
+            {{ detailData.addTime }}
+          </el-col>
+          <el-col :span="8">
+            <span>最近修改日期:</span>
+          </el-col>
+          <el-col :span="16">
+            {{ detailData.updateTime }}
+          </el-col>
+        </el-row>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="cancelDialog"> 取消 </el-button>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -816,13 +762,9 @@ import SqlJob from '@/views/datax/jobInfo/components/sqlJob'
 import MetaCompare from '@/views/datax/jobInfo/components/metaCompare'
 import _ from 'lodash'
 import { component as VueContextMenu } from '@xunlei/vue-context-menu'
-
 import { getJobList as jdbcDsList } from '@/api/datax-jdbcDatasource'
-
 import { objList } from '@/utils/sortArr'
-
 var time
-
 export default {
   name: '',
   components: {
@@ -842,9 +784,6 @@ export default {
   },
   data() {
     return {
-      IsButton: false,
-      isbutton: false,
-      RedDot: false,
       showHive: false,
       chineseName: '',
       englishName: '',
@@ -907,8 +846,7 @@ export default {
       currentJob: '', // 当前任务类型
       currentJobName: '', // 当前任务名
       targetId: '', // 目标id
-      dropId: '', // 被拖拽id
-      topVal: '' // 右键菜单的位置
+      dropId: '' // 被拖拽id
     }
   },
   computed: {
@@ -916,11 +854,9 @@ export default {
       // 任务列表
       return this.$store.state.taskAdmin.taskList
     },
-
     taskDetailID() {
       return this.$store.state.taskAdmin.taskDetailID
     },
-
     filterList() {
       return this.List.filter((item) => {
         if (
@@ -933,7 +869,6 @@ export default {
         }
       })
     },
-
     dropdownText() {
       if (
         this.selectValue !== '' &&
@@ -952,41 +887,6 @@ export default {
     }
   },
   watch: {
-    allName(val) {
-      if (val === '') {
-        this.IsButton = true
-      } else {
-        this.IsButton = false
-      }
-    },
-    chineseName(val) {
-      if (val === '') {
-        this.isbutton = true
-      } else {
-        this.isbutton = false
-      }
-    },
-    '$store.state.taskAdmin.setRedDot'(val) {
-      this.RedDot = val
-    },
-    jobDetailIdx(val) {
-      console.log('jobDetailIdx--->>>>', this.selectRow.id, val)
-    },
-    contextMenuVisible(val) {
-      const menu = document.getElementsByClassName('right-menu')
-      const menu1 = document.getElementsByClassName('right-menu1')
-      const menu2 = document.getElementsByClassName('right-menu2')
-      console.log(menu1, menu2, 'topVal', this.topVal)
-      setTimeout(() => {
-        if (val) {
-          menu[1].style.top = this.topVal + 'px'
-          menu1[0].style.top = this.topVal + 'px'
-          menu2[0].style.top = this.topVal + 'px'
-          console.log('fwefqw', this.topVal)
-        }
-        console.log('contextMenuVisible--->>>>', val, menu[1])
-      }, 100)
-    },
     editableTabs(val) {
       console.log(val)
       if (val.length === 1) {
@@ -995,17 +895,14 @@ export default {
         this.isDel = true
       }
     },
-
     taskList(val) {
       this.List = val
       console.log(val, 'this.list___________________')
     },
-
     taskDetailID(val) {
       console.log(val, 'jobDetailIdx')
       this.jobDetailIdx = val
     },
-
     '$store.state.project.currentItem': {
       deep: true,
       handler: function(newValue, oldValue) {
@@ -1014,7 +911,6 @@ export default {
           const commandName = newValue.split('/')[1]
           this.selectValue = commandName
           this.$store.commit('SET_PROJECT_ID', commandId)
-
           // 获取任务列表
           const listQuery = {
             current: 1,
@@ -1026,16 +922,12 @@ export default {
             glueType: ''
           }
           this.projectIds = commandId
-
           job.getList(listQuery).then((response) => {
             const { content } = response
             this.List = content.data
           })
-
           this.getDataTree()
-
           // 根据项目id获取数据源
-
           const p = {
             current: 1,
             size: 200,
@@ -1050,7 +942,6 @@ export default {
         }
       }
     },
-
     '$store.state.taskAdmin.watchStr': {
       deep: true,
       handler: function(newValue, oldValue) {
@@ -1059,7 +950,6 @@ export default {
         }
       }
     },
-
     '$store.state.taskAdmin.scheduleId': {
       deep: true,
       handler: function(newValue, oldValue) {
@@ -1069,37 +959,19 @@ export default {
         }
       }
     },
-
     search: function(val) {
       this.$refs.tree.filter(val)
     }
   },
-
   mounted() {
     const myChartContainer = document.getElementById('main_span')
     // 右击显示菜单 区域位置
     this.contextMenuTarget = myChartContainer
     this.contextMenu1Target = myChartContainer
-    console.log(myChartContainer, 'myChartContainer')
     // 关闭浏览器右击默认菜单
-    const menu = document.getElementsByClassName('right-menu')
     myChartContainer.oncontextmenu = function(e) {
-      console.log(e, 'e')
-      console.log(menu[1], 'menu')
-      if (e.pageY > 500) {
-        this.topVal = e.pageY
-        console.log(this.topVal, '<<<<<<<<<<<<<<<<')
-        setTimeout(() => {
-          menu[1].style.top = this.topVal + 'px'
-          console.log('fwefqw', this.topVal)
-        }, 100)
-        // this.contextMenuVisible = true
-      } else {
-        this.topVal = ''
-      }
       return false
     }
-
     const a = document.getElementById('newFile')
     const b = document.getElementsByClassName('right-menu1')
     const c = document.getElementById('level3')
@@ -1107,11 +979,9 @@ export default {
     for (var i = 0; i < b.length; i++) {
       b[i].style.display = 'none'
     }
-
     for (var i = 0; i < d.length; i++) {
       d[i].style.display = 'none'
     }
-
     a.onmouseover = function() {
       for (var i = 0; i < b.length; i++) {
         b[i].style.display = 'block'
@@ -1122,7 +992,6 @@ export default {
         d[i].style.display = 'block'
       }
     }
-
     a.onmouseout = function() {
       for (var i = 0; i < b.length; i++) {
         b[i].style.display = 'none'
@@ -1133,7 +1002,6 @@ export default {
         d[i].style.display = 'none'
       }
     }
-
     b.onmouseover = function() {
       for (var i = 0; i < b.length; i++) {
         b[i].style.display = 'block'
@@ -1145,7 +1013,6 @@ export default {
       }
     }
   },
-
   created() {
     console.log('所有列表', this.$store.state.taskAdmin.taskDetailList)
     if (sessionStorage.getItem('level') === '2') {
@@ -1157,14 +1024,11 @@ export default {
     setTimeout(() => {
       this.getDataTree()
     }, 600)
-
     const p = {
       current: 1,
       size: 200,
       ascs: 'datasource_name',
-      projectId: this.$store.state.project.currentItem
-        ? this.$store.state.project.currentItem.split('/')[0]
-        : ''
+      projectId: this.$store.state.project.currentItem ? this.$store.state.project.currentItem.split('/')[0] : ''
     }
     jdbcDsList(p).then((response) => {
       const { records } = response
@@ -1180,7 +1044,6 @@ export default {
     Gettreelist() {
       this.getDataTree()
     },
-
     // 删除任务Tabs窗口
     removeJobTab(targetId) {
       const targetIdInt = parseInt(targetId)
@@ -1213,10 +1076,9 @@ export default {
         }
       }
     },
-
     // 获取tree数据结构
     getDataTree() {
-      console.log(this.$store.state.project.currentItem, 'currentItem===<>')
+      console.log(this.$store.state.project.currentItem, 'currentItem')
       if (this.$store.state.project.currentItem) {
         const projectId = this.$store.state.project.currentItem.split('/')[0]
         job
@@ -1247,11 +1109,9 @@ export default {
           })
       }
     },
-
     showScene() {
       console.log(this.selectedIndex)
     },
-
     JobTabClick(ele) {
       console.log(ele)
       console.log(this.List, '>>>>>>>>>>>>>>>>>>>>>')
@@ -1262,7 +1122,6 @@ export default {
       console.log(t, 'tttttttttttttttttttttttttt')
       this.$store.commit('SET_JOB_INFO', t[0])
     },
-
     clearJobTab(name) {
       const removeIndex = _.findIndex(
         this.$store.state.taskAdmin.taskDetailList,
@@ -1275,12 +1134,10 @@ export default {
             ?.id) + ''
       this.$store.commit('DELETE_TASKDETAIL', removeIndex)
     },
-
     freshItem() {
       this.getItem()
       this.jobType = 'SHOWDETAIL'
     },
-
     handleTabsEdit(targetName, action) {
       if (action === 'add') {
         const newTabName = new Date().valueOf().toString()
@@ -1308,7 +1165,6 @@ export default {
         this.editableTabs = tabs.filter((tab) => tab.name !== targetName)
       }
     },
-
     changeTab(e) {
       for (let i = 0; i < this.editableTabs.length; i++) {
         if (this.editableTabs[i].title === e.label) {
@@ -1317,7 +1173,6 @@ export default {
       }
       console.log(this.editableTabsValue, 'changTab')
     },
-
     getChild(v) {
       console.log(v)
       for (let i = 0; i < this.editableTabs.length; i++) {
@@ -1327,7 +1182,6 @@ export default {
         }
       }
     },
-
     pushList(val) {
       if (this.List.length < 1) {
         this.List.push({
@@ -1347,7 +1201,6 @@ export default {
         }
       }
     },
-
     handleRemove(name) {
       console.log(name)
       if (this.editableTabs.length === 1) {
@@ -1366,14 +1219,12 @@ export default {
         }
       }
     },
-
     // 快速检索关键字
     filterNode(value, data) {
       console.log(value, data)
       if (!value) return true
       return data.name.indexOf(value) !== -1
     },
-
     // 单击文件夹选中
     singleClick(name) {
       clearTimeout(time) // 首先清除计时器
@@ -1386,13 +1237,11 @@ export default {
         }
       }, 300) // 大概时间300ms
     },
-
     // 文件夹重命名
     resetName(name) {
       clearTimeout(time)
       this.dialogRenameVisible = true
     },
-
     // 确认命名文件夹
     sureRe() {
       console.log(this.selectRow, '...........')
@@ -1429,7 +1278,6 @@ export default {
           console.log(err)
         })
     },
-
     // 复制
     copyFile() {
       if (this.selectRow.parentId === 0) {
@@ -1449,7 +1297,6 @@ export default {
         })
       }
     },
-
     // 粘贴
     pasteFile() {
       console.log(this.copyObj)
@@ -1486,13 +1333,11 @@ export default {
         })
       }
     },
-
     // 查看任务信息
     ViewFile() {
       this.dialogViewVisible = true
       console.log(this.detailData, '详细信息')
     },
-
     // 查看文件版本
     ViewVersion() {
       if (this.selectRow.jobId) {
@@ -1517,22 +1362,17 @@ export default {
       this.currentJob = data
       console.log('>>>>>>>>', this.currentJob)
       this.showHive = true
-      this.isbutton = true
     },
-
     // 新增命名文件夹
     showAllName(type) {
       if (typeof type === 'string') {
         this.dialogNameVisible = true
-        this.IsButton = true
         this.currentJob = type
         console.log(type, 'type')
       } else {
         this.dialogNameVisible = true
-        this.IsButton = true
       }
     },
-
     // 取消对话框
     cancelDialog() {
       this.dialogNameVisible = false
@@ -1546,7 +1386,6 @@ export default {
       this.englishName = ''
       this.task = ''
     },
-
     // 拖拽tree
     handleDragStart(node, ev) {
       this.dropId = node.data.id
@@ -1606,7 +1445,9 @@ export default {
     },
     // HIVE任务新建
     HivecreateHandl() {
-      this.isbutton = true
+      console.log('111')
+      console.log('wert', this.selectRow)
+      console.log('job---->', this.currentJob)
       const params = {
         name: this.chineseName,
         projectId: this.selectRow.projectId,
@@ -1622,11 +1463,9 @@ export default {
         .then((res) => {
           console.log('pppppp>>>>>>>', res)
           if (res.code === 200) {
-            this.isbutton = false
             this.getDataTree()
-            console.log('gettree----->>>', this.getDataTree())
             this.selectRow = {}
-            if (res.content !== '请选择父级目录') {
+            if (res.content != '请选择父级目录') {
               this.$store.commit('changeGroupName', this.chineseName)
               this.$store.commit('changeJobId', parseInt(res.content))
               console.log(res.content)
@@ -1649,20 +1488,17 @@ export default {
             } else {
               this.$message.warning(res.content)
               this.showHive = false
-              this.isbutton = false
               this.chineseName = ''
               this.englishName = ''
               this.task = ''
             }
           } else {
             this.$message.error(res.content)
-            this.isbutton = false
           }
           console.log(res)
         })
         .catch((err) => {
           console.log(err)
-          this.isbutton = false
           this.chineseName = ''
           this.englishName = ''
           this.task = ''
@@ -1715,7 +1551,6 @@ export default {
           console.log(err)
         })
     },
-
     // 点击删除文件夹
     delFolder() {
       this.$confirm('此操作将删除该文件夹, 是否继续?', '提示', {
@@ -1725,7 +1560,6 @@ export default {
       })
         .then(() => {
           job
-
             .delFile(this.selectRow.id)
             .then((res) => {
               console.log(res)
@@ -1750,7 +1584,6 @@ export default {
           })
         })
     },
-
     // 点击tree控件方法
     handleNodeClick(data) {
       console.log('任务数据', data)
@@ -1773,6 +1606,7 @@ export default {
               console.log(res, 'content')
               if (res.code === 200) {
                 if (res.content) {
+                  console.log('content----->>>>', res.content.jobParam)
                   this.$store.commit('SETCODE', res.content.jobParam)
                   this.detailData = res.content
                   this.getJobDetail(res.content)
@@ -1795,12 +1629,10 @@ export default {
       }
       console.log(this.currentJobName, '当前任务的名称')
     },
-
     // 显示代码
     showCode(row) {
       console.log(row)
     },
-
     // 版本回滚
     rollback(row) {
       console.log(row)
@@ -1835,13 +1667,11 @@ export default {
           })
         })
     },
-
     // 版本对比
     compare() {
       console.log('对比')
       this.dialogVersionVisible = false
     },
-
     // 选中的版本方法
     handleSelectionChange(val) {
       this.multipleSelection = val
@@ -1850,17 +1680,15 @@ export default {
         this.$message.warning('目前仅支持两个版本的对比')
       }
     },
-
     getJobDetail(data) {
       console.log(data, 'data==============')
       this.$store.commit('SET_JOB_INFO', data)
       this.$store.commit('getJobDetail', data)
       this.$store.commit('SET_TASKDETAIL_ID', data.id + '')
       const a = {}
-      a.title = data.name
-      a.name = data.name
+      a.title = data.jobDesc
+      a.name = data.jobDesc
       a.content = data
-
       if (
         _.findIndex(
           this.$store.state.taskAdmin.taskDetailList,
@@ -1875,11 +1703,9 @@ export default {
       }
       // this.jobType = 'SHOWDETAIL';
     },
-
     getList(data) {
       console.log(data)
       console.log(this.editableTabs)
-
       if (this.editableTabs.length > 0) {
         for (let i = 0; i < this.editableTabs.length; i++) {
           if (this.editableTabs[i].title === data.name) {
@@ -1903,7 +1729,6 @@ export default {
         })
       }
     },
-
     getItem(del) {
       this.listQuery.userId = JSON.parse(localStorage.getItem('userId'))
       jobProjectApi.list(this.listQuery).then((response) => {
@@ -1914,7 +1739,6 @@ export default {
         this.options = objList(this.options, 'name')
         this.selectValue = this.options[0].id
         this.fetchJobs(this.selectValue)
-
         const listQuery = {
           current: 1,
           size: 10000,
@@ -1949,7 +1773,6 @@ export default {
         })
       })
     },
-
     /**
      * @description: 刷新列表
      */
@@ -1966,7 +1789,6 @@ export default {
         this.options = records
         this.selectValue = this.options[0].id
         this.fetchJobs(this.selectValue)
-
         const listQuery = {
           current: 1,
           size: 10000,
@@ -2004,10 +1826,8 @@ export default {
         })
       })
     },
-
     fetchJobs(event) {
       this.$store.commit('SET_PROJECT_ID', event)
-
       // 获取任务列表
       const listQuery = {
         current: 1,
@@ -2019,14 +1839,11 @@ export default {
         glueType: ''
       }
       this.projectIds = event
-
       job.getList(listQuery).then((response) => {
         const { content } = response
         this.List = content.data
       })
-
       // 根据项目id获取数据源
-
       const p = {
         current: 1,
         size: 200,
@@ -2039,7 +1856,6 @@ export default {
         this.$store.commit('SET_DATASOURCE', records)
       })
     },
-
     createNewJob(command) {
       console.log('newjob---->>>>>>', command)
       this.$store.commit('SET_READER_ISEDIT', false)
@@ -2047,7 +1863,6 @@ export default {
       this.jobType = command
       this.jobDetailIdx = command
     },
-
     // 切换项目
     handleCommand(command) {
       const commandId = command.split('/')[0]
@@ -2055,7 +1870,6 @@ export default {
       this.$store.commit('changeCurrent', command)
       this.selectValue = commandName
       this.$store.commit('SET_PROJECT_ID', commandId)
-
       // 获取任务列表
       const listQuery = {
         current: 1,
@@ -2067,14 +1881,11 @@ export default {
         glueType: ''
       }
       this.projectIds = commandId
-
       job.getList(listQuery).then((response) => {
         const { content } = response
         this.List = content.data
       })
-
       // 根据项目id获取数据源
-
       const p = {
         current: 1,
         size: 200,
@@ -2101,20 +1912,6 @@ export default {
 }
 </script>
 <style lang="scss">
-.el-input .el-input__inner {
-  height: 26px;
-}
-.boxs .el-input__inner {
-  width: 266px;
-}
-
-.RedDot {
-  display: inline-block;
-  height: 8px;
-  width: 8px;
-  border-radius: 50%;
-  background: red;
-}
 .Management {
   display: flex;
   // min-height: 660px;
