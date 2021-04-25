@@ -49,7 +49,11 @@
             </span>
           </div>
           <div v-show="isshow" style="margin-top: 20px">
-            <el-button size="small" style="margin-bottom: 20px" type="success"
+            <el-button
+              @click="Addhandel"
+              size="small"
+              style="margin-bottom: 20px"
+              type="success"
               >添加</el-button
             >
             <el-button
@@ -93,6 +97,15 @@ import JsonEditor from '@/components/JsonEditor'
 import MarddownEditor from '@/components/MarkdownEditor'
 import CodeMirror from './codeMirrror'
 import * as job from '@/api/datax-job-info'
+import * as JOB from '@/api/datax-jdbcDatasource'
+import {
+  createConnection,
+  initConnection,
+  sqlContextCreate,
+  asyncSqlExecuteQuery,
+  getAsyncTaskInfo,
+  getSqlExecuteTaskResults,
+} from '@/graphQL/graphQL'
 import jsonFormatVue from '../../../tool/jsonFormat.vue'
 export default {
   name: 'Hive',
@@ -137,6 +150,12 @@ export default {
       code: {},
       SingleData: {},
       taskParam: [],
+      datasourceListQuery: {
+        current: 1,
+        size: 10000,
+        projectId: '',
+        datasourceName: '',
+      },
     }
   },
   created() {
@@ -158,7 +177,121 @@ export default {
       })
     },
     runQuery(val) {
-      console.log('------->', val)
+      this.SingleData = this.$store.state.taskAdmin.SingleData
+      this.datasourceListQuery.projectId = this.SingleData.projectId
+      JOB.getJobList(this.datasourceListQuery)
+        .then((res) => {
+          const data = []
+          res.records.forEach((itme) => {
+            data.push(itme.datasource)
+          })
+          if (data.indexOf('hive') != -1) {
+            console.log('hive任务', val)
+          }
+          if (data.indexOf('impala') != -1) {
+            console.log('impala=====>', res.records)
+            const data = res.records.filter((item) => {
+              return item.datasource == 'impala'
+            })
+            console.log('url======', data[0].jdbcUrl)
+            const host = data[0].jdbcUrl
+              .split('//')[1]
+              .split('/')[0]
+              .split(':')[0]
+            const port = data[0].jdbcUrl
+              .split('//')[1]
+              .split('/')[0]
+              .split(':')[1]
+            const databaseName = data[0].jdbcUrl.split('//')[1].split('/')[1]
+            const userName = data[0].secretMap.u
+            const password = data[0].secretMap.p
+            const params1 = {
+              config: {
+                name: databaseName + '@' + host,
+                driverId: 'generic:cloudera_impala',
+                host: host,
+                port: port,
+                databaseName: databaseName,
+                authModelId: 'native',
+                credentials: {
+                  username: userName,
+                  userPassword: password,
+                },
+              },
+            }
+            console.log('params1---->', params1)
+            // debugger
+            let query123 = null
+            createConnection(params1).then((res) => {
+              console.log('111111111', res)
+              query123 = res.data.createConnection.id
+              const params2 = {
+                id: query123,
+                credentials: {
+                  userName: this.userName,
+                  userPassword: this.password,
+                },
+              }
+              console.log('params2', params2)
+              initConnection(params2).then((res) => {
+                console.log('22222bu', res)
+                const params2 = {
+                  id: query123,
+                  credentials: {
+                    userName: this.userName,
+                    userPassword: this.password,
+                  },
+                }
+                const params3 = {
+                  connectionId: res.data.connection.id,
+                }
+
+                sqlContextCreate(params3).then((res) => {
+                  console.log('33333bu', res)
+                  const params4 = {
+                    connectionId: params3.connectionId,
+                    contextId: res.data.context.id,
+                    query: val.code,
+                    filter: {
+                      offset: 0,
+                      limit: 200,
+                      constraints: [],
+                    },
+                  }
+                  console.log('34567', params4)
+                  asyncSqlExecuteQuery(params4).then((res) => {
+                    console.log('44444444bu', res)
+
+                    const params5 = {
+                      taskId: res.data.taskInfo.id,
+                      removeOnFinish: false,
+                    }
+                    getAsyncTaskInfo(params5).then((res) => {
+                      console.log('555555555bu', res)
+                      const params6 = {
+                        taskId: res.data.taskInfo.id,
+                        removeOnFinish: false,
+                      }
+                      getSqlExecuteTaskResults(params6).then((res) => {
+                        console.log(res)
+                      })
+                    })
+                  })
+                })
+              })
+            })
+            console.log(query123, 1213123)
+
+            console.log('impala------>>>', data)
+            const jobParam = {
+              jobId: this.SingleData.jobId,
+              executorParam: val.code,
+            }
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     },
     saveQuery(val) {
       this.SingleData = this.$store.state.taskAdmin.SingleData
@@ -206,7 +339,6 @@ export default {
           .then((res) => {
             console.log(res)
             this.$store.commit('SETREDDOT', false)
-            this.$message('保存成功')
             this.$emit('gettreelist', jobinfo.projectId)
           })
           .catch((err) => {

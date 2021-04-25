@@ -80,6 +80,7 @@ import 'codemirror/theme/ambiance.css'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/addon/hint/show-hint.css'
 import sqlFormatter from 'sql-formatter'
+
 const CodeMirror = require('codemirror/lib/codemirror')
 require('codemirror/addon/edit/matchbrackets')
 require('codemirror/addon/selection/active-line')
@@ -108,7 +109,7 @@ export default {
 -- 目   标  表     ：
 -- 更 新 方 式   ：
 -- 科 室 部 门   ：
--- 负  责  人      ：【登录账号】
+-- 负  责  人      ：【${JSON.parse(localStorage.getItem('userName'))}】
 -- 创 建 日 期   ：【${Math.round(new Date() / 1000)}】
 -- 运 行 周 期   ：
 -- 例       程       ：
@@ -138,7 +139,7 @@ export default {
   },
   watch: {
     '$store.state.taskAdmin.setcode': function () {
-      this.code = this.$store.state.taskAdmin.setcode //你需要执行的代码
+      this.code = this.$store.state.taskAdmin.setcode
     },
     code(val) {
       this.$store.commit('SETREDDOT', true)
@@ -214,13 +215,13 @@ export default {
       console.log('1', this.code)
       const Code = this.code.replace(reg, this.replaceData)
       this.editor.setValue(sqlFormatter.format(Code))
+      this.$store.commit('SETCODE', Code)
       console.log('2', this.code)
     },
     //节流函数
     throttle(fn, delay = 2000) {
       let timer = null
       let firstTime = true
-
       return function (...args) {
         if (firstTime) {
           // 第一次加载
@@ -238,20 +239,32 @@ export default {
         }, delay)
       }
     },
+    //防抖
+    debounce(fn, delay) {
+      let timerId = null
+      return function () {
+        let self = this
+        let args = arguments
+        timerId && clearTimeout(timerId)
+        timerId = setTimeout(function () {
+          fn.apply(self, args)
+        }, delay || 1000)
+      }
+    },
     //点击查找
     LookUp() {
-      const reg = new RegExp(this.lookupdata, 'g')
-      console.log(this.code)
+      console.log('this.code', this.code)
     },
     //查找按键事件
     handelkeydown(event) {
       const _this = this
       const e = event || window.event || arguments.callee.caller.arguments[0]
       if (e.ctrlKey && e.keyCode === 70) {
+        e.preventDefault()
         _this.lookup = true
         e.preventDefault()
       } else if (e.ctrlKey && e.keyCode === 83) {
-        _this.throttle(_this.saveQuery(), 2000)
+        _this.debounce(_this.saveQuery(), 2000)
         e.preventDefault()
       }
     },
@@ -261,6 +274,7 @@ export default {
      * @description: 运行查询
      */
     fromChild() {
+      console.log('222')
       this.$emit('querysql', {
         msg: this.infoMsg,
         code: this.code,
@@ -475,7 +489,7 @@ export default {
     top: 40px;
     right: 50px;
     border: 1px solid #ccc;
-    z-index: 2;
+    z-index: 999;
   }
 }
 
