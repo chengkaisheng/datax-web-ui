@@ -811,6 +811,8 @@ export default {
       contextMenuTarget: '',
       contextMenu1Target: '',
       contextMenu2Target: '',
+      // 右键鼠标的Y坐标
+      Ycoords: null,
       selectedIndex: '',
       /** el-select选项 */
       options: [],
@@ -895,6 +897,19 @@ export default {
         this.isDel = true
       }
     },
+    Ycoords(val) {
+      const menu = document.getElementsByClassName('right-menu')
+      const menu1 = document.getElementsByClassName('right-menu1')
+      const menu2 = document.getElementsByClassName('right-menu2')
+      console.log(menu, menu1, menu2)
+      if (val > 500) {
+        setTimeout(() => {
+          menu[1].style.top = parseInt(menu[1].style.top.split('px')[0]) - 200 + 'px'
+          menu1[0].style.top = parseInt(menu1[0].style.top.split('px')[0]) - 200 + 'px'
+          menu2[0].style.top = parseInt(menu2[0].style.top.split('px')[0]) - 200 + 'px'
+        }, 100)
+      }
+    },
     taskList(val) {
       this.List = val
       console.log(val, 'this.list___________________')
@@ -968,14 +983,30 @@ export default {
     // 右击显示菜单 区域位置
     this.contextMenuTarget = myChartContainer
     this.contextMenu1Target = myChartContainer
+
+    const menu = document.getElementsByClassName('right-menu')
+
     // 关闭浏览器右击默认菜单
     myChartContainer.oncontextmenu = function(e) {
       return false
     }
+    const _this = this
+    myChartContainer.onmousedown = function(e) {
+      console.log(e, '113123')
+      if (e.pageY > 400) {
+        menu[1].style.top = 100 + 'px'
+        _this.Ycoords = e.pageY
+        console.log(_this.Ycoords, 'this')
+      }
+      console.log(menu[1].style.top)
+      return false
+    }
+
     const a = document.getElementById('newFile')
     const b = document.getElementsByClassName('right-menu1')
     const c = document.getElementById('level3')
     const d = document.getElementsByClassName('right-menu2')
+
     for (var i = 0; i < b.length; i++) {
       b[i].style.display = 'none'
     }
