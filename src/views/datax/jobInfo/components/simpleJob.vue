@@ -428,16 +428,16 @@ export default {
         this.list = content.data
         this.listLoading = false
 
-        const firstElement = content?.data[0] || {};
-        const a = {};
+        const firstElement = content?.data[0] || {}
+        const a = {}
 
-        a.title = firstElement.jobDesc;
-        a.name = firstElement.jobDesc;
-        a.content = firstElement;
+        a.title = firstElement.jobDesc
+        a.name = firstElement.jobDesc
+        a.content = firstElement
         if (!this.firstTime) {
           this.$store.commit('ADD_TASKDETAIL', a)
         } else {
-          this.firstTime = false;
+          this.firstTime = false
         }
 
         this.$store.commit('SET_TASKLIST', this.list)
@@ -480,14 +480,14 @@ export default {
           if (this.partitionField) this.temp.partitionInfo = this.partitionField + ',' + this.timeOffset + ',' + this.timeFormatType
 
           this.temp.projectId = this.$store.state.taskAdmin.projectId
-          this.temp.jobType = this.$store.state.taskAdmin.tabType;
-          console.log(this.$store.state.taskAdmin.GroupId, 'this.$store.state.taskAdmin.GroupId')
-          this.temp.projectGroupId = this.$store.state.taskAdmin.GroupId;
+          this.temp.jobType = this.$store.state.taskAdmin.tabType
+          console.log(this.$store.state.taskAdmin.Group.id, 'this.$store.state.taskAdmin.Group.id')
+          this.temp.projectGroupId = this.$store.state.taskAdmin.Group.id
 
           job.createJob(this.temp).then((res) => {
             this.fetchData()
-            this.$store.commit('SET_TAB_TYPE', '');
-            this.$store.commit('SET_TASKDETAIL_ID', res.content);
+            this.$store.commit('SET_TAB_TYPE', '')
+            this.$store.commit('SET_TASKDETAIL_ID', res.content)
             this.$store.commit('changeWatch', 1)
 
             this.dialogFormVisible = false
