@@ -198,12 +198,34 @@
                 />
               </el-form-item>
             </el-col>
+            <el-col :span="24">
+              <el-form-item label="分区配置">
+                <el-radio-group v-model="writerColumnsParam.partition" @change="radioSelect">
+                  <el-radio :label="0">分区</el-radio>
+                  <el-radio :label="1">非分区</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24">
+              <el-form-item label="分区字段">
+                <el-select v-model="writerColumnsParam.partitionText" placeholder="选择分区字段" @change="columnSelect">
+                  <el-option
+                    v-for="(item, index) in fromColumnList"
+                    :key="index"
+                    :label="item"
+                    :value="item"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
           </el-row>
         </el-form>
       </el-col>
+
       <el-col>
         <h1 class="tab-title">{{ tabTitle(4) }}</h1>
       </el-col>
+
       <el-col style="padding: 20px;">
         <el-table
           :data="mappingTable"
@@ -315,7 +337,9 @@ export default {
       writerColumnsParam: {
         checkAll: false,
         isIndeterminate: true,
-        ifCreateTable: false
+        ifCreateTable: false,
+        partition: 0, // 分区配置
+        partitionText: '' // 分区字段
       },
       /** schema */
       schemaList: [],
@@ -471,24 +495,36 @@ export default {
       }
     },
     readerColumns(val) {
-      console.log('val', val);
-      this.tableForm.lcolumns = JSON.parse(JSON.stringify(val));
-      this.fromColumnsList = val;
-      this.mappingTable = [];
+      console.log('val', val)
+      this.tableForm.lcolumns = JSON.parse(JSON.stringify(val))
+      this.fromColumnsList = val
+      this.mappingTable = []
       val.forEach((row, index) => {
         const obj = {
           column: row,
           index
-        };
-        this.mappingTable.push(obj);
-      });
+        }
+        this.mappingTable.push(obj)
+      })
     },
     writerColumns(val) {
-      this.tableForm.rcolumns = JSON.parse(JSON.stringify(val));
-      this.toColumnsList = val;
+      this.tableForm.rcolumns = JSON.parse(JSON.stringify(val))
+      this.toColumnsList = val
     }
   },
   methods: {
+    // 选择区分
+    radioSelect(val) {
+      console.log(val, '分区')
+    },
+    // 分区字段
+    columnSelect(val) {
+      this.writerColumnsParam.partitionText = val
+      this.$store.commit('changePartitionText', val)
+      console.log(this.writerColumnsParam, 'writerForm')
+      this.$store.state.taskAdmin.partitionVal
+      console.log(val, '分区字段')
+    },
     /**
      * @description: 关闭
      */
@@ -497,13 +533,13 @@ export default {
         .then(_ => {
           this.$emit('close')
         })
-        .catch(_ => {});
+        .catch(_ => {})
     },
     /**
      * @description: 提交更新
      */
     handleUpdate() {
-      console.log('handleUpdate()');
+      console.log('handleUpdate()')
     },
     /**
      * @description: 目标表 - 数据源切换
@@ -564,7 +600,7 @@ export default {
       obj.datasourceId = this.taskParam.writerDatasourceId
       obj.tableName = this.taskParam.writerTables[0]
       dsQueryGetColumns(obj).then(response => {
-        this.fromColumnList = response;
+        this.fromColumnList = response
 
         if (JSON.parse(this.currentTask.jobParam).writerTables[0] === this.taskParam.writerTables[0] &&
           JSON.parse(this.currentTask.jobParam).writerDatasourceId === this.taskParam.writerDatasourceId) {
@@ -573,34 +609,34 @@ export default {
           this.$set(this.taskParam, 'writerColumns', this.fromColumnList)
         }
 
-        this.writerColumnsParam.checkAll = this.taskParam.writerColumns.length === this.fromColumnList.length;
+        this.writerColumnsParam.checkAll = this.taskParam.writerColumns.length === this.fromColumnList.length
         this.writerColumnsParam.isIndeterminate =
           this.taskParam.writerColumns.length > 0 && this.taskParam.writerColumns.length < this.fromColumnList.length
 
-        this.$store.commit('SET_WRITER_COLUMNS', response);
+        this.$store.commit('SET_WRITER_COLUMNS', response)
 
-        this.tableForm.rcolumns = response;
-        this.toColumnsList = response;
+        this.tableForm.rcolumns = response
+        this.toColumnsList = response
       })
     },
     /**
      * @description: writer表项全选
      */
     wHandleCheckAllChange(val) {
-      this.taskParam.writerColumns = val ? this.fromColumnList : [];
+      this.taskParam.writerColumns = val ? this.fromColumnList : []
       this.writerColumnsParam.checkAll = val
-      this.writerColumnsParam.isIndeterminate = false;
-      this.$store.commit('SET_SELECT_WRITERCOLUMN', this.taskParam.writerColumns);
+      this.writerColumnsParam.isIndeterminate = false
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', this.taskParam.writerColumns)
     },
     /**
      * @description: writer表项改变
      */
     wHandleCheckedChange(value) {
-      const checkedCount = value.length;
-      this.writerColumnsParam.checkAll = checkedCount === this.fromColumnList.length;
+      const checkedCount = value.length
+      this.writerColumnsParam.checkAll = checkedCount === this.fromColumnList.length
       this.writerColumnsParam.isIndeterminate =
-        checkedCount > 0 && checkedCount < this.fromColumnList.length;
-      this.$store.commit('SET_SELECT_WRITERCOLUMN', value);
+        checkedCount > 0 && checkedCount < this.fromColumnList.length
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', value)
     },
     /**
      * @description: 获取schema
@@ -619,19 +655,19 @@ export default {
      * @description: map点击删除
      */
     bHandleClick(index, v) {
-      this.fromColumnsListChecked.splice(index, 1);
-      this.toColumnsListChecked.splice(index, 1);
+      this.fromColumnsListChecked.splice(index, 1)
+      this.toColumnsListChecked.splice(index, 1)
 
-      this.tableForm.lcolumns.splice(index, 1);
-      this.tableForm.rcolumns.splice(index, 1);
-      this.mappingTable.splice(index, 1);
+      this.tableForm.lcolumns.splice(index, 1)
+      this.tableForm.rcolumns.splice(index, 1)
+      this.mappingTable.splice(index, 1)
     },
     /**
      * @description: 提交
      */
     handleSubmit() {
-      this.$store.commit('SET_SELECT_WRITERCOLUMN', this.tableForm.rcolumns);
-      this.$store.commit('SET_SELECT_READERCOLUMN', this.tableForm.lcolumns);
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', this.tableForm.rcolumns)
+      this.$store.commit('SET_SELECT_READERCOLUMN', this.tableForm.lcolumns)
       const jobParam = {
         readerDatasourceId: this.$store.state.taskAdmin.readerDataSourceID,
         writerDatasourceId: this.taskParam.writerDatasourceId,
@@ -650,7 +686,7 @@ export default {
         hbaseWriter: this.taskParam.hbaseWriter,
         mongoDBReader: this.taskParam.mongoDBReader,
         mongoDBWriter: this.taskParam.mongoDBWriter
-      };
+      }
 
       if (this.currentTask.glueType === 'BEAN' && !isJSON(this.currentTask.jobJson)) {
         this.$notify({
@@ -658,20 +694,20 @@ export default {
           message: 'json格式错误',
           type: 'error',
           duration: 2000
-        });
-        return;
+        })
+        return
       }
       if (this.currentTask.childJobId) {
-        const auth = [];
+        const auth = []
         for (const i in this.currentTask.childJobId) {
-          auth.push(this.currentTask.childJobId[i].id);
+          auth.push(this.currentTask.childJobId[i].id)
         }
         this.currentTask.childJobIdArr = auth
-        this.currentTask.childJobId = auth.toString();
+        this.currentTask.childJobId = auth.toString()
       }
       // this.temp.executorHandler =
       //   this.temp.glueType === "BEAN" ? "executorJobHandler" : "";
-      this.currentTask.glueSource = this.glueSource;
+      this.currentTask.glueSource = this.glueSource
       // if (this.partitionField) {
       //   this.currentTask.partitionInfo =
       //     this.partitionField +
@@ -687,8 +723,8 @@ export default {
           ele.ruleId.forEach(code => {
             codeArr.push({ code })
           })
-          ele.ruleId = codeArr;
-        });
+          ele.ruleId = codeArr
+        })
         jobParam.rule = tempjobRule
       }
       this.$set(this.currentTask, 'jobParam', JSON.stringify(jobParam))
@@ -700,8 +736,8 @@ export default {
           message: 'Update Successfully',
           type: 'success',
           duration: 2000
-        });
-      });
+        })
+      })
     }
   }
 }

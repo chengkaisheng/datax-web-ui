@@ -507,7 +507,7 @@ export default {
           this.temp.glueSource = this.glueSource
           this.temp.executorHandler =
             this.temp.glueType === 'BEAN' ? 'executorJobHandler' : ''
-          this.temp.projectGroupId = this.$store.state.taskAdmin.GroupId
+          this.temp.projectGroupId = this.$store.state.taskAdmin.Group.id
           this.temp.jobType = this.$store.state.taskAdmin.tabType
           if (this.partitionField) {
             this.temp.partitionInfo =

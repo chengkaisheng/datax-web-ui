@@ -342,20 +342,20 @@
 
 <script>
 // import * as dataxJsonApi from '@/api/datax-json';
-import * as jobTemplate from '@/api/datax-job-template';
-import * as job from '@/api/datax-job-info';
+import * as jobTemplate from '@/api/datax-job-template'
+import * as job from '@/api/datax-job-info'
 // import Pagination from '@/components/Pagination';
 // import JsonEditor from '@/components/JsonEditor';
-import * as jobProjectApi from '@/api/datax-job-project';
+import * as jobProjectApi from '@/api/datax-job-project'
 // import ShellEditor from '@/components/ShellEditor';
 // import PythonEditor from '@/components/PythonEditor';
 // import PowershellEditor from '@/components/PowershellEditor';
-import Reader from './reader';
-import Writer from './writer';
-import clip from '@/utils/clipboard';
-import Mapper from './mapper';
+import Reader from './reader'
+import Writer from './writer'
+import clip from '@/utils/clipboard'
+import Mapper from './mapper'
 // import { isJSON } from '@/utils/validate';
-import Cron from '@/components/Cron';
+import Cron from '@/components/Cron'
 import { translaterMaster } from '@/utils/dictionary'
 
 export default {
@@ -374,16 +374,16 @@ export default {
   data() {
     const validateIncParam = (rule, value, callback) => {
       if (!value) {
-        callback(new Error('Increment parameters is required'));
+        callback(new Error('Increment parameters is required'))
       }
-      callback();
-    };
+      callback()
+    }
     const validatePartitionParam = (rule, value, callback) => {
       if (!this.partitionField) {
-        callback(new Error('Partition parameters is required'));
+        callback(new Error('Partition parameters is required'))
       }
-      callback();
-    };
+      callback()
+    }
     return {
       configJson: '',
       isBan: false,
@@ -534,70 +534,70 @@ export default {
         datasourceId: '',
         readerTable: ''
       }
-    };
+    }
   },
   watch: {
     radio: function(newValue) {
-      console.log(newValue);
+      console.log(newValue)
       if (newValue === '使用模板') {
-        this.isUse = true;
-        this.isBan = false;
-        this.handleJobTemplateSelectDrawer();
-        this.dialogFormVisible = false;
+        this.isUse = true
+        this.isBan = false
+        this.handleJobTemplateSelectDrawer()
+        this.dialogFormVisible = false
       } else {
-        this.isUse = false;
-        this.isBan = true;
-        this.dialogFormVisible = true;
+        this.isUse = false
+        this.isBan = true
+        this.dialogFormVisible = true
       }
     }
   },
   created() {
     // this.getJdbcDs()
     this.$store.commit('SET_READER_ISEDIT', false)
-    this.getExecutor();
-    this.getJobProject();
-    this.getJobIdList();
+    this.getExecutor()
+    this.getJobProject()
+    this.getJobIdList()
     this.temp.jobDesc = this.$store.state.taskAdmin.GroupName
   },
   methods: {
     noUse() {
-      this.dialogFormVisible = true;
-      console.log(123);
+      this.dialogFormVisible = true
+      console.log(123)
     },
     handleClose() {
-      this.dialogFormVisible = false;
+      this.dialogFormVisible = false
     },
     // 补充请求
     getExecutor() {
       job.getExecutorList().then((response) => {
-        const { content } = response;
-        this.executorList = content;
-      });
+        const { content } = response
+        this.executorList = content
+      })
     },
     getJobProject() {
       jobProjectApi.getJobProjectList().then((response) => {
-        this.jobProjectList = response;
-      });
+        this.jobProjectList = response
+      })
     },
     getJobIdList() {
       job.getJobIdList().then((response) => {
-        const { content } = response;
-        this.jobIdList = content;
-      });
+        const { content } = response
+        this.jobIdList = content
+      })
     },
     next() {
-      const fromColumnList = this.$refs.reader.getData().columns;
-      const toColumnsList = this.$refs.writer.getData().columns;
+      const fromColumnList = this.$refs.reader.getData().columns
+      const toColumnsList = this.$refs.writer.getData().columns
       // const fromTableName = this.$refs.reader.getData().tableName
       // 第一步 reader 判断是否已选字段
       if (this.active === 0) {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            this.active++;
+            this.active++
           } else {
-            return false;
+            return false
           }
-        });
+        })
       } else if (this.active === 1) {
         // 实现第一步骤读取的表和字段直接带到第二步骤
         // this.$refs.writer.sendTableNameAndColumns(fromTableName, fromColumnList)
@@ -605,81 +605,81 @@ export default {
         this.$refs['reader'].$refs['rdbmsreader'].$refs['readerFrom'].validate(
           (valid) => {
             if (valid) {
-              this.active++;
+              this.active++
             } else {
-              return false;
+              return false
             }
           }
-        );
+        )
 
-        this.showNext = true;
-        this.showSubmit = false;
+        this.showNext = true
+        this.showSubmit = false
       } else {
         // 将第一步和第二步得到的字段名字发送到第三步
         if (this.active === 2) {
-          const datasource = this.$refs.writer.dataSource;
+          const datasource = this.$refs.writer.dataSource
           const ref = {
             db2: 'rdbmswriter',
             hive: 'hivewriter'
-          };
+          }
 
           this.$refs['writer'].$refs[ref[datasource] || 'rdbmswriter'].$refs[
             'writerFrom'
           ].validate((valid) => {
             if (valid) {
-              this.active++;
-              this.showNext = true;
-              this.showSubmit = false;
-              this.$refs.mapper.sendColumns(fromColumnList, toColumnsList);
-              this.$refs.mapper.sendRuleSettings();
+              this.active++
+              this.showNext = true
+              this.showSubmit = false
+              this.$refs.mapper.sendColumns(fromColumnList, toColumnsList)
+              this.$refs.mapper.sendRuleSettings()
             } else {
-              return false;
+              return false
             }
-          });
+          })
         } else if (this.active === 3 || this.active === 4) {
           this.active++
         }
 
         if (this.active === 3) {
-          this.showNext = true;
-          this.showSubmit = false;
-          this.jobTemplateSelectDrawer = true;
-          const readerColumns = this.$refs.mapper.getLColumns();
-          const writerColumns = this.$refs.mapper.getRColumns();
-          var tmps = JSON.parse(JSON.stringify(readerColumns)).sort();
+          this.showNext = true
+          this.showSubmit = false
+          this.jobTemplateSelectDrawer = true
+          const readerColumns = this.$refs.mapper.getLColumns()
+          const writerColumns = this.$refs.mapper.getRColumns()
+          var tmps = JSON.parse(JSON.stringify(readerColumns)).sort()
           for (var i = 0; i < tmps.length - 1; i++) {
             if (tmps[i] === tmps[i + 1]) {
-              this.$message('源端有相同字段【' + tmps[i] + '】，请注意修改');
-              throw new Error('源端有相同字段【' + tmps[i] + '】，请注意修改');
+              this.$message('源端有相同字段【' + tmps[i] + '】，请注意修改')
+              throw new Error('源端有相同字段【' + tmps[i] + '】，请注意修改')
             }
           }
-          var tmps1 = JSON.parse(JSON.stringify(writerColumns)).sort();
+          var tmps1 = JSON.parse(JSON.stringify(writerColumns)).sort()
           for (i = 0; i < tmps1.length - 1; i++) {
             if (tmps1[i] === tmps1[i + 1]) {
               this.$message(
                 '目标端含有相同字段【' + tmps1[i] + '】，请注意修改'
-              );
+              )
               throw new Error(
                 '目标端含有相同字段【' + tmps1[i] + '】，请注意修改'
-              );
+              )
             }
           }
-          this.buildJson();
+          this.buildJson()
         } else if (this.active === 4) {
-          this.showNext = false;
-          this.showSubmit = true;
+          this.showNext = false
+          this.showSubmit = true
         } else if (this.active === 5) {
-          this.temp.jobParam = this.configJson;
-          this.temp.jobType = this.$store.state.taskAdmin.tabType;
+          this.temp.jobParam = this.configJson
+          this.temp.jobType = this.$store.state.taskAdmin.tabType
 
-          let str = '';
+          let str = ''
           this.temp.childJobIdArr.forEach((child) => {
-            str += `${child.id},`;
-          });
+            str += `${child.id},`
+          })
 
-          this.temp.childJobId = str;
-          console.log('this.temp', this.temp);
-          this.temp.projectGroupId = this.$store.state.taskAdmin.GroupId;
+          this.temp.childJobId = str
+          console.log('this.temp', this.temp)
+          this.temp.projectGroupId = this.$store.state.taskAdmin.Group.id
           job.createJob(this.temp).then(response => {
             if (response.code === 200) {
               this.$notify({
@@ -687,38 +687,38 @@ export default {
                 message: '创建质量任务成功',
                 type: 'success',
                 duration: 2000
-              });
+              })
               this.$store.commit('changeWatch', 1)
-              this.$store.dispatch('getTaskList', true);
-              this.$store.commit('SET_TAB_TYPE', '');
+              this.$store.dispatch('getTaskList', true)
+              this.$store.commit('SET_TAB_TYPE', '')
             } else {
               this.$notify({
                 title: 'Error',
                 message: '创建质量任务失败',
                 type: 'error',
                 duration: 2000
-              });
+              })
             }
-          });
+          })
         }
       }
 
-      console.log(this.active);
+      console.log(this.active)
     },
     last() {
       if (this.active >= 1) {
-        this.showNext = true;
-        this.showSubmit = false;
-        this.active--;
+        this.showNext = true
+        this.showSubmit = false
+        this.active--
       } else if (this.active === 3) {
-        this.showNext = false;
-        this.showSubmit = true;
+        this.showNext = false
+        this.showSubmit = true
       } else {
-        this.showNext = true;
-        this.showSubmit = false;
+        this.showNext = true
+        this.showSubmit = false
       }
 
-      console.log(this.active);
+      console.log(this.active)
     },
     // 构建json
     buildJson() {
@@ -733,7 +733,7 @@ export default {
         readerFileType: readerData.fileType,
         readerFieldDelimiter: readerData.fieldDelimiter,
         readerSkipHeader: readerData.skipHeader
-      };
+      }
       const hiveWriter = {
         writerDefaultFS: writeData.defaultFS,
         writerFileType: writeData.fileType,
@@ -741,31 +741,31 @@ export default {
         writerFileName: writeData.fileName,
         writeMode: writeData.writeMode,
         writeFieldDelimiter: writeData.fieldDelimiter
-      };
+      }
       const hbaseReader = {
         readerMode: readerData.mode,
         readerMaxVersion: readerData.maxVersion,
         readerRange: readerData.range
-      };
+      }
       const hbaseWriter = {
         writerMode: writeData.mode,
         writerRowkeyColumn: writeData.rowkeyColumn,
         writerVersionColumn: writeData.versionColumn,
         writeNullMode: writeData.nullMode
-      };
-      const mongoDBReader = {};
+      }
+      const mongoDBReader = {}
       const mongoDBWriter = {
         upsertInfo: writeData.upsertInfo
-      };
+      }
       const rdbmsReader = {
         readerSplitPk: readerData.splitPk,
         whereParams: readerData.where,
         querySql: readerData.querySql
-      };
+      }
       const rdbmsWriter = {
         preSql: writeData.preSql,
         postSql: writeData.postSql
-      };
+      }
       const obj = {
         readerDatasourceId: readerData.datasourceId,
         readerTables: [readerData.tableName],
@@ -785,7 +785,7 @@ export default {
         rule: this.$refs.reader.getData().rule,
         mongoDBReader: mongoDBReader,
         mongoDBWriter: mongoDBWriter
-      };
+      }
       // 调api
       // dataxJsonApi.buildJson(obj).then((response) => {
       //   this.configJson = response;
@@ -793,39 +793,39 @@ export default {
       this.configJson = JSON.stringify(obj)
     },
     handleCopy(text, event) {
-      clip(this.configJson, event);
+      clip(this.configJson, event)
       this.$message({
         message: 'copy success',
         type: 'success'
-      });
+      })
     },
     handleJobTemplateSelectDrawer() {
-      this.jobTemplateSelectDrawer = !this.jobTemplateSelectDrawer;
+      this.jobTemplateSelectDrawer = !this.jobTemplateSelectDrawer
       if (this.jobTemplateSelectDrawer) {
-        this.fetchData();
+        this.fetchData()
       }
     },
     getReaderData() {
-      return this.$refs.reader.getData();
+      return this.$refs.reader.getData()
     },
     fetchData() {
-      this.listLoading = true;
+      this.listLoading = true
       jobTemplate.getList(this.listQuery).then((response) => {
-        const { content } = response;
-        this.total = content.recordsTotal;
-        this.list = content.data;
-        this.listLoading = false;
-      });
+        const { content } = response
+        this.total = content.recordsTotal
+        this.list = content.data
+        this.listLoading = false
+      })
     },
     handleCurrentChange(val) {
-      this.temp = Object.assign({}, val);
-      this.temp.id = undefined;
-      this.temp.jobDesc = this.getReaderData().tableName;
-      this.$refs.jobTemplateSelectDrawer.closeDrawer();
-      this.jobTemplate = val.id + '(' + val.jobDesc + ')';
+      this.temp = Object.assign({}, val)
+      this.temp.id = undefined
+      this.temp.jobDesc = this.getReaderData().tableName
+      this.$refs.jobTemplateSelectDrawer.closeDrawer()
+      this.jobTemplate = val.id + '(' + val.jobDesc + ')'
     }
   }
-};
+}
 </script>
 
 <style scoped>

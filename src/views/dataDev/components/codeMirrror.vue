@@ -164,15 +164,12 @@ export default {
       this.$emit('saveQuery', this.code)
     },
     sqlJobBuild() {
-      console.log('1233    ' + this.code)
-      this.$refs.mycode.text = ''
-      this.code = ''
-      this.editor = ''
-      // this.$router.push({
-      //   path: '/datax/job/JobInfo'
-      // });
-      this.mountCodeMirror()
-      // this.setCode()
+      this.editor.setValue('')
+      // // this.$router.push({
+      // //   path: '/datax/job/JobInfo'
+      // // });
+      // this.mountCodeMirror()
+      // // this.setCode()
     },
 
     mountCodeMirror(code) {
@@ -323,7 +320,8 @@ export default {
      * @description: 回显sql
      */
     setCode(code) {
-      this.code = code
+      this.sqlContent = code + ';'
+      this.editor.setValue(this.sqlContent)
     }
   }
 }

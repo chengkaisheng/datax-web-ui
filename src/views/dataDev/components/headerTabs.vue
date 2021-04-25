@@ -91,6 +91,7 @@
             style="float: right"
             active-text="物理"
             inactive-text="逻辑"
+            @change="changswitch"
           />
         </div>
 
@@ -141,7 +142,8 @@
                   "
                   icon-class="Blobshangchuanwenjian"
                 />
-                {{ data.name }}
+                <!-- {{ data.name }} -->
+                {{ value1 ? data.comment :data.name }}
               </span>
             </span>
           </el-tree>
@@ -191,7 +193,7 @@ export default {
   },
   data() {
     return {
-      value1: true,
+      value1: false,
       editableTabsValue: '2',
       editableTabs: [],
       tabIndex: 0,
@@ -287,6 +289,12 @@ export default {
     }
   },
   watch: {
+    value1: {
+      handler(newName, oldName) {
+        console.log(newName)
+      },
+      immediate: true
+    },
     searchTree(val) {
       this.$refs.schemaTree.filter(val)
     },
@@ -336,6 +344,10 @@ export default {
     this.handleTabsEdit('', 'add')
   },
   methods: {
+    changswitch(val) {
+      console.log(val)
+      this.value1 = val
+    },
     addTab(targetName) {
       const newTabName = ++this.tabIndex + ''
       this.editableTabs.push({
@@ -367,16 +379,20 @@ export default {
           schema: data.name
         }).then((res) => {
           this.tableList = res
+          console.log(res)
           const arr = []
           for (let j = 0; j < res.length; j++) {
             arr.push({
               id: new Date().getTime() + j,
-              name: res[j].name + ' ' + res[j].comment,
+              name: res[j].name,
+              // name: res[j].name + ' ' + res[j].comment,
+              comment: res[j].comment,
               dsid: data.dsid,
               schema: data.name,
               tableName: res[j].name
             })
           }
+          console.log(arr)
           this.$refs.schemaTree.updateKeyChildren(data.id, arr)
         })
       } else if (node.level === 2) {
@@ -397,6 +413,7 @@ export default {
                 ')' +
                 ' - ' +
                 res.datas[j].COLUMN_COMMENT,
+              comment: res.datas[j].COLUMN_COMMENT,
               type: res.datas[j].DATA_TYPE
             })
           }
@@ -594,6 +611,7 @@ export default {
     /**
      * @description: 获取schema
      */
+    // 数据库名字
     getSchemas(id) {
       this.datasourceSelected = this.dataSourceList.find(
         (item) => item.id === id
@@ -614,6 +632,7 @@ export default {
           }
           this.schemaTreeData = arr
           this.schemaTreeLoading = false
+          console.log(arr)
         })
         .catch((err) => {
           console.log(err)

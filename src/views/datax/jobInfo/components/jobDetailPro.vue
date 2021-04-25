@@ -925,7 +925,7 @@ export default {
     '$store.state.taskAdmin.logWatch'(val) {
       timer = setInterval(() => {
         this.logList()
-      }, 1000)
+      }, 3000)
     }
   },
 

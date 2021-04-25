@@ -125,17 +125,17 @@ export default {
       rightShow: true,
       infoMsg: 0,
       editor: {},
-      SingleData: {},
+      SingleData: {}
     }
   },
   computed: {
-    DataMerging() {
+    DataMerging(){
       if (!this.code) {
         return this.notes + (this.code || '')
       } else if (this.code) {
         return this.code
       }
-    },
+    }
   },
   watch: {
     '$store.state.taskAdmin.setcode': function () {
@@ -185,7 +185,7 @@ export default {
       // }
       this.tips = Object.assign(this.tips, tableObj)
       console.log(this.tips, 'tips2')
-    },
+    }
   },
   beforeMount() {
     // const columeObj = {};
