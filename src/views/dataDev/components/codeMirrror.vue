@@ -165,10 +165,6 @@ export default {
     },
     sqlJobBuild() {
       this.editor.setValue('')
-      // console.log('1233    ' + this.code)
-      // this.$refs.mycode.text = ''
-      // this.code = ''
-      // this.editor = ''
       // // this.$router.push({
       // //   path: '/datax/job/JobInfo'
       // // });
@@ -324,7 +320,8 @@ export default {
      * @description: 回显sql
      */
     setCode(code) {
-      this.code = code
+      this.sqlContent = code + ';'
+      this.editor.setValue(this.sqlContent)
     }
   }
 }

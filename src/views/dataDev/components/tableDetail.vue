@@ -95,6 +95,8 @@
           :row-style="{ height: '33px' }"
           :cell-style="{ padding: '0' }"
           :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
+
+          @row-dblclick="tableSql"
         >
           <el-table-column prop="id" label="序号" width="80" align="center" />
           <el-table-column label="执行语句" width="200" align="center">
@@ -283,7 +285,7 @@
         </el-table>
       </el-tab-pane>
       <el-tab-pane
-        v-for="item in editableTabs"
+        v-for="(item, _index) in editableTabs"
         :key="item.name"
         closable
         :label="item.title"
@@ -302,17 +304,17 @@
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item
-                @click.native.stop="fileSaver(item.key, 'xlsx')"
+                @click.native.stop="fileSaver02(item.name, 'xlsx', _index)"
               >导出为Excel</el-dropdown-item>
               <el-dropdown-item
-                @click.native.stop="fileSaver('tableRes2', 'csv')"
+                @click.native.stop="fileSaver02('tableRes2', 'csv',_index)"
               >导出为CSV</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </span>
         <el-table
           v-show="firstShow"
-          :ref="item.key"
+          ref="wanPDD"
           v-loading="tableLoading"
           style="padding: 0px; margin-right: 10px"
           :data="item.tableData"
@@ -322,11 +324,11 @@
           :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
         >
           <el-table-column
-            v-for="item in item.columns"
-            :key="item.label"
-            :prop="item.name"
-            :width="item.label.toUpperCase().length * 10 + 60"
-            :label="item.name"
+            v-for="item2 in item.columns"
+            :key="item2.label"
+            :prop="item2.name"
+            :width="item2.label.toUpperCase().length * 10 + 60"
+            :label="item2.name"
             show-overflow-tooltip
             align="center"
           />
@@ -468,11 +470,15 @@ export default {
   //   // this.getcreateConnec(),
   // },
   methods: {
-    // click_fun: function($event, index, title) { // 点击
-    //   console.log($event)// MouseEvent {isTrusted: true, screenX: 147, screenY: 146, clientX: 147, clientY: 53, …}
-    //   console.log(index)// 1
-    //   console.log(title)// 中间
-    // },
+    handle(row, column, event, cell) {
+      console.log(row)
+      console.log(column)
+      console.log(event)
+      console.log(cell)
+    },
+    tableSql(row) {
+      console.log(row.sqlContent)
+    },
     // sql历史查询
     onSubmit(formInline) {
       sqlhisApi
@@ -672,6 +678,7 @@ export default {
           .split('//')[1]
           .split('/')[1]
       }
+      console.log(driverId)
       // console.log(this.databaseName)
       // 1、创建链接
       const params1 = {
@@ -1037,8 +1044,9 @@ export default {
     /**
      * @description: 文件导出
      */
-    fileSaver(tableRef, exportType) {
+    fileSaver(tableRef, exportType, index) {
       console.log(tableRef)
+      console.log('index:::' + index)
       console.log(this.$refs[tableRef].$el)
       this.$nextTick(() => {
         const wb = XLSX.utils.table_to_book(this.$refs[tableRef].$el)
@@ -1052,6 +1060,33 @@ export default {
           FileSaver.saveAs(
             new Blob([wbout], { type: 'application/octet-stream' }),
             this.tabLabel[this.tabsActive].concat('.').concat(exportType)
+          )
+        } catch (e) {
+          if (typeof console !== 'undefined') console.log(e, wbout)
+        }
+        return wbout
+      })
+    },
+    fileSaver02(tableRef, exportType, index) {
+      console.log(tableRef)
+      console.log('index:::' + index)
+      console.log(this.$refs.wanPDD[index])
+      // console.log(this.$refs['wanPDD'][index].$el)
+
+      this.$nextTick(() => {
+        const wb = XLSX.utils.table_to_book(this.$refs['wanPDD'][index].$el)
+        console.log(wb)
+        const wbout = XLSX.write(wb, {
+          bookType: exportType,
+          bookSST: true,
+          type: 'array'
+        })
+        try {
+          FileSaver.saveAs(
+            new Blob([wbout], { type: 'application/octet-stream' }),
+            // console.log(this.editableTabs[this.tabsActive]),
+            // this.editableTabs[this.tabsActive].concat('.').concat(exportType),
+            this.tabLabel['res'].concat('.').concat(exportType)
           )
         } catch (e) {
           if (typeof console !== 'undefined') console.log(e, wbout)

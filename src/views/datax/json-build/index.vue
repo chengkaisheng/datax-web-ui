@@ -443,7 +443,7 @@ export default {
         mongoDBWriter: mongoDBWriter
       }
       obj.writerPartition.partitionText = this.$store.state.taskAdmin.PartitionVal
-      this.$store.commit('SET_JOBPARAM', JSON.stringify(obj));
+      this.$store.commit('SET_JOBPARAM', JSON.stringify(obj))
       // 调api
       // dataxJsonApi.buildJobJson(obj).then(response => {
       //   this.configJson = JSON.parse(response)
@@ -510,7 +510,7 @@ export default {
           )
         }
       }
-      this.buildJson();
+      this.buildJson()
     }
   }
 }
