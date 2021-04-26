@@ -1212,10 +1212,6 @@ export default {
   padding: 0;
   font-size: 13px;
   display: inline-block;
-  line-height: 30px;
-  text-align: center;
-  width: 150px;
-  height: 30px;
   background: #fff;
 }
 .Navigation .err1{
