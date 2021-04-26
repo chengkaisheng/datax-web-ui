@@ -143,7 +143,7 @@
                   icon-class="Blobshangchuanwenjian"
                 />
                 <!-- {{ data.name }} -->
-                {{ value1 ? data.comment :data.name }}
+                {{ value1 ? data.name :data.comment }}
               </span>
             </span>
           </el-tree>
@@ -193,7 +193,7 @@ export default {
   },
   data() {
     return {
-      value1: false,
+      value1: true,
       editableTabsValue: '2',
       editableTabs: [],
       tabIndex: 0,

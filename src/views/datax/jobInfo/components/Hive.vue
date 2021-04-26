@@ -23,37 +23,33 @@
       >
         <div style="padding-left: 26px">
           <div
+            v-for="(itme, index) in arrayData"
+            v-show="isshow"
+            :key="itme.id"
             style="margin-top: 20px"
             class="DraWer"
-            v-show="isshow"
-            v-for="(itme, index) in arrayData"
-            :key="itme.id"
           >
             <span style="font-size: 14px; color: #ccc">
               参数：
               <el-input
-                style="width: 260px"
                 v-show="isshow"
                 v-model="itme.data"
+                style="width: 260px"
                 size="mini"
                 placeholder="请输入参数"
               />
               <el-button
-                @click="Delete(index)"
                 size="small"
                 style="margin-left: 10px"
                 type="danger"
                 icon="el-icon-delete"
                 circle
-              ></el-button>
+                @click="Delete(index)"
+              />
             </span>
           </div>
           <div v-show="isshow" style="margin-top: 20px">
-            <el-button
-              @click="Addhandel"
-              size="small"
-              style="margin-bottom: 20px"
-              type="success"
+            <el-button size="small" style="margin-bottom: 20px" type="success"
               >添加</el-button
             >
             <el-button
@@ -287,6 +283,7 @@ export default {
         ).catch((error) => {
           console.log(error)
         })
+        console.log(resGetSqlExecuteTaskResults)
         //HIVE<---------------------------->连接
       } else if (val.jobtype === 'IMPALA') {
         console.log('IMPALA--->', val)
