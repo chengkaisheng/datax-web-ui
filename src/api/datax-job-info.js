@@ -22,6 +22,13 @@ export function Selecthive(id) {
     params: id
   })
 }
+export function RunQuery(jobParam) {
+  return request({
+    url: 'api/job/trigger',
+    method: 'post',
+    data: jobParam,
+  })
+}
 export function AddHive(jobParam) {
   return request({
     url: 'api/job/add',
