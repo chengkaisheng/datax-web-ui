@@ -13,12 +13,12 @@
         <div id="last" ref="querylog" style="heith:150px" class="Navigation" onload="window.scrollTo(0,document.getElemetnById('last').scrollHeight);">
           <div v-for="item in loglist" :key="item.id">
             <div v-if="item.tableData">
-              <span style="fontWeigth:700">>>{{ new Date() }} </span>;[content] : <span>{{ item.content }}</span>
+              <span style="fontWeigth:700">>>{{ item.logtime }} </span>;[content] : <span>{{ item.content }}</span>
               <span class="line1">>>[ressult]:{{ item.tableData }}</span>
               <br>
             </div>
             <div v-if="item.error">
-              <span>>>{{ new Date() }}; </span> [content] : <span class="err1">{{ item.content }}</span>
+              <span>>>{{ item.logtime }}; </span> [content] : <span class="err1">{{ item.content }}</span>
               <span class="line1">>>[EXCEPTION] : <span class="err1">{{ item.error }}</span></span>
               <br>
             </div>
@@ -767,11 +767,12 @@ export default {
           if (resGetAsyncTaskInfo.data.taskInfo.error) {
             this.err = resGetAsyncTaskInfo.data.taskInfo.error.message
             console.log(resGetAsyncTaskInfo.data.taskInfo.error.message)
-            this.loglist.push({
+            this.loglist.unshift({
               title: '错误sql返回',
               // tableData: this.tableData,
               // secondData: this.secondData,
               // columns: this.columns,
+              logtime: new Date(),
               content: this.content,
               error: this.err
             })
@@ -838,7 +839,8 @@ export default {
           })
           return obj
         })
-        this.loglist.push({
+        this.loglist.unshift({
+          logtime: new Date(),
           content: this.content,
           tableData: this.tableData
         })
@@ -878,7 +880,8 @@ export default {
           // }), // sql执行结果
           sqlStatus: 1, // 1：成功  0：失败
           sqlContent: sql, // sql语句
-          submitUser: parseInt(localStorage.getItem('userId')) // 提交用户id
+          submitUser: parseInt(localStorage.getItem('userId')), // 提交用户id
+          startime: new Date()
         })
         .then((response) => {
           console.log(response)
