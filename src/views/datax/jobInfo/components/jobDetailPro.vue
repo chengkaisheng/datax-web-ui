@@ -923,9 +923,9 @@ export default {
      * @description: 等待trigger执行完再获取log列表
      */
     '$store.state.taskAdmin.logWatch'(val) {
-      timer = setInterval(() => {
-        this.logList()
-      }, 3000)
+      // timer = setInterval(() => {
+      this.logList()
+      // }, 5000)
     }
   },
 
@@ -1115,7 +1115,7 @@ export default {
       infoApi.getExecutorList().then((response) => {
         const { content } = response
         this.executorList = content
-        console.log(this.executorList, 'this.executorList')
+        // console.log(this.executorList, 'this.executorList')
       })
     },
     /**
@@ -1125,7 +1125,7 @@ export default {
       infoApi.getJobIdList().then((response) => {
         const { content } = response
         this.jobIdList = content
-        console.log(this.jobIdList, '子任务')
+        // console.log(this.jobIdList, '子任务')
       })
     },
 

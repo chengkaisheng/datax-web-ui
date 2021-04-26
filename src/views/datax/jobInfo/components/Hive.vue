@@ -23,35 +23,37 @@
       >
         <div style="padding-left: 26px">
           <div
+            v-for="(itme, index) in arrayData"
+            v-show="isshow"
+            :key="itme.id"
             style="margin-top: 20px"
             class="DraWer"
-            v-show="isshow"
-            v-for="(itme, index) in arrayData"
-            :key="itme.id"
           >
             <span style="font-size: 14px; color: #ccc">
               参数：
               <el-input
-                style="width: 260px"
                 v-show="isshow"
                 v-model="itme.data"
+                style="width: 260px"
                 size="mini"
                 placeholder="请输入参数"
               />
               <el-button
-                @click="Delete(index)"
                 size="small"
                 style="margin-left: 10px"
                 type="danger"
                 icon="el-icon-delete"
                 circle
-              ></el-button>
+                @click="Delete(index)"
+              />
             </span>
           </div>
           <div v-show="isshow" style="margin-top: 20px">
-            <el-button size="small" style="margin-bottom: 20px" type="success"
-              >添加</el-button
-            >
+            <el-button
+              size="small"
+              style="margin-bottom: 20px"
+              type="success"
+            >添加</el-button>
             <el-button
               size="small"
               style="margin-bottom: 20px"
@@ -61,11 +63,12 @@
                   drawer = false
                 }
               "
-              >取消</el-button
-            >
-            <el-button size="small" style="margin-bottom: 20px" type="success"
-              >保存</el-button
-            >
+            >取消</el-button>
+            <el-button
+              size="small"
+              style="margin-bottom: 20px"
+              type="success"
+            >保存</el-button>
           </div>
         </div>
       </el-drawer>
@@ -80,8 +83,7 @@
               this.color = 1
             }
           "
-          >任务日志</span
-        >
+        >任务日志</span>
       </div>
       <div v-show="logs" />
     </div>
@@ -99,21 +101,21 @@ export default {
   components: {
     JsonEditor,
     MarddownEditor,
-    CodeMirror,
+    CodeMirror
   },
   data() {
     return {
       arrayData: [
         {
           id: 0,
-          data: '',
-        },
+          data: ''
+        }
       ],
       dataNum: 1,
       color: 1,
       logs: false,
       numberValidateForm: {
-        age: '',
+        age: ''
       },
       first: 'first',
       dialogVisible: false,
@@ -128,7 +130,7 @@ export default {
         // { FunctionDescription: 'g' },
       ],
       temp: {
-        triggerStatus: '1',
+        triggerStatus: '1'
       },
       drawer: false,
       isshow: true,
@@ -136,7 +138,7 @@ export default {
       ddd: [],
       code: {},
       SingleData: {},
-      taskParam: [],
+      taskParam: []
     }
   },
   created() {
@@ -154,7 +156,7 @@ export default {
     Addhandel() {
       this.arrayData.push({
         id: this.dataNum++,
-        data: '',
+        data: ''
       })
     },
     runQuery(val) {
@@ -198,7 +200,7 @@ export default {
           replaceParam: '',
           replaceParamType: 'Timestamp',
           userId: 0,
-          id: this.$store.state.taskAdmin.GroupId,
+          id: this.$store.state.taskAdmin.GroupId
         }
         this.code = val
         job
@@ -247,7 +249,7 @@ export default {
           readerTable: '',
           replaceParam: '',
           replaceParamType: 'Timestamp',
-          userId: 0,
+          userId: 0
         }
         console.log('this.store', this.SingleData)
         console.log('------->', val)
@@ -278,8 +280,8 @@ export default {
     },
     handleClick(tab, event) {
       console.log(tab, event)
-    },
-  },
+    }
+  }
 }
 </script>
 
