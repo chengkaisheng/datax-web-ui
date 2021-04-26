@@ -125,17 +125,18 @@ export default {
       rightShow: true,
       infoMsg: 0,
       editor: {},
-      SingleData: {}
+      SingleData: {},
+      jobtype: '',
     }
   },
   computed: {
-    DataMerging(){
+    DataMerging() {
       if (!this.code) {
         return this.notes + (this.code || '')
       } else if (this.code) {
         return this.code
       }
-    }
+    },
   },
   watch: {
     '$store.state.taskAdmin.setcode': function () {
@@ -185,7 +186,7 @@ export default {
       // }
       this.tips = Object.assign(this.tips, tableObj)
       console.log(this.tips, 'tips2')
-    }
+    },
   },
   beforeMount() {
     // const columeObj = {};
@@ -201,6 +202,7 @@ export default {
   },
   created() {
     this.code = this.$store.state.taskAdmin.setcode
+    this.jobtype = this.$store.state.taskAdmin.SingleData
   },
   mounted() {
     this.mountCodeMirror()
@@ -274,10 +276,10 @@ export default {
      * @description: 运行查询
      */
     fromChild() {
-      console.log('222')
       this.$emit('querysql', {
         msg: this.infoMsg,
         code: this.code,
+        jobtype: this.jobtype.jobType,
       })
     },
     /**

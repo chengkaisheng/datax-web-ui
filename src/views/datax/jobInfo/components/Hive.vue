@@ -49,11 +49,9 @@
             </span>
           </div>
           <div v-show="isshow" style="margin-top: 20px">
-            <el-button
-              size="small"
-              style="margin-bottom: 20px"
-              type="success"
-            >添加</el-button>
+            <el-button size="small" style="margin-bottom: 20px" type="success"
+              >添加</el-button
+            >
             <el-button
               size="small"
               style="margin-bottom: 20px"
@@ -63,12 +61,11 @@
                   drawer = false
                 }
               "
-            >取消</el-button>
-            <el-button
-              size="small"
-              style="margin-bottom: 20px"
-              type="success"
-            >保存</el-button>
+              >取消</el-button
+            >
+            <el-button size="small" style="margin-bottom: 20px" type="success"
+              >保存</el-button
+            >
           </div>
         </div>
       </el-drawer>
@@ -83,7 +80,8 @@
               this.color = 1
             }
           "
-        >任务日志</span>
+          >任务日志</span
+        >
       </div>
       <div v-show="logs" />
     </div>
@@ -102,7 +100,7 @@ import {
   sqlContextCreate,
   asyncSqlExecuteQuery,
   getAsyncTaskInfo,
-  getSqlExecuteTaskResults
+  getSqlExecuteTaskResults,
 } from '@/graphQL/graphQL'
 import jsonFormatVue from '../../../tool/jsonFormat.vue'
 export default {
@@ -110,21 +108,21 @@ export default {
   components: {
     JsonEditor,
     MarddownEditor,
-    CodeMirror
+    CodeMirror,
   },
   data() {
     return {
       arrayData: [
         {
           id: 0,
-          data: ''
-        }
+          data: '',
+        },
       ],
       dataNum: 1,
       color: 1,
       logs: false,
       numberValidateForm: {
-        age: ''
+        age: '',
       },
       first: 'first',
       dialogVisible: false,
@@ -139,7 +137,7 @@ export default {
         // { FunctionDescription: 'g' },
       ],
       temp: {
-        triggerStatus: '1'
+        triggerStatus: '1',
       },
       drawer: false,
       isshow: true,
@@ -152,8 +150,10 @@ export default {
         current: 1,
         size: 10000,
         projectId: '',
-        datasourceName: ''
-      }
+        datasourceName: '',
+      },
+      userName: '',
+      password: '',
     }
   },
   created() {
@@ -171,126 +171,322 @@ export default {
     Addhandel() {
       this.arrayData.push({
         id: this.dataNum++,
-        data: ''
+        data: '',
       })
     },
-    runQuery(val) {
-      this.SingleData = this.$store.state.taskAdmin.SingleData
-      this.datasourceListQuery.projectId = this.SingleData.projectId
-      JOB.getJobList(this.datasourceListQuery)
-        .then((res) => {
-          const data = []
-          res.records.forEach((itme) => {
-            data.push(itme.datasource)
-          })
-          if (data.indexOf('hive') != -1) {
-            console.log('hive任务', val)
+    async runQuery(val) {
+      console.log('类型判断', val.jobtype)
+      if (val.jobtype === 'HIVE') {
+        console.log('HIVE', val)
+        this.SingleData = this.$store.state.taskAdmin.SingleData
+        this.datasourceListQuery.projectId = this.SingleData.projectId
+        //获取数据源
+        const Hivesource = await JOB.getJobList(this.datasourceListQuery).catch(
+          (err) => {
+            console.log(err)
           }
-          if (data.indexOf('impala') != -1) {
-            console.log('impala=====>', res.records)
-            const data = res.records.filter((item) => {
-              return item.datasource == 'impala'
-            })
-            console.log('url======', data[0].jdbcUrl)
-            const host = data[0].jdbcUrl
-              .split('//')[1]
-              .split('/')[0]
-              .split(':')[0]
-            const port = data[0].jdbcUrl
-              .split('//')[1]
-              .split('/')[0]
-              .split(':')[1]
-            const databaseName = data[0].jdbcUrl.split('//')[1].split('/')[1]
-            const userName = data[0].secretMap.u
-            const password = data[0].secretMap.p
-            const params1 = {
-              config: {
-                name: databaseName + '@' + host,
-                driverId: 'generic:cloudera_impala',
-                host: host,
-                port: port,
-                databaseName: databaseName,
-                authModelId: 'native',
-                credentials: {
-                  username: userName,
-                  userPassword: password
-                }
-              }
-            }
-            console.log('params1---->', params1)
-            // debugger
-            let query123 = null
-            createConnection(params1).then((res) => {
-              console.log('111111111', res)
-              query123 = res.data.createConnection.id
-              const params2 = {
-                id: query123,
-                credentials: {
-                  userName: this.userName,
-                  userPassword: this.password
-                }
-              }
-              console.log('params2', params2)
-              initConnection(params2).then((res) => {
-                console.log('22222bu', res)
-                const params2 = {
-                  id: query123,
-                  credentials: {
-                    userName: this.userName,
-                    userPassword: this.password
-                  }
-                }
-                const params3 = {
-                  connectionId: res.data.connection.id
-                }
-
-                sqlContextCreate(params3).then((res) => {
-                  console.log('33333bu', res)
-                  const params4 = {
-                    connectionId: params3.connectionId,
-                    contextId: res.data.context.id,
-                    query: val.code,
-                    filter: {
-                      offset: 0,
-                      limit: 200,
-                      constraints: []
-                    }
-                  }
-                  console.log('34567', params4)
-                  asyncSqlExecuteQuery(params4).then((res) => {
-                    console.log('44444444bu', res)
-
-                    const params5 = {
-                      taskId: res.data.taskInfo.id,
-                      removeOnFinish: false
-                    }
-                    getAsyncTaskInfo(params5).then((res) => {
-                      console.log('555555555bu', res)
-                      const params6 = {
-                        taskId: res.data.taskInfo.id,
-                        removeOnFinish: false
-                      }
-                      getSqlExecuteTaskResults(params6).then((res) => {
-                        console.log(res)
-                      })
-                    })
-                  })
-                })
-              })
-            })
-            console.log(query123, 1213123)
-
-            console.log('impala------>>>', data)
-            const jobParam = {
-              jobId: this.SingleData.jobId,
-              executorParam: val.code
-            }
-          }
+        )
+        const datasource = Hivesource.records.filter((itme) => {
+          return itme.datasource === 'hive'
         })
-        .catch((err) => {
+        console.log('hive------>>>><<<<<>>>>>', datasource)
+        const host = datasource[0].jdbcUrl
+          .split('//')[1]
+          .split('/')[0]
+          .split(':')[0]
+        const port = datasource[0].jdbcUrl
+          .split('//')[1]
+          .split('/')[0]
+          .split(':')[1]
+        const databaseName = datasource[0].jdbcUrl.split('//')[1].split('/')[1]
+        this.userName = datasource[0].secretMap.u
+        this.password = datasource[0].secretMap.p
+        const params1 = {
+          config: {
+            name: databaseName + '@' + host,
+            driverId: 'generic:apache_hive2',
+            host: host,
+            port: port,
+            databaseName: databaseName,
+            authModelId: 'native',
+            credentials: {
+              username: this.userName,
+              userPassword: this.password,
+            },
+          },
+        }
+        console.log('params1', params1)
+        //创建连接
+        const Createconnection = await createConnection(params1).catch(
+          (err) => {
+            console.log(err)
+          }
+        )
+        console.log('创建连接', Createconnection)
+        const params2 = {
+          id: Createconnection.data.createConnection.id,
+          credentials: {
+            userName: this.userName,
+            userPassword: this.password,
+          },
+        }
+        console.log('params2', params2)
+        //初始化连接
+        const resInitConnection = await initConnection(params2).catch((err) => {
           console.log(err)
         })
+        console.log('初始化连接', resInitConnection)
+        const params3 = {
+          connectionId: resInitConnection.data.connection.id,
+        }
+        console.log('params3', params3)
+        const Createcontext = await sqlContextCreate(params3).catch((err) => {
+          console.log(err)
+        })
+        console.log('创建上下文', Createcontext.data.context.id)
+        const params4 = {
+          connectionId: params3.connectionId,
+          contextId: Createcontext.data.context.id,
+          query: val.code, // sql语句
+          filter: {
+            offset: 0,
+            limit: 200,
+            constraints: [],
+          },
+        }
+        const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(params4)
+        console.log('执行sql', resAsyncSqlExecuteQuery)
+        const params5 = {
+          taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
+          removeOnFinish: false,
+        }
+        let queryStatus = ''
+        let resGetAsyncTaskInfo
+        while (queryStatus !== 'Finished') {
+          resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
+          console.log('789456123', resGetAsyncTaskInfo)
+          queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
+          console.log(resGetAsyncTaskInfo)
+          if (resGetAsyncTaskInfo.data.taskInfo.error) {
+            console.log(resGetAsyncTaskInfo.data.taskInfo.error.message)
+            console.log(this.loglist, this.loglist)
+            this.$message.error(resGetAsyncTaskInfo.data.taskInfo.error)
+            break
+          }
+          console.log(queryStatus, 'queryStatus')
+        }
+        const params6 = {
+          taskId: resGetAsyncTaskInfo.data.taskInfo.id,
+        }
+        const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
+          params6
+        ).catch((error) => {
+          console.log(error)
+        })
+        console.log(resGetSqlExecuteTaskResults)
+        //HIVE<---------------------------->连接
+      } else if (val.jobtype === 'IMPALA') {
+        console.log('IMPALA--->', val)
+        this.SingleData = this.$store.state.taskAdmin.SingleData
+        this.datasourceListQuery.projectId = this.SingleData.projectId
+        //获取数据源
+        const source = await JOB.getJobList(this.datasourceListQuery).catch(
+          (err) => {
+            console.log(err)
+          }
+        )
+        const datasource = source.records.filter((itme) => {
+          return itme.datasource === 'impala'
+        })
+        console.log(source.records, datasource)
+        const host = datasource[0].jdbcUrl
+          .split('//')[1]
+          .split('/')[0]
+          .split(':')[0]
+        const port = datasource[0].jdbcUrl
+          .split('//')[1]
+          .split('/')[0]
+          .split(':')[1]
+        const databaseName = datasource[0].jdbcUrl.split('//')[1].split('/')[1]
+        this.userName = datasource[0].secretMap.u
+        this.password = datasource[0].secretMap.p
+        const params1 = {
+          config: {
+            name: databaseName + '@' + host,
+            driverId: 'generic:cloudera_impala',
+            host: host,
+            port: port,
+            databaseName: databaseName,
+            authModelId: 'native',
+            credentials: {
+              username: this.userName,
+              userPassword: this.password,
+            },
+          },
+        }
+        console.log('params1', params1)
+        //创建连接
+        const Createconnection = await createConnection(params1).catch(
+          (err) => {
+            console.log(err)
+          }
+        )
+        console.log('创建连接', Createconnection.data)
+        const params2 = {
+          id: Createconnection.data.createConnection.id,
+          credentials: {
+            userName: this.userName,
+            userPassword: this.password,
+          },
+        }
+        console.log('params2', params2)
+        //初始化连接
+        const resInitConnection = await initConnection(params2).catch((err) => {
+          console.log(err)
+        })
+        console.log('初始化连接', resInitConnection)
+        // const params3 = {
+        //   connectionId: resInitConnection.data.connection.id,
+        // }
+        // console.log('params3', params3)
+        // const Createcontext = await sqlContextCreate(params3).catch((err) => {
+        //   console.log(err)
+        // })
+        // console.log('创建上下文', Createcontext)
+      }
     },
+    // runQuery(val) {
+    //   this.SingleData = this.$store.state.taskAdmin.SingleData
+    //   this.datasourceListQuery.projectId = this.SingleData.projectId
+    //   JOB.getJobList(this.datasourceListQuery)
+    //     .then((res) => {
+    //       const data = []
+    //       res.records.forEach((itme) => {
+    //         data.push(itme.datasource)
+    //       })
+    //       if (data.indexOf('hive') != -1) {
+    //         console.log('hive任务', val)
+    //       }
+    //       if (data.indexOf('impala') != -1) {
+    //         console.log('impala=====>', res.records)
+    //         const data = res.records.filter((item) => {
+    //           return item.datasource == 'impala'
+    //         })
+    //         console.log('url======', data)
+    //         const host = data[0].jdbcUrl
+    //           .split('//')[1]
+    //           .split('/')[0]
+    //           .split(':')[0]
+    //         const port = data[0].jdbcUrl
+    //           .split('//')[1]
+    //           .split('/')[0]
+    //           .split(':')[1]
+    //         const databaseName = data[0].jdbcUrl.split('//')[1].split('/')[1]
+    //         this.userName = data[0].secretMap.u
+    //         this.password = data[0].secretMap.p
+    //         const params1 = {
+    //           config: {
+    //             name: databaseName + '@' + host,
+    //             driverId: 'generic:cloudera_impala',
+    //             host: host,
+    //             port: port,
+    //             databaseName: databaseName,
+    //             authModelId: 'native',
+    //             credentials: {
+    //               username: this.userName,
+    //               userPassword: this.password,
+    //             },
+    //           },
+    //         }
+    //         console.log('params1---->', params1)
+    //         let cloneId = null
+    //         createConnection(params1)
+    //           .then((res) => {
+    //             console.log('111111111', res)
+    //             cloneId = res.data.createConnection.id
+    //             const params2 = {
+    //               id: cloneId,
+    //               credentials: {
+    //                 userName: this.userName,
+    //                 userPassword: this.password,
+    //               },
+    //             }
+    //             console.log('params2', params2)
+    //             initConnection(params2)
+    //               .then((res) => {
+    //                 console.log('22222bu', res)
+    //                 const params3 = {
+    //                   connectionId: res.data.connection.id,
+    //                 }
+    //                 sqlContextCreate(params3)
+    //                   .then((res) => {
+    //                     console.log('33333bu', res)
+    //                     const params4 = {
+    //                       connectionId: params3.connectionId,
+    //                       contextId: res.data.context.id,
+    //                       query: val.code,
+    //                       filter: {
+    //                         offset: 0,
+    //                         limit: 200,
+    //                         constraints: [],
+    //                       },
+    //                     }
+    //                     console.log('34567', params4)
+    //                     asyncSqlExecuteQuery(params4)
+    //                       .then((res) => {
+    //                         console.log('44444444bu', res)
+    //                         const params5 = {
+    //                           taskId: res.data.taskInfo.id,
+    //                           removeOnFinish: false,
+    //                         }
+    //                         getAsyncTaskInfo(params5)
+    //                           .then((res) => {
+    //                             console.log('555555555bu', res)
+    //                             if (res.data.taskInfo.status === 'Finished') {
+    //                               const params6 = {
+    //                                 taskId: res.data.taskInfo.id,
+    //                               }
+    //                               getSqlExecuteTaskResults(params6)
+    //                                 .then((res) => {
+    //                                   console.log(res)
+    //                                 })
+    //                                 .catch((err) => {
+    //                                   console.log(err)
+    //                                 })
+    //                             } else {
+    //                               console.log(res.data.taskInfo.status)
+    //                             }
+    //                           })
+    //                           .catch((err) => {
+    //                             console.log(err)
+    //                           })
+    //                       })
+    //                       .catch((err) => {
+    //                         console.log(err)
+    //                       })
+    //                   })
+    //                   .catch((err) => {
+    //                     console.log(err)
+    //                   })
+    //               })
+    //               .catch((err) => {
+    //                 console.log(err)
+    //               })
+    //           })
+    //           .catch((err) => {
+    //             console.log(err)
+    //           })
+    //         console.log('impala------>>>', data)
+    //         const jobParam = {
+    //           jobId: this.SingleData.jobId,
+    //           executorParam: val.code,
+    //         }
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       console.log(err)
+    //     })
+    // },
     saveQuery(val) {
       this.SingleData = this.$store.state.taskAdmin.SingleData
       console.log('ID------>>>>>', this.SingleData)
@@ -329,12 +525,16 @@ export default {
           replaceParam: '',
           replaceParamType: 'Timestamp',
           userId: 0,
-          id: this.$store.state.taskAdmin.GroupId
+          id: this.$store.state.taskAdmin.GroupId,
         }
         this.code = val
         job
           .updateJob(jobinfo)
           .then((res) => {
+            this.$message({
+              message: '保存成功',
+              type: 'success',
+            })
             console.log(res)
             this.$store.commit('SETREDDOT', false)
             this.$emit('gettreelist', jobinfo.projectId)
@@ -377,7 +577,7 @@ export default {
           readerTable: '',
           replaceParam: '',
           replaceParamType: 'Timestamp',
-          userId: 0
+          userId: 0,
         }
         console.log('this.store', this.SingleData)
         console.log('------->', val)
@@ -408,8 +608,8 @@ export default {
     },
     handleClick(tab, event) {
       console.log(tab, event)
-    }
-  }
+    },
+  },
 }
 </script>
 
