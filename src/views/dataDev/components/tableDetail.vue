@@ -10,7 +10,7 @@
             placement="top"
           />
         </span>
-        <div id="last" ref="querylog" style="heith:150px" class="Navigation" onload="window.scrollTo(0,document.getElemetnById('last').scrollHeight);">
+        <div id="last" ref="querylog" class="Navigation" onload="window.scrollTo(0,document.getElemetnById('last').scrollHeight);">
           <div v-for="item in loglist" :key="item.id">
             <div v-if="item.tableData">
               <span style="fontWeigth:700">>>{{ item.logtime }} </span>;[content] : <span>{{ item.content }}</span>
@@ -767,6 +767,7 @@ export default {
           if (resGetAsyncTaskInfo.data.taskInfo.error) {
             this.err = resGetAsyncTaskInfo.data.taskInfo.error.message
             console.log(resGetAsyncTaskInfo.data.taskInfo.error.message)
+            this.loglist = []
             this.loglist.unshift({
               title: '错误sql返回',
               // tableData: this.tableData,
@@ -839,6 +840,7 @@ export default {
           })
           return obj
         })
+        this.loglist = []
         this.loglist.unshift({
           logtime: new Date(),
           content: this.content,
@@ -1127,6 +1129,7 @@ export default {
 
 <style lang="scss" scoped>
 .table {
+  // height: 300px;
   .el-tabs {
     .el-tab-pane {
       .demo-input-size{
@@ -1202,7 +1205,8 @@ export default {
   overflow: scroll;
   width: 100%;
   background: #fff;
-  height: calc(50vh - 157px);
+  // height: calc(50vh - 157px);
+  height:300px
 }
 .Navigation .color {
   font-weight: 400px;
