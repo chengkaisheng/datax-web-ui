@@ -68,7 +68,7 @@
                 >
                   <svg-icon :icon-class="item.jobType" />
                   <a style="color: rgba(102, 102, 102, 1)">
-                    {{ item.jobDesc }}
+                    {{ item.name }}
                   </a>
                   <el-tag
                     v-if="item.hasOwnProperty('triggerStatus')"
@@ -99,7 +99,7 @@
                   >
                     <svg-icon :icon-class="item.jobType" />
                     <a style="color: rgba(102, 102, 102, 1)">
-                      {{ item.jobDesc }}
+                      {{ item.name }}
                     </a>
                     <el-tag
                       v-if="item.hasOwnProperty('triggerStatus')"
@@ -452,6 +452,7 @@ rkJggg=="
             :job-info="$store.state.taskAdmin.jobInfo"
             @deleteJob="getItem"
             @deleteDetailTab="clearJobTab"
+            @getCloseTabs="ifCloseTabs"
           />
           <div v-if="item.content.jobType === 'HIVE'" class="rg">
             <Hive
@@ -598,11 +599,11 @@ rkJggg=="
         </el-tab-pane>
       </el-tabs>
     </div>
+    <!-- 重命名对话框 -->
     <el-dialog
-      class="Boxs"
+      :visible.sync="dialogRenameVisible"
       width="40%"
       title="重命名"
-      :visible.sync="dialogRenameVisible"
     >
       <span style="margin-left: 20px">名称：</span><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
       <div slot="footer" class="dialog-footer">
@@ -610,6 +611,7 @@ rkJggg=="
         <el-button type="goon" size="small" @click="sureRe"> 确定 </el-button>
       </div>
     </el-dialog>
+    <!-- 新建文件夹或任务对话框 -->
     <el-dialog width="30%" title="新建" :visible.sync="dialogNameVisible">
       <span style="margin-left: 50px; font-size: 12px">名称：</span><el-input
         v-model="allName"
@@ -694,7 +696,7 @@ rkJggg=="
           type="selection"
           width="55"
         /> -->
-        <el-table-column prop="jobDesc" label="任务名称" />
+        <el-table-column prop="name" label="任务名称" />
         <el-table-column prop="jobType" label="任务类型" />
         <el-table-column prop="versionTime" label="版本创建时间" width="200" />
         <el-table-column label="操作" width="100">
@@ -745,7 +747,7 @@ rkJggg=="
             <span>名称:</span>
           </el-col>
           <el-col :span="16" style="margin-top: 0">
-            {{ detailData.jobDesc }}
+            {{ detailData.name }}
           </el-col>
           <el-col :span="8">
             <span>任务类型:</span>
@@ -877,7 +879,8 @@ export default {
       currentJob: '', // 当前任务类型
       currentJobName: '', // 当前任务名
       targetId: '', // 目标id
-      dropId: '' // 被拖拽id
+      dropId: '', // 被拖拽id
+      delType: '' // 删除的类型
     }
   },
   computed: {
@@ -891,7 +894,7 @@ export default {
     filterList() {
       return this.List.filter((item) => {
         if (
-          item.jobDesc.toLowerCase().indexOf(this.search.toLowerCase()) > -1
+          item.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1
         ) {
           return true
         }
@@ -962,7 +965,7 @@ export default {
             jobGroup: 0,
             projectIds: commandId,
             triggerStatus: -1,
-            jobDesc: '',
+            name: '',
             glueType: ''
           }
           this.projectIds = commandId
@@ -994,6 +997,14 @@ export default {
         }
       }
     },
+    '$store.state.taskAdmin.removeTabs': {
+      deep: true,
+      handler: function(newValue, oldValue) {
+        if (newValue !== oldValue) {
+          this.removeJobTab()
+        }
+      }
+    },
     '$store.state.taskAdmin.scheduleId': {
       deep: true,
       handler: function(newValue, oldValue) {
@@ -1016,11 +1027,8 @@ export default {
     const menu = document.getElementsByClassName('right-menu')
 
     // 关闭浏览器右击默认菜单
-    myChartContainer.oncontextmenu = function(e) {
-      return false
-    }
     const _this = this
-    myChartContainer.onmousedown = function(e) {
+    myChartContainer.oncontextmenu = function(e) {
       console.log(e, '113123')
       if (e.pageY > 400) {
         menu[1].style.top = 100 + 'px'
@@ -1030,6 +1038,10 @@ export default {
       console.log(menu[1].style.top)
       return false
     }
+    // myChartContainer.onmousedown = function(e) {
+
+    //   return false
+    // }
 
     const a = document.getElementById('newFile')
     const b = document.getElementsByClassName('right-menu1')
@@ -1102,6 +1114,10 @@ export default {
     /**
      * @description: tab关闭逻辑
      */
+    // 清空tabs
+    ifCloseTabs(data) {
+      console.log(data, '是否关闭tabs')
+    },
     // 点击子组件保存按钮后重新获取tree
     Gettreelist() {
       this.getDataTree()
@@ -1301,13 +1317,13 @@ export default {
     },
     // 文件夹重命名
     resetName(name) {
-      clearTimeout(time)
+      // clearTimeout(time)
       this.dialogRenameVisible = true
     },
     // 确认命名文件夹
     sureRe() {
       console.log(this.selectRow, '...........')
-      var reParams = {}
+      let reParams = {}
       if (this.selectRow.type === 2) {
         reParams = {
           id: this.selectRow.id,
@@ -1320,25 +1336,21 @@ export default {
           name: this.Rename
         }
       }
-      job
-        .dragReName(reParams)
-        .then((res) => {
-          console.log(res)
-          if (res.code === 200) {
-            this.$message.success(res.msg)
-            this.getDataTree()
-            this.Rename = ''
-            this.getJobDetail(this.detailData)
-            this.removeJobTab(this.selectRow.id)
-            this.handleNodeClick()
-            this.dialogRenameVisible = false
-          } else {
-            this.$message.err(res.msg)
-          }
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+      job.dragReName(reParams).then((res) => {
+        if (res.code === 200) {
+          this.dialogRenameVisible = false
+          this.$message.success('重命名' + res.msg)
+          this.getDataTree()
+          this.Rename = ''
+          this.getJobDetail(this.detailData)
+          this.removeJobTab(this.selectRow.id)
+          // this.handleNodeClick()
+        } else {
+          this.$message.err(res.msg)
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
     },
     // 复制
     copyFile() {
@@ -1615,7 +1627,7 @@ export default {
     },
     // 点击删除文件夹
     delFolder() {
-      this.$confirm('此操作将删除该文件夹, 是否继续?', '提示', {
+      this.$confirm('此操作将删除该' + this.delType + ', 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -1650,6 +1662,7 @@ export default {
     handleNodeClick(data) {
       console.log('任务数据', data)
       this.selectRow = data
+      this.delType = data.type === 1 ? '文件夹' : '任务'
       this.$store.commit('Singledata', data)
       this.$store.commit('SETPJTID', data.projectId)
       this.$store.commit('SETCODE', '')
@@ -1669,6 +1682,7 @@ export default {
               if (res.code === 200) {
                 if (res.content) {
                   console.log('content----->>>>', res.content.jobParam)
+                  this.$store.commit('SET_JOB_INFO', res.content)
                   this.$store.commit('SETCODE', res.content.jobParam)
                   this.detailData = res.content
                   this.getJobDetail(res.content)
@@ -1748,8 +1762,8 @@ export default {
       this.$store.commit('getJobDetail', data)
       this.$store.commit('SET_TASKDETAIL_ID', data.id + '')
       const a = {}
-      a.title = data.jobDesc
-      a.name = data.jobDesc
+      a.title = data.name
+      a.name = data.name
       a.content = data
       if (
         _.findIndex(
@@ -1807,7 +1821,7 @@ export default {
           jobGroup: 0,
           // projectIds: '',
           triggerStatus: -1,
-          jobDesc: '',
+          name: '',
           glueType: ''
         }
         listQuery.projectIds = this.projectIds
@@ -1819,8 +1833,8 @@ export default {
           console.log(this.List)
           const firstElement = content?.data[0] || {}
           const a = {}
-          a.title = firstElement.jobDesc
-          a.name = firstElement.jobDesc
+          a.title = firstElement.name
+          a.name = firstElement.name
           a.content = firstElement
           if (!this.firstTime) {
             if (!del) {
@@ -1857,7 +1871,7 @@ export default {
           jobGroup: 0,
           // projectIds: '',
           triggerStatus: -1,
-          jobDesc: '',
+          name: '',
           glueType: ''
         }
         listQuery.projectIds = this.projectIds
@@ -1872,8 +1886,8 @@ export default {
             this.List,
             (ele) => ele.id === isSaveInfo.content.id
           )
-          a.title = this.List[eleIndex].jobDesc
-          a.name = this.List[eleIndex].jobDesc
+          a.title = this.List[eleIndex].name
+          a.name = this.List[eleIndex].name
           a.content = this.List[eleIndex]
           if (!this.firstTime) {
             if (!del) {
@@ -1897,7 +1911,7 @@ export default {
         jobGroup: 0,
         projectIds: event,
         triggerStatus: -1,
-        jobDesc: '',
+        name: '',
         glueType: ''
       }
       this.projectIds = event
@@ -1939,7 +1953,7 @@ export default {
         jobGroup: 0,
         projectIds: commandId,
         triggerStatus: -1,
-        jobDesc: '',
+        name: '',
         glueType: ''
       }
       this.projectIds = commandId

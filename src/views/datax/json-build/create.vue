@@ -11,9 +11,9 @@
       <el-row :gutter="20">
         <el-card shadow="never">
           <el-col :span="12">
-            <el-form-item label="任务名称" prop="jobDesc">
+            <el-form-item label="任务名称" prop="name">
               <el-input
-                v-model="temp.jobDesc"
+                v-model="temp.name"
                 size="medium"
                 disabled
                 placeholder="请输入任务名称"
@@ -33,8 +33,8 @@
             </el-form-item>
           </el-col> -->
           <el-col :span="12">
-            <el-form-item label="描述" prop="description">
-              <el-input v-model="temp.description" placeholder="描述" />
+            <el-form-item label="描述" prop="jobDesc">
+              <el-input v-model="temp.jobDesc" placeholder="描述" />
             </el-form-item>
           </el-col>
         </el-card>
@@ -295,7 +295,7 @@ export default {
         id: undefined,
         jobGroup: '',
         jobCron: '',
-        jobDesc: '',
+        name: '',
         executorRouteStrategy: '',
         executorBlockStrategy: '',
         childJobId: '',
@@ -385,12 +385,12 @@ export default {
   watch: {
     '$store.state.taskAdmin.GroupName'(val) {
       console.log(val)
-      this.temp.jobDesc = val
+      this.temp.name = val
     }
   },
 
   created() {
-    this.temp.jobDesc = this.$store.state.taskAdmin.GroupName
+    this.temp.name = this.$store.state.taskAdmin.GroupName
   },
 
   beforeMount() {

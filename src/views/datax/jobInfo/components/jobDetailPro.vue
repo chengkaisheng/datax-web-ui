@@ -292,7 +292,7 @@ cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
 rkJggg=="
               />
             </svg>
-            <span class="jobDesc">{{ currentTask.jobDesc }}</span>
+            <span class="name">{{ currentTask.name }}</span>
           </template>
           <template slot="action">
             <el-button
@@ -301,7 +301,8 @@ rkJggg=="
                   'IMPORT' ||
                   this.$store.state.taskAdmin.jobDataDetail.jobType ===
                   'NORMAL' ||
-                  this.$store.state.taskAdmin.jobDataDetail.jobType === 'EXPORT'
+                  this.$store.state.taskAdmin.jobDataDetail.jobType === 'EXPORT' ||
+                  this.$store.state.taskAdmin.jobDataDetail.jobType === 'SHELL'
               "
               type="text"
               icon="el-icon-edit"
@@ -316,13 +317,13 @@ rkJggg=="
               keys="路由策略"
               :values="currentTask.executorRouteStrategy"
             /> -->
-            <!-- <description-items keys="子任务" :values="hasVal(childJob, 'jobDesc')" /> -->
+            <!-- <description-items keys="子任务" :values="hasVal(childJob, 'name')" /> -->
             <!-- <description-items
               v-if="showProjectName"
               keys="阻塞处理"
               :values="currentTask.executorBlockStrategy"
             /> -->
-            <description-items keys="任务名称" :values="currentTask.jobDesc" />
+            <description-items keys="任务名称" :values="currentTask.name" />
             <description-items keys="任务类型" :values="currentTask.jobType" />
             <!-- <description-items keys="Cron" :values="currentTask.jobCron" /> -->
             <!-- <description-items keys="报警邮件" :values="currentTask.alarmEmail" /> -->
@@ -370,11 +371,30 @@ rkJggg=="
 
     <job-detail-pro-edit
       :show="editPanelShow"
-      :title="'编辑任务：' + currentTask.jobDesc + ' ( ' + projectName + ' )'"
+      :title="'编辑任务：' + currentTask.name + ' ( ' + projectName + ' )'"
       :job-id="editPanelId"
       @close="closeEdit"
       @fetchData="fetchData"
     />
+
+    <!-- <el-dialog v-show="editShell" width="75%" :title="'编辑任务：' + currentTask.name + ' ( ' + projectName + ' )'">
+      <el-row>
+        <el-col>
+          123
+        </el-col>
+      </el-row>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="cancelShell">
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          @click="ShellSure"
+        >
+          确定
+        </el-button>
+      </span>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -482,7 +502,7 @@ export default {
         id: undefined,
         jobGroup: '',
         jobCron: '',
-        jobDesc: '',
+        name: '',
         executorRouteStrategy: '',
         executorBlockStrategy: '',
         childJobId: '',
@@ -563,7 +583,7 @@ export default {
         jobGroup: 0,
         projectIds: '',
         triggerStatus: -1,
-        jobDesc: '',
+        name: '',
         glueType: ''
       },
       showCronBox: false,
@@ -571,6 +591,7 @@ export default {
       pluginData: [],
       /** 编辑dialog显示 */
       editPanelShow: false,
+      editShell: false,
       /** 传到编辑页面的ID */
       editPanelId: 0,
       dialogStatus: '',
@@ -606,8 +627,8 @@ export default {
             trigger: 'change'
           }
         ],
-        jobDesc: [
-          { required: true, message: 'jobDesc is required', trigger: 'blur' }
+        name: [
+          { required: true, message: 'name is required', trigger: 'blur' }
         ],
         jobProject: [
           {
@@ -634,7 +655,7 @@ export default {
         id: undefined,
         jobGroup: '',
         jobCron: '',
-        jobDesc: '',
+        name: '',
         executorRouteStrategy: '',
         executorBlockStrategy: '',
         childJobId: '',
@@ -952,6 +973,13 @@ export default {
       return this.$refs.reader.getData()
     },
 
+    // cancelShell() {
+    //   this.editShell = false
+    // },
+
+    // ShellSure() {
+    //   this.editShell = false
+    // },
     showJobSchedule() {
       this.scheduleForm.cron = this.$store.state.taskAdmin.jobDataDetail.jobCron
       this.scheduleForm.timeout = this.$store.state.taskAdmin.jobDataDetail.executorTimeout
@@ -1352,7 +1380,7 @@ export default {
       )
       const paramItem = [
         {
-          text: this.currentTask.jobDesc,
+          text: this.currentTask.name,
           key: this.currentTask.id,
           data: this.currentTask,
           color: 'lightblue'
@@ -1361,7 +1389,7 @@ export default {
       if (this.isVal(this.currentTask.childJobId)) {
         for (const i of this.childJob) {
           paramItem.push({
-            text: this.hasVal(i, 'jobDesc'),
+            text: this.hasVal(i, 'name'),
             key: parseInt(this.hasVal(i, 'id')),
             data: i,
             color: 'orange'
@@ -1423,14 +1451,20 @@ export default {
      */
     showEdit(currentTask) {
       console.log(currentTask)
-      console.log(this.jobInfo.jobType, 'this.jobInfo.jobType')
-      this.$store.commit('SET_JOBINFO_TYPE', this.jobInfo.jobType)
+      this.$store.commit('set_edit_task', currentTask)
+      console.log(this.jobInfo.jobType, 'this.jobInfo.jobType', currentTask.id)
+      this.$store.commit('SET_JOBINFO_TYPE', currentTask.jobType)
       this.editPanelId = currentTask.id
+      console.log(this.editPanelShow)
       this.editPanelShow = true
-      console.log(this.editPanelId, 'this.editPanelId')
+      console.log(this.editPanelId, this.editPanelShow, 'this.editPanelId')
     },
     closeEdit() {
       this.editPanelShow = false
+    },
+    // 子传父组件通讯方法
+    sendCloseTabs() {
+      this.$emit('getCloseTabs', 'close')
     },
     /**
      * @description: 提交调度参数修改
@@ -1438,7 +1472,7 @@ export default {
     submitScheduleForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.temp.id = this.$store.state.taskAdmin.jobDataDetail.id
+          this.temp.id = this.$store.state.taskAdmin.Group.id
           this.temp.jobCron = this.scheduleForm.cron
           this.temp.executorTimeout = this.scheduleForm.timeout
           this.temp.alarmEmail = this.scheduleForm.alarmEmail
@@ -1523,7 +1557,7 @@ export default {
   width: 21px;
 }
 
-.jobDesc {
+.name {
   font-size: 24px;
   font-family: PingFangHK-Medium, PingFangHK;
   font-weight: 500;

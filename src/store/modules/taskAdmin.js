@@ -107,7 +107,9 @@ const state = {
 
   readerIsEdit: true, // true编辑，false更新
 
-  watchStr: 1, // 监视对象
+  watchStr: 1, // 监视是否刷新任务tree对象
+
+  removeTabs: 1, // 监视是否清空tabs对象
 
   logWatch: false, // 可以查看实时日志
 
@@ -125,11 +127,16 @@ const state = {
     schema: '' // 数据库名
   },
   setcode: '',
-  setRedDot: ''//设置红点提示
+  currentTask: '', // 当前编辑任务的信息
+  setRedDot: ''// 设置红点提示
   // projectId: ''
 }
 
 const mutations = {
+  // 修改当前任务信息
+  set_edit_task: (state, payload) => {
+    state.currentTask = payload
+  },
   SETREDDOT: (state, payload) => {
     state.setRedDot = payload
   },
@@ -161,6 +168,10 @@ const mutations = {
   },
   changeWatch(state, payload) {
     state.watchStr += payload
+  },
+
+  closeTabs(state, payload) {
+    state.removeTabs += payload
   },
 
   changeJobId(state, payload) {
@@ -285,6 +296,7 @@ const mutations = {
 
   SET_JOB_INFO: (state, jobInfo) => {
     state.jobInfo = jobInfo
+    state.Group = jobInfo
   },
 
   SET_READER_ISEDIT: (state, isEdit) => {
