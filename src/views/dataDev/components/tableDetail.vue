@@ -18,7 +18,6 @@
         <div
           id="last"
           ref="querylog"
-          style="heith: 150px"
           class="Navigation"
           onload="window.scrollTo(0,document.getElemetnById('last').scrollHeight);"
         >
@@ -819,6 +818,7 @@ export default {
           if (resGetAsyncTaskInfo.data.taskInfo.error) {
             this.err = resGetAsyncTaskInfo.data.taskInfo.error.message
             console.log(resGetAsyncTaskInfo.data.taskInfo.error.message)
+            this.loglist = []
             this.loglist.unshift({
               title: '错误sql返回',
               // tableData: this.tableData,
@@ -895,6 +895,7 @@ export default {
           })
           return obj
         })
+        this.loglist = []
         this.loglist.unshift({
           logtime: new Date(),
           content: this.content,
@@ -1183,6 +1184,7 @@ export default {
 
 <style lang="scss" scoped>
 .table {
+  // height: 300px;
   .el-tabs {
     .el-tab-pane {
       .demo-input-size {
@@ -1258,7 +1260,8 @@ export default {
   overflow: scroll;
   width: 100%;
   background: #fff;
-  height: calc(50vh - 157px);
+  // height: calc(50vh - 157px);
+  height: 300px;
 }
 .Navigation .color {
   font-weight: 400px;
