@@ -224,7 +224,10 @@ rkJggg=="
                     <svg-icon class="svg_icon" icon-class="COMPUTE" />计算任务
                   </a>
                   <a id="level3" href="javascript:">
-                    <svg-icon class="svg_icon" icon-class="NORMAL" />数据同步任务
+                    <svg-icon
+                      class="svg_icon"
+                      icon-class="NORMAL"
+                    />数据同步任务
                     <i class="el-icon-arrow-right" />
                     <vue-context-menu
                       class="right-menu2"
@@ -233,7 +236,8 @@ rkJggg=="
                       style="display: none"
                     >
                       <a href="javascript:" @click="showAllName('NORMAL')">
-                        <svg-icon class="svg_icon" icon-class="NORMAL" /> 普通任务
+                        <svg-icon class="svg_icon" icon-class="NORMAL" />
+                        普通任务
                       </a>
                       <a href="javascript:" @click="showAllName('IMPORT')">
                         <svg
@@ -276,7 +280,10 @@ rkJggg=="
                         引入任务
                       </a>
                       <a href="javascript:" @click="showAllName('EXPORT')">
-                        <svg-icon class="svg_icon" icon-class="EXPORT" />导出任务
+                        <svg-icon
+                          class="svg_icon"
+                          icon-class="EXPORT"
+                        />导出任务
                       </a>
                     </vue-context-menu>
                   </a>
@@ -672,7 +679,12 @@ rkJggg=="
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-        <el-button type="goon" size="small" @click="HivecreateHandl()">
+        <el-button
+          type="goon"
+          :disabled="isdisabled"
+          size="small"
+          @click="HivecreateHandl()"
+        >
           确定
         </el-button>
       </div>
@@ -815,6 +827,7 @@ export default {
   },
   data() {
     return {
+      isdisabled: true,
       showHive: false,
       chineseName: '',
       englishName: '',
@@ -921,6 +934,12 @@ export default {
     }
   },
   watch: {
+    chineseName(val) {
+      this.isdisabled = false
+      if (val !== '') {
+        this.isdisabled = false
+      }
+    },
     editableTabs(val) {
       console.log(val)
       if (val.length === 1) {
@@ -936,9 +955,12 @@ export default {
       console.log(menu, menu1, menu2)
       if (val > 500) {
         setTimeout(() => {
-          menu[1].style.top = parseInt(menu[1].style.top.split('px')[0]) - 200 + 'px'
-          menu1[0].style.top = parseInt(menu1[0].style.top.split('px')[0]) - 200 + 'px'
-          menu2[0].style.top = parseInt(menu2[0].style.top.split('px')[0]) - 200 + 'px'
+          menu[1].style.top =
+            parseInt(menu[1].style.top.split('px')[0]) - 200 + 'px'
+          menu1[0].style.top =
+            parseInt(menu1[0].style.top.split('px')[0]) - 200 + 'px'
+          menu2[0].style.top =
+            parseInt(menu2[0].style.top.split('px')[0]) - 200 + 'px'
         }, 100)
       }
     },
@@ -2331,6 +2353,9 @@ export default {
     .boxs {
       border: none;
       text-align: center;
+      .el-input__inner {
+        height: 27px;
+      }
     }
     .box {
       border: 1px solid #ccc;

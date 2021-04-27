@@ -97,11 +97,11 @@
         <el-col
           v-if="
             jobType === 'NORMAL' ||
-            jobType === 'IMPORT' ||
-            jobType === 'EXPORT' ||
-            jobType === 'SHELL' ||
-            jobType === 'POWERSHELL' ||
-            jobType === 'PYTHON'
+              jobType === 'IMPORT' ||
+              jobType === 'EXPORT' ||
+              jobType === 'SHELL' ||
+              jobType === 'POWERSHELL' ||
+              jobType === 'PYTHON'
           "
           class="detail_col"
           :xs="24"
@@ -120,11 +120,11 @@
         <el-col
           v-if="
             jobType === 'NORMAL' ||
-            jobType === 'IMPORT' ||
-            jobType === 'EXPORT' ||
-            jobType === 'SHELL' ||
-            jobType === 'POWERSHELL' ||
-            jobType === 'PYTHON'
+              jobType === 'IMPORT' ||
+              jobType === 'EXPORT' ||
+              jobType === 'SHELL' ||
+              jobType === 'POWERSHELL' ||
+              jobType === 'PYTHON'
           "
           class="detail_col"
           :xs="24"
@@ -293,15 +293,13 @@
           type="text"
           icon="el-icon-edit"
           @click="editable.newTask = !editable.newTask"
-          >{{ editable.newTask ? "取消" : "编辑" }}</el-button
-        >
+        >{{ editable.newTask ? "取消" : "编辑" }}</el-button>
         <el-button
           v-if="dialogStatus !== 'create' && editable.newTask"
           type="text"
           icon="el-icon-upload"
           @click="updateData()"
-          >保存更改</el-button
-        >
+        >保存更改</el-button>
       </h3>
       <div class="part-container">
         <el-form
@@ -385,9 +383,10 @@
                 <cron v-model="temp.jobCron" />
                 <span slot="footer" class="dialog-footer">
                   <el-button @click="showCronBox = false">关闭</el-button>
-                  <el-button type="primary" @click="showCronBox = false"
-                    >确 定</el-button
-                  >
+                  <el-button
+                    type="primary"
+                    @click="showCronBox = false"
+                  >确 定</el-button>
                 </span>
               </el-dialog>
               <el-form-item label="Cron表达式" prop="jobCron">
@@ -792,15 +791,13 @@
           type="text"
           icon="el-icon-edit"
           @click="editReader"
-          >{{ editable.reader ? "取消" : "编辑" }}</el-button
-        >
+        >{{ editable.reader ? "取消" : "编辑" }}</el-button>
         <el-button
           v-if="dialogStatus !== 'create' && editable.reader"
           type="text"
           icon="el-icon-upload"
           @click="updateData()"
-          >保存更改</el-button
-        >
+        >保存更改</el-button>
       </h3>
       <div class="part-container">
         <!-- {{ this.$store.state.taskAdmin.tabType }}
@@ -820,15 +817,13 @@
           type="text"
           icon="el-icon-edit"
           @click="editable.writer = !editable.writer"
-          >{{ editable.writer ? "取消" : "编辑" }}</el-button
-        >
+        >{{ editable.writer ? "取消" : "编辑" }}</el-button>
         <el-button
           v-if="dialogStatus !== 'create' && editable.writer"
           type="text"
           icon="el-icon-upload"
           @click="updateData()"
-          >保存更改</el-button
-        >
+        >保存更改</el-button>
       </h3>
       <div class="part-container">
         <!-- {{ jobInfo.jobParam }} -->
@@ -867,7 +862,7 @@
           <el-form-item
             v-if="
               $store.state.taskAdmin.jobInfoType === 'DQCJOB' &&
-              (dataSource === 'postgresql' ||
+                (dataSource === 'postgresql' ||
                 dataSource === 'greenplum' ||
                 dataSource === 'oracle' ||
                 dataSource === 'sqlserver')
@@ -1028,8 +1023,7 @@
               :disabled="!editable.writer"
               :indeterminate="writerForm.isIndeterminate"
               @change="wHandleCheckAllChange"
-              >全选</el-checkbox
-            >
+            >全选</el-checkbox>
             <div style="margin: 15px 0" />
             <el-checkbox-group
               v-model="writerFormQuality.writerColumns"
@@ -1040,8 +1034,7 @@
                 v-for="(item, index) in fromColumnList"
                 :key="index"
                 :label="item"
-                >{{ item }}</el-checkbox
-              >
+              >{{ item }}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
           <el-form-item v-if="dataSource !== 'hive'" label="前置sql语句：">
@@ -1176,15 +1169,13 @@
           type="text"
           icon="el-icon-edit"
           @click="editable.mapping = !editable.mapping"
-          >{{ editable.mapping ? "取消" : "编辑" }}</el-button
-        >
+        >{{ editable.mapping ? "取消" : "编辑" }}</el-button>
         <el-button
           v-if="dialogStatus !== 'create' && editable.mapping"
           type="text"
           icon="el-icon-upload"
           @click="updateData()"
-          >保存更改</el-button
-        >
+        >保存更改</el-button>
       </h3>
       <!-- {{ $store.state.taskAdmin.readerColumns }}
       <br>
@@ -1285,28 +1276,28 @@
 </template>
 
 <script>
-import * as dsQueryApi from "@/api/metadata-query";
-import * as executor from "@/api/datax-executor";
-import * as job from "@/api/datax-job-info";
-import * as log from "@/api/datax-job-log";
-import waves from "@/directive/waves"; // waves directive
-import Cron from "@/components/Cron";
-import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-import JsonEditor from "@/components/JsonEditor";
-import ShellEditor from "@/components/ShellEditor";
-import PythonEditor from "@/components/PythonEditor";
-import PowershellEditor from "@/components/PowershellEditor";
-import * as datasourceApi from "@/api/datax-jdbcDatasource";
-import * as jobProjectApi from "@/api/datax-job-project";
-import reader from "@/views/datax/json-build/reader";
-import writer from "@/views/datax/json-build/writer";
-import qualityReader from "../../jsonQuality/reader";
-import qualityWriter from "../../jsonQuality/writer";
-import mapper from "@/views/datax/json-build/mapper";
-import { isJSON } from "@/utils/validate";
-import jobLog from "./jobLog";
-import jobResult from "./jobResult";
-import { getTableSchema } from "@/api/metadata-query";
+import * as dsQueryApi from '@/api/metadata-query'
+import * as executor from '@/api/datax-executor'
+import * as job from '@/api/datax-job-info'
+import * as log from '@/api/datax-job-log'
+import waves from '@/directive/waves' // waves directive
+import Cron from '@/components/Cron'
+import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import JsonEditor from '@/components/JsonEditor'
+import ShellEditor from '@/components/ShellEditor'
+import PythonEditor from '@/components/PythonEditor'
+import PowershellEditor from '@/components/PowershellEditor'
+import * as datasourceApi from '@/api/datax-jdbcDatasource'
+import * as jobProjectApi from '@/api/datax-job-project'
+import reader from '@/views/datax/json-build/reader'
+import writer from '@/views/datax/json-build/writer'
+import qualityReader from '../../jsonQuality/reader'
+import qualityWriter from '../../jsonQuality/writer'
+import mapper from '@/views/datax/json-build/mapper'
+import { isJSON } from '@/utils/validate'
+import jobLog from './jobLog'
+import jobResult from './jobResult'
+import { getTableSchema } from '@/api/metadata-query'
 
 import {
   handlerExecute,
@@ -1316,12 +1307,12 @@ import {
   handlerStop,
   loadById,
   nextTriggerTime,
-  handlerUpdate,
-} from "../method";
-import { translaterMaster } from "@/utils/dictionary";
+  handlerUpdate
+} from '../method'
+import { translaterMaster } from '@/utils/dictionary'
 
 export default {
-  name: "SimpleJob",
+  name: 'SimpleJob',
   components: {
     Pagination,
     JsonEditor,
@@ -1335,37 +1326,37 @@ export default {
     writer,
     qualityReader,
     qualityWriter,
-    mapper,
+    mapper
   },
   directives: {
-    waves,
+    waves
   },
   filters: {
     statusFilter(status) {
       const statusMap = {
-        published: "success",
-        draft: "gray",
-        deleted: "danger",
-      };
-      return statusMap[status];
-    },
+        published: 'success',
+        draft: 'gray',
+        deleted: 'danger'
+      }
+      return statusMap[status]
+    }
   },
   props: {
-    jobInfo: { type: Object, default: () => ({}) },
+    jobInfo: { type: Object, default: () => ({}) }
   },
   data() {
     const validateIncParam = (rule, value, callback) => {
       if (!value) {
-        callback(new Error("Increment parameters is required"));
+        callback(new Error('Increment parameters is required'))
       }
-      callback();
-    };
+      callback()
+    }
     const validatePartitionParam = (rule, value, callback) => {
       if (!this.partitionField) {
-        callback(new Error("Partition parameters is required"));
+        callback(new Error('Partition parameters is required'))
       }
-      callback();
-    };
+      callback()
+    }
     return {
       tableData: [],
       mapperJson: {},
@@ -1380,7 +1371,7 @@ export default {
         rules: [],
         lcheckAll: false,
         rcheckAll: false,
-        isIndeterminate: true,
+        isIndeterminate: true
       },
       /** 数据库-表-列 */
       fromColumnList: [],
@@ -1388,21 +1379,21 @@ export default {
       writerForm: {
         checkAll: false,
         isIndeterminate: true,
-        ifCreateTable: false,
+        ifCreateTable: false
       },
       /** 质量任务表单 */
       writerFormQuality: {},
       rColumnList: [],
       rTbList: [],
       jsonshow: false,
-      newstlogContent: "",
-      jobId: "",
+      newstlogContent: '',
+      jobId: '',
       logview: false,
       logData: [],
       editFrom: true,
       switchVal: 1,
       showLog: false,
-      projectIds: "",
+      projectIds: '',
       list: null,
       listLoading: true,
       total: 0,
@@ -1412,323 +1403,323 @@ export default {
         current: 1,
         size: 10000,
         jobGroup: 0,
-        projectIds: "",
+        projectIds: '',
         triggerStatus: -1,
-        jobDesc: "",
-        glueType: "",
+        jobDesc: '',
+        glueType: ''
       },
       showCronBox: false,
       dialogPluginVisible: false,
       pluginData: [],
       dialogFormVisible: false,
-      dialogStatus: "",
+      dialogStatus: '',
       textMap: {
-        update: "Edit",
-        create: "Create",
+        update: 'Edit',
+        create: 'Create'
       },
       rules: {
         jobGroup: [
           {
             required: true,
-            message: "jobGroup is required",
-            trigger: "change",
-          },
+            message: 'jobGroup is required',
+            trigger: 'change'
+          }
         ],
         executorRouteStrategy: [
           {
             required: true,
-            message: "executorRouteStrategy is required",
-            trigger: "change",
-          },
+            message: 'executorRouteStrategy is required',
+            trigger: 'change'
+          }
         ],
         executorBlockStrategy: [
           {
             required: true,
-            message: "executorBlockStrategy is required",
-            trigger: "change",
-          },
+            message: 'executorBlockStrategy is required',
+            trigger: 'change'
+          }
         ],
         glueType: [
           {
             required: true,
-            message: "jobType is required",
-            trigger: "change",
-          },
+            message: 'jobType is required',
+            trigger: 'change'
+          }
         ],
         projectId: [
           {
             required: true,
-            message: "projectId is required",
-            trigger: "change",
-          },
+            message: 'projectId is required',
+            trigger: 'change'
+          }
         ],
         jobDesc: [
           {
             required: true,
-            message: "jobDesc is required",
-            trigger: "blur",
-          },
+            message: 'jobDesc is required',
+            trigger: 'blur'
+          }
         ],
         jobProject: [
           {
             required: true,
-            message: "jobProject is required",
-            trigger: "blur",
-          },
+            message: 'jobProject is required',
+            trigger: 'blur'
+          }
         ],
         jobCron: [
           {
             required: true,
-            message: "jobCron is required",
-            trigger: "blur",
-          },
+            message: 'jobCron is required',
+            trigger: 'blur'
+          }
         ],
         incStartId: [
           {
-            trigger: "blur",
-            validator: validateIncParam,
-          },
+            trigger: 'blur',
+            validator: validateIncParam
+          }
         ],
         replaceParam: [
           {
-            trigger: "blur",
-            validator: validateIncParam,
-          },
+            trigger: 'blur',
+            validator: validateIncParam
+          }
         ],
         primaryKey: [
           {
-            trigger: "blur",
-            validator: validateIncParam,
-          },
+            trigger: 'blur',
+            validator: validateIncParam
+          }
         ],
         incStartTime: [
           {
-            trigger: "change",
-            validator: validateIncParam,
-          },
+            trigger: 'change',
+            validator: validateIncParam
+          }
         ],
         replaceParamType: [
           {
-            trigger: "change",
-            validator: validateIncParam,
-          },
+            trigger: 'change',
+            validator: validateIncParam
+          }
         ],
         partitionField: [
           {
-            trigger: "blur",
-            validator: validatePartitionParam,
-          },
+            trigger: 'blur',
+            validator: validatePartitionParam
+          }
         ],
         datasourceId: [
           {
-            trigger: "change",
-            validator: validateIncParam,
-          },
+            trigger: 'change',
+            validator: validateIncParam
+          }
         ],
         readerTable: [
           {
-            trigger: "blur",
-            validator: validateIncParam,
-          },
-        ],
+            trigger: 'blur',
+            validator: validateIncParam
+          }
+        ]
       },
       temp: {
         id: undefined,
-        jobGroup: "",
-        jobCron: "",
-        jobDesc: "",
-        executorRouteStrategy: "",
-        executorBlockStrategy: "",
-        childJobId: "",
-        childJobIdArr: "",
-        executorFailRetryCount: "",
-        alarmEmail: "",
-        executorTimeout: "",
+        jobGroup: '',
+        jobCron: '',
+        jobDesc: '',
+        executorRouteStrategy: '',
+        executorBlockStrategy: '',
+        childJobId: '',
+        childJobIdArr: '',
+        executorFailRetryCount: '',
+        alarmEmail: '',
+        executorTimeout: '',
         userId: 0,
-        jobConfigId: "",
-        executorHandler: "",
-        glueType: "",
-        glueSource: "",
-        jobJson: "",
-        executorParam: "",
-        replaceParam: "",
-        replaceParamType: "Timestamp",
-        jvmParam: "",
-        incStartTime: "",
-        partitionInfo: "",
+        jobConfigId: '',
+        executorHandler: '',
+        glueType: '',
+        glueSource: '',
+        jobJson: '',
+        executorParam: '',
+        replaceParam: '',
+        replaceParamType: 'Timestamp',
+        jvmParam: '',
+        incStartTime: '',
+        partitionInfo: '',
         incrementType: 0,
-        incStartId: "",
-        primaryKey: "",
-        projectId: "",
-        datasourceId: "",
-        readerTable: "",
-        jobType: "",
+        incStartId: '',
+        primaryKey: '',
+        projectId: '',
+        datasourceId: '',
+        readerTable: '',
+        jobType: ''
       },
       resetTemp() {
-        this.temp = this.$options.data().temp;
-        this.jobJson = "";
-        this.glueSource = "";
-        this.timeOffset = 0;
-        this.timeFormatType = "yyyy-MM-dd";
-        this.partitionField = "";
+        this.temp = this.$options.data().temp
+        this.jobJson = ''
+        this.glueSource = ''
+        this.timeOffset = 0
+        this.timeFormatType = 'yyyy-MM-dd'
+        this.partitionField = ''
       },
       executorList: [],
-      jobIdList: "",
-      jobProjectList: "",
-      dataSourceList: "",
+      jobIdList: '',
+      jobProjectList: '',
+      dataSourceList: '',
       blockStrategies: [
         {
-          value: "SERIAL_EXECUTION",
-          label: "单机串行",
+          value: 'SERIAL_EXECUTION',
+          label: '单机串行'
         },
         {
-          value: "DISCARD_LATER",
-          label: "丢弃后续调度",
+          value: 'DISCARD_LATER',
+          label: '丢弃后续调度'
         },
         {
-          value: "COVER_EARLY",
-          label: "覆盖之前调度",
-        },
+          value: 'COVER_EARLY',
+          label: '覆盖之前调度'
+        }
       ],
       routeStrategies: [
         {
-          value: "FIRST",
-          label: "第一个",
+          value: 'FIRST',
+          label: '第一个'
         },
         {
-          value: "LAST",
-          label: "最后一个",
+          value: 'LAST',
+          label: '最后一个'
         },
         {
-          value: "ROUND",
-          label: "轮询",
+          value: 'ROUND',
+          label: '轮询'
         },
         {
-          value: "RANDOM",
-          label: "随机",
+          value: 'RANDOM',
+          label: '随机'
         },
         {
-          value: "CONSISTENT_HASH",
-          label: "一致性HASH",
+          value: 'CONSISTENT_HASH',
+          label: '一致性HASH'
         },
         {
-          value: "LEAST_FREQUENTLY_USED",
-          label: "最不经常使用",
+          value: 'LEAST_FREQUENTLY_USED',
+          label: '最不经常使用'
         },
         {
-          value: "LEAST_RECENTLY_USED",
-          label: "最近最久未使用",
+          value: 'LEAST_RECENTLY_USED',
+          label: '最近最久未使用'
         },
         {
-          value: "FAILOVER",
-          label: "故障转移",
+          value: 'FAILOVER',
+          label: '故障转移'
         },
         {
-          value: "BUSYOVER",
-          label: "忙碌转移",
-        },
+          value: 'BUSYOVER',
+          label: '忙碌转移'
+        }
         // { value: 'SHARDING_BROADCAST', label: '分片广播' }
       ],
       glueTypes: [
         {
-          value: "BEAN",
-          label: "DataX任务",
+          value: 'BEAN',
+          label: 'DataX任务'
         },
         {
-          value: "GLUE_SHELL",
-          label: "Shell任务",
+          value: 'GLUE_SHELL',
+          label: 'Shell任务'
         },
         {
-          value: "GLUE_PYTHON",
-          label: "Python任务",
+          value: 'GLUE_PYTHON',
+          label: 'Python任务'
         },
         {
-          value: "GLUE_POWERSHELL",
-          label: "PowerShell任务",
-        },
+          value: 'GLUE_POWERSHELL',
+          label: 'PowerShell任务'
+        }
       ],
       incrementTypes: [
         {
           value: 0,
-          label: "无",
+          label: '无'
         },
         {
           value: 1,
-          label: "主键自增",
+          label: '主键自增'
         },
         {
           value: 2,
-          label: "时间自增",
+          label: '时间自增'
         },
         {
           value: 3,
-          label: "HIVE分区",
-        },
+          label: 'HIVE分区'
+        }
       ],
-      triggerNextTimes: "",
+      triggerNextTimes: '',
       registerNode: [],
-      jobJson: "",
-      glueSource: "",
+      jobJson: '',
+      glueSource: '',
       timeOffset: 0,
-      timeFormatType: "yyyy-MM-dd",
-      partitionField: "",
+      timeFormatType: 'yyyy-MM-dd',
+      partitionField: '',
       timeFormatTypes: [
         {
-          value: "yyyy-MM-dd",
-          label: "yyyy-MM-dd",
+          value: 'yyyy-MM-dd',
+          label: 'yyyy-MM-dd'
         },
         {
-          value: "yyyyMMdd",
-          label: "yyyyMMdd",
+          value: 'yyyyMMdd',
+          label: 'yyyyMMdd'
         },
         {
-          value: "yyyy/MM/dd",
-          label: "yyyy/MM/dd",
-        },
+          value: 'yyyy/MM/dd',
+          label: 'yyyy/MM/dd'
+        }
       ],
       replaceFormatTypes: [
         {
-          value: "yyyy/MM/dd",
-          label: "yyyy/MM/dd",
+          value: 'yyyy/MM/dd',
+          label: 'yyyy/MM/dd'
         },
         {
-          value: "yyyy-MM-dd",
-          label: "yyyy-MM-dd",
+          value: 'yyyy-MM-dd',
+          label: 'yyyy-MM-dd'
         },
         {
-          value: "HH:mm:ss",
-          label: "HH:mm:ss",
+          value: 'HH:mm:ss',
+          label: 'HH:mm:ss'
         },
         {
-          value: "yyyy/MM/dd HH:mm:ss",
-          label: "yyyy/MM/dd HH:mm:ss",
+          value: 'yyyy/MM/dd HH:mm:ss',
+          label: 'yyyy/MM/dd HH:mm:ss'
         },
         {
-          value: "yyyy-MM-dd HH:mm:ss",
-          label: "yyyy-MM-dd HH:mm:ss",
+          value: 'yyyy-MM-dd HH:mm:ss',
+          label: 'yyyy-MM-dd HH:mm:ss'
         },
         {
-          value: "Timestamp",
-          label: "时间戳",
-        },
+          value: 'Timestamp',
+          label: '时间戳'
+        }
       ],
       statusList: [
         {
           value: 500,
-          label: "失败",
+          label: '失败'
         },
         {
           value: 502,
-          label: "失败(超时)",
+          label: '失败(超时)'
         },
         {
           value: 200,
-          label: "成功",
+          label: '成功'
         },
         {
           value: 0,
-          label: "无",
-        },
+          label: '无'
+        }
       ],
       /** 可编辑 */
       editable: {
@@ -1739,49 +1730,49 @@ export default {
         /** 构建writer */
         writer: false,
         /** 字段映射 */
-        mapping: false,
+        mapping: false
       },
-      dataSource: "",
+      dataSource: '',
       fileTypes: [
-        { value: "text", label: "text" },
-        { value: "orc", label: "orc" },
+        { value: 'text', label: 'text' },
+        { value: 'orc', label: 'orc' }
       ],
       writeModes: [
-        { value: "append", label: "append 写入前不做任何处理" },
+        { value: 'append', label: 'append 写入前不做任何处理' },
         {
-          value: "nonConflict",
-          label: "nonConflict 目录下有fileName前缀的文件，直接报错",
-        },
+          value: 'nonConflict',
+          label: 'nonConflict 目录下有fileName前缀的文件，直接报错'
+        }
       ],
-      resultView: false, // 结果查看
-    };
+      resultView: false // 结果查看
+    }
   },
 
   computed: {
     jobType() {
-      return this.jobInfo.jobType;
+      return this.jobInfo.jobType
     },
 
     jobGroupName() {
       return this.executorList.find(
         (element) => element.id === this.temp.jobGroup
-      )?.title;
+      )?.title
     },
 
     jobParam() {
-      return JSON.parse(this.jobInfo.jobParam);
+      return JSON.parse(this.jobInfo.jobParam)
     },
 
     ruleArr() {
-      return this.readerForm.rules;
+      return this.readerForm.rules
     },
 
     readerColumns() {
-      return this.$store.state.taskAdmin.selectReaderColumn;
+      return this.$store.state.taskAdmin.selectReaderColumn
     },
 
     writerColumns() {
-      return this.$store.state.taskAdmin.writerColumns;
+      return this.$store.state.taskAdmin.writerColumns
     },
 
     /**
@@ -1794,156 +1785,156 @@ export default {
      */
     finder() {
       return (item, sets, attr, distAttr) => {
-        var temp = "";
+        var temp = ''
         if (sets) {
-          temp = sets.find((ele) => ele[attr] === item);
+          temp = sets.find((ele) => ele[attr] === item)
         }
         if (!temp) {
-          return "";
+          return ''
         }
-        return temp[distAttr];
-      };
+        return temp[distAttr]
+      }
     },
     /** 提取子任务下拉列表数组jobDesc属性 */
     reorganizeChildJob() {
-      var tmp = "-";
+      var tmp = '-'
       if (this.temp.childJobId) {
-        if (typeof this.temp.childJobId !== "string") {
+        if (typeof this.temp.childJobId !== 'string') {
           this.temp.childJobId.forEach((ele) => {
-            if (tmp === "-") {
-              tmp = ele.jobDesc;
+            if (tmp === '-') {
+              tmp = ele.jobDesc
             } else {
-              tmp += ", ".concat(ele.jobDesc);
+              tmp += ', '.concat(ele.jobDesc)
             }
-          });
+          })
         }
       }
-      return tmp;
+      return tmp
     },
     /** 没有值显示短横线，有值显示值 */
     dashOrValue() {
       return (val) => {
         if (val) {
-          return val;
+          return val
         } else {
-          return "-";
-        }
-      };
-    },
-    isEditable() {
-      var temp = null;
-      for (var i in this.editable) {
-        if (temp === null) {
-          temp = this.editable[i];
-        } else {
-          temp = temp || this.editable[i];
+          return '-'
         }
       }
-      return temp;
+    },
+    isEditable() {
+      var temp = null
+      for (var i in this.editable) {
+        if (temp === null) {
+          temp = this.editable[i]
+        } else {
+          temp = temp || this.editable[i]
+        }
+      }
+      return temp
     },
 
     hasVal() {
       return (res, item) => {
         if (res) {
           if (res.hasOwnProperty(item)) {
-            return res[item];
+            return res[item]
           } else {
-            return "";
+            return ''
           }
         } else {
-          return "";
+          return ''
         }
-      };
-    },
+      }
+    }
   },
   watch: {
-    "writerFormQuality.writerDatasourceId": function (oldVal, newVal) {
+    'writerFormQuality.writerDatasourceId': function(oldVal, newVal) {
       this.$store.state.taskAdmin.dataSourceList.find((item) => {
         if (item.id === this.writerFormQuality.writerDatasourceId) {
-          this.dataSource = item.datasource;
+          this.dataSource = item.datasource
         }
-      });
+      })
       if (
-        this.dataSource === "postgresql" ||
-        this.dataSource === "greenplum" ||
-        this.dataSource === "oracle" ||
-        this.dataSource === "sqlserver"
+        this.dataSource === 'postgresql' ||
+        this.dataSource === 'greenplum' ||
+        this.dataSource === 'oracle' ||
+        this.dataSource === 'sqlserver'
       ) {
-        this.getSchemaList();
+        this.getSchemaList()
       }
-      this.getTables("rdbmsWriter");
+      this.getTables('rdbmsWriter')
     },
 
     fromColumnsListChecked(newval) {
-      const arr = [];
+      const arr = []
       newval.forEach((element, index) => {
         const obj = {
           sourceField: this.readerForm.lcolumns[index],
           clearRule: this.readerForm.rules[index],
           targetField: this.readerForm.rcolumns[index],
-          index: index,
-        };
-        arr.push(obj);
-      });
-      this.$store.commit("SET_TABLEDATA", arr);
+          index: index
+        }
+        arr.push(obj)
+      })
+      this.$store.commit('SET_TABLEDATA', arr)
     },
 
     readerColumns(val) {
-      console.log("val", val);
-      this.readerForm.lcolumns = JSON.parse(JSON.stringify(val));
-      this.fromColumnsList = val;
-      this.tableData = [];
+      console.log('val', val)
+      this.readerForm.lcolumns = JSON.parse(JSON.stringify(val))
+      this.fromColumnsList = val
+      this.tableData = []
       val.forEach((row, index) => {
         const obj = {
           column: row,
-          index,
-        };
-        this.tableData.push(obj);
-      });
+          index
+        }
+        this.tableData.push(obj)
+      })
     },
 
     writerColumns(val) {
-      this.readerForm.rcolumns = JSON.parse(JSON.stringify(val));
-      this.toColumnsList = val;
+      this.readerForm.rcolumns = JSON.parse(JSON.stringify(val))
+      this.toColumnsList = val
     },
 
     dialogFormVisible(val) {
-      this.$store.commit("SET_READER_EDITABLE", !val);
+      this.$store.commit('SET_READER_EDITABLE', !val)
       if (!val) {
         for (var i in this.editable) {
-          this.editable[i] = false;
+          this.editable[i] = false
         }
       } else {
         this.$store.state.taskAdmin.dataSourceList.find((item) => {
           if (item.id === this.$store.state.taskAdmin.writerDataSourceID) {
-            this.dataSource = item.datasource;
+            this.dataSource = item.datasource
           }
-        });
-        this.writerFormQuality = JSON.parse(JSON.stringify(this.jobParam));
-        this.getColumns();
+        })
+        this.writerFormQuality = JSON.parse(JSON.stringify(this.jobParam))
+        this.getColumns()
       }
     },
 
-    "writerFormQuality.writerSchema"(val) {
-      this.getTables("rdbmsWriter");
+    'writerFormQuality.writerSchema'(val) {
+      this.getTables('rdbmsWriter')
     },
 
-    "editable.writer"(val) {
+    'editable.writer'(val) {
       if (!val) {
-        this.writerFormQuality = JSON.parse(JSON.stringify(this.jobParam));
-        this.getColumns();
+        this.writerFormQuality = JSON.parse(JSON.stringify(this.jobParam))
+        this.getColumns()
       }
-    },
+    }
   },
   created() {
-    this.fetchData();
-    this.getExecutor();
-    this.getJobIdList();
-    this.getJobProject();
-    this.getDataSourceList();
-    this.getSchemaList();
-    this.temp = this.jobInfo;
-    this.writerFormQuality = JSON.parse(JSON.stringify(this.jobParam));
+    this.fetchData()
+    this.getExecutor()
+    this.getJobIdList()
+    this.getJobProject()
+    this.getDataSourceList()
+    this.getSchemaList()
+    this.temp = this.jobInfo
+    this.writerFormQuality = JSON.parse(JSON.stringify(this.jobParam))
   },
 
   methods: {
@@ -1951,65 +1942,65 @@ export default {
      * @description: 质量任务编辑 - 数据源切换
      */
     wDsChange(e) {
-      this.$store.commit("SET_WRITER_DATASOURCE_ID", e);
+      this.$store.commit('SET_WRITER_DATASOURCE_ID', e)
       this.$store.state.taskAdmin.dataSourceList.find((item) => {
         if (item.id === e) {
-          this.dataSource = item.datasource;
+          this.dataSource = item.datasource
         }
-      });
+      })
     },
 
     getReaderData() {
-      return this.$refs.reader.getData();
+      return this.$refs.reader.getData()
     },
     /**
      * @description: writer表项全选
      */
     wHandleCheckAllChange(val) {
-      this.writerFormQuality.writerColumns = val ? this.fromColumnList : [];
-      this.writerForm.isIndeterminate = false;
+      this.writerFormQuality.writerColumns = val ? this.fromColumnList : []
+      this.writerForm.isIndeterminate = false
       this.$store.commit(
-        "SET_SELECT_WRITERCOLUMN",
+        'SET_SELECT_WRITERCOLUMN',
         this.writerFormQuality.writerColumns
-      );
+      )
     },
     wHandleCheckedChange(value) {
-      console.log(value);
-      const checkedCount = value.length;
-      this.writerForm.checkAll = checkedCount === this.fromColumnList.length;
+      console.log(value)
+      const checkedCount = value.length
+      this.writerForm.checkAll = checkedCount === this.fromColumnList.length
       this.writerForm.isIndeterminate =
-        checkedCount > 0 && checkedCount < this.fromColumnList.length;
-      this.$store.commit("SET_SELECT_WRITERCOLUMN", value);
+        checkedCount > 0 && checkedCount < this.fromColumnList.length
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', value)
     },
     wTbChange(t) {
-      this.getColumns("writer");
-      this.$store.commit("SET_WRITER_TABLENAME", t);
+      this.getColumns('writer')
+      this.$store.commit('SET_WRITER_TABLENAME', t)
     },
 
     // 执行一次
     handlerExecute(temp) {
       handlerExecute.call(this, temp).then(() => {
-        this.newstlogContent = "";
-        this.logList();
-        this.showLog = true;
-        this.jsonshow = false;
-      });
+        this.newstlogContent = ''
+        this.logList()
+        this.showLog = true
+        this.jsonshow = false
+      })
     },
 
     handlerViewResult(temp) {
       // console.log(temp);
-      this.resultView = true;
-      this.jobId = temp.id;
-      this.$refs.jobResult?.fetchData();
+      this.resultView = true
+      this.jobId = temp.id
+      this.$refs.jobResult?.fetchData()
     },
 
     // 查看日志
     handlerViewLog(temp) {
       // handlerViewLog.call(this, temp);
-      this.$store.commit("SET_LOGVIEW_TYPE", 0);
-      this.logview = true;
-      this.jobId = temp.id;
-      this.$refs.jobLog?.fetchData();
+      this.$store.commit('SET_LOGVIEW_TYPE', 0)
+      this.logview = true
+      this.jobId = temp.id
+      this.$refs.jobLog?.fetchData()
     },
 
     // 删除
@@ -2017,76 +2008,76 @@ export default {
       handlerDelete
         .call(this, temp)
         .then(() => {
-          this.$emit("deleteDetailTab", temp.id);
-          this.$emit("deleteJob", true);
+          this.$emit('deleteDetailTab', temp.id)
+          this.$emit('deleteJob', true)
         })
-        .then(() => {});
+        .then(() => {})
     },
 
     // 开关
     changeSwitch(temp) {
       temp.triggerStatus === 1
         ? handlerStart.call(this, temp)
-        : handlerStop.call(this, temp);
+        : handlerStop.call(this, temp)
     },
 
     // 注册节点
     loadById(row) {
-      loadById.call(this, row);
+      loadById.call(this, row)
     },
 
     // 下次触发时间
     nextTriggerTime(row) {
-      nextTriggerTime.call(this, row);
+      nextTriggerTime.call(this, row)
     },
 
     // 编辑
     handlerUpdate(row) {
-      this.$store.commit("SET_JOBINFO_TYPE", this.jobInfo.jobType);
-      this.$store.commit("SET_READER_ISEDIT", true);
+      this.$store.commit('SET_JOBINFO_TYPE', this.jobInfo.jobType)
+      this.$store.commit('SET_READER_ISEDIT', true)
 
-      row.childJobId = row.childJobId?.join?.(",");
-      handlerUpdate.call(this, row);
+      row.childJobId = row.childJobId?.join?.(',')
+      handlerUpdate.call(this, row)
 
-      const jobParam = JSON.parse(row.jobParam);
-      console.log("jobParam", jobParam);
+      const jobParam = JSON.parse(row.jobParam)
+      console.log('jobParam', jobParam)
       this.$store.commit(
-        "SET_READER_DATASOURCE_ID",
+        'SET_READER_DATASOURCE_ID',
         jobParam.readerDatasourceId
-      );
+      )
 
-      if (this.$store.state.taskAdmin.jobInfoType === "DQCJOB") {
-        const jobParamRule = jobParam.rule;
+      if (this.$store.state.taskAdmin.jobInfoType === 'DQCJOB') {
+        const jobParamRule = jobParam.rule
         jobParamRule.forEach((ele) => {
-          const codeArr = [];
+          const codeArr = []
           ele.ruleId.forEach((code) => {
-            codeArr.push(code.code);
-          });
-          ele.ruleId = codeArr;
-        });
-        this.$store.commit("SET_JOBRULE", jobParamRule);
+            codeArr.push(code.code)
+          })
+          ele.ruleId = codeArr
+        })
+        this.$store.commit('SET_JOBRULE', jobParamRule)
       }
 
-      this.$store.commit("SET_READER_TABLENAME", jobParam.readerTables[0]);
+      this.$store.commit('SET_READER_TABLENAME', jobParam.readerTables[0])
 
-      this.$store.commit("SET_READER_SCHEMA", jobParam.readerSchema);
+      this.$store.commit('SET_READER_SCHEMA', jobParam.readerSchema)
 
-      this.$store.commit("SET_WRITER_SCHEMA", jobParam.writerSchema);
+      this.$store.commit('SET_WRITER_SCHEMA', jobParam.writerSchema)
 
-      this.$store.commit("SET_SELECT_READERCOLUMN", jobParam.readerColumns);
+      this.$store.commit('SET_SELECT_READERCOLUMN', jobParam.readerColumns)
 
       this.$store.commit(
-        "SET_WRITER_DATASOURCE_ID",
+        'SET_WRITER_DATASOURCE_ID',
         jobParam.writerDatasourceId
-      );
+      )
 
-      this.$store.commit("SET_WRITER_TABLENAME", jobParam.writerTables[0]);
+      this.$store.commit('SET_WRITER_TABLENAME', jobParam.writerTables[0])
 
-      this.$store.commit("SET_SELECT_WRITERCOLUMN", jobParam.writerColumns);
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', jobParam.writerColumns)
 
-      this.getColumns();
+      this.getColumns()
 
-      this.getTables("rdbmsWriter");
+      this.getTables('rdbmsWriter')
     },
 
     // 实时更新日志
@@ -2099,104 +2090,104 @@ export default {
           jobGroup: 0,
           jobId: this.temp.id,
           logStatus: -1,
-          filterTime: "",
-          userId: localStorage.getItem("userId"),
+          filterTime: '',
+          userId: localStorage.getItem('userId')
         }
-      );
-      console.log(param);
-      let status = 0;
+      )
+      console.log(param)
+      let status = 0
 
       log.getList(param).then((response) => {
-        const { content } = response;
+        const { content } = response
 
-        const newestLog = content.data[0] || {};
+        const newestLog = content.data[0] || {}
         if (!newestLog?.executorAddress) {
-          this.logList();
-          return;
+          this.logList()
+          return
         }
-        status = newestLog.handleCode;
-        const triggerTime = Date.parse(newestLog?.triggerTime);
+        status = newestLog.handleCode
+        const triggerTime = Date.parse(newestLog?.triggerTime)
         log
           .viewJobLog(newestLog?.executorAddress, triggerTime, newestLog?.id, 1)
           .then((response) => {
-            this.newstlogContent = response.content.logContent;
+            this.newstlogContent = response.content.logContent
           })
           .then(() => {
             if (status === 0) {
-              setTimeout(this.logList(), 1000);
+              setTimeout(this.logList(), 1000)
             }
-          });
-      });
+          })
+      })
     },
 
     // schema列表
     async getSchemaList() {
       const schemaList = await getTableSchema({
-        datasourceId: this.writerFormQuality.writerDatasourceId,
-      });
-      this.schemaList = schemaList;
+        datasourceId: this.writerFormQuality.writerDatasourceId
+      })
+      this.schemaList = schemaList
     },
 
     handleClose(done) {
-      this.$confirm("确认关闭？")
+      this.$confirm('确认关闭？')
         .then((_) => {
-          done();
+          done()
         })
-        .catch((_) => {});
+        .catch((_) => {})
     },
     getExecutor() {
       job.getExecutorList().then((response) => {
-        const { content } = response;
-        this.executorList = content;
-        console.log("this.executorList", content);
-      });
+        const { content } = response
+        this.executorList = content
+        console.log('this.executorList', content)
+      })
     },
     getJobIdList() {
       job.getJobIdList().then((response) => {
-        const { content } = response;
-        this.jobIdList = content;
-      });
+        const { content } = response
+        this.jobIdList = content
+      })
     },
     getJobProject() {
       jobProjectApi.getJobProjectList().then((response) => {
-        this.jobProjectList = response;
-      });
+        this.jobProjectList = response
+      })
     },
     getDataSourceList() {
       datasourceApi.getDataSourceList().then((response) => {
-        this.dataSourceList = response;
-        console.log("this.dataSourceList", this.dataSourceList);
-      });
+        this.dataSourceList = response
+        console.log('this.dataSourceList', this.dataSourceList)
+      })
     },
     fetchData() {
-      this.listLoading = true;
-      this.listQuery.projectIds = this.$store.state.taskAdmin.projectId;
+      this.listLoading = true
+      this.listQuery.projectIds = this.$store.state.taskAdmin.projectId
       job.getList(this.listQuery).then((response) => {
-        const { content } = response;
-        this.total = content.recordsTotal;
-        this.list = content.data;
-        this.listLoading = false;
-        this.$store.commit("SET_TASKLIST", this.list);
+        const { content } = response
+        this.total = content.recordsTotal
+        this.list = content.data
+        this.listLoading = false
+        this.$store.commit('SET_TASKLIST', this.list)
         // console.log(this.list);
         const t = this.list.filter(
           (item) => item.id === this.$store.state.taskAdmin.jobInfo.id
-        );
-        this.$store.commit("SET_JOB_INFO", t[0]);
-      });
+        )
+        this.$store.commit('SET_JOB_INFO', t[0])
+      })
     },
     incStartTimeFormat(vData) {},
     handleCreate() {
-      this.resetTemp();
-      this.dialogStatus = "create";
-      this.dialogFormVisible = true;
+      this.resetTemp()
+      this.dialogStatus = 'create'
+      this.dialogFormVisible = true
       // this.$nextTick(() => {
       //   this.$refs["dataForm"].clearValidate();
       // });
     },
 
     updateData() {
-      this.$store.commit("SET_SELECT_WRITERCOLUMN", this.readerForm.rcolumns);
-      this.$store.commit("SET_SELECT_READERCOLUMN", this.readerForm.lcolumns);
+      this.$store.commit('SET_SELECT_WRITERCOLUMN', this.readerForm.rcolumns)
+      this.$store.commit('SET_SELECT_READERCOLUMN', this.readerForm.lcolumns)
       const jobParam = {
         readerDatasourceId: this.$store.state.taskAdmin.readerDataSourceID,
         writerDatasourceId: this.writerFormQuality.writerDatasourceId,
@@ -2206,143 +2197,143 @@ export default {
         writerColumns: this.writerFormQuality.writerColumns,
         readerSchema: this.$store.state.taskAdmin.readerSchema,
         writerSchema:
-          this.dataSource === "postgresql" ||
-          this.dataSource === "greenplum" ||
-          this.dataSource === "oracle" ||
-          this.dataSource === "sqlserver"
+          this.dataSource === 'postgresql' ||
+          this.dataSource === 'greenplum' ||
+          this.dataSource === 'oracle' ||
+          this.dataSource === 'sqlserver'
             ? this.writerFormQuality.writerSchema
-            : "",
+            : '',
         transformer: this.writerFormQuality.transformer,
         hiveReader: this.writerFormQuality.hiveReader,
         hiveWriter:
-          this.dataSource === "hive" ? this.writerFormQuality.hiveWriter : {},
+          this.dataSource === 'hive' ? this.writerFormQuality.hiveWriter : {},
         rdbmsReader: this.writerFormQuality.rdbmsReader,
         rdbmsWriter:
-          this.dataSource !== "hive"
+          this.dataSource !== 'hive'
             ? this.writerFormQuality.rdbmsWriter
-            : { preSql: "", postSql: "" },
+            : { preSql: '', postSql: '' },
         hbaseReader: this.writerFormQuality.hbaseReader,
         hbaseWriter: this.writerFormQuality.hbaseWriter,
         mongoDBReader: this.writerFormQuality.mongoDBReader,
-        mongoDBWriter: this.writerFormQuality.mongoDBWriter,
-      };
-
-      if (this.temp.glueType === "BEAN" && !isJSON(this.temp.jobJson)) {
-        this.$notify({
-          title: "Fail",
-          message: "json格式错误",
-          type: "error",
-          duration: 2000,
-        });
-        return;
+        mongoDBWriter: this.writerFormQuality.mongoDBWriter
       }
-      this.$refs["dataForm"].validate((valid) => {
+
+      if (this.temp.glueType === 'BEAN' && !isJSON(this.temp.jobJson)) {
+        this.$notify({
+          title: 'Fail',
+          message: 'json格式错误',
+          type: 'error',
+          duration: 2000
+        })
+        return
+      }
+      this.$refs['dataForm'].validate((valid) => {
         // const tabName = this.temp.id;
         if (valid) {
           if (this.temp.childJobId) {
-            const auth = [];
+            const auth = []
             for (const i in this.temp.childJobId) {
-              auth.push(this.temp.childJobId[i].id);
+              auth.push(this.temp.childJobId[i].id)
             }
-            this.temp.childJobIdArr = auth;
-            this.temp.childJobId = auth.toString();
+            this.temp.childJobIdArr = auth
+            this.temp.childJobId = auth.toString()
           }
           // this.temp.executorHandler =
           //   this.temp.glueType === "BEAN" ? "executorJobHandler" : "";
-          this.temp.glueSource = this.glueSource;
+          this.temp.glueSource = this.glueSource
           if (this.partitionField) {
             this.temp.partitionInfo =
               this.partitionField +
-              "," +
+              ',' +
               this.timeOffset +
-              "," +
-              this.timeFormatType;
+              ',' +
+              this.timeFormatType
           }
-          if (this.temp.jobType === "DQCJOB") {
+          if (this.temp.jobType === 'DQCJOB') {
             const tempjobRule = JSON.parse(
               JSON.stringify(this.$store.state.taskAdmin.jobRule)
-            );
+            )
             tempjobRule.forEach((ele) => {
-              const codeArr = [];
+              const codeArr = []
               ele.ruleId.forEach((code) => {
-                codeArr.push({ code });
-              });
-              ele.ruleId = codeArr;
-            });
-            jobParam.rule = tempjobRule;
+                codeArr.push({ code })
+              })
+              ele.ruleId = codeArr
+            })
+            jobParam.rule = tempjobRule
           }
-          this.temp.jobParam = JSON.stringify(jobParam);
+          this.temp.jobParam = JSON.stringify(jobParam)
           job.updateJob(this.temp).then(() => {
-            this.fetchData();
-            this.dialogFormVisible = false;
+            this.fetchData()
+            this.dialogFormVisible = false
             this.$notify({
-              title: "Success",
-              message: "Update Successfully",
-              type: "success",
-              duration: 2000,
-            });
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
             // this.$emit("deleteDetailTab", tabName);
             // this.$emit("deleteJob");
-          });
+          })
         }
-      });
+      })
     },
 
     viewJson() {
-      this.jsonshow = !this.jsonshow;
+      this.jsonshow = !this.jsonshow
       if (this.showLog) {
-        this.showLog = false;
+        this.showLog = false
       }
     },
 
     showRunLogDetails() {
-      this.showLog = !this.showLog;
+      this.showLog = !this.showLog
       if (this.jsonshow) {
-        this.jsonshow = false;
+        this.jsonshow = false
       }
     },
 
     // 获取表名
     getTables(type) {
-      if (type === "rdbmsWriter") {
-        let obj = {};
+      if (type === 'rdbmsWriter') {
+        let obj = {}
         if (
-          this.dataSource === "postgresql" ||
-          this.dataSource === "greenplum" ||
-          this.dataSource === "oracle" ||
-          this.dataSource === "sqlserver"
+          this.dataSource === 'postgresql' ||
+          this.dataSource === 'greenplum' ||
+          this.dataSource === 'oracle' ||
+          this.dataSource === 'sqlserver'
         ) {
           obj = {
             datasourceId: this.writerFormQuality.writerDatasourceId,
-            tableSchema: this.writerFormQuality.writerSchema,
-          };
+            tableSchema: this.writerFormQuality.writerSchema
+          }
         } else {
           obj = {
-            datasourceId: this.writerFormQuality.writerDatasourceId,
-          };
+            datasourceId: this.writerFormQuality.writerDatasourceId
+          }
         }
         // 组装
         dsQueryApi
           .getTables(obj)
           .then((response) => {
-            this.wTbList = response;
-            this.$store.commit("SET_WRITER_TABLENAME", this.wTbList[0]);
+            this.wTbList = response
+            this.$store.commit('SET_WRITER_TABLENAME', this.wTbList[0])
           })
           .catch((error) => {
-            console.log(error);
-            this.wTbList = [];
-            this.$store.commit("SET_WRITER_TABLENAME", "");
-          });
+            console.log(error)
+            this.wTbList = []
+            this.$store.commit('SET_WRITER_TABLENAME', '')
+          })
       }
     },
     // 获取表字段
     getColumns() {
       const obj = {
         datasourceId: this.writerFormQuality.writerDatasourceId,
-        tableName: this.writerFormQuality.writerTables[0],
-      };
+        tableName: this.writerFormQuality.writerTables[0]
+      }
       dsQueryApi.getColumns(obj).then((response) => {
-        this.fromColumnList = response;
+        this.fromColumnList = response
 
         if (
           this.writerFormQuality.writerDatasourceId ===
@@ -2350,26 +2341,26 @@ export default {
           this.writerFormQuality.writerTables[0] ===
             this.jobParam.writerTables[0]
         ) {
-          this.writerFormQuality.writerColumns = this.jobParam.writerColumns;
+          this.writerFormQuality.writerColumns = this.jobParam.writerColumns
         } else {
-          this.writerFormQuality.writerColumns = this.fromColumnList;
+          this.writerFormQuality.writerColumns = this.fromColumnList
         }
 
         // this.writerForm.checkAll = true;
         // this.writerForm.isIndeterminate = false;
         this.writerForm.checkAll =
           this.writerFormQuality.writerColumns.length ===
-          this.fromColumnList.length;
+          this.fromColumnList.length
         this.writerForm.isIndeterminate =
           this.writerFormQuality.writerColumns.length > 0 &&
           this.writerFormQuality.writerColumns.length <
-            this.fromColumnList.length;
+            this.fromColumnList.length
 
-        this.$store.commit("SET_WRITER_COLUMNS", response);
+        this.$store.commit('SET_WRITER_COLUMNS', response)
 
-        this.readerForm.rcolumns = response;
-        this.toColumnsList = response;
-      });
+        this.readerForm.rcolumns = response
+        this.toColumnsList = response
+      })
     },
 
     lHandleSelect(index, v) {},
@@ -2377,40 +2368,40 @@ export default {
     rHandleSelect(index, v) {},
 
     bHandleClick(index, v) {
-      this.fromColumnsListChecked.splice(index, 1);
-      this.toColumnsListChecked.splice(index, 1);
+      this.fromColumnsListChecked.splice(index, 1)
+      this.toColumnsListChecked.splice(index, 1)
 
-      this.readerForm.lcolumns.splice(index, 1);
-      this.readerForm.rcolumns.splice(index, 1);
-      this.tableData.splice(index, 1);
+      this.readerForm.lcolumns.splice(index, 1)
+      this.readerForm.rcolumns.splice(index, 1)
+      this.tableData.splice(index, 1)
     },
 
     getLColumns() {
-      return this.readerForm.lcolumns;
+      return this.readerForm.lcolumns
     },
     getRColumns() {
-      return this.readerForm.rcolumns;
+      return this.readerForm.rcolumns
     },
     getRules() {
-      return this.readerForm.rules;
+      return this.readerForm.rules
     },
     editReader() {
-      this.editable.reader = !this.editable.reader;
-      this.$store.commit("SET_READER_ISEDIT", true);
-      this.$store.commit("SET_READER_EDITABLE", this.editable.reader);
+      this.editable.reader = !this.editable.reader
+      this.$store.commit('SET_READER_ISEDIT', true)
+      this.$store.commit('SET_READER_EDITABLE', this.editable.reader)
     },
     exStatus(param) {
-      param = !param;
+      param = !param
     },
     translaterMaster,
     /**
      * @description: 点击Schema触发表改变
      */
     schemaChange() {
-      this.getTables("rdbmsWriter");
-    },
-  },
-};
+      this.getTables('rdbmsWriter')
+    }
+  }
+}
 </script>
 
 <style scoped>

@@ -79,7 +79,7 @@
             <el-input v-model="writerForm.postSql" placeholder="多个SQL用;分隔" />
           </el-form-item>
         </el-col>
-        <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT'">
+        <el-col>
           <el-form-item label="分区配置">
             <el-radio-group v-model="writerForm.partition" @change="radioSelect">
               <el-radio :label="0">分区</el-radio>
@@ -87,7 +87,7 @@
             </el-radio-group>
           </el-form-item>
         </el-col>
-        <el-col v-if="$store.state.taskAdmin.tabType === 'IMPORT' && writerForm.partition === 0">
+        <el-col v-if="writerForm.partition === 0">
           <el-form-item label="分区字段">
             <el-select v-model="writerForm.partitionText" placeholder="选择分区字段" @change="columnSelect">
               <el-option

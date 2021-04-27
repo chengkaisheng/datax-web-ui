@@ -23,29 +23,29 @@
       >
         <div style="padding-left: 26px">
           <div
+            v-for="(itme, index) in arrayData"
+            v-show="isshow"
+            :key="itme.id"
             style="margin-top: 20px"
             class="DraWer"
-            v-show="isshow"
-            v-for="(itme, index) in arrayData"
-            :key="itme.id"
           >
             <span style="font-size: 14px; color: #ccc">
               参数：
               <el-input
-                style="width: 260px"
                 v-show="isshow"
                 v-model="itme.data"
+                style="width: 260px"
                 size="mini"
                 placeholder="请输入参数"
               />
               <el-button
-                @click="Delete(index)"
                 size="small"
                 style="margin-left: 10px"
                 type="danger"
                 icon="el-icon-delete"
                 circle
-              ></el-button>
+                @click="Delete(index)"
+              />
             </span>
           </div>
           <div v-show="isshow" style="margin-top: 20px">
@@ -87,7 +87,24 @@
           >任务日志</span
         >
       </div>
-      <div v-show="logs" />
+      <div>
+        <div v-for="item in loglist" :key="item.id">
+          <div v-if="item.tableData">
+            <span style="fontweigth: 700">>>{{ item.logtime }} </span>;[content]
+            : <span>{{ item.content }}</span>
+            <span class="line1">>>[ressult]:{{ item.tableData }}</span>
+            <br />
+          </div>
+          <div v-if="item.error">
+            <span>>>{{ item.logtime }}; </span> [content] :
+            <span class="err1">{{ item.content }}</span>
+            <span class="line1"
+              >>>[EXCEPTION] : <span class="err1">{{ item.error }}</span></span
+            >
+            <br />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -156,6 +173,9 @@ export default {
         projectId: '',
         datasourceName: '',
       },
+      userName: '',
+      password: '',
+      loglist: [],
     }
   },
   created() {
@@ -176,122 +196,288 @@ export default {
         data: '',
       })
     },
-    runQuery(val) {
-      this.SingleData = this.$store.state.taskAdmin.SingleData
-      this.datasourceListQuery.projectId = this.SingleData.projectId
-      JOB.getJobList(this.datasourceListQuery)
-        .then((res) => {
-          const data = []
-          res.records.forEach((itme) => {
-            data.push(itme.datasource)
-          })
-          if (data.indexOf('hive') != -1) {
-            console.log('hive任务', val)
+    async runQuery(val) {
+      console.log('类型判断', val.jobtype)
+      if (val.jobtype === 'HIVE') {
+        console.log('HIVE', val)
+        this.SingleData = this.$store.state.taskAdmin.SingleData
+        this.datasourceListQuery.projectId = this.SingleData.projectId
+        //获取数据源
+        const Hivesource = await JOB.getJobList(this.datasourceListQuery).catch(
+          (err) => {
+            console.log(err)
           }
-          if (data.indexOf('impala') != -1) {
-            console.log('impala=====>', res.records)
-            const data = res.records.filter((item) => {
-              return item.datasource == 'impala'
-            })
-            console.log('url======', data[0].jdbcUrl)
-            const host = data[0].jdbcUrl
-              .split('//')[1]
-              .split('/')[0]
-              .split(':')[0]
-            const port = data[0].jdbcUrl
-              .split('//')[1]
-              .split('/')[0]
-              .split(':')[1]
-            const databaseName = data[0].jdbcUrl.split('//')[1].split('/')[1]
-            const userName = data[0].secretMap.u
-            const password = data[0].secretMap.p
-            const params1 = {
-              config: {
-                name: databaseName + '@' + host,
-                driverId: 'generic:cloudera_impala',
-                host: host,
-                port: port,
-                databaseName: databaseName,
-                authModelId: 'native',
-                credentials: {
-                  username: userName,
-                  userPassword: password,
-                },
+        )
+        const datasource = Hivesource.records.filter((itme) => {
+          return itme.datasource === 'hive'
+        })
+        if (datasource.length !== 0) {
+          const host = datasource[0].jdbcUrl
+            .split('//')[1]
+            .split('/')[0]
+            .split(':')[0]
+          const port = datasource[0].jdbcUrl
+            .split('//')[1]
+            .split('/')[0]
+            .split(':')[1]
+          const databaseName = datasource[0].jdbcUrl
+            .split('//')[1]
+            .split('/')[1]
+          this.userName = datasource[0].secretMap.u
+          this.password = datasource[0].secretMap.p
+          const params1 = {
+            config: {
+              name: databaseName + '@' + host,
+              driverId: 'generic:apache_hive2',
+              host: host,
+              port: port,
+              databaseName: databaseName,
+              authModelId: 'native',
+              credentials: {
+                username: this.userName,
+                userPassword: this.password,
               },
-            }
-            console.log('params1---->', params1)
-            // debugger
-            let query123 = null
-            createConnection(params1).then((res) => {
-              console.log('111111111', res)
-              query123 = res.data.createConnection.id
-              const params2 = {
-                id: query123,
-                credentials: {
-                  userName: this.userName,
-                  userPassword: this.password,
-                },
-              }
-              console.log('params2', params2)
-              initConnection(params2).then((res) => {
-                console.log('22222bu', res)
-                const params2 = {
-                  id: query123,
-                  credentials: {
-                    userName: this.userName,
-                    userPassword: this.password,
-                  },
-                }
-                const params3 = {
-                  connectionId: res.data.connection.id,
-                }
-
-                sqlContextCreate(params3).then((res) => {
-                  console.log('33333bu', res)
-                  const params4 = {
-                    connectionId: params3.connectionId,
-                    contextId: res.data.context.id,
-                    query: val.code,
-                    filter: {
-                      offset: 0,
-                      limit: 200,
-                      constraints: [],
-                    },
-                  }
-                  console.log('34567', params4)
-                  asyncSqlExecuteQuery(params4).then((res) => {
-                    console.log('44444444bu', res)
-
-                    const params5 = {
-                      taskId: res.data.taskInfo.id,
-                      removeOnFinish: false,
-                    }
-                    getAsyncTaskInfo(params5).then((res) => {
-                      console.log('555555555bu', res)
-                      const params6 = {
-                        taskId: res.data.taskInfo.id,
-                        removeOnFinish: false,
-                      }
-                      getSqlExecuteTaskResults(params6).then((res) => {
-                        console.log(res)
-                      })
-                    })
-                  })
-                })
-              })
-            })
-            console.log(query123, 1213123)
-
-            console.log('impala------>>>', data)
-            const jobParam = {
-              jobId: this.SingleData.jobId,
-              executorParam: val.code,
-            }
+            },
           }
+          console.log('params1', params1)
+          //创建连接
+          const Createconnection = await createConnection(params1).catch(
+            (err) => {
+              console.log(err)
+            }
+          )
+          console.log('创建连接', Createconnection)
+          const params2 = {
+            id: Createconnection.data.createConnection.id,
+            credentials: {
+              userName: this.userName,
+              userPassword: this.password,
+            },
+          }
+          console.log('params2', params2)
+          //初始化连接
+          const resInitConnection = await initConnection(params2).catch(
+            (err) => {
+              console.log(err)
+            }
+          )
+          console.log('初始化连接', resInitConnection)
+          const params3 = {
+            connectionId: resInitConnection.data.connection.id,
+          }
+          console.log('params3', params3)
+          const Createcontext = await sqlContextCreate(params3).catch((err) => {
+            console.log(err)
+          })
+          console.log('创建上下文', Createcontext.data.context.id)
+          const params4 = {
+            connectionId: params3.connectionId,
+            contextId: Createcontext.data.context.id,
+            query: val.code, // sql语句
+            filter: {
+              offset: 0,
+              limit: 200,
+              constraints: [],
+            },
+          }
+          console.log('params4', params4)
+          const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(params4)
+          console.log('执行sql', resAsyncSqlExecuteQuery)
+          const params5 = {
+            taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
+            removeOnFinish: false,
+          }
+          console.log('params5', params5)
+          let queryStatus = ''
+          let resGetAsyncTaskInfo
+          while (queryStatus !== 'Finished') {
+            resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
+            queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
+            console.log('resGetAsyncTaskInfo--->', resGetAsyncTaskInfo)
+            if (resGetAsyncTaskInfo.data.taskInfo.error) {
+              console.log(resGetAsyncTaskInfo.data.taskInfo.error.message)
+              this.loglist.unshift({
+                title: '错误sql返回',
+                logtime: new Date(),
+                content: val.code,
+                error: resGetAsyncTaskInfo.data.taskInfo.error.message,
+              })
+              // this.$message.error(resGetAsyncTaskInfo.data.taskInfo.error)
+              this.$message.error(
+                '执行错误',
+                resGetAsyncTaskInfo.data.taskInfo.error
+              )
+              break
+            }
+            console.log(queryStatus, 'queryStatus')
+          }
+          const params6 = {
+            taskId: resGetAsyncTaskInfo.data.taskInfo.id,
+          }
+          const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
+            params6
+          ).catch((error) => {
+            console.log(error)
+          })
+          console.log(
+            '最后一步',
+            resGetSqlExecuteTaskResults.data.result.results[0].resultSet.columns
+          )
+          console.log(
+            '最后一步',
+            resGetSqlExecuteTaskResults.data.result.results[0].resultSet.rows
+          )
+          if (
+            resGetSqlExecuteTaskResults.data.result.statusMessage === 'Success'
+          ) {
+            this.loglist.push({})
+            this.$message.success('执行成功')
+            console.log('执行成功--->', resGetSqlExecuteTaskResults)
+          }
+        } else if (datasource.length === 0) {
+          alert('请确认是否选择数据源')
+        }
+      } else if (val.jobtype === 'IMPALA') {
+        console.log('IMPALA--->', val)
+        this.SingleData = this.$store.state.taskAdmin.SingleData
+        this.datasourceListQuery.projectId = this.SingleData.projectId
+        //获取数据源
+        const source = await JOB.getJobList(this.datasourceListQuery).catch(
+          (err) => {
+            console.log(err)
+          }
+        )
+        const datasource = source.records.filter((itme) => {
+          return itme.datasource === 'impala'
         })
-        .catch((err) => {
-          console.log(err)
-        })
+        console.log('datasource--->', datasource)
+        if (datasource.length !== 0) {
+          const host = datasource[0].jdbcUrl
+            .split('//')[1]
+            .split('/')[0]
+            .split(':')[0]
+          const port = datasource[0].jdbcUrl
+            .split('//')[1]
+            .split('/')[0]
+            .split(':')[1]
+          const databaseName = datasource[0].jdbcUrl
+            .split('//')[1]
+            .split('/')[1]
+          this.userName = datasource[0].secretMap.u
+          this.password = datasource[0].secretMap.p
+          const params1 = {
+            config: {
+              name: databaseName + '@' + host,
+              driverId: 'generic:cloudera_impala',
+              host: host,
+              port: port,
+              databaseName: databaseName,
+              authModelId: 'native',
+              credentials: {
+                username: this.userName,
+                userPassword: this.password,
+              },
+            },
+          }
+          console.log('params1', params1)
+          //创建连接
+          const Createconnection = await createConnection(params1).catch(
+            (err) => {
+              console.log(err)
+            }
+          )
+          console.log('创建连接', Createconnection.data)
+          const params2 = {
+            id: Createconnection.data.createConnection.id,
+            credentials: {
+              userName: this.userName,
+              userPassword: this.password,
+            },
+          }
+          console.log('params2', params2)
+          //初始化连接
+          const resInitConnection = await initConnection(params2).catch(
+            (err) => {
+              console.log(err)
+            }
+          )
+          console.log('初始化连接', resInitConnection)
+          const params3 = {
+            connectionId: resInitConnection.data.connection.id,
+          }
+          console.log('params3', params3)
+          const Createcontext = await sqlContextCreate(params3).catch((err) => {
+            console.log(err)
+          })
+          console.log('创建上下文', Createcontext)
+          const params4 = {
+            connectionId: params3.connectionId,
+            contextId: Createcontext.data.context.id,
+            query: val.code, // sql语句
+            filter: {
+              offset: 0,
+              limit: 200,
+              constraints: [],
+            },
+          }
+          console.log('params4', params4)
+          const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(params4)
+          console.log('执行sql', resAsyncSqlExecuteQuery)
+          const params5 = {
+            taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
+            removeOnFinish: false,
+          }
+          console.log('params5', params5)
+          let queryStatus = ''
+          let resGetAsyncTaskInfo
+          while (queryStatus !== 'Finished') {
+            resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
+            queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
+            console.log('resGetAsyncTaskInfo--->', resGetAsyncTaskInfo)
+            if (resGetAsyncTaskInfo.data.taskInfo.error) {
+              console.log(resGetAsyncTaskInfo.data.taskInfo.error.message)
+              this.loglist.unshift({
+                title: '错误sql返回',
+                logtime: new Date(),
+                content: val.code,
+                error: resGetAsyncTaskInfo.data.taskInfo.error.message,
+              })
+              // this.$message.error(resGetAsyncTaskInfo.data.taskInfo.error)
+              this.$message.error(
+                '执行错误',
+                resGetAsyncTaskInfo.data.taskInfo.error
+              )
+              break
+            }
+            console.log(queryStatus, 'queryStatus')
+          }
+          const params6 = {
+            taskId: resGetAsyncTaskInfo.data.taskInfo.id,
+          }
+          const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
+            params6
+          ).catch((error) => {
+            console.log(error)
+          })
+          console.log(
+            '最后一步',
+            resGetSqlExecuteTaskResults.data.result.results[0].resultSet.columns
+          )
+          console.log(
+            '最后一步',
+            resGetSqlExecuteTaskResults.data.result.results[0].resultSet.rows
+          )
+          if (
+            resGetSqlExecuteTaskResults.data.result.statusMessage === 'Success'
+          ) {
+            this.loglist.push({})
+            this.$message.success('执行成功')
+            console.log('执行成功--->', resGetSqlExecuteTaskResults)
+          }
+        } else if (datasource.length === 0) {
+          alert('请确认是否选择数据源')
+        }
+      }
     },
     saveQuery(val) {
       this.SingleData = this.$store.state.taskAdmin.SingleData
@@ -337,6 +523,10 @@ export default {
         job
           .updateJob(jobinfo)
           .then((res) => {
+            this.$message({
+              message: '保存成功',
+              type: 'success',
+            })
             console.log(res)
             this.$store.commit('SETREDDOT', false)
             this.$emit('gettreelist', jobinfo.projectId)
