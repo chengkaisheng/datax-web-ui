@@ -1221,6 +1221,11 @@ export default {
       )
       console.log(t, 'tttttttttttttttttttttttttt')
       this.$store.commit('SET_JOB_INFO', t[0])
+      if (t.length > 0) {
+        this.$store.commit('changeGroupData', t[0])
+      } else {
+        this.$store.commit('changeGroupData', t)
+      }
     },
     clearJobTab(name) {
       const removeIndex = _.findIndex(

@@ -1481,6 +1481,7 @@ export default {
           this.temp.executorFailRetryCount = this.scheduleForm.retry
           this.temp.executorRouteStrategy = this.scheduleForm.routeStrategy
           this.temp.jobGroup = this.scheduleForm.executor
+          this.temp.projectGroupId = this.$store.state.taskAdmin.Group.id
           console.log(this.temp)
           updateJob(this.temp)
             .then((res) => {

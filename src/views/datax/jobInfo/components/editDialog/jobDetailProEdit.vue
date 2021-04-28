@@ -491,13 +491,13 @@
             <el-input-number v-model="timeOffset" size="samll" :min="-20" :max="0" style="width: 65%" />
           </el-col>
         </el-row>
-        <el-row v-if="temp.glueType==='BEAN'" :gutter="20">
+        <!-- <el-row v-if="temp.glueType==='BEAN'" :gutter="20">
           <el-col :span="24">
             <el-form-item label="JVM启动参数">
               <el-input v-model="temp.jvmParam" placeholder="-Xms1024m -Xmx1024m -XX:+HeapDumpOnOutOfMemoryError" />
             </el-form-item>
           </el-col>
-        </el-row>
+        </el-row> -->
       </el-form>
     </div>
     <span slot="footer" class="dialog-footer">
@@ -799,6 +799,8 @@ export default {
         console.log(this.$store.state.taskAdmin.taskList)
         this.currentTask = this.$store.state.taskAdmin.currentTask
         console.log(this.currentTask, 'currentTask')
+        this.temp.childJobId = this.currentTask.childJobId ? this.currentTask.childJobId.split(',').map(Number) : []
+        console.log(this.temp.childJobId, 'this.temp.childJobId')
         if (this.currentTask.type !== 'SHELL') {
           if (this.currentTask.hasOwnProperty('jobParam')) {
             this.taskParam = JSON.parse(this.currentTask.jobParam)
@@ -839,8 +841,6 @@ export default {
     this.getExecutor()
     this.getJobIdList()
     this.temp = this.$store.state.taskAdmin.currentTask
-    this.temp.childJobId = this.temp.childJobId ? this.temp.childJobId.split(',').map(Number) : []
-    console.log(this.temp.childJobId, 'this.temp.childJobId')
   },
   methods: {
     updateChildJob() {
