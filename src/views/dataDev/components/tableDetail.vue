@@ -128,6 +128,12 @@
             align="center"
             value-format="yyyy-MM-dd HH:mm:ss"
           />
+          <el-table-column
+            prop="executeTime"
+            label="消耗时间"
+            width="150"
+            align="center"
+          />
           <!-- <el-table-column width="150" align="center">
             <template slot="header">
               <el-select v-model="isSaveMode" @change="getSqlList">
@@ -168,7 +174,7 @@
         <el-pagination
           style="text-align: right; margin: 10px 0"
           :current-page="pagination.current"
-          :page-sizes="[10, 20, 50, 100]"
+          :page-sizes="[50, 100, 200]"
           :page-size="pagination.size"
           layout="total, sizes, prev, pager, next, jumper"
           :total="pagination.total"
@@ -201,7 +207,7 @@
           ref="tableHisSql"
           v-loading="tableLoading"
           :data="sqlHistoryData1"
-          height="245"
+          height="300"
           :row-style="{ height: '33px' }"
           :cell-style="{ padding: '0' }"
           :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
@@ -232,6 +238,12 @@
           <el-table-column
             prop="submitTime"
             label="提交时间"
+            width="150"
+            align="center"
+          />
+          <el-table-column
+            prop="executeTime"
+            label="消耗时间"
             width="150"
             align="center"
           />
@@ -283,6 +295,16 @@
             </template>
           </el-table-column>
         </el-table>
+        <el-pagination
+          style="text-align: right; margin: 10px 0"
+          :current-page="pagination.current1"
+          :page-sizes="[50, 100, 200]"
+          :page-size="pagination.size1"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="pagination.total1"
+          @size-change="handleSizeChange1"
+          @current-change="handleCurrentChange1"
+        />
       </el-tab-pane>
       <el-tab-pane
         v-for="(item, _index) in editableTabs"
@@ -318,7 +340,7 @@
           v-loading="tableLoading"
           style="padding: 0px; margin-right: 10px"
           :data="item.tableData"
-          height="245"
+          height="300"
           :row-style="{ height: '33px' }"
           :cell-style="{ padding: '0' }"
           :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
@@ -339,7 +361,7 @@
           v-loading="tableLoading"
           style="padding: 0px; margin-right: 10px"
           :data="item.secondData"
-          height="245"
+          height="300"
           :row-style="{ height: '33px' }"
           :cell-style="{ padding: '0' }"
           :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
@@ -357,6 +379,16 @@
             align="center"
           />
         </el-table>
+        <el-pagination
+          style="text-align: right; margin: 10px 0"
+          :current-page="item.current2"
+          :page-sizes="[10, 20, 30]"
+          :page-size="item.size2"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="item.total2"
+          @size-change="val=>handleSizeChange2(val,_index)"
+          @current-change="val=>handleCurrentChange2(val,_index)"
+        />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -374,11 +406,14 @@ import {
 import * as sqlhisApi from '@/graphQL/graphQL-history'
 import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
+// import register1Vue from '../../dataShare/register1.vue'
 
 export default {
   name: 'TableDetail',
   data() {
     return {
+      pagedata: [],
+      pagedata2: [],
       columns: [],
       tableData: [],
       connectionId: '',
@@ -404,8 +439,19 @@ export default {
       pagination: {
         total: 0,
         current: 1,
-        size: 10
+        size: 50,
+        total1: 0,
+        current1: 1,
+        size1: 50,
+        total2: '',
+        current2: 1,
+        size2: 10
       },
+      // pagination1: {
+      //   total1: 0,
+      //   current1: 1,
+      //   size1: 200
+      // },
       /** isSaved=0表示临时查询历史，isSaved=1表示保存了的历史 */
       isSaveMode: 0,
       host: '',
@@ -423,7 +469,8 @@ export default {
       datasourcelist: this.$store.state.taskAdmin.projectArray,
       content: '',
       err: '',
-      loglist: []
+      loglist: [],
+      executeTime: ''
     }
   },
   computed: {
@@ -518,7 +565,12 @@ export default {
         tableData: this.tableData,
         secondData: this.secondData,
         columns: this.columns,
-        content: this.content
+        content: this.content,
+        current2: 1,
+        total2: this.tableData.length,
+        size2: 10
+        // pagedata: this.pagedata,
+        // pagedata2: this.pagedata2
         // error: this.err
       })
       console.log(this.editableTabs)
@@ -748,12 +800,13 @@ export default {
           contextId: resSqlContextCreate.data.context.id,
           query: sqlOne, // sql语句
           filter: {
-            offset: 0,
-            limit: 200,
-            constraints: []
+            // offset: this.pagination.current,
+            // limit: this.pagination.size2,
+            // constraints: []
           }
         }
         const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(params4)
+        console.log(resAsyncSqlExecuteQuery)
         const params5 = {
           taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
           removeOnFinish: false
@@ -792,8 +845,9 @@ export default {
         ).catch((error) => {
           console.log(error)
           // this.err = error
-          // this.loglist.push({ err: this.err })
         })
+        console.log(resCreateConnection.data.duration)
+        // this.pagination.total2 = resGetSqlExecuteTaskResults.data.result.results[0].resultSet.rows.length
         console.log(resGetSqlExecuteTaskResults)
         if (resGetSqlExecuteTaskResults) {
           this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
@@ -821,6 +875,7 @@ export default {
                 hour12: false
               })
             })
+            // this.pagination.total2 = this.secondData.length
           } else {
             this.firstShow = true
             this.secondShow = false
@@ -832,7 +887,7 @@ export default {
         const rows =
         resGetSqlExecuteTaskResults.data.result.results[0].resultSet.rows
         this.columns = columns
-
+        this.executeTime = resGetSqlExecuteTaskResults.data.result.duration
         this.tableData = rows.map((ele) => {
           const obj = {}
           ele.forEach((fieldVal, index) => {
@@ -840,6 +895,7 @@ export default {
           })
           return obj
         })
+        this.pagination.total2 = rows.length
         this.loglist = []
         this.loglist.unshift({
           logtime: new Date(),
@@ -957,6 +1013,7 @@ export default {
       // if (this.isSaveMode === 0) {
       sqlhisApi
         .getSqlListTemp({
+          executeTime: this.executeTime,
           size: this.pagination.size,
           current: this.pagination.current,
           projectId: this.$store.state.taskAdmin.sqlParams.projectId,
@@ -1001,8 +1058,9 @@ export default {
     getSqlListSaved() {
       sqlhisApi
         .getSqlListSaved({
-          size: this.pagination.size,
-          current: this.pagination.current,
+          executeTime: this.executeTime,
+          size: this.pagination.size1,
+          current: this.pagination.current1,
           projectId: this.$store.state.taskAdmin.sqlParams.projectId,
           datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId,
           databaseSchema: this.$store.state.taskAdmin.sqlParams.schema,
@@ -1011,7 +1069,7 @@ export default {
         .then((response) => {
           if (response.code === 200) {
             this.sqlHistoryData1 = response.content.records
-            this.pagination.total = response.content.total
+            this.pagination.total1 = response.content.total
           }
           this.tableLoading = false
         })
@@ -1107,6 +1165,28 @@ export default {
       this.pagination.current = 1
       this.getSqlList()
     },
+    handleSizeChange1(size) {
+      console.log(size)
+      this.pagination.size1 = size
+      this.pagination.current1 = 1
+      this.getSqlListSaved()
+    },
+    handleSizeChange2(size, index) {
+      console.log(size)
+      this.editableTabs[index].size2 = size
+      this.pagination.current2 = 1
+      // this.queryData.asyncSqlExecuteQuery()
+      // if (this.tableData) {
+      const res1 = this.pageDataFn(this.editableTabs[index].current2, this.editableTabs[index].size2, this.tableData)
+      this.editableTabs[index].tableData = res1
+      // this.editableTabs[index].total2 = this.tableData.length
+      console.log(this.pagedata, '1111111111111111111')
+      // } else {
+      // const res1 = this.pageDataFn(this.pagination.current2, this.pagination.size2, this.secondData)
+      // this.editableTabs[index].tableData = res1
+      //   console.log(this.pagedata, '222222222222222222222222')
+      // }
+    },
     /**
      * @description: 当前页码改变
      */
@@ -1114,12 +1194,54 @@ export default {
       this.pagination.current = current
       this.getSqlList()
     },
+    handleCurrentChange1(current) {
+      this.pagination.current1 = current
+      this.getSqlListSaved()
+    },
+    handleCurrentChange2(current, index) {
+      console.log(current, index)
+      this.editableTabs[index].current2 = current
+      console.log(this.pagination.current2)
+      // [ 0+(n-1)*50, 0+(n-1)*50 + 49]
+      // console.log(this.tableData)
+      // if (this.tableData) {
+      const res = this.pageDataFn(this.editableTabs[index].current2, this.editableTabs[index].size2, this.tableData)
+      console.log(res, '1111111111111111111')
+      this.editableTabs[index].tableData = res
+      // } else {
+      //   this.pageDataFn(this.pagination.current2, this.pagination.size2, this.secondData)
+      //   console.log(this.pagedata, '222222222222222222222222')
+      // }
+    },
+    // 处理数据
+    pageDataFn(number, pageSize, data) {
+      console.log(number, pageSize, data)
+      // 处于第几页 number
+      // 保存每页数据的数组
+      const pagedata = []
+      // this.tableData = []
+      // pageSize 每页条数
+      // 设置开始
+      const start = (pageSize * number) - pageSize
+      // 设置结束长度
+      let end = pageSize * number
+      end = end > data.length ? data.length : end
+      for (let i = start; i < end; i++) {
+        // 所有分页数据 data
+        pagedata.push(data[i])
+        // this.tableData1.push(pagedata)
+      }
+      // this.tableData.push(pagedata)
+      console.log(this.pagedata)
+      return pagedata
+    },
     /**
      * @description: 回显结果
      */
     echoResult(row) {
       this.columns = row.sqlResult.columns
       this.tableData = row.sqlResult.tableData
+      // this.tableData = this.pagedata
       this.tabsActive = 'hisSql'
       this.$emit('echoResult', row)
     }
