@@ -16,9 +16,9 @@
           />
         </span>
         <div
-          id="last"
           ref="querylog"
           class="Navigation"
+          style="height:300px"
           onload="window.scrollTo(0,document.getElemetnById('last').scrollHeight);"
         >
           <div v-for="item in loglist" :key="item.id">
@@ -28,7 +28,7 @@
               <br>
             </div>
             <div v-if="item.error">
-              <span>>>{{ item.logtime }}; </span> [content] :
+              <span>>>{{ item.logtime }};[content] : </span>
               <span class="err1">{{ item.content }}</span>
               <span
                 class="line1"
@@ -1394,10 +1394,7 @@ export default {
   padding: 0;
   font-size: 13px;
   display: inline-block;
-  line-height: 20px;
-  // text-align: center;
-  // width: 150px;
-  // height: 30px;
+  // line-height: 20px;
   background: #f5f7fa;
 }
 .logs {
