@@ -26,14 +26,14 @@ export function RunQuery(jobParam) {
   return request({
     url: 'api/job/trigger',
     method: 'post',
-    data: jobParam,
+    data: jobParam
   })
 }
 export function AddHive(jobParam) {
   return request({
     url: 'api/job/add',
     method: 'post',
-    data: jobParam,
+    data: jobParam
   })
 }
 export function triggerJob(data) {
@@ -72,6 +72,15 @@ export function getExecutorList() {
 export function updateJob(data, id) {
   return request({
     url: '/api/job/updatehive',
+    method: 'post',
+    data: data,
+    params: id
+  })
+}
+
+export function updateTask(data, id) {
+  return request({
+    url: '/api/job/update',
     method: 'post',
     data: data,
     params: id

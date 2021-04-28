@@ -11,8 +11,8 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item label="任务名称" prop="jobDesc">
-            <el-input v-model="temp.jobDesc" disabled size="medium" placeholder="请输入任务描述" />
+          <el-form-item label="任务名称" prop="name">
+            <el-input v-model="temp.name" disabled size="medium" placeholder="请输入任务描述" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -82,7 +82,7 @@
         <el-col :span="12">
           <el-form-item label="子任务">
             <el-select v-model="temp.childJobId" multiple placeholder="子任务" value-key="id">
-              <el-option v-for="item in jobIdList" :key="item.id" :label="item.jobDesc" :value="item" />
+              <el-option v-for="item in jobIdList" :key="item.id" :label="item.jobDesc ? item.jobDesc : item.jobType + '任务' + item.id" :value="item" />
             </el-select>
           </el-form-item>
         </el-col>
@@ -247,7 +247,7 @@ export default {
         jobGroup: 0,
         projectIds: '',
         triggerStatus: -1,
-        jobDesc: '',
+        name: '',
         glueType: ''
       },
       showCronBox: false,
@@ -265,7 +265,7 @@ export default {
         executorBlockStrategy: [{ required: true, message: 'executorBlockStrategy is required', trigger: 'change' }],
         glueType: [{ required: true, message: 'jobType is required', trigger: 'change' }],
         projectId: [{ required: true, message: 'projectId is required', trigger: 'change' }],
-        jobDesc: [{ required: true, message: 'jobDesc is required', trigger: 'blur' }],
+        name: [{ required: true, message: 'name is required', trigger: 'blur' }],
         jobProject: [{ required: true, message: 'jobProject is required', trigger: 'blur' }],
         jobCron: [{ required: true, message: 'jobCron is required', trigger: 'blur' }],
         incStartId: [{ trigger: 'blur', validator: validateIncParam }],
@@ -281,10 +281,10 @@ export default {
         id: undefined,
         jobGroup: '',
         jobCron: '',
-        jobDesc: '',
+        name: '',
         executorRouteStrategy: '',
         executorBlockStrategy: '',
-        childJobId: '',
+        childJobId: [],
         executorFailRetryCount: '',
         alarmEmail: '',
         executorTimeout: '',
@@ -384,7 +384,7 @@ export default {
     this.getDataSourceList()
     console.log(this.jobType)
     this.temp.glueType = this.jobType
-    this.temp.jobDesc = this.$store.state.taskAdmin.GroupName
+    this.temp.name = this.$store.state.taskAdmin.GroupName
   },
 
   methods: {
@@ -405,6 +405,7 @@ export default {
       job.getJobIdList().then(response => {
         const { content } = response
         this.jobIdList = content
+        console.log(content, '子任务')
       })
     },
     getJobProject() {
@@ -431,8 +432,8 @@ export default {
         const firstElement = content?.data[0] || {}
         const a = {}
 
-        a.title = firstElement.jobDesc
-        a.name = firstElement.jobDesc
+        a.title = firstElement.name
+        a.name = firstElement.name
         a.content = firstElement
         if (!this.firstTime) {
           this.$store.commit('ADD_TASKDETAIL', a)
@@ -484,6 +485,7 @@ export default {
           console.log(this.$store.state.taskAdmin.Group.id, 'this.$store.state.taskAdmin.Group.id')
           this.temp.projectGroupId = this.$store.state.taskAdmin.Group.id
 
+          console.log(this.temp.projectGroupId, 'this.temp.projectGroupId')
           job.createJob(this.temp).then((res) => {
             this.fetchData()
             this.$store.commit('SET_TAB_TYPE', '')

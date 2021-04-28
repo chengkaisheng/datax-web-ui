@@ -1,25 +1,39 @@
 <template>
   <div class="table">
-    <el-tabs v-model="tabsActive" type="border-card" @tab-click="handleClickTabs" @tab-remove="removeTab">
+    <el-tabs
+      v-model="tabsActive"
+      type="border-card"
+      @tab-click="handleClickTabs"
+      @tab-remove="removeTab"
+    >
       <el-tab-pane name="querylog">
         <span slot="label">
-          {{ tabLabel["querylog"] }}
+          {{ tabLabel['querylog'] }}
           <el-dropdown
             v-if="tabsActive === 'querylog' && tableData.length > 0"
             style="margin-left: 10px"
             placement="top"
           />
         </span>
-        <div id="last" ref="querylog" class="Navigation" onload="window.scrollTo(0,document.getElemetnById('last').scrollHeight);">
+        <div
+          id="last"
+          ref="querylog"
+          class="Navigation"
+          onload="window.scrollTo(0,document.getElemetnById('last').scrollHeight);"
+        >
           <div v-for="item in loglist" :key="item.id">
             <div v-if="item.tableData">
-              <span style="fontWeigth:700">>>{{ item.logtime }} </span>;[content] : <span>{{ item.content }}</span>
+              <span style="fontweigth: 700">>>{{ item.logtime }} </span>;[content] : <span>{{ item.content }}</span>
               <span class="line1">>>[ressult]:{{ item.tableData }}</span>
               <br>
             </div>
             <div v-if="item.error">
-              <span>>>{{ item.logtime }}; </span> [content] : <span class="err1">{{ item.content }}</span>
-              <span class="line1">>>[EXCEPTION] : <span class="err1">{{ item.error }}</span></span>
+              <span>>>{{ item.logtime }}; </span> [content] :
+              <span class="err1">{{ item.content }}</span>
+              <span
+                class="line1"
+              >>>[EXCEPTION] :
+                <span class="err1">{{ item.error }}</span></span>
               <br>
             </div>
           </div>
@@ -29,7 +43,7 @@
 
       <el-tab-pane name="hisSql">
         <span slot="label">
-          {{ tabLabel["hisSql"] }}
+          {{ tabLabel['hisSql'] }}
           <el-dropdown
             v-if="tabsActive === 'hisSql' && sqlHistoryData.length > 0"
             style="margin-left: 10px"
@@ -48,14 +62,31 @@
             </el-dropdown-menu>
           </el-dropdown>
         </span>
-        <el-form ref="formInline" :inline="true" :model="formInline" size="mini" class="demo-input-size" label-width="80px">
+        <el-form
+          ref="formInline"
+          :inline="true"
+          :model="formInline"
+          size="mini"
+          class="demo-input-size"
+          label-width="80px"
+        >
           <el-row :gutter="20">
-            <el-col :span="5"><div class="grid-content bg-purple" />
+            <el-col
+              :span="5"
+            ><div class="grid-content bg-purple" />
               <el-form-item size="mini" label="执行语句">
-                <el-input v-model="formInline.sqlContent" placeholder="执行语句" size="mini" clearable> />
+                <el-input
+                  v-model="formInline.sqlContent"
+                  placeholder="执行语句"
+                  size="mini"
+                  clearable
+                >
+                  />
                 </el-input></el-form-item>
             </el-col>
-            <el-col :span="5"><div class="grid-content bg-purple-light" />
+            <el-col
+              :span="5"
+            ><div class="grid-content bg-purple-light" />
 
               <el-form-item label="数据源" size="mini">
                 <el-select
@@ -70,22 +101,46 @@
                     :label="item.name"
                     :value="item.id"
                   />
-                </el-select>
-              </el-form-item></el-col>
-            <el-col :span="5"><div class="grid-content bg-purple" />
+                </el-select> </el-form-item></el-col>
+            <el-col
+              :span="5"
+            ><div class="grid-content bg-purple" />
 
               <el-form-item label="开始时间">
-                <el-date-picker v-model="formInline.submitTimeBegin" type="date" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期" style="width: 90%;" size="mini" />
+                <el-date-picker
+                  v-model="formInline.submitTimeBegin"
+                  type="date"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                  placeholder="选择日期"
+                  style="width: 90%"
+                  size="mini"
+                />
               </el-form-item>
             </el-col>
-            <el-col :span="5"><div class="grid-content bg-purple-light" /><el-form-item label="结束时间" size="mini">
-              <el-date-picker v-model="formInline.submitTimeEnd" type="date" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期" style="width: 90%;" size="mini" />
-            </el-form-item></el-col>
-            <el-col :span="4"><div class="grid-content bg-purple-light" /><el-form-item size="mini">
-              <el-button type="primary" size="mini" style="margin-top: 27px;" @click="onSubmit('formInline')">查询</el-button>
-            </el-form-item></el-col>
+            <el-col
+              :span="5"
+            ><div class="grid-content bg-purple-light" />
+              <el-form-item label="结束时间" size="mini">
+                <el-date-picker
+                  v-model="formInline.submitTimeEnd"
+                  type="date"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                  placeholder="选择日期"
+                  style="width: 90%"
+                  size="mini"
+                /> </el-form-item></el-col>
+            <el-col
+              :span="4"
+            ><div class="grid-content bg-purple-light" />
+              <el-form-item size="mini">
+                <el-button
+                  type="primary"
+                  size="mini"
+                  style="margin-top: 27px"
+                  @click="onSubmit('formInline')"
+                >查询</el-button>
+              </el-form-item></el-col>
           </el-row>
-
         </el-form>
         <el-table
           ref="tableHisSql"
@@ -95,7 +150,6 @@
           :row-style="{ height: '33px' }"
           :cell-style="{ padding: '0' }"
           :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
-
           @row-dblclick="tableSql"
         >
           <el-table-column prop="id" label="序号" width="80" align="center" />
@@ -184,7 +238,7 @@
       </el-tab-pane>
       <el-tab-pane name="asynctask">
         <span slot="label">
-          {{ tabLabel["asynctask"] }}
+          {{ tabLabel['asynctask'] }}
           <el-dropdown
             v-if="tabsActive === 'asynctask' && sqlHistoryData1.length > 0"
             style="margin-left: 10px"
@@ -254,11 +308,7 @@
           >
             <template slot-scope="scope">
               <!-- <el-button slot="reference" type="text" size="small" @click="handleClick1(scope.row)">查看</el-button> -->
-              <el-popover
-                placement="top"
-                width="400"
-                trigger="click"
-              >
+              <el-popover placement="top" width="400" trigger="click">
                 <h3>执行结果</h3>
                 <!-- <el-table
                   v-loading="tableLoading"
@@ -278,7 +328,11 @@
                     align="center"
                   />
                 </el-table> -->
-                <el-button slot="reference" type="text" size="small">查看</el-button>
+                <el-button
+                  slot="reference"
+                  type="text"
+                  size="small"
+                >查看</el-button>
               </el-popover>
               <el-button
                 type="text"
@@ -312,12 +366,12 @@
         closable
         :label="item.title"
         :name="item.name"
-        @click="click_fun($event,index,item.title)"
+        @click="click_fun($event, index, item.title)"
       >
         <span slot="label">
-          {{ tabLabel["res"] }}
+          {{ tabLabel['res'] }}
           <el-dropdown
-            v-if="tabsActive === item.name&& item.tableData.length > 0"
+            v-if="tabsActive === item.name && item.tableData.length > 0"
             style="margin-left: 10px"
             placement="top"
           >
@@ -329,7 +383,7 @@
                 @click.native.stop="fileSaver02(item.name, 'xlsx', _index)"
               >导出为Excel</el-dropdown-item>
               <el-dropdown-item
-                @click.native.stop="fileSaver02('tableRes2', 'csv',_index)"
+                @click.native.stop="fileSaver02('tableRes2', 'csv', _index)"
               >导出为CSV</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -654,7 +708,8 @@ export default {
       queryDsInfo.username = dsInfo.secretMap?.u
       queryDsInfo.password = dsInfo.secretMap?.p
       queryDsInfo.datasource = dsInfo.datasource.toLowerCase()
-      this.code = 'Select * from ' + node.data.schema + '.' + node.data.tableName
+      this.code =
+        'Select * from ' + node.data.schema + '.' + node.data.tableName
       console.log(queryDsInfo, 'queryDsInfo')
       console.log(this.code, '---sql')
       this.queryData(queryDsInfo, this.code)
@@ -688,14 +743,8 @@ export default {
       // sql = sql.replace(';', '')
       console.log(sql, 'sql')
       console.log(queryDsInfo.jdbcUrl, 'queryDsInfo.jdbcUrl')
-      this.host = queryDsInfo.jdbcUrl
-        .split('//')[1]
-        .split('/')[0]
-        .split(':')[0]
-      this.port = queryDsInfo.jdbcUrl
-        .split('//')[1]
-        .split('/')[0]
-        .split(':')[1]
+      this.host = queryDsInfo.jdbcUrl.split('//')[1].split('/')[0].split(':')[0]
+      this.port = queryDsInfo.jdbcUrl.split('//')[1].split('/')[0].split(':')[1]
       this.databaseName = queryDsInfo.db
       this.userName = queryDsInfo.username
       this.password = queryDsInfo.password
@@ -726,9 +775,7 @@ export default {
       }
       console.log(this.databaseName)
       if (driverId === 'oracle:oracle_thin') {
-        this.databaseName = queryDsInfo.jdbcUrl
-          .split('//')[1]
-          .split('/')[1]
+        this.databaseName = queryDsInfo.jdbcUrl.split('//')[1].split('/')[1]
       }
       console.log(driverId)
       // console.log(this.databaseName)
@@ -772,13 +819,12 @@ export default {
       console.log(params2)
       // var infoErr2 = ''
       // var success2 = ''
-      const resInitConnection = await initConnection(params2)
-        .catch((err) => {
-          // infoErr2 = err.message
-          console.log(err)
-          this.$message.error(err.message)
-          this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
-        })
+      const resInitConnection = await initConnection(params2).catch((err) => {
+        // infoErr2 = err.message
+        console.log(err)
+        this.$message.error(err.message)
+        this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
+      })
 
       console.log(resInitConnection)
       this.content = sql
@@ -787,14 +833,18 @@ export default {
         const sqlOne = sqlarr[i]
         console.log(sqlOne)
         if (sqlOne === '') {
-        // console.log(sqlarr)
+          // console.log(sqlarr)
           continue
         }
         // 3、创建sqlcontext
         const params3 = {
           connectionId: resInitConnection.data.connection.id
         }
-        const resSqlContextCreate = await sqlContextCreate(params3).catch((err) => { console.log(err) })
+        const resSqlContextCreate = await sqlContextCreate(params3).catch(
+          (err) => {
+            console.log(err)
+          }
+        )
         const params4 = {
           connectionId: this.connectionId,
           contextId: resSqlContextCreate.data.context.id,
@@ -855,14 +905,17 @@ export default {
             resGetSqlExecuteTaskResults.data.result.statusMessage,
             'second_table'
           )
-          if (resGetSqlExecuteTaskResults.data.result.results[0].updateRowCount) {
+          if (
+            resGetSqlExecuteTaskResults.data.result.results[0].updateRowCount
+          ) {
             this.firstShow = false
             this.secondShow = true
             this.secondData = []
             this.secondData.push({
               name: 'updateRowCount',
               value:
-              resGetSqlExecuteTaskResults.data.result.results[0].updateRowCount
+                resGetSqlExecuteTaskResults.data.result.results[0]
+                  .updateRowCount
             })
             this.secondData.push({
               name: 'query',
@@ -881,11 +934,11 @@ export default {
             this.secondShow = false
           }
         }
-        if (!resGetSqlExecuteTaskResults.data.result.results[0].resultSet) return
+        if (!resGetSqlExecuteTaskResults.data.result.results[0].resultSet) { return }
         const columns =
-        resGetSqlExecuteTaskResults.data.result.results[0].resultSet.columns
+          resGetSqlExecuteTaskResults.data.result.results[0].resultSet.columns
         const rows =
-        resGetSqlExecuteTaskResults.data.result.results[0].resultSet.rows
+          resGetSqlExecuteTaskResults.data.result.results[0].resultSet.rows
         this.columns = columns
         this.executeTime = resGetSqlExecuteTaskResults.data.result.duration
         this.tableData = rows.map((ele) => {
@@ -1254,11 +1307,11 @@ export default {
   // height: 300px;
   .el-tabs {
     .el-tab-pane {
-      .demo-input-size{
+      .demo-input-size {
         padding: 10px;
         margin: 0 auto;
-        >>> .el-input .el-input__inner{
-          height: 28px ;
+        >>> .el-input .el-input__inner {
+          height: 28px;
           line-height: 28px;
         }
       }
@@ -1314,11 +1367,11 @@ export default {
 .el-tabs--border-card > .el-tabs__header {
   border-bottom: none;
 }
-.Navigation .line1{
-	overflow : hidden;
-  text-overflow: ellipsis;//当对象内文本溢出时显示省略标记
+.Navigation .line1 {
+  overflow: hidden;
+  text-overflow: ellipsis; //当对象内文本溢出时显示省略标记
   display: -webkit-box;
-  -webkit-line-clamp:2;//这边的2指的是两行
+  -webkit-line-clamp: 2; //这边的2指的是两行
   -webkit-box-orient: vertical;
 }
 .Navigation {
@@ -1328,7 +1381,7 @@ export default {
   width: 100%;
   background: #fff;
   // height: calc(50vh - 157px);
-  height:300px
+  height: 300px;
 }
 .Navigation .color {
   font-weight: 400px;
@@ -1340,9 +1393,9 @@ export default {
   display: inline-block;
   background: #fff;
 }
-.Navigation .err1{
-    color: red;
-  }
+.Navigation .err1 {
+  color: red;
+}
 .Navigation span {
   font-weight: 400px;
   cursor: pointer;
@@ -1355,11 +1408,9 @@ export default {
   // width: 150px;
   // height: 30px;
   background: #f5f7fa;
-
 }
 .logs {
   width: 100%;
   height: auto;
 }
-
 </style>
