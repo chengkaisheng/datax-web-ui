@@ -616,14 +616,14 @@ export default {
       this.editableTabs.push({
         title: '当前查询结果',
         name: newTabName,
-        tableData: this.tableData,
+        tableData: this.tableData.slice(0, this.pagination.size2 * this.pagination.current2),
         secondData: this.secondData,
         columns: this.columns,
         content: this.content,
         current2: 1,
         total2: this.tableData.length,
         size2: 10
-        // pagedata: this.pagedata,
+        // pagedata: this.pagedata1
         // pagedata2: this.pagedata2
         // error: this.err
       })
@@ -1230,8 +1230,8 @@ export default {
       this.pagination.current2 = 1
       // this.queryData.asyncSqlExecuteQuery()
       // if (this.tableData) {
-      const res1 = this.pageDataFn(this.editableTabs[index].current2, this.editableTabs[index].size2, this.tableData)
-      this.editableTabs[index].tableData = res1
+      this.pagedata1 = this.pageDataFn(this.editableTabs[index].current2, this.editableTabs[index].size2, this.tableData)
+      this.editableTabs[index].tableData = this.pagedata1
       // this.editableTabs[index].total2 = this.tableData.length
       console.log(this.pagedata, '1111111111111111111')
       // } else {
@@ -1383,16 +1383,7 @@ export default {
   // height: calc(50vh - 157px);
   height: 300px;
 }
-.Navigation .color {
-  font-weight: 400px;
-  cursor: pointer;
-  color: blue;
-  margin: 0;
-  padding: 0;
-  font-size: 13px;
-  display: inline-block;
-  background: #fff;
-}
+
 .Navigation .err1 {
   color: red;
 }
