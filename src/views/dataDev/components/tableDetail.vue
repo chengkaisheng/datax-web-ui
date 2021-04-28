@@ -16,26 +16,25 @@
           />
         </span>
         <div
-          id="last"
           ref="querylog"
           class="Navigation"
+          style="height:300px"
           onload="window.scrollTo(0,document.getElemetnById('last').scrollHeight);"
         >
           <div v-for="item in loglist" :key="item.id">
             <div v-if="item.tableData">
-              <span style="fontweigth: 700">>>{{ item.logtime }} </span
-              >;[content] : <span>{{ item.content }}</span>
+              <span style="fontweigth: 700">>>{{ item.logtime }} </span>;[content] : <span>{{ item.content }}</span>
               <span class="line1">>>[ressult]:{{ item.tableData }}</span>
-              <br />
+              <br>
             </div>
             <div v-if="item.error">
-              <span>>>{{ item.logtime }}; </span> [content] :
+              <span>>>{{ item.logtime }};[content] : </span>
               <span class="err1">{{ item.content }}</span>
-              <span class="line1"
-                >>>[EXCEPTION] :
-                <span class="err1">{{ item.error }}</span></span
-              >
-              <br />
+              <span
+                class="line1"
+              >>>[EXCEPTION] :
+                <span class="err1">{{ item.error }}</span></span>
+              <br>
             </div>
           </div>
           <!-- <span id="last" style="height:2px;" /> -->
@@ -56,12 +55,10 @@
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item
                 @click.native.stop="fileSaver('tableHisSql', 'xlsx')"
-                >导出为Excel</el-dropdown-item
-              >
+              >导出为Excel</el-dropdown-item>
               <el-dropdown-item
                 @click.native.stop="fileSaver('tableHisSql', 'csv')"
-                >导出为CSV</el-dropdown-item
-              >
+              >导出为CSV</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </span>
@@ -74,8 +71,9 @@
           label-width="80px"
         >
           <el-row :gutter="20">
-            <el-col :span="5"
-              ><div class="grid-content bg-purple" />
+            <el-col
+              :span="5"
+            ><div class="grid-content bg-purple" />
               <el-form-item size="mini" label="执行语句">
                 <el-input
                   v-model="formInline.sqlContent"
@@ -84,11 +82,11 @@
                   clearable
                 >
                   />
-                </el-input></el-form-item
-              >
+                </el-input></el-form-item>
             </el-col>
-            <el-col :span="5"
-              ><div class="grid-content bg-purple-light" />
+            <el-col
+              :span="5"
+            ><div class="grid-content bg-purple-light" />
 
               <el-form-item label="数据源" size="mini">
                 <el-select
@@ -103,10 +101,10 @@
                     :label="item.name"
                     :value="item.id"
                   />
-                </el-select> </el-form-item
-            ></el-col>
-            <el-col :span="5"
-              ><div class="grid-content bg-purple" />
+                </el-select> </el-form-item></el-col>
+            <el-col
+              :span="5"
+            ><div class="grid-content bg-purple" />
 
               <el-form-item label="开始时间">
                 <el-date-picker
@@ -119,8 +117,9 @@
                 />
               </el-form-item>
             </el-col>
-            <el-col :span="5"
-              ><div class="grid-content bg-purple-light" />
+            <el-col
+              :span="5"
+            ><div class="grid-content bg-purple-light" />
               <el-form-item label="结束时间" size="mini">
                 <el-date-picker
                   v-model="formInline.submitTimeEnd"
@@ -129,20 +128,18 @@
                   placeholder="选择日期"
                   style="width: 90%"
                   size="mini"
-                /> </el-form-item
-            ></el-col>
-            <el-col :span="4"
-              ><div class="grid-content bg-purple-light" />
+                /> </el-form-item></el-col>
+            <el-col
+              :span="4"
+            ><div class="grid-content bg-purple-light" />
               <el-form-item size="mini">
                 <el-button
                   type="primary"
                   size="mini"
                   style="margin-top: 27px"
                   @click="onSubmit('formInline')"
-                  >查询</el-button
-                >
-              </el-form-item></el-col
-            >
+                >查询</el-button>
+              </el-form-item></el-col>
           </el-row>
         </el-form>
         <el-table
@@ -185,6 +182,12 @@
             align="center"
             value-format="yyyy-MM-dd HH:mm:ss"
           />
+          <el-table-column
+            prop="executeTime"
+            label="消耗时间"
+            width="150"
+            align="center"
+          />
           <!-- <el-table-column width="150" align="center">
             <template slot="header">
               <el-select v-model="isSaveMode" @change="getSqlList">
@@ -225,7 +228,7 @@
         <el-pagination
           style="text-align: right; margin: 10px 0"
           :current-page="pagination.current"
-          :page-sizes="[10, 20, 50, 100]"
+          :page-sizes="[50, 100, 200]"
           :page-size="pagination.size"
           layout="total, sizes, prev, pager, next, jumper"
           :total="pagination.total"
@@ -247,12 +250,10 @@
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item
                 @click.native.stop="fileSaver('tableHisSql', 'xlsx')"
-                >导出为Excel</el-dropdown-item
-              >
+              >导出为Excel</el-dropdown-item>
               <el-dropdown-item
                 @click.native.stop="fileSaver('tableHisSql', 'csv')"
-                >导出为CSV</el-dropdown-item
-              >
+              >导出为CSV</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </span>
@@ -260,7 +261,7 @@
           ref="tableHisSql"
           v-loading="tableLoading"
           :data="sqlHistoryData1"
-          height="245"
+          height="300"
           :row-style="{ height: '33px' }"
           :cell-style="{ padding: '0' }"
           :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
@@ -294,7 +295,17 @@
             width="150"
             align="center"
           />
-          <el-table-column label="操作" width="150" align="center">
+          <el-table-column
+            prop="executeTime"
+            label="消耗时间"
+            width="150"
+            align="center"
+          />
+          <el-table-column
+            label="操作"
+            width="150"
+            align="center"
+          >
             <template slot-scope="scope">
               <!-- <el-button slot="reference" type="text" size="small" @click="handleClick1(scope.row)">查看</el-button> -->
               <el-popover placement="top" width="400" trigger="click">
@@ -317,9 +328,11 @@
                     align="center"
                   />
                 </el-table> -->
-                <el-button slot="reference" type="text" size="small"
-                  >查看</el-button
-                >
+                <el-button
+                  slot="reference"
+                  type="text"
+                  size="small"
+                >查看</el-button>
               </el-popover>
               <el-button
                 type="text"
@@ -336,6 +349,16 @@
             </template>
           </el-table-column>
         </el-table>
+        <el-pagination
+          style="text-align: right; margin: 10px 0"
+          :current-page="pagination.current1"
+          :page-sizes="[50, 100, 200]"
+          :page-size="pagination.size1"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="pagination.total1"
+          @size-change="handleSizeChange1"
+          @current-change="handleCurrentChange1"
+        />
       </el-tab-pane>
       <el-tab-pane
         v-for="(item, _index) in editableTabs"
@@ -358,12 +381,10 @@
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item
                 @click.native.stop="fileSaver02(item.name, 'xlsx', _index)"
-                >导出为Excel</el-dropdown-item
-              >
+              >导出为Excel</el-dropdown-item>
               <el-dropdown-item
                 @click.native.stop="fileSaver02('tableRes2', 'csv', _index)"
-                >导出为CSV</el-dropdown-item
-              >
+              >导出为CSV</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </span>
@@ -373,7 +394,7 @@
           v-loading="tableLoading"
           style="padding: 0px; margin-right: 10px"
           :data="item.tableData"
-          height="245"
+          height="300"
           :row-style="{ height: '33px' }"
           :cell-style="{ padding: '0' }"
           :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
@@ -394,7 +415,7 @@
           v-loading="tableLoading"
           style="padding: 0px; margin-right: 10px"
           :data="item.secondData"
-          height="245"
+          height="300"
           :row-style="{ height: '33px' }"
           :cell-style="{ padding: '0' }"
           :header-row-style="{ fontWeight: '900', fontSize: '15px' }"
@@ -412,6 +433,16 @@
             align="center"
           />
         </el-table>
+        <el-pagination
+          style="text-align: right; margin: 10px 0"
+          :current-page="item.current2"
+          :page-sizes="[10, 20, 30]"
+          :page-size="item.size2"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="item.total2"
+          @size-change="val=>handleSizeChange2(val,_index)"
+          @current-change="val=>handleCurrentChange2(val,_index)"
+        />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -424,16 +455,19 @@ import {
   sqlContextCreate,
   asyncSqlExecuteQuery,
   getAsyncTaskInfo,
-  getSqlExecuteTaskResults,
+  getSqlExecuteTaskResults
 } from '@/graphQL/graphQL'
 import * as sqlhisApi from '@/graphQL/graphQL-history'
 import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
+// import register1Vue from '../../dataShare/register1.vue'
 
 export default {
   name: 'TableDetail',
   data() {
     return {
+      pagedata: [],
+      pagedata2: [],
       columns: [],
       tableData: [],
       connectionId: '',
@@ -453,14 +487,25 @@ export default {
         querylog: '查询日志',
         asynctask: '异步任务',
         res: '当前查询结果',
-        hisSql: 'SQL查询历史',
+        hisSql: 'SQL查询历史'
       },
       /** 分页 */
       pagination: {
         total: 0,
         current: 1,
-        size: 10,
+        size: 50,
+        total1: 0,
+        current1: 1,
+        size1: 50,
+        total2: '',
+        current2: 1,
+        size2: 10
       },
+      // pagination1: {
+      //   total1: 0,
+      //   current1: 1,
+      //   size1: 200
+      // },
       /** isSaved=0表示临时查询历史，isSaved=1表示保存了的历史 */
       isSaveMode: 0,
       host: '',
@@ -473,19 +518,20 @@ export default {
         projectId: '',
         submitTimeBegin: '',
         submitTimeEnd: '',
-        sqlContent: '',
+        sqlContent: ''
       },
       datasourcelist: this.$store.state.taskAdmin.projectArray,
       content: '',
       err: '',
       loglist: [],
+      executeTime: ''
     }
   },
   computed: {
     getPagination() {
       return {
         size: this.pagination.size,
-        current: this.pagination.current,
+        current: this.pagination.current
       }
     },
     getBasedInfo() {
@@ -493,9 +539,9 @@ export default {
         projectId: this.$store.state.taskAdmin.sqlParams.projectId,
         datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId,
         databaseSchema: this.$store.state.taskAdmin.sqlParams.schema,
-        datasourcelist: this.$store.state.taskAdmin.projectArray,
+        datasourcelist: this.$store.state.taskAdmin.projectArray
       }
-    },
+    }
   },
   watch: {
     tabsActive: {
@@ -512,13 +558,13 @@ export default {
           default:
             break
         }
-      },
+      }
     },
     datasourcelist: {
       handler(val) {
         this.datasourcelist = this.$store.state.taskAdmin.projectArraythis
-      },
-    },
+      }
+    }
   },
   // created: {
   //   //  this.datasourcelist = this.$store.state.taskAdmin.projectArraythis.$store.state.taskAdmin.projectArray
@@ -542,7 +588,7 @@ export default {
           size: this.pagination.size,
           current: this.pagination.current,
           ...this.formInline,
-          isSaved: 0,
+          isSaved: 0
         })
         .then((response) => {
           if (response.code === 200) {
@@ -570,10 +616,15 @@ export default {
       this.editableTabs.push({
         title: '当前查询结果',
         name: newTabName,
-        tableData: this.tableData,
+        tableData: this.tableData.slice(0, this.pagination.size2 * this.pagination.current2),
         secondData: this.secondData,
         columns: this.columns,
         content: this.content,
+        current2: 1,
+        total2: this.tableData.length,
+        size2: 10
+        // pagedata: this.pagedata1
+        // pagedata2: this.pagedata2
         // error: this.err
       })
       console.log(this.editableTabs)
@@ -672,7 +723,7 @@ export default {
           title: '错误',
           message: '未指定SQL查询数据源信息，请单击数据库以选中',
           type: 'error',
-          duration: 2000,
+          duration: 2000
         })
         this.tableLoading = false
         return
@@ -682,7 +733,7 @@ export default {
           title: '警告',
           message: '请先选中需要执行的SQL！',
           type: 'warning',
-          duration: 2000,
+          duration: 2000
         })
         this.tableLoading = false
         return
@@ -718,7 +769,7 @@ export default {
             title: '消息',
             message: '请联系管理员获取该数据库查询功能',
             type: 'info',
-            duration: 2000,
+            duration: 2000
           })
           return
       }
@@ -739,9 +790,9 @@ export default {
           authModelId: 'native',
           credentials: {
             userName: this.userName,
-            userPassword: this.password,
-          },
-        },
+            userPassword: this.password
+          }
+        }
       }
       const resCreateConnection = await createConnection(params1)
       console.log(resCreateConnection)
@@ -751,7 +802,7 @@ export default {
           title: '错误',
           message: resCreateConnection.message,
           type: 'error',
-          duration: 2000,
+          duration: 2000
         })
         this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
       }
@@ -762,8 +813,8 @@ export default {
         id: this.connectionId,
         credentials: {
           userName: this.userName,
-          userPassword: this.password,
-        },
+          userPassword: this.password
+        }
       }
       console.log(params2)
       // var infoErr2 = ''
@@ -787,7 +838,7 @@ export default {
         }
         // 3、创建sqlcontext
         const params3 = {
-          connectionId: resInitConnection.data.connection.id,
+          connectionId: resInitConnection.data.connection.id
         }
         const resSqlContextCreate = await sqlContextCreate(params3).catch(
           (err) => {
@@ -799,15 +850,16 @@ export default {
           contextId: resSqlContextCreate.data.context.id,
           query: sqlOne, // sql语句
           filter: {
-            offset: 0,
-            limit: 200,
-            constraints: [],
-          },
+            // offset: this.pagination.current,
+            // limit: this.pagination.size2,
+            // constraints: []
+          }
         }
         const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(params4)
+        console.log(resAsyncSqlExecuteQuery)
         const params5 = {
           taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
-          removeOnFinish: false,
+          removeOnFinish: false
         }
         let queryStatus = ''
         let resGetAsyncTaskInfo
@@ -826,7 +878,7 @@ export default {
               // columns: this.columns,
               logtime: new Date(),
               content: this.content,
-              error: this.err,
+              error: this.err
             })
             console.log(this.loglist, this.loglist)
             this.$message.error(resGetAsyncTaskInfo.data.taskInfo.error)
@@ -836,15 +888,16 @@ export default {
         }
         console.log(queryStatus, 'queryStatus')
         const params6 = {
-          taskId: resGetAsyncTaskInfo.data.taskInfo.id,
+          taskId: resGetAsyncTaskInfo.data.taskInfo.id
         }
         const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
           params6
         ).catch((error) => {
           console.log(error)
           // this.err = error
-          // this.loglist.push({ err: this.err })
         })
+        console.log(resCreateConnection.data.duration)
+        // this.pagination.total2 = resGetSqlExecuteTaskResults.data.result.results[0].resultSet.rows.length
         console.log(resGetSqlExecuteTaskResults)
         if (resGetSqlExecuteTaskResults) {
           this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
@@ -862,32 +915,32 @@ export default {
               name: 'updateRowCount',
               value:
                 resGetSqlExecuteTaskResults.data.result.results[0]
-                  .updateRowCount,
+                  .updateRowCount
             })
             this.secondData.push({
               name: 'query',
-              value: sql.replace(';', ''),
+              value: sql.replace(';', '')
             })
             //   const time = new Date()
             this.secondData.push({
               name: 'time',
               value: new Date().toLocaleString('cn', {
-                hour12: false,
-              }),
+                hour12: false
+              })
             })
+            // this.pagination.total2 = this.secondData.length
           } else {
             this.firstShow = true
             this.secondShow = false
           }
         }
-        if (!resGetSqlExecuteTaskResults.data.result.results[0].resultSet)
-          return
+        if (!resGetSqlExecuteTaskResults.data.result.results[0].resultSet) { return }
         const columns =
           resGetSqlExecuteTaskResults.data.result.results[0].resultSet.columns
         const rows =
           resGetSqlExecuteTaskResults.data.result.results[0].resultSet.rows
         this.columns = columns
-
+        this.executeTime = resGetSqlExecuteTaskResults.data.result.duration
         this.tableData = rows.map((ele) => {
           const obj = {}
           ele.forEach((fieldVal, index) => {
@@ -895,11 +948,12 @@ export default {
           })
           return obj
         })
+        this.pagination.total2 = rows.length
         this.loglist = []
         this.loglist.unshift({
           logtime: new Date(),
           content: this.content,
-          tableData: this.tableData,
+          tableData: this.tableData
         })
         console.log(this.loglist)
         this.autoSaveSql(sql)
@@ -920,7 +974,7 @@ export default {
           title: '警告',
           message: '请先编辑需要执行的SQL！',
           type: 'warning',
-          duration: 2000,
+          duration: 2000
         })
         return
       }
@@ -938,7 +992,7 @@ export default {
           sqlStatus: 1, // 1：成功  0：失败
           sqlContent: sql, // sql语句
           submitUser: parseInt(localStorage.getItem('userId')), // 提交用户id
-          startime: new Date(),
+          startime: new Date()
         })
         .then((response) => {
           console.log(response)
@@ -947,14 +1001,14 @@ export default {
               title: '成功',
               message: response.msg,
               type: 'success',
-              duration: 2000,
+              duration: 2000
             })
           } else {
             this.$notify({
               title: '错误',
               message: '保存失败',
               type: 'error',
-              duration: 2000,
+              duration: 2000
             })
           }
         })
@@ -963,7 +1017,7 @@ export default {
             title: '错误',
             message: '保存失败.',
             type: 'error',
-            duration: 2000,
+            duration: 2000
           })
         })
     },
@@ -983,7 +1037,7 @@ export default {
           sqlResult: '',
           sqlStatus: 1, // 1：成功  0：失败
           sqlContent: sql, // sql语句
-          submitUser: parseInt(localStorage.getItem('userId')), // 提交用户id
+          submitUser: parseInt(localStorage.getItem('userId')) // 提交用户id
         })
         .then((response) => {
           if (response.code === 200) {
@@ -995,7 +1049,7 @@ export default {
             title: '错误',
             message: '自动保存失败.',
             type: 'error',
-            duration: 2000,
+            duration: 2000
           })
         })
     },
@@ -1012,12 +1066,13 @@ export default {
       // if (this.isSaveMode === 0) {
       sqlhisApi
         .getSqlListTemp({
+          executeTime: this.executeTime,
           size: this.pagination.size,
           current: this.pagination.current,
           projectId: this.$store.state.taskAdmin.sqlParams.projectId,
           datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId,
           databaseSchema: this.$store.state.taskAdmin.sqlParams.schema,
-          isSaved: 0,
+          isSaved: 0
         })
         .then((response) => {
           if (response.code === 200) {
@@ -1056,17 +1111,18 @@ export default {
     getSqlListSaved() {
       sqlhisApi
         .getSqlListSaved({
-          size: this.pagination.size,
-          current: this.pagination.current,
+          executeTime: this.executeTime,
+          size: this.pagination.size1,
+          current: this.pagination.current1,
           projectId: this.$store.state.taskAdmin.sqlParams.projectId,
           datasourceId: this.$store.state.taskAdmin.sqlParams.datasourceId,
           databaseSchema: this.$store.state.taskAdmin.sqlParams.schema,
-          isSaved: 1,
+          isSaved: 1
         })
         .then((response) => {
           if (response.code === 200) {
             this.sqlHistoryData1 = response.content.records
-            this.pagination.total = response.content.total
+            this.pagination.total1 = response.content.total
           }
           this.tableLoading = false
         })
@@ -1087,7 +1143,7 @@ export default {
               title: '成功',
               message: response.msg,
               type: 'success',
-              duration: 2000,
+              duration: 2000
             })
           }
           this.getSqlListSaved()
@@ -1097,7 +1153,7 @@ export default {
             title: '错误',
             message: '删除失败.',
             type: 'error',
-            duration: 2000,
+            duration: 2000
           })
         })
     },
@@ -1114,7 +1170,7 @@ export default {
         const wbout = XLSX.write(wb, {
           bookType: exportType,
           bookSST: true,
-          type: 'array',
+          type: 'array'
         })
         try {
           FileSaver.saveAs(
@@ -1139,7 +1195,7 @@ export default {
         const wbout = XLSX.write(wb, {
           bookType: exportType,
           bookSST: true,
-          type: 'array',
+          type: 'array'
         })
         try {
           FileSaver.saveAs(
@@ -1162,6 +1218,28 @@ export default {
       this.pagination.current = 1
       this.getSqlList()
     },
+    handleSizeChange1(size) {
+      console.log(size)
+      this.pagination.size1 = size
+      this.pagination.current1 = 1
+      this.getSqlListSaved()
+    },
+    handleSizeChange2(size, index) {
+      console.log(size)
+      this.editableTabs[index].size2 = size
+      this.pagination.current2 = 1
+      // this.queryData.asyncSqlExecuteQuery()
+      // if (this.tableData) {
+      this.pagedata1 = this.pageDataFn(this.editableTabs[index].current2, this.editableTabs[index].size2, this.tableData)
+      this.editableTabs[index].tableData = this.pagedata1
+      // this.editableTabs[index].total2 = this.tableData.length
+      console.log(this.pagedata, '1111111111111111111')
+      // } else {
+      // const res1 = this.pageDataFn(this.pagination.current2, this.pagination.size2, this.secondData)
+      // this.editableTabs[index].tableData = res1
+      //   console.log(this.pagedata, '222222222222222222222222')
+      // }
+    },
     /**
      * @description: 当前页码改变
      */
@@ -1169,16 +1247,58 @@ export default {
       this.pagination.current = current
       this.getSqlList()
     },
+    handleCurrentChange1(current) {
+      this.pagination.current1 = current
+      this.getSqlListSaved()
+    },
+    handleCurrentChange2(current, index) {
+      console.log(current, index)
+      this.editableTabs[index].current2 = current
+      console.log(this.pagination.current2)
+      // [ 0+(n-1)*50, 0+(n-1)*50 + 49]
+      // console.log(this.tableData)
+      // if (this.tableData) {
+      const res = this.pageDataFn(this.editableTabs[index].current2, this.editableTabs[index].size2, this.tableData)
+      console.log(res, '1111111111111111111')
+      this.editableTabs[index].tableData = res
+      // } else {
+      //   this.pageDataFn(this.pagination.current2, this.pagination.size2, this.secondData)
+      //   console.log(this.pagedata, '222222222222222222222222')
+      // }
+    },
+    // 处理数据
+    pageDataFn(number, pageSize, data) {
+      console.log(number, pageSize, data)
+      // 处于第几页 number
+      // 保存每页数据的数组
+      const pagedata = []
+      // this.tableData = []
+      // pageSize 每页条数
+      // 设置开始
+      const start = (pageSize * number) - pageSize
+      // 设置结束长度
+      let end = pageSize * number
+      end = end > data.length ? data.length : end
+      for (let i = start; i < end; i++) {
+        // 所有分页数据 data
+        pagedata.push(data[i])
+        // this.tableData1.push(pagedata)
+      }
+      // this.tableData.push(pagedata)
+      console.log(this.pagedata)
+      return pagedata
+    },
     /**
      * @description: 回显结果
      */
     echoResult(row) {
       this.columns = row.sqlResult.columns
       this.tableData = row.sqlResult.tableData
+      // this.tableData = this.pagedata
       this.tabsActive = 'hisSql'
       this.$emit('echoResult', row)
-    },
-  },
+    }
+  }
 }
 </script>
 
@@ -1263,16 +1383,7 @@ export default {
   // height: calc(50vh - 157px);
   height: 300px;
 }
-.Navigation .color {
-  font-weight: 400px;
-  cursor: pointer;
-  color: blue;
-  margin: 0;
-  padding: 0;
-  font-size: 13px;
-  display: inline-block;
-  background: #fff;
-}
+
 .Navigation .err1 {
   color: red;
 }
@@ -1283,10 +1394,7 @@ export default {
   padding: 0;
   font-size: 13px;
   display: inline-block;
-  line-height: 20px;
-  // text-align: center;
-  // width: 150px;
-  // height: 30px;
+  // line-height: 20px;
   background: #f5f7fa;
 }
 .logs {
