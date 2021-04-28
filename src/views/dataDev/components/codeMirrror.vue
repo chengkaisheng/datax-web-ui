@@ -38,7 +38,39 @@
         @onCursorActivity="SelectSQL"
         @click.native="chooseSql"
       />
+      <div v-if="lookup" class="lookup">
+        <span class="new_lookup">
+          <span
+            class="el-icon-arrow-right"
+            @click="() => { this.ReplaceBox = !ReplaceBox}"
+          />
+          <input
+            v-model="lookupdata"
+            class="inputs"
+            style="border: none"
+            type="text"
+          >
+          <span @click="LookUp">查找</span>
+          <span v-if="isdata">{{ DataLength }}</span>
+        </span>
+        <i class="el-icon-bottom" />
+        <i class="el-icon-top" />
+        <span
+          class="el-icon-close"
+          @click="del"
+        />
+        <br>
+        <span
+          v-show="ReplaceBox"
+          style="border-top: 1px solid #ccc"
+          class="ReplaceBox"
+        >
+          <input v-model="replaceData" class="inputs" type="text">
+          <i class="el-icon-refresh" @click="ReplaceData" />
+        </span>
+      </div>
     </div>
+
     <!-- <div class="btnContent">
         <el-button size="mini" type="goon" :loading="$store.state.graphQL.sqlBtnLoading" @click="fromChild">
             <i class="el-icon-refresh" /> 运行查询
@@ -79,7 +111,14 @@ export default {
       rightShow: true,
       infoMsg: 0,
       editor: {},
-      sqlContent: ''
+      sqlContent: '',
+      // lookup: '',
+      datalength: false,
+      isdata: false,
+      replaceData: '',
+      lookupdata: '',
+      ReplaceBox: false,
+      lookup: true
     }
   },
   watch: {
@@ -137,8 +176,41 @@ export default {
   },
   mounted() {
     this.mountCodeMirror()
+    window.addEventListener('keydown', this.handelkeydown)
   },
   methods: {
+    del() {
+      this.lookup = false
+      this.ReplaceBox = false
+      this.code = ''
+    },
+    // 点击查找
+    LookUp() {
+      console.log('this.code', this.code)
+    },
+    // 查找按键事件
+    handelkeydown(event) {
+      const _this = this
+      const e = event || window.event || arguments.callee.caller.arguments[0]
+      if (e.ctrlKey && e.keyCode === 70) {
+        e.preventDefault()
+        _this.lookup = true
+        this.lookupdata = this.code
+        e.preventDefault()
+      } else if (e.ctrlKey && e.keyCode === 83) {
+        _this.debounce(_this.saveQuery(), 2000)
+        e.preventDefault()
+      }
+    },
+    // 替换
+    ReplaceData() {
+      const reg = new RegExp(this.lookupdata, 'g')
+      console.log('1', this.code)
+      const Code = this.code.replace(reg, this.replaceData)
+      this.editor.setValue(sqlFormatter.format(Code))
+      this.$store.commit('SETCODE', Code)
+      console.log('2', this.code)
+    },
     chooseSql() {
       console.log(window.getSelection())
     },
@@ -192,6 +264,12 @@ export default {
         },
         extraKeys: {
           'Ctrl-F': function(editor) {
+            // this.lookupdata = this.code
+            // sqlContent = editor.getValue()
+            // /* 将sql内容进行格式后放入编辑器中*/
+            // editor.setValue(sqlFormatter.format(sqlContent))
+          },
+          'Ctrl-H': function(editor) {
             let sqlContent = ''
             sqlContent = editor.getValue()
             /* 将sql内容进行格式后放入编辑器中*/
@@ -360,7 +438,19 @@ export default {
 }
 
 .sqlArea {
+   position: relative;
+  height: 400px;
   overflow: scroll;
+  overflow-x: hidden;
+  font-size: 13px;
+  z-index: 1;
+  .lookup {
+    position: absolute;
+    top: 40px;
+    right: 50px;
+    border: 1px solid #ccc;
+    z-index: 999;
+  }
 }
 
 .sqlArea::-webkit-scrollbar {
@@ -370,5 +460,38 @@ export default {
 >>> .CodeMirror-gutters {
   background-color: #fff;
   border-right: none;
+}
+.lookup {
+  width: 300px;
+  height: auto;
+  border-radius: 3px;
+  padding-right: 10px;
+  text-align: center;
+  position: absolute;
+  top: 40px;
+  right: 50px;
+  border: 1px solid #ccc;
+  span {
+    margin: 0;
+    padding: 0;
+  }
+  .new_lookup {
+    width: 100%;
+  }
+  .ReplaceBox {
+    display: block;
+    width: 100%;
+    height: 24px;
+    text-align: left;
+    padding-left: 23px;
+  }
+  .inputs {
+    display: inline-block;
+    width: 180px;
+    height: 25px;
+    border: 0; // 去除未选中状态边框
+    outline: none; // 去除选中状态边框
+    background-color: rgba(0, 0, 0, 0); // 透明背景
+  }
 }
 </style>

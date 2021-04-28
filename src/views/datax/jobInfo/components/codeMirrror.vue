@@ -33,11 +33,7 @@
       <div v-if="lookup" class="lookup">
         <span class="new_lookup">
           <span
-            @click="
-              () => {
-                this.ReplaceBox = !ReplaceBox
-              }
-            "
+            @click="() => { this.ReplaceBox = !ReplaceBox}"
             class="el-icon-arrow-right"
           ></span>
           <input

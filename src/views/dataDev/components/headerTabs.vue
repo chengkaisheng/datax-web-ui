@@ -19,7 +19,16 @@
             </el-select>
           </el-col>
           <el-col style="textalign: right" :span="4">
-            <el-popover ref="dspopover" placement="right" trigger="click">
+            <el-tooltip class="item" effect="dark" placement="top-start">
+              <i v-popover:dspopover class="el-icon-coin" />
+              <div slot="content">
+                <div style="font-weight: bold; font-size: 15px">当前数据源连接</div>
+                <div>{{ selectedDsName }}</div>
+                <div style="margin-top: 10px; font-weight: bold; font-size: 15px">数据库/Schema</div>
+                <div>{{ selectedDbName }}</div>
+              </div>
+            </el-tooltip>
+            <!-- <el-popover ref="dspopover" placement="right" trigger="click">
               <div style="font-weight: bold; font-size: 15px">
                 当前数据源连接
               </div>
@@ -28,15 +37,15 @@
                 数据库/Schema
               </div>
               <div>{{ selectedDbName }}</div>
-            </el-popover>
-            <el-tooltip
+            </el-popover> -->
+            <!-- <el-tooltip
               class="item"
               effect="dark"
               content="当前数据源"
               placement="top-start"
             >
               <i v-popover:dspopover class="el-icon-coin" />
-            </el-tooltip>
+            </el-tooltip> -->
           </el-col>
           <el-col style="textalign: center" :span="4">
             <el-tooltip

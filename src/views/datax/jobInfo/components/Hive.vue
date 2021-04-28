@@ -1,5 +1,5 @@
 <template>
-  <div class="wrap">
+  <div v-loading="loading" element-loading-text="运行中" class="wrap">
     <div class="elid">
       <CodeMirror
         ref="codemirror"
@@ -11,7 +11,7 @@
         class="drawer"
         type="primary"
         style="margin-left: 16px"
-        @click="drawer = true"
+        @click="GetParameters"
       >
         参数配置
       </el-button>
@@ -23,9 +23,9 @@
       >
         <div style="padding-left: 26px">
           <div
-            v-for="(itme, index) in arrayData"
+            v-for="(itme, index) in parameters"
             v-show="isshow"
-            :key="itme.id"
+            :key="index"
             style="margin-top: 20px"
             class="DraWer"
           >
@@ -33,7 +33,7 @@
               参数：
               <el-input
                 v-show="isshow"
-                v-model="itme.data"
+                v-model="itme.parameter"
                 style="width: 260px"
                 size="mini"
                 placeholder="请输入参数"
@@ -44,7 +44,7 @@
                 type="danger"
                 icon="el-icon-delete"
                 circle
-                @click="Delete(index)"
+                @click="Delete(itme, index)"
               />
             </span>
           </div>
@@ -67,7 +67,11 @@
               "
               >取消</el-button
             >
-            <el-button size="small" style="margin-bottom: 20px" type="success"
+            <el-button
+              @click="SaveParameter"
+              size="small"
+              style="margin-bottom: 20px"
+              type="success"
               >保存</el-button
             >
           </div>
@@ -87,15 +91,18 @@
           >任务日志</span
         >
       </div>
-      <div>
+      <div class="LOGS">
         <div v-for="item in loglist" :key="item.id">
-          <div v-if="item.tableData">
+          <div v-if="item.tableData" style="padding: 20px; font-size: 12px">
             <span style="fontweigth: 700">>>{{ item.logtime }} </span>;[content]
             : <span>{{ item.content }}</span>
             <span class="line1">>>[ressult]:{{ item.tableData }}</span>
             <br />
           </div>
-          <div v-if="item.error">
+          <div
+            v-if="item.error"
+            style="padding: 20px; font-size: 12px; color: red"
+          >
             <span>>>{{ item.logtime }}; </span> [content] :
             <span class="err1">{{ item.content }}</span>
             <span class="line1"
@@ -133,11 +140,13 @@ export default {
   },
   data() {
     return {
-      arrayData: [
-        {
-          id: 0,
-          data: '',
-        },
+      loading: false,
+      parameters: [
+        // {
+        //   id: '',
+        //   jobId:this.$store.state.taskAdmin.SingleData.jobId,
+        //   parameter: '',
+        // },
       ],
       dataNum: 1,
       color: 1,
@@ -176,28 +185,57 @@ export default {
       userName: '',
       password: '',
       loglist: [],
+      tableData: [],
     }
   },
   created() {
     console.log('lang---->', this.TableData.length)
   },
   methods: {
-    Delete(index) {
-      console.log('index---->>>', index)
-      if (this.arrayData.length <= 1) {
+    GetParameters() {
+      this.drawer = true
+      job
+        .ParametersList({ jobId: this.$store.state.taskAdmin.SingleData.jobId })
+        .then((res) => {
+          console.log('ParametersList', res.content)
+          this.parameters = res.content
+        })
+    },
+    SaveParameter() {
+      const id = this.$store.state.taskAdmin.SingleData.jobId
+      console.log(this.parameters)
+      job.SaveParameters(this.parameters).then((res) => {
+        console.log('保存参数', res)
+        this.$message.success(res.content)
+      })
+    },
+    Delete(itme, index) {
+      console.log('index---->>>', index, itme)
+      if (this.parameters.length <= 1) {
         // 如果只有一个输入框则不可以删除
         return false
       }
-      this.arrayData.splice(index, 1) // 删除了数组中对应的数据也就将这个位置的输入框删除
+      job.DeleteParameters({ id: itme.id }).then((res) => {
+        if (res.code === 200) {
+          this.$message.success(res.content)
+          this.GetParameters()
+        } else {
+          this.$message.success(res.content)
+        }
+        console.log('delete----->', res)
+      })
+      //this.parameters.splice(index, 1) // 删除了数组中对应的数据也就将这个位置的输入框删除
     },
     Addhandel() {
-      this.arrayData.push({
-        id: this.dataNum++,
-        data: '',
+      this.parameters.push({
+        id: '',
+        jobId: this.$store.state.taskAdmin.SingleData.jobId,
+        parameter: '',
       })
     },
     async runQuery(val) {
       console.log('类型判断', val.jobtype)
+      this.loading = true
       if (val.jobtype === 'HIVE') {
         console.log('HIVE', val)
         this.SingleData = this.$store.state.taskAdmin.SingleData
@@ -295,6 +333,7 @@ export default {
             queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
             console.log('resGetAsyncTaskInfo--->', resGetAsyncTaskInfo)
             if (resGetAsyncTaskInfo.data.taskInfo.error) {
+              this.loading = false
               console.log(resGetAsyncTaskInfo.data.taskInfo.error.message)
               this.loglist.unshift({
                 title: '错误sql返回',
@@ -330,7 +369,26 @@ export default {
           if (
             resGetSqlExecuteTaskResults.data.result.statusMessage === 'Success'
           ) {
-            this.loglist.push({})
+            const columns =
+              resGetSqlExecuteTaskResults.data.result.results[0].resultSet
+                .columns
+            const rows =
+              resGetSqlExecuteTaskResults.data.result.results[0].resultSet.rows
+            this.columns = columns
+
+            this.tableData = rows.map((ele) => {
+              const obj = {}
+              ele.forEach((fieldVal, index) => {
+                obj[columns[index].name] = fieldVal
+              })
+              return obj
+            })
+            this.loglist.unshift({
+              logtime: new Date(),
+              content: val.code,
+              tableData: this.tableData,
+            })
+            this.loading = false
             this.$message.success('执行成功')
             console.log('执行成功--->', resGetSqlExecuteTaskResults)
           }
@@ -470,7 +528,25 @@ export default {
           if (
             resGetSqlExecuteTaskResults.data.result.statusMessage === 'Success'
           ) {
-            this.loglist.push({})
+            const columns =
+              resGetSqlExecuteTaskResults.data.result.results[0].resultSet
+                .columns
+            const rows =
+              resGetSqlExecuteTaskResults.data.result.results[0].resultSet.rows
+            this.columns = columns
+
+            this.tableData = rows.map((ele) => {
+              const obj = {}
+              ele.forEach((fieldVal, index) => {
+                obj[columns[index].name] = fieldVal
+              })
+              return obj
+            })
+            this.loglist.unshift({
+              logtime: new Date(),
+              content: val.code,
+              tableData: this.tableData,
+            })
             this.$message.success('执行成功')
             console.log('执行成功--->', resGetSqlExecuteTaskResults)
           }
@@ -609,6 +685,13 @@ export default {
 .wrap {
   width: 100%;
   height: auto;
+}
+.LOGS {
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  overflow-y: scroll;
+  /* border: 1px solid #ccc; */
 }
 .DraWer {
   display: flex;
