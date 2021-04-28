@@ -8,6 +8,27 @@ import { Group } from 'gojs'
  * @param {*} params
  * @return {*}
  */
+ export function DeleteParameters(id) {
+  return request({
+    url: 'api/jobParameter/deleteId',
+    method: 'delete',
+    params:id
+  })
+}
+ export function ParametersList(id) {
+  return request({
+    url: 'api/jobParameter/list',
+    method: 'get',
+    params:id
+  })
+}
+export function SaveParameters(parameters) {
+  return request({
+    url: 'api/jobParameter/save',
+    method: 'post',
+    data:parameters
+  })
+}
 export function getList(params) {
   return request({
     url: 'api/job/pageList',
