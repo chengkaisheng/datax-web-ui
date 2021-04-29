@@ -449,12 +449,8 @@ export default {
         }
         // _this.code = editor.getValue();
       })
-<<<<<<< HEAD
-    }
-=======
       return editor
     },
->>>>>>> 44cc5514e7408aa7abc30e2b827fc7106bf3b2c3
     /**
      * @description: 回显sql
      */
