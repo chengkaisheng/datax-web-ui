@@ -246,7 +246,7 @@
       />
     </div>
     <!-- 任务详情面板 -->
-    <el-tabs v-model="detailActiveName" type="border-card" class="el-bar-tab">
+    <el-tabs v-model="detailActiveName" type="border-card" class="el-bar-tab" @tab-click="clickTabs">
       <el-tab-pane label="任务详情" name="detail">
         <description class="detail_container">
           <template slot="title">
@@ -412,7 +412,7 @@ import PythonEditor from '@/components/PythonEditor'
 import PowershellEditor from '@/components/PowershellEditor'
 import { getDataSourceList } from '@/api/datax-jdbcDatasource'
 import { getJobProjectList } from '@/api/datax-job-project'
-import { updateJob } from '@/api/datax-job-info'
+import { updateJob, updateTask } from '@/api/datax-job-info'
 import reader from '@/views/datax/json-build/reader'
 import writer from '@/views/datax/json-build/writer'
 import qualityReader from '../../jsonQuality/reader'
@@ -972,6 +972,11 @@ export default {
     getReaderData() {
       return this.$refs.reader.getData()
     },
+    clickTabs(val) {
+      if (val.label === '任务日志') {
+        this.logList()
+      }
+    },
 
     // cancelShell() {
     //   this.editShell = false
@@ -986,9 +991,11 @@ export default {
       this.scheduleForm.alarmEmail = this.$store.state.taskAdmin.jobDataDetail.alarmEmail
       this.scheduleForm.blockStrategy = this.$store.state.taskAdmin.jobDataDetail.executorBlockStrategy
       if (this.$store.state.taskAdmin.jobDataDetail.childJobId) {
-        this.scheduleForm.subTask = this.$store.state.taskAdmin.jobDataDetail.childJobId.split(
-          ','
-        )
+        if (typeof this.$store.state.taskAdmin.jobDataDetail.childJobId === 'string') {
+          this.scheduleForm.subTask = this.$store.state.taskAdmin.jobDataDetail.childJobId.split(
+            ','
+          )
+        }
         const childarr = []
         for (let i = 0; i < this.scheduleForm.subTask.length; i++) {
           childarr.push(parseInt(this.scheduleForm.subTask[i]))
@@ -1031,6 +1038,7 @@ export default {
         this.newstlogContent = ''
         this.showLog = true
         this.jsonshow = false
+        this.logList()
       })
     },
 
@@ -1127,7 +1135,7 @@ export default {
           1
         ).then((response) => {
           this.newstlogContent = response.content.logContent
-          console.log(this.newstlogContent)
+          console.log(this.newstlogContent, '日志详情')
           if (status !== 0) {
             clearInterval(timer)
             timer = null
@@ -1472,7 +1480,7 @@ export default {
     submitScheduleForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.temp.id = this.$store.state.taskAdmin.Group.id
+          this.temp.id = this.$store.state.taskAdmin.Group.jobId
           this.temp.jobCron = this.scheduleForm.cron
           this.temp.executorTimeout = this.scheduleForm.timeout
           this.temp.alarmEmail = this.scheduleForm.alarmEmail
@@ -1481,8 +1489,9 @@ export default {
           this.temp.executorFailRetryCount = this.scheduleForm.retry
           this.temp.executorRouteStrategy = this.scheduleForm.routeStrategy
           this.temp.jobGroup = this.scheduleForm.executor
+          this.temp.projectGroupId = this.$store.state.taskAdmin.Group.id
           console.log(this.temp)
-          updateJob(this.temp)
+          updateTask(this.temp)
             .then((res) => {
               console.log(res, '任务调度。。。。')
               this.scheduleShow = false

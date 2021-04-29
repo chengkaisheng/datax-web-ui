@@ -1023,7 +1023,7 @@ export default {
       deep: true,
       handler: function (newValue, oldValue) {
         if (newValue !== oldValue) {
-          this.removeJobTab()
+          this.removeJobTab('clear')
         }
       },
     },
@@ -1146,7 +1146,12 @@ export default {
     },
     // 删除任务Tabs窗口
     removeJobTab(targetId) {
-      const targetIdInt = parseInt(targetId)
+      let targetIdInt
+      if (typeof parseInt(targetId) === 'number') {
+        targetIdInt = parseInt(targetId)
+      } else {
+        targetIdInt = ''
+      }
       console.log(targetId, 'targetId')
       console.log(this.$store.state.taskAdmin.taskDetailList)
       if (this.$store.state.taskAdmin.taskDetailList.length === 0) {
@@ -1223,6 +1228,7 @@ export default {
       this.$store.commit('SET_JOB_INFO', t[0])
     },
     clearJobTab(name) {
+      console.log(name, 'clearJobTab')
       const removeIndex = _.findIndex(
         this.$store.state.taskAdmin.taskDetailList,
         (ele) => ele.content.id === name

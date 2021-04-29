@@ -32,6 +32,7 @@
     </div>
     <div :style="{ height: `400px !important` }" class="sqlArea">
       <textarea
+        id="codesql1"
         ref="mycode"
         v-model="code"
         class="codesql"
@@ -45,16 +46,18 @@
             @click="() => { this.ReplaceBox = !ReplaceBox}"
           />
           <input
+            id="key"
             v-model="lookupdata"
             class="inputs"
             style="border: none"
             type="text"
+            placeholder="查找内容"
           >
           <span @click="LookUp">查找</span>
-          <span v-if="isdata">{{ DataLength }}</span>
+          <!-- <span v-if="isdata">{{ DataLength }}</span> -->
         </span>
-        <i class="el-icon-bottom" />
-        <i class="el-icon-top" />
+        <i class="el-icon-bottom" @click="previous" />
+        <i class="el-icon-top" @click="next" />
         <span
           class="el-icon-close"
           @click="del"
@@ -65,8 +68,8 @@
           style="border-top: 1px solid #ccc"
           class="ReplaceBox"
         >
-          <input v-model="replaceData" class="inputs" type="text">
-          <i class="el-icon-refresh" @click="ReplaceData" />
+          <input v-model="replaceData" class="inputs" style="border: none" type="text" placeholder="替换内容">
+          <span @click="ReplaceData"> <i class="el-icon-refresh" />替换</span>
         </span>
       </div>
     </div>
@@ -92,12 +95,23 @@ import 'codemirror/lib/codemirror.css'
 import 'codemirror/addon/hint/show-hint.css'
 import sqlFormatter from 'sql-formatter'
 
+import 'codemirror/addon/scroll/annotatescrollbar.js'
+import 'codemirror/addon/search/matchesonscrollbar.js'
+import 'codemirror/addon/search/match-highlighter.js'
+import 'codemirror/addon/search/jump-to-line.js'
+
+import 'codemirror/addon/dialog/dialog.js'
+import 'codemirror/addon/dialog/dialog.css'
+import 'codemirror/addon/search/searchcursor.js'
+import 'codemirror/addon/search/search.js'
+
 const CodeMirror = require('codemirror/lib/codemirror')
 require('codemirror/addon/edit/matchbrackets')
 require('codemirror/addon/selection/active-line')
 require('codemirror/mode/sql/sql')
 require('codemirror/addon/hint/show-hint')
 require('codemirror/addon/hint/sql-hint')
+
 export default {
   name: 'CodeMirror',
   props: ['sqlHeight', 'columnList', 'tableList', 'sqlparams'],
@@ -114,11 +128,15 @@ export default {
       sqlContent: '',
       // lookup: '',
       datalength: false,
-      isdata: false,
+      isdata: true,
       replaceData: '',
       lookupdata: '',
       ReplaceBox: false,
-      lookup: true
+      lookup: false,
+      oldKey: '',
+      index: -1,
+      oldCount: 0, // 记录搜索到的所有关键词总数
+      pos: []// 用于记录每个关键词的位置，以方便跳转
     }
   },
   watch: {
@@ -176,9 +194,39 @@ export default {
   },
   mounted() {
     this.mountCodeMirror()
-    window.addEventListener('keydown', this.handelkeydown)
+    // window.addEventListener('keydown', this.handelkeydown)
+    // this.onKeyDown = this.onKeyDown.bind(this)
+    document.addEventListener('keydown', this.onKeyDown)
   },
   methods: {
+    // onKeyDown(event) {
+    //   const isMac = navigator.platform.startsWith('Mac')
+    //   const { key, code, keyCode, ctrlKey, metaKey } = event
+    //   const isCmd = isMac && metaKey || !isMac && ctrlKey
+    //   if (!isCmd) {
+    //     return
+    //   }
+    //   const isF = key === 'f' || code === 'KeyF' || keyCode === 70
+    //   if (isF && this.editor) {
+    //     this.editor.execCommand('find')
+    //     event.preventDefault()
+    //   }
+    // },
+    previous() {
+      this.index--
+      this.index = this.index < 0 ? this.oldCount - 1 : this.index
+      // search()
+      // this.LookUp()
+    },
+    next() {
+      this.index++
+      // index = index == oldCount ? 0 : index;
+      if (this.index === this.oldCount) {
+        this.index = 0
+      }
+      // search()
+      // this.LookUp()
+    },
     del() {
       this.lookup = false
       this.ReplaceBox = false
@@ -186,21 +234,63 @@ export default {
     },
     // 点击查找
     LookUp() {
+      // editor.execCommand（" find"）
+      // CodeMirror.commands.find = function（cm）{clearSearch（cm）; doSearch（cm）;};
+      // $('#search_result').empty()
+      // var content = $('#message').val()
+
+      // var re = new RegExp(content, 'gm')
+
+      // var reslut = data.replace(re, "<font color='red'>" + content + '</font>')
+      // $('#search_result').append(reslut)
+
+      // document.getElementById('.result').removeClass('res')// 去除原本的res样式
+      // var key = document.getElementById('#key').val() // 取key值
+      // if (!key) {
+      //   console.log('key为空则退出')
+      //   document.getElementById('.result').each(function() { // 恢复原始数据
+      //     document.getElementById('.result').replaceWith(document.getElementById('.result').html())
+      //   })
+      //   this.oldKey = ''
+      //   return // key为空则退出
+      // }
+      // if (this.oldKey !== key) {
+      //   console.log('进入重置方法')
+      //   // 重置
+      //   this.index = 0
+      //   document.getElementById('.result').each(function() {
+      //     document.getElementById('.result').replaceWith(document.getElementById('.result').html())
+      //   })
+      //   const pos = new Array()
+      //   var regExp = new RegExp(key + '(?!([^<]+)?>)', 'ig')// 正则表达式匹配
+      //   document.getElementById('#codesql1').replace(regExp, "<span id='result" + index + "' class='result'>" + key + '</span>') // 高亮操作
+      //   document.getElementById('#key').val(key)
+      //   this.oldKey = key
+      //   document.getElementById('.result').each(function() {
+      //     pos.push(document.getElementById('.result').offset().top)
+      //   })
+      //   const oldCount = document.getElementById('.result').length
+      //   console.log('oldCount值：', oldCount)
+      // }
+      // document.getElementById('.result:eq(' + index + ')').addClass('res')// 当前位置关键词改为红色字体
+
+      // document.getElementById('#codesql1').scrollTop(pos[index])// 跳转到指定位置
+
       console.log('this.code', this.code)
     },
     // 查找按键事件
     handelkeydown(event) {
-      const _this = this
-      const e = event || window.event || arguments.callee.caller.arguments[0]
-      if (e.ctrlKey && e.keyCode === 70) {
-        e.preventDefault()
-        _this.lookup = true
-        this.lookupdata = this.code
-        e.preventDefault()
-      } else if (e.ctrlKey && e.keyCode === 83) {
-        _this.debounce(_this.saveQuery(), 2000)
-        e.preventDefault()
-      }
+      // const _this = this
+      // const e = event || window.event || arguments.callee.caller.arguments[0]
+      // if (e.ctrlKey && e.keyCode === 70) {
+      //   e.preventDefault()
+      //   _this.lookup = true
+      //   this.lookupdata = this.code
+      //   e.preventDefault()
+      // } else if (e.ctrlKey && e.keyCode === 83) {
+      //   _this.debounce(_this.saveQuery(), 2000)
+      //   e.preventDefault()
+      // }
     },
     // 替换
     ReplaceData() {
@@ -263,7 +353,7 @@ export default {
           tables: _this.tips
         },
         extraKeys: {
-          'Ctrl-F': function(editor) {
+          'Ctrl-P': function(editor) {
             // this.lookupdata = this.code
             // sqlContent = editor.getValue()
             // /* 将sql内容进行格式后放入编辑器中*/
@@ -412,6 +502,21 @@ export default {
     DejaVu Sans Mono,
     Bitstream Vera Sans Mono, Courier New, monospace, serif; */
 }
+// .CodeMirror-lines {
+// >>>.CodeMirror-dialog {
+  .CodeMirror-dCodeMirror-dialog .CodeMirror-dialog-topialog {
+    position: absolute;
+    left: 650px;
+    right: 0;
+    background: inherit;
+    z-index: 15;
+    padding: .1em .8em;
+    overflow: hidden;
+    color: inherit;
+}
+
+// }
+// }
 
 .btnContent {
   padding-left: 15px;
@@ -444,6 +549,7 @@ export default {
   overflow-x: hidden;
   font-size: 13px;
   z-index: 1;
+  // padding-top:23px ;
   .lookup {
     position: absolute;
     top: 40px;
@@ -451,6 +557,10 @@ export default {
     border: 1px solid #ccc;
     z-index: 999;
   }
+
+}
+>>> .CodeMirror-dialog.CodeMirror-dialog-top {
+   left: 650px;
 }
 
 .sqlArea::-webkit-scrollbar {
@@ -483,15 +593,21 @@ export default {
     width: 100%;
     height: 24px;
     text-align: left;
-    padding-left: 23px;
+    padding-left: 28px;
   }
   .inputs {
     display: inline-block;
     width: 180px;
     height: 25px;
-    border: 0; // 去除未选中状态边框
+    // border: 0; // 去除未选中状态边框
     outline: none; // 去除选中状态边框
-    background-color: rgba(0, 0, 0, 0); // 透明背景
+    background-color: rgba(0, 0, 0, 0.1); // 透明背景
   }
 }
+ .res{
+      color: Red;
+  }
+  .result{
+      background: yellow;
+  }
 </style>
