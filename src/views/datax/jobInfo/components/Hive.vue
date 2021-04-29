@@ -346,10 +346,6 @@ export default {
               console.log(err)
             }
           )
-          if (Createconnection.errors) {
-            this.loading = false
-            this.$message.error(Createconnection.errors[0].message)
-          }
           console.log('创建连接', Createconnection)
           const params2 = {
             id: Createconnection.data.createConnection.id,
@@ -511,10 +507,6 @@ export default {
               console.log(err)
             }
           )
-          if (Createconnection.errors) {
-            this.loading = false
-            this.$message.error(Createconnection.errors[0].message)
-          }
           console.log('创建连接', Createconnection.data)
           const params2 = {
             id: Createconnection.data.createConnection.id,
