@@ -2,8 +2,8 @@
   <div v-loading="loading" element-loading-text="运行中" class="wrap">
     <el-dialog
       title="参数配置"
-      :visible.sync="dialogVisible"
-      width="30%"
+      :visible.sync="DialogVisiBle"
+      width="35%"
       :before-close="handleClose"
     >
       <div
@@ -13,19 +13,24 @@
         style="margin-top: 20px"
         class="DraWer"
       >
-        <span style="font-size: 14px; color: #ccc">
-          参数{{ index + 1 }}：
-          <el-input
-            v-show="isshow"
-            v-model="itme.parameters"
-            style="width: 260px"
-            size="mini"
-            placeholder="请输入参数"
-          />
-        </span>
+        <div>
+          <span style="font-size: 14px; color: #ccc"
+            ><i style="color: #000; padding-right: 40px"
+              >可配置参数：{{ itme.parameter }}</i
+            >
+            参数{{ index + 1 }}：
+            <el-input
+              v-show="isshow"
+              v-model="itme.parameters"
+              style="width: 260px"
+              size="mini"
+              placeholder="请输入参数"
+            />
+          </span>
+        </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="DialogVisiBle = false">取 消</el-button>
         <el-button type="primary" @click="ReplaceParameter">确 定</el-button>
       </span>
     </el-dialog>
@@ -88,7 +93,8 @@
               style="margin-bottom: 20px"
               type="success"
               @click="Addhandel"
-            >添加</el-button>
+              >添加</el-button
+            >
             <el-button
               size="small"
               style="margin-bottom: 20px"
@@ -98,13 +104,15 @@
                   drawer = false
                 }
               "
-            >取消</el-button>
+              >取消</el-button
+            >
             <el-button
               size="small"
               style="margin-bottom: 20px"
               type="success"
               @click="SaveParameter"
-            >保存</el-button>
+              >保存</el-button
+            >
           </div>
         </div>
       </el-drawer>
@@ -119,7 +127,8 @@
               this.color = 1
             }
           "
-        >任务日志</span>
+          >任务日志</span
+        >
       </div>
       <div class="LOGS">
         <div v-for="item in loglist" :key="item.id">
@@ -127,7 +136,7 @@
             <span style="fontweigth: 700">>>{{ item.logtime }} </span>;[content]
             : <span>{{ item.content }}</span>
             <span class="line1">>>[ressult]:{{ item.tableData }}</span>
-            <br>
+            <br />
           </div>
           <div
             v-if="item.error"
@@ -135,10 +144,10 @@
           >
             <span>>>{{ item.logtime }}; </span> [content] :
             <span class="err1">{{ item.content }}</span>
-            <span
-              class="line1"
-            >>>[EXCEPTION] : <span class="err1">{{ item.error }}</span></span>
-            <br>
+            <span class="line1"
+              >>>[EXCEPTION] : <span class="err1">{{ item.error }}</span></span
+            >
+            <br />
           </div>
         </div>
       </div>
@@ -158,7 +167,7 @@ import {
   sqlContextCreate,
   asyncSqlExecuteQuery,
   getAsyncTaskInfo,
-  getSqlExecuteTaskResults
+  getSqlExecuteTaskResults,
 } from '@/graphQL/graphQL'
 import jsonFormatVue from '../../../tool/jsonFormat.vue'
 export default {
@@ -166,7 +175,7 @@ export default {
   components: {
     JsonEditor,
     MarddownEditor,
-    CodeMirror
+    CodeMirror,
   },
   data() {
     return {
@@ -183,9 +192,10 @@ export default {
       color: 1,
       logs: false,
       numberValidateForm: {
-        age: ''
+        age: '',
       },
       first: 'first',
+      DialogVisiBle: false,
       dialogVisible: false,
       activeName: 'second',
       TableData: [
@@ -198,24 +208,25 @@ export default {
         // { FunctionDescription: 'g' },
       ],
       temp: {
-        triggerStatus: '1'
+        triggerStatus: '1',
       },
       drawer: false,
       isshow: true,
       input: '',
-      code: {},
+      code: '',
       SingleData: {},
       taskParam: [],
       datasourceListQuery: {
         current: 1,
         size: 10000,
         projectId: '',
-        datasourceName: ''
+        datasourceName: '',
       },
       userName: '',
       password: '',
       loglist: [],
-      tableData: []
+      tableData: [],
+      code: '',
     }
   },
   created() {
@@ -228,7 +239,13 @@ export default {
   },
   methods: {
     ReplaceParameter() {
-      this.dialogVisible = true
+      for (let i = 0; i < this.parameters.length; i++) {
+        let reg = new RegExp(this.ReplaceParameters[i].parameter, 'g')
+        let Code = this.code.replace(reg, this.ReplaceParameters[i].parameters)
+      }
+      const lookupdata = []
+      const reg = new RegExp(this.ReplaceParameters[i].parameter, 'g')
+      this.DialogVisiBle = true
       console.log('234561---->', this.ReplaceParameters)
     },
     GetParameters() {
@@ -274,11 +291,12 @@ export default {
       this.parameters.push({
         id: '',
         jobId: this.$store.state.taskAdmin.SingleData.jobId,
-        parameter: ''
+        parameter: '',
       })
     },
     async runQuery(val) {
-      console.log('类型判断', val.jobtype)
+      this.code = val.code
+      console.log('类型判断', val)
       this.loading = true
       if (val.jobtype === 'HIVE') {
         console.log('HIVE', val)
@@ -317,9 +335,9 @@ export default {
               authModelId: 'native',
               credentials: {
                 username: this.userName,
-                userPassword: this.password
-              }
-            }
+                userPassword: this.password,
+              },
+            },
           }
           console.log('params1', params1)
           // 创建连接
@@ -328,17 +346,13 @@ export default {
               console.log(err)
             }
           )
-          if (Createconnection.errors) {
-            this.loading = false
-            this.$message.error(Createconnection.errors[0].message)
-          }
           console.log('创建连接', Createconnection)
           const params2 = {
             id: Createconnection.data.createConnection.id,
             credentials: {
               userName: this.userName,
-              userPassword: this.password
-            }
+              userPassword: this.password,
+            },
           }
           console.log('params2', params2)
           // 初始化连接
@@ -349,7 +363,7 @@ export default {
           )
           console.log('初始化连接', resInitConnection)
           const params3 = {
-            connectionId: resInitConnection.data.connection.id
+            connectionId: resInitConnection.data.connection.id,
           }
           console.log('params3', params3)
           const Createcontext = await sqlContextCreate(params3).catch((err) => {
@@ -363,15 +377,15 @@ export default {
             filter: {
               offset: 0,
               limit: 200,
-              constraints: []
-            }
+              constraints: [],
+            },
           }
           console.log('params4', params4)
           const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(params4)
           console.log('执行sql', resAsyncSqlExecuteQuery)
           const params5 = {
             taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
-            removeOnFinish: false
+            removeOnFinish: false,
           }
           console.log('params5', params5)
           let queryStatus = ''
@@ -387,7 +401,7 @@ export default {
                 title: '错误sql返回',
                 logtime: new Date(),
                 content: val.code,
-                error: resGetAsyncTaskInfo.data.taskInfo.error.message
+                error: resGetAsyncTaskInfo.data.taskInfo.error.message,
               })
               // this.$message.error(resGetAsyncTaskInfo.data.taskInfo.error)
               this.$message.error(
@@ -399,7 +413,7 @@ export default {
             console.log(queryStatus, 'queryStatus')
           }
           const params6 = {
-            taskId: resGetAsyncTaskInfo.data.taskInfo.id
+            taskId: resGetAsyncTaskInfo.data.taskInfo.id,
           }
           const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
             params6
@@ -434,7 +448,7 @@ export default {
             this.loglist.unshift({
               logtime: new Date(),
               content: val.code,
-              tableData: this.tableData
+              tableData: this.tableData,
             })
             this.loading = false
             this.$message.success('执行成功')
@@ -482,9 +496,9 @@ export default {
               authModelId: 'native',
               credentials: {
                 username: this.userName,
-                userPassword: this.password
-              }
-            }
+                userPassword: this.password,
+              },
+            },
           }
           console.log('params1', params1)
           // 创建连接
@@ -493,17 +507,13 @@ export default {
               console.log(err)
             }
           )
-          if (Createconnection.errors) {
-            this.loading = false
-            this.$message.error(Createconnection.errors[0].message)
-          }
           console.log('创建连接', Createconnection.data)
           const params2 = {
             id: Createconnection.data.createConnection.id,
             credentials: {
               userName: this.userName,
-              userPassword: this.password
-            }
+              userPassword: this.password,
+            },
           }
           console.log('params2', params2)
           // 初始化连接
@@ -514,7 +524,7 @@ export default {
           )
           console.log('初始化连接', resInitConnection)
           const params3 = {
-            connectionId: resInitConnection.data.connection.id
+            connectionId: resInitConnection.data.connection.id,
           }
           console.log('params3', params3)
           const Createcontext = await sqlContextCreate(params3).catch((err) => {
@@ -528,15 +538,15 @@ export default {
             filter: {
               offset: 0,
               limit: 200,
-              constraints: []
-            }
+              constraints: [],
+            },
           }
           console.log('params4', params4)
           const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(params4)
           console.log('执行sql', resAsyncSqlExecuteQuery)
           const params5 = {
             taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
-            removeOnFinish: false
+            removeOnFinish: false,
           }
           console.log('params5', params5)
           let queryStatus = ''
@@ -552,7 +562,7 @@ export default {
                 title: '错误sql返回',
                 logtime: new Date(),
                 content: val.code,
-                error: resGetAsyncTaskInfo.data.taskInfo.error.message
+                error: resGetAsyncTaskInfo.data.taskInfo.error.message,
               })
               // this.$message.error(resGetAsyncTaskInfo.data.taskInfo.error)
               this.$message.error(
@@ -564,7 +574,7 @@ export default {
             console.log(queryStatus, 'queryStatus')
           }
           const params6 = {
-            taskId: resGetAsyncTaskInfo.data.taskInfo.id
+            taskId: resGetAsyncTaskInfo.data.taskInfo.id,
           }
           const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
             params6
@@ -599,7 +609,7 @@ export default {
             this.loglist.unshift({
               logtime: new Date(),
               content: val.code,
-              tableData: this.tableData
+              tableData: this.tableData,
             })
             this.loading = false
             this.$message.success('执行成功')
@@ -612,6 +622,7 @@ export default {
       }
     },
     saveQuery(val) {
+      console.log('2222', val)
       this.SingleData = this.$store.state.taskAdmin.SingleData
       console.log('ID------>>>>>', this.SingleData)
       if (this.$store.state.taskAdmin.GroupId) {
@@ -649,7 +660,7 @@ export default {
           replaceParam: '',
           replaceParamType: 'Timestamp',
           userId: 0,
-          id: this.$store.state.taskAdmin.GroupId
+          id: this.$store.state.taskAdmin.GroupId,
         }
         this.code = val
         job
@@ -657,7 +668,7 @@ export default {
           .then((res) => {
             this.$message({
               message: '保存成功',
-              type: 'success'
+              type: 'success',
             })
             console.log(res)
             this.$store.commit('SETREDDOT', false)
@@ -701,7 +712,7 @@ export default {
           readerTable: '',
           replaceParam: '',
           replaceParamType: 'Timestamp',
-          userId: 0
+          userId: 0,
         }
         console.log('this.store', this.SingleData)
         console.log('------->', val)
@@ -732,8 +743,8 @@ export default {
     },
     handleClick(tab, event) {
       console.log(tab, event)
-    }
-  }
+    },
+  },
 }
 </script>
 

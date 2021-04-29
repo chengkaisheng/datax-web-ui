@@ -128,6 +128,7 @@ export default {
       editor: {},
       SingleData: {},
       jobtype: '',
+      _editor: null,
     }
   },
   computed: {
@@ -207,7 +208,8 @@ export default {
     this.jobtype = this.$store.state.taskAdmin.SingleData
   },
   mounted() {
-    this.mountCodeMirror()
+    const editor = this.mountCodeMirror()
+    this._editor = editor
     // window.addEventListener('keydown', this.handelkeydown)
   },
   destroyed() {},
@@ -286,7 +288,7 @@ export default {
     fromChild() {
       this.$emit('querysql', {
         msg: this.infoMsg,
-        code: this.code,
+        code: this._editor.getValue(),
         jobtype: this.jobtype.jobType,
       })
     },
@@ -294,9 +296,9 @@ export default {
      * @description: 保存查询
      */
     saveQuery() {
+      console.log('getValue', this._editor.getValue())
       this.TIPS = false
-      this.$emit('saveQuery', this.code)
-      console.log('code---=====', this.code)
+      this.$emit('saveQuery', this._editor.getValue())
     },
     sqlJobBuild() {
       // this.$route.push('/datax/job/JobInfo')
@@ -447,7 +449,12 @@ export default {
         }
         // _this.code = editor.getValue();
       })
+<<<<<<< HEAD
     }
+=======
+      return editor
+    },
+>>>>>>> 44cc5514e7408aa7abc30e2b827fc7106bf3b2c3
     /**
      * @description: 回显sql
      */
