@@ -472,7 +472,7 @@ export default {
           var text = change.text
           if (
             text !== ' ' &&
-            text !== ';' &&
+            text === ';' &&
             text.length !== 2 &&
             text !== '*' &&
             text !== '  '
@@ -548,16 +548,16 @@ export default {
 }
 // >>>.CodeMirror{
   >>> .CodeMirror-dialog.CodeMirror-dialog-top {
-    left: 650px;
+    left: 40.625rem
       // background-color: rgba(0, 0, 0, 0.4); // 透明背景
   }
 // }
  >>>.CodeMirror-gutter.CodeMirror-linenumbers{
-   background-color:#fff;
+   background-color:#fff !important;
 }
 >>>.CodeMirror-gutters {
-  background-color: #fff;
-  border-right: none;
+  background-color: #fff !important;
+  border-right: none !important;
 
 }
 >>>.CodeMirror-linenumber.CodeMirror-gutter-elt {
