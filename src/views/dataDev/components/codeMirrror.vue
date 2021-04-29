@@ -469,13 +469,24 @@ export default {
         // 触发autocomplete
         console.log(change)
         if (change.origin === '+input') {
-          var text = change.text
+          // debugger
+          var text = change.text[0]
           if (
             text !== ' ' &&
-            text === ';' &&
-            text.length !== 2 &&
+            text !== ';' &&
+            change.text.length !== 2 &&
             text !== '*' &&
             text !== '  '
+
+          // text !== ' ' &&
+          // change.text.length !== 2 &&
+          // text !== '*' &&
+          // text !== '  ' &&
+          // text !== ';'
+          // text !== ' ' |
+          // text.length !== 2 |
+          // text !== '*' |
+          // text !== '  '
           ) {
             // 不提示
             editor.execCommand('autocomplete')

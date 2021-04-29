@@ -433,11 +433,11 @@ export default {
       editor.on('change', function (editor, change) {
         // 触发autocomplete
         if (change.origin === '+input') {
-          var text = change.text
+          var text = change.text[0]
           if (
             text !== ' ' &&
             text !== ';' &&
-            text.length !== 2 &&
+            change.text.length !== 2 &&
             text !== '*' &&
             text !== '  '
           ) {
@@ -447,11 +447,11 @@ export default {
         }
         // _this.code = editor.getValue();
       })
-    },
+    }
     /**
      * @description: 回显sql
      */
-  },
+  }
 }
 </script>
 
