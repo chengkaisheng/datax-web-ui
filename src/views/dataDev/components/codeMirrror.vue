@@ -502,6 +502,21 @@ export default {
     DejaVu Sans Mono,
     Bitstream Vera Sans Mono, Courier New, monospace, serif; */
 }
+// .CodeMirror-lines {
+// >>>.CodeMirror-dialog {
+  .CodeMirror-dCodeMirror-dialog .CodeMirror-dialog-topialog {
+    position: absolute;
+    left: 650px;
+    right: 0;
+    background: inherit;
+    z-index: 15;
+    padding: .1em .8em;
+    overflow: hidden;
+    color: inherit;
+}
+
+// }
+// }
 
 .btnContent {
   padding-left: 15px;
@@ -534,6 +549,7 @@ export default {
   overflow-x: hidden;
   font-size: 13px;
   z-index: 1;
+  // padding-top:23px ;
   .lookup {
     position: absolute;
     top: 40px;
@@ -541,6 +557,10 @@ export default {
     border: 1px solid #ccc;
     z-index: 999;
   }
+
+}
+>>> .CodeMirror-dialog.CodeMirror-dialog-top {
+   left: 650px;
 }
 
 .sqlArea::-webkit-scrollbar {

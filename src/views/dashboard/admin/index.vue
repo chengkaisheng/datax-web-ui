@@ -927,16 +927,16 @@
 <script>
 // import GithubCorner from '@/components/GithubCorner'
 // import PanelGroup from './components/PanelGroup'
-import LineChart from './components/LineChart';
+import LineChart from './components/LineChart'
 // import vechart from './components/vEchart'
 // import RaddarChart from './components/RaddarChart'
-import PieChart from './components/PieChart';
-import BarChart from './components/BarChart';
+import PieChart from './components/PieChart'
+import BarChart from './components/BarChart'
 // import TransactionTable from './components/TransactionTable'
 // import TodoList from './components/TodoList'
 // import BoxCard from './components/BoxCard'
-import * as dashborad from '@/api/dashborad';
-import CountTo from 'vue-count-to';
+import * as dashborad from '@/api/dashborad'
+import CountTo from 'vue-count-to'
 
 const lineChartData = {
   chartInfo: {
@@ -944,7 +944,7 @@ const lineChartData = {
     successData: [],
     dayList: []
   }
-};
+}
 
 export default {
   name: 'DashboardAdmin',
@@ -991,75 +991,75 @@ export default {
       /** 接口 */
       apiIsLoading: true,
       dataApiStatistics: {}
-    };
+    }
   },
   computed: {
     // name、value对应
     transformArrPieChart() {
       return (arr) => {
-        const temp = [];
+        const temp = []
         if (arr) {
           arr.forEach((ele) => {
             temp.push({
               name: ele.type || ele.name || '未知项',
               value: ele.num
-            });
-          });
-          return temp;
+            })
+          })
+          return temp
         }
-        return temp;
-      };
+        return temp
+      }
     },
     transformArrPieChart2() {
       return (arr) => {
-        const temp = [];
+        const temp = []
         if (arr) {
           arr.forEach((ele) => {
             temp.push({
               name: ele.ruleCode || '未知项',
               value: ele.num
-            });
-          });
-          return temp;
+            })
+          })
+          return temp
         }
-        return temp;
-      };
+        return temp
+      }
     },
     // 提取X轴，Y轴，按格式处理数据
     transformArrBarChart() {
       return (arr) => {
-        const temp = [];
-        const tempX = []; // type
-        const tempY = []; // name
+        const temp = []
+        const tempX = [] // type
+        const tempY = [] // name
         if (arr) {
           arr.forEach((ele) => {
             // null => '未知'
             for (var i in ele) {
               if (ele[i] === null) {
-                ele[i] = '未知项';
+                ele[i] = '未知项'
               }
             }
             if (tempX.indexOf(ele.type) <= -1) {
-              tempX.push(ele.type);
+              tempX.push(ele.type)
             }
             if (tempY.indexOf(ele.name) <= -1) {
-              tempY.push(ele.name);
+              tempY.push(ele.name)
             }
-          });
+          })
         }
         if (tempX) {
           tempY.forEach((ty) => {
-            var tyArrData = [];
+            var tyArrData = []
             tempX.forEach((tx) => {
               const k = arr.filter((item) => {
-                return item.type === tx && item.name === ty;
-              });
+                return item.type === tx && item.name === ty
+              })
               if (k.length > 0) {
-                tyArrData.push(k[0].num);
+                tyArrData.push(k[0].num)
               } else {
-                tyArrData.push(0);
+                tyArrData.push(0)
               }
-            });
+            })
             temp.push({
               xArr: tempX,
               name: ty,
@@ -1067,62 +1067,62 @@ export default {
               stack: 'vistors',
               barWidth: '60%',
               data: tyArrData
-            });
-          });
-          return temp;
+            })
+          })
+          return temp
         }
-      };
+      }
     },
     transformArrBarChart2() {
       return (arr) => {
-        const temp = {};
-        const tempX = [];
-        const tempY = [];
-        const tempZ = [];
+        const temp = {}
+        const tempX = []
+        const tempY = []
+        const tempZ = []
         if (arr) {
           arr.forEach((ele) => {
             // null => '未知'
             for (var i in ele) {
               if (ele[i] === null) {
-                ele[i] = '未知项';
+                ele[i] = '未知项'
               }
             }
-            tempX.push(ele.date);
-            tempY.push(ele.name);
-            tempZ.push(ele.num);
-          });
-          temp.failData = [];
-          temp.successData = tempZ;
-          temp.dayList = tempX;
-          temp.projName = tempY;
-          return temp;
+            tempX.push(ele.date)
+            tempY.push(ele.name)
+            tempZ.push(ele.num)
+          })
+          temp.failData = []
+          temp.successData = tempZ
+          temp.dayList = tempX
+          temp.projName = tempY
+          return temp
         }
-      };
+      }
     },
     toPercentNum() {
       // 分子 分母
       return (nu, de) => {
-        return parseInt(((nu * 100) / de).toFixed(0));
-      };
+        return parseInt(((nu * 100) / de).toFixed(0))
+      }
     }
   },
   created() {
     // this.chartInfo()
     // this.getDataKPI()
-    console.log(typeof parseInt(localStorage.getItem('userId')));
-    const uid = parseInt(localStorage.getItem('userId'));
-    this.getObjectStatistics(uid);
-    this.getObjectDistribute(uid);
-    this.getObjectType(uid);
-    this.getObjectRun(uid);
-    this.getSourceStatistics(uid);
-    this.getTaskStatistics();
-    this.getTaskDistribute(uid);
-    this.getTaskDistributeE(uid);
-    this.getTaskResult();
-    this.getRuleStatistics(uid);
-    this.getRuleChart(uid);
-    this.getApiStatistics();
+    console.log(typeof parseInt(localStorage.getItem('userId')))
+    const uid = parseInt(localStorage.getItem('userId'))
+    this.getObjectStatistics(uid)
+    this.getObjectDistribute(uid)
+    this.getObjectType(uid)
+    this.getObjectRun(uid)
+    this.getSourceStatistics(uid)
+    this.getTaskStatistics()
+    this.getTaskDistribute(uid)
+    this.getTaskDistributeE(uid)
+    this.getTaskResult()
+    this.getRuleStatistics(uid)
+    this.getRuleChart(uid)
+    this.getApiStatistics()
   },
   methods: {
     // handleSetLineChartData(type) {
@@ -1160,90 +1160,90 @@ export default {
      */
     getObjectStatistics(query) {
       dashborad.getObjectStatistics(query).then((response) => {
-        this.dataObjectStatistics = response.content;
-      });
+        this.dataObjectStatistics = response.content
+      })
     },
     getObjectDistribute(query) {
       dashborad.getObjectDistribute(query).then((response) => {
-        this.dataObjectDistribute = response.content;
-      });
+        this.dataObjectDistribute = response.content
+      })
     },
     getObjectType(query) {
       dashborad.getObjectType(query).then((response) => {
-        this.dataObjectType = response.content;
-      });
+        this.dataObjectType = response.content
+      })
     },
     getObjectRun(query) {
       dashborad.getObjectRun(query).then((response) => {
-        this.dataObjectRun = response.content;
-      });
+        this.dataObjectRun = response.content
+      })
     },
     /**
      * @description: 数据源
      */
     getSourceStatistics(query) {
       dashborad.getSourceStatistics(query).then((response) => {
-        this.dataSourceStatistics = response.content;
-      });
+        this.dataSourceStatistics = response.content
+      })
     },
     /**
      * @description: 任务
      */
     getTaskStatistics() {
       dashborad.getTaskStatistics().then((response) => {
-        this.dataTaskStatistics = response.content;
-      });
+        this.dataTaskStatistics = response.content
+      })
     },
     getTaskDistribute(query) {
       dashborad.getTaskDistribute(query).then((response) => {
-        this.dataTaskDistribute = response.content;
-      });
+        this.dataTaskDistribute = response.content
+      })
     },
     getTaskDistributeE(query) {
       dashborad.getTaskDistributeE(query).then((response) => {
-        this.dataTaskDistributeE = response.content;
-      });
+        this.dataTaskDistributeE = response.content
+      })
     },
     getTaskResult() {
       dashborad.getTaskResult().then((response) => {
-        this.dataTaskResult = response.content;
+        this.dataTaskResult = response.content
         this.$set(
           this.dataTaskResult,
           'successData',
           this.dataTaskResult.triggerDayCountSucList
-        );
+        )
         this.$set(
           this.dataTaskResult,
           'failData',
           this.dataTaskResult.triggerDayCountFailList
-        );
+        )
         this.$set(
           this.dataTaskResult,
           'dayList',
           this.dataTaskResult.triggerDayList
-        );
-        console.log(this.dataTaskResult);
-      });
+        )
+        console.log(this.dataTaskResult)
+      })
     },
     /** 规则 */
     getRuleStatistics(query) {
       dashborad.getRuleStatistics(query).then((response) => {
-        this.dataRuleStatistics = response.content;
-      });
+        this.dataRuleStatistics = response.content
+      })
     },
     getRuleChart(query) {
       dashborad.getRuleChart(query).then((response) => {
-        this.dataRuleChart = response.content;
-      });
+        this.dataRuleChart = response.content
+      })
     },
     /** 接口 */
     getApiStatistics() {
       dashborad.getApiStatistics().then((response) => {
-        this.dataApiStatistics = response.content;
-      });
+        this.dataApiStatistics = response.content
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -1370,3 +1370,5 @@ export default {
   }
 }
 </style>
+<style>
+
