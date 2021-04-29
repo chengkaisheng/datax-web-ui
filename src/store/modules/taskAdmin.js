@@ -296,7 +296,6 @@ const mutations = {
 
   SET_JOB_INFO: (state, jobInfo) => {
     state.jobInfo = jobInfo
-    state.Group = jobInfo
   },
 
   SET_READER_ISEDIT: (state, isEdit) => {

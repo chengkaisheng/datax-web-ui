@@ -334,7 +334,7 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="任务名称" prop="name">
-              <el-input v-model="temp.name" disabled size="medium" placeholder="请输入任务描述" />
+              <el-input v-model="temp.name" disabled size="medium" placeholder="请输入任务名称" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -360,10 +360,8 @@
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="阻塞处理" prop="executorBlockStrategy">
-              <el-select v-model="temp.executorBlockStrategy" placeholder="请选择阻塞处理策略">
-                <el-option v-for="item in blockStrategies" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
+            <el-form-item label="任务描述" prop="jobDesc">
+              <el-input v-model="temp.jobDesc" size="medium" placeholder="请输入任务描述" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -373,6 +371,13 @@
           </el-col>
         </el-row>
         <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="阻塞处理" prop="executorBlockStrategy">
+              <el-select v-model="temp.executorBlockStrategy" placeholder="请选择阻塞处理策略">
+                <el-option v-for="item in blockStrategies" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
           <el-col :span="12">
             <el-form-item label="执行器" prop="jobGroup">
               <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
@@ -491,13 +496,13 @@
             <el-input-number v-model="timeOffset" size="samll" :min="-20" :max="0" style="width: 65%" />
           </el-col>
         </el-row>
-        <el-row v-if="temp.glueType==='BEAN'" :gutter="20">
+        <!-- <el-row v-if="temp.glueType==='BEAN'" :gutter="20">
           <el-col :span="24">
             <el-form-item label="JVM启动参数">
               <el-input v-model="temp.jvmParam" placeholder="-Xms1024m -Xmx1024m -XX:+HeapDumpOnOutOfMemoryError" />
             </el-form-item>
           </el-col>
-        </el-row>
+        </el-row> -->
       </el-form>
     </div>
     <span slot="footer" class="dialog-footer">
@@ -562,7 +567,8 @@ export default {
         executorBlockStrategy: [{ required: true, message: '阻塞处理不能为空', trigger: 'change' }],
         glueType: [{ required: true, message: 'jobType is required', trigger: 'change' }],
         projectId: [{ required: true, message: 'projectId is required', trigger: 'change' }],
-        name: [{ required: true, message: '任务名称不能为空', trigger: 'blur' }],
+        // name: [{ required: true, message: '任务名称不能为空', trigger: 'blur' }],
+        jobDesc: [{ required: true, message: '任务描述不能为空', trigger: 'blur' }],
         jobProject: [{ required: true, message: 'jobProject is required', trigger: 'blur' }],
         jobCron: [{ required: true, message: 'cron表达式不能为空', trigger: 'blur' }]
       },
@@ -570,6 +576,7 @@ export default {
         id: undefined,
         jobGroup: '',
         jobCron: '',
+        jobDesc: '',
         name: '',
         executorRouteStrategy: '',
         executorBlockStrategy: '',
@@ -798,8 +805,17 @@ export default {
       if (val) {
         console.log(this.$store.state.taskAdmin.taskList)
         this.currentTask = this.$store.state.taskAdmin.currentTask
-        console.log(this.currentTask, 'currentTask')
-        if (this.currentTask.type !== 'SHELL') {
+        this.temp = this.currentTask
+        console.log(this.currentTask, 'currentTask', !Array.isArray(this.currentTask.childJobId))
+        if (Array.isArray(this.currentTask.childJobId)) {
+          this.temp.childJobId = []
+        } else {
+          if (this.temp.childJobId.length > 0) {
+            this.temp.childJobId = this.currentTask.childJobId.split(',').map(Number)
+          }
+        }
+        console.log(this.temp.childJobId, 'this.temp.childJobId')
+        if (this.currentTask.jobType !== 'SHELL') {
           if (this.currentTask.hasOwnProperty('jobParam')) {
             this.taskParam = JSON.parse(this.currentTask.jobParam)
             this.$store.commit('SET_READER_DATASOURCE_ID', this.taskParam.readerDatasourceId)
@@ -812,9 +828,9 @@ export default {
           if (this.hasSchema) {
             this.getSchema()
           }
+          this.getTables()
+          this.getColumns()
         }
-        this.getTables()
-        this.getColumns()
       }
     },
     readerColumns(val) {
@@ -839,8 +855,6 @@ export default {
     this.getExecutor()
     this.getJobIdList()
     this.temp = this.$store.state.taskAdmin.currentTask
-    this.temp.childJobId = this.temp.childJobId ? this.temp.childJobId.split(',').map(Number) : []
-    console.log(this.temp.childJobId, 'this.temp.childJobId')
   },
   methods: {
     updateChildJob() {
@@ -1107,38 +1121,50 @@ export default {
     // shell任务编辑修改
     handleShell() {
       this.temp.childJobId = this.temp.childJobId.toString()
+      console.log(this.$store.state.taskAdmin.Group, 'data')
+      this.temp.projectGroupId = this.$store.state.taskAdmin.Group.id
       console.log(this.temp, '123')
       updateTask(this.temp).then(() => {
-        this.temp = {
-          id: undefined,
-          jobGroup: '',
-          jobCron: '',
-          name: '',
-          executorRouteStrategy: '',
-          executorBlockStrategy: '',
-          childJobId: '',
-          executorFailRetryCount: '',
-          alarmEmail: '',
-          executorTimeout: '',
-          userId: 0,
-          jobConfigId: '',
-          executorHandler: '',
-          glueType: '',
-          glueSource: '',
-          jobJson: '',
-          executorParam: '',
-          replaceParam: '',
-          replaceParamType: 'Timestamp',
-          jvmParam: '',
-          incStartTime: '',
-          partitionInfo: '',
-          incrementType: 0,
-          incStartId: '',
-          primaryKey: '',
-          projectId: '',
-          datasourceId: '',
-          readerTable: ''
-        }
+        job.getTaskInfo(this.temp.id).then((res) => {
+          console.log(res, 'content')
+          if (res.code === 200) {
+            console.log('>>>>', res.content)
+            this.$store.commit('SET_JOB_INFO', res.content)
+            this.temp = res.content
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+        // this.temp = {
+        //   id: undefined,
+        //   jobGroup: '',
+        //   jobCron: '',
+        //   name: '',
+        //   executorRouteStrategy: '',
+        //   executorBlockStrategy: '',
+        //   childJobId: '',
+        //   executorFailRetryCount: '',
+        //   alarmEmail: '',
+        //   executorTimeout: '',
+        //   userId: 0,
+        //   jobConfigId: '',
+        //   executorHandler: '',
+        //   glueType: '',
+        //   glueSource: '',
+        //   jobJson: '',
+        //   executorParam: '',
+        //   replaceParam: '',
+        //   replaceParamType: 'Timestamp',
+        //   jvmParam: '',
+        //   incStartTime: '',
+        //   partitionInfo: '',
+        //   incrementType: 0,
+        //   incStartId: '',
+        //   primaryKey: '',
+        //   projectId: '',
+        //   datasourceId: '',
+        //   readerTable: ''
+        // }
         this.$store.commit('changeWatch', 1)
         this.$store.commit('closeTabs', 1)
         this.$emit('fetchData')

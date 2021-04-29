@@ -7,12 +7,18 @@
             {{ jobTypeLabel }}
           </el-form-item>
         </el-col>
+        <el-col :span="12">
+          <el-form-item label="任务名称" prop="name">
+            {{ temp.name }}
+            <!-- <el-input v-model="temp.name" disabled size="medium" placeholder="请输入任务名称" /> -->
+          </el-form-item>
+        </el-col>
 
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item label="任务名称" prop="name">
-            <el-input v-model="temp.name" disabled size="medium" placeholder="请输入任务描述" />
+          <el-form-item label="任务描述" prop="jobDesc">
+            <el-input v-model="temp.jobDesc" size="medium" placeholder="请输入任务描述" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -260,14 +266,15 @@ export default {
         create: 'Create'
       },
       rules: {
-        jobGroup: [{ required: true, message: 'jobGroup is required', trigger: 'change' }],
-        executorRouteStrategy: [{ required: true, message: 'executorRouteStrategy is required', trigger: 'change' }],
-        executorBlockStrategy: [{ required: true, message: 'executorBlockStrategy is required', trigger: 'change' }],
+        jobGroup: [{ required: true, message: '执行器不能为空', trigger: 'change' }],
+        executorRouteStrategy: [{ required: true, message: '路由策略不能为空', trigger: 'change' }],
+        executorBlockStrategy: [{ required: true, message: '阻塞处理不能为空', trigger: 'change' }],
         glueType: [{ required: true, message: 'jobType is required', trigger: 'change' }],
         projectId: [{ required: true, message: 'projectId is required', trigger: 'change' }],
-        name: [{ required: true, message: 'name is required', trigger: 'blur' }],
+        name: [{ required: true, message: '任务名称不能为空', trigger: 'blur' }],
         jobProject: [{ required: true, message: 'jobProject is required', trigger: 'blur' }],
-        jobCron: [{ required: true, message: 'jobCron is required', trigger: 'blur' }],
+        jobCron: [{ required: true, message: 'cron表达式不能为空', trigger: 'blur' }],
+        jobDesc: [{ required: true, message: '任务描述不能为空', trigger: 'blur' }],
         incStartId: [{ trigger: 'blur', validator: validateIncParam }],
         replaceParam: [{ trigger: 'blur', validator: validateIncParam }],
         primaryKey: [{ trigger: 'blur', validator: validateIncParam }],
@@ -281,6 +288,7 @@ export default {
         id: undefined,
         jobGroup: '',
         jobCron: '',
+        jobDesc: '',
         name: '',
         executorRouteStrategy: '',
         executorBlockStrategy: '',
@@ -483,8 +491,8 @@ export default {
           this.temp.projectId = this.$store.state.taskAdmin.projectId
           this.temp.jobType = this.$store.state.taskAdmin.tabType
           console.log(this.$store.state.taskAdmin.Group.id, 'this.$store.state.taskAdmin.Group.id')
-          this.temp.projectGroupId = this.$store.state.taskAdmin.Group.id
-
+          this.temp.projectGroupId = this.$store.state.taskAdmin.GroupId
+          // this.temp.projectGroupId = 99999
           console.log(this.temp.projectGroupId, 'this.temp.projectGroupId')
           job.createJob(this.temp).then((res) => {
             this.fetchData()
