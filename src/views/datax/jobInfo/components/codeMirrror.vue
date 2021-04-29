@@ -1,16 +1,6 @@
 <template>
   <div>
     <div class="btnContent">
-      <!-- <el-button size="mini" type="goon" :loading="$store.state.graphQL.sqlBtnLoading" @click="fromChild">
-        <i class="el-icon-refresh" /> 运行查询
-      </el-button>
-      <el-button size="mini" @click="saveQuery">
-        <i class="el-icon-copy-document" /> 保存查询
-      </el-button>
-
-      <el-button size="mini" @click="sqlJobBuild">
-        <i class="el-icon-copy-document" /> 构建sql任务
-      </el-button> -->
       <ul>
         <li>
           <a :loading="$store.state.graphQL.sqlBtnLoading" @click="fromChild">
@@ -27,13 +17,18 @@
         ref="mycode"
         v-model="DataMerging"
         class="codesql"
+        @click="searchCode"
         @onCursorActivity="SelectSQL"
         @click.native="chooseSql"
       />
-      <div v-if="lookup" class="lookup">
+      <!-- <div v-if="lookup" class="lookup">
         <span class="new_lookup">
           <span
-            @click="() => { this.ReplaceBox = !ReplaceBox}"
+            @click="
+              () => {
+                this.ReplaceBox = !ReplaceBox
+              }
+            "
             class="el-icon-arrow-right"
           ></span>
           <input
@@ -65,7 +60,7 @@
           <input v-model="replaceData" class="inputs" type="text" />
           <i @click="ReplaceData" class="el-icon-refresh"></i>
         </span>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -76,6 +71,16 @@ import 'codemirror/theme/ambiance.css'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/addon/hint/show-hint.css'
 import sqlFormatter from 'sql-formatter'
+
+import 'codemirror/addon/scroll/annotatescrollbar.js'
+import 'codemirror/addon/search/matchesonscrollbar.js'
+import 'codemirror/addon/search/match-highlighter.js'
+import 'codemirror/addon/search/jump-to-line.js'
+
+import 'codemirror/addon/dialog/dialog.js'
+import 'codemirror/addon/dialog/dialog.css'
+import 'codemirror/addon/search/searchcursor.js'
+import 'codemirror/addon/search/search.js'
 
 const CodeMirror = require('codemirror/lib/codemirror')
 require('codemirror/addon/edit/matchbrackets')
@@ -148,6 +153,7 @@ export default {
       this.infoMsg++
     },
     sqlparams(val) {
+      console.log('hahahahahahahaha')
       if (val.level === 3) {
         this.code =
           'SELECT * FROM ' + val.data.schema + '.' + val.data.tableName + ';'
@@ -202,20 +208,23 @@ export default {
   },
   mounted() {
     this.mountCodeMirror()
-    window.addEventListener('keydown', this.handelkeydown)
+    // window.addEventListener('keydown', this.handelkeydown)
   },
   destroyed() {},
 
   methods: {
-    //替换
-    ReplaceData() {
-      const reg = new RegExp(this.lookupdata, 'g')
-      console.log('1', this.code)
-      const Code = this.code.replace(reg, this.replaceData)
-      this.editor.setValue(sqlFormatter.format(Code))
-      this.$store.commit('SETCODE', Code)
-      console.log('2', this.code)
+    searchCode(e) {
+      this.codemirror.execCommand('find') //触发
     },
+    //替换
+    // ReplaceData() {
+    //   const reg = new RegExp(this.lookupdata, 'g')
+    //   console.log('1', this.code)
+    //   const Code = this.code.replace(reg, this.replaceData)
+    //   this.editor.setValue(sqlFormatter.format(Code))
+    //   this.$store.commit('SETCODE', Code)
+    //   console.log('2', this.code)
+    // },
     //节流函数
     throttle(fn, delay = 2000) {
       let timer = null
@@ -250,22 +259,25 @@ export default {
       }
     },
     //点击查找
-    LookUp() {
-      console.log('this.code', this.code)
-    },
+    // LookUp() {
+    //   const reg = /^\$\{((?!\{).)*\}$/
+    //   const obj = this.code.replace(reg, '22222')
+    //   console.log('th', obj)
+    //   console.log('this.code', this.code)
+    // },
     //查找按键事件
-    handelkeydown(event) {
-      const _this = this
-      const e = event || window.event || arguments.callee.caller.arguments[0]
-      if (e.ctrlKey && e.keyCode === 70) {
-        e.preventDefault()
-        _this.lookup = true
-        e.preventDefault()
-      } else if (e.ctrlKey && e.keyCode === 83) {
-        _this.debounce(_this.saveQuery(), 2000)
-        e.preventDefault()
-      }
-    },
+    // handelkeydown(event) {
+    //   const _this = this
+    //   const e = event || window.event || arguments.callee.caller.arguments[0]
+    //   if (e.ctrlKey && e.keyCode === 88) {
+    //     e.preventDefault()
+    //     _this.lookup = true
+    //     e.preventDefault()
+    //   } else if (e.ctrlKey && e.keyCode === 88) {
+    //     _this.debounce(_this.saveQuery(), 2000)
+    //     e.preventDefault()
+    //   }
+    // },
     chooseSql() {},
     SelectSQL(instance) {},
     /**
@@ -297,7 +309,7 @@ export default {
 
     mountCodeMirror(code) {
       const mime = 'text/x-sql'
-      // const theme = 'ambiance'; // 设置主题，不设置的会使用默认主题
+      //const theme = 'ambiance' // 设置主题，不设置的会使用默认主题
       const _this = this
       const editor = CodeMirror.fromTextArea(this.$refs.mycode, {
         mode: mime, // 选择对应代码编辑器的语言，我这边选的是数据库，根据个人情况自行设置即可
@@ -314,7 +326,7 @@ export default {
           tables: _this.tips,
         },
         extraKeys: {
-          'Ctrl-F': function (editor) {
+          'Ctrl-P': function (editor) {
             let sqlContent = ''
             sqlContent = editor.getValue()
             /* 将sql内容进行格式后放入编辑器中*/
@@ -332,7 +344,7 @@ export default {
       _this.editor = editor
       editor.setSize('auto', '400px')
 
-      // 代码自动提示功能，记住使用cursorActivity事件不要使用change事件，这是一个坑，那样页面直接会卡死
+      //代码自动提示功能，记住使用cursorActivity事件不要使用change事件，这是一个坑，那样页面直接会卡死
       editor.on('cursorActivity', function (ins) {
         _this.code = editor.getSelection()
         if (_this.code.trim() !== '') {
@@ -450,7 +462,11 @@ export default {
     DejaVu Sans Mono,
     Bitstream Vera Sans Mono, Courier New, monospace, serif; */
 }
-
+>>> .CodeMirror-dialog.CodeMirror-dialog-top {
+  z-index: 999;
+  left: 500px;
+  top: 30px;
+}
 .btnContent {
   padding-left: 15px;
   height: 40px;

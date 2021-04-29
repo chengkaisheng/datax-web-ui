@@ -1,5 +1,34 @@
 <template>
   <div v-loading="loading" element-loading-text="运行中" class="wrap">
+    <el-dialog
+      title="参数配置"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose"
+    >
+      <div
+        v-for="(itme, index) in ReplaceParameters"
+        v-show="isshow"
+        :key="index"
+        style="margin-top: 20px"
+        class="DraWer"
+      >
+        <span style="font-size: 14px; color: #ccc">
+          参数{{ index + 1 }}：
+          <el-input
+            v-show="isshow"
+            v-model="itme.parameters"
+            style="width: 260px"
+            size="mini"
+            placeholder="请输入参数"
+          />
+        </span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="ReplaceParameter">确 定</el-button>
+      </span>
+    </el-dialog>
     <div class="elid">
       <CodeMirror
         ref="codemirror"
@@ -38,14 +67,19 @@
                 size="mini"
                 placeholder="请输入参数"
               />
-              <el-button
-                size="small"
-                style="margin-left: 10px"
-                type="danger"
-                icon="el-icon-delete"
-                circle
-                @click="Delete(itme, index)"
-              />
+              <el-popconfirm
+                @confirm="Delete(itme, index)"
+                title="确定删除此参数吗？"
+              >
+                <el-button
+                  slot="reference"
+                  size="small"
+                  style="margin-left: 10px"
+                  type="danger"
+                  icon="el-icon-delete"
+                  circle
+                />
+              </el-popconfirm>
             </span>
           </div>
           <div v-show="isshow" style="margin-top: 20px">
@@ -141,6 +175,7 @@ export default {
   data() {
     return {
       loading: false,
+      ReplaceParameters: [],
       parameters: [
         // {
         //   id: '',
@@ -172,7 +207,6 @@ export default {
       drawer: false,
       isshow: true,
       input: '',
-      ddd: [],
       code: {},
       SingleData: {},
       taskParam: [],
@@ -190,8 +224,17 @@ export default {
   },
   created() {
     console.log('lang---->', this.TableData.length)
+    console.log(
+      'ParametersList=====>>>',
+      this.$store.state.taskAdmin.ParametersList
+    )
+    this.ReplaceParameters = this.$store.state.taskAdmin.ParametersList
   },
   methods: {
+    ReplaceParameter() {
+      this.dialogVisible = true
+      console.log('234561---->', this.ReplaceParameters)
+    },
     GetParameters() {
       this.drawer = true
       job
@@ -202,12 +245,17 @@ export default {
         })
     },
     SaveParameter() {
-      const id = this.$store.state.taskAdmin.SingleData.jobId
-      console.log(this.parameters)
-      job.SaveParameters(this.parameters).then((res) => {
-        console.log('保存参数', res)
-        this.$message.success(res.content)
+      let arr = []
+      this.parameters.forEach((itme) => {
+        arr.push(itme.parameter)
       })
+      if (arr.includes('')) {
+        this.$message('参数不能为空')
+      } else {
+        job.SaveParameters(this.parameters).then((res) => {
+          this.$message.success(res.content)
+        })
+      }
     },
     Delete(itme, index) {
       console.log('index---->>>', index, itme)
@@ -284,6 +332,10 @@ export default {
               console.log(err)
             }
           )
+          if (Createconnection.errors) {
+            this.loading = false
+            this.$message.error(Createconnection.errors[0].message)
+          }
           console.log('创建连接', Createconnection)
           const params2 = {
             id: Createconnection.data.createConnection.id,
@@ -393,6 +445,7 @@ export default {
             console.log('执行成功--->', resGetSqlExecuteTaskResults)
           }
         } else if (datasource.length === 0) {
+          this.loading = false
           alert('请确认是否选择数据源')
         }
       } else if (val.jobtype === 'IMPALA') {
@@ -444,6 +497,10 @@ export default {
               console.log(err)
             }
           )
+          if (Createconnection.errors) {
+            this.loading = false
+            this.$message.error(Createconnection.errors[0].message)
+          }
           console.log('创建连接', Createconnection.data)
           const params2 = {
             id: Createconnection.data.createConnection.id,
@@ -494,6 +551,7 @@ export default {
             console.log('resGetAsyncTaskInfo--->', resGetAsyncTaskInfo)
             if (resGetAsyncTaskInfo.data.taskInfo.error) {
               console.log(resGetAsyncTaskInfo.data.taskInfo.error.message)
+              this.loading = false
               this.loglist.unshift({
                 title: '错误sql返回',
                 logtime: new Date(),
@@ -547,10 +605,12 @@ export default {
               content: val.code,
               tableData: this.tableData,
             })
+            this.loading = false
             this.$message.success('执行成功')
             console.log('执行成功--->', resGetSqlExecuteTaskResults)
           }
         } else if (datasource.length === 0) {
+          this.loading = false
           alert('请确认是否选择数据源')
         }
       }
