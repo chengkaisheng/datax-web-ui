@@ -991,9 +991,11 @@ export default {
       this.scheduleForm.alarmEmail = this.$store.state.taskAdmin.jobDataDetail.alarmEmail
       this.scheduleForm.blockStrategy = this.$store.state.taskAdmin.jobDataDetail.executorBlockStrategy
       if (this.$store.state.taskAdmin.jobDataDetail.childJobId) {
-        this.scheduleForm.subTask = this.$store.state.taskAdmin.jobDataDetail.childJobId.split(
-          ','
-        )
+        if (typeof this.$store.state.taskAdmin.jobDataDetail.childJobId === 'string') {
+          this.scheduleForm.subTask = this.$store.state.taskAdmin.jobDataDetail.childJobId.split(
+            ','
+          )
+        }
         const childarr = []
         for (let i = 0; i < this.scheduleForm.subTask.length; i++) {
           childarr.push(parseInt(this.scheduleForm.subTask[i]))
