@@ -2,8 +2,8 @@
   <div v-loading="loading" element-loading-text="运行中" class="wrap">
     <el-dialog
       title="参数配置"
-      :visible.sync="dialogVisible"
-      width="30%"
+      :visible.sync="DialogVisiBle"
+      width="35%"
       :before-close="handleClose"
     >
       <div
@@ -13,19 +13,24 @@
         style="margin-top: 20px"
         class="DraWer"
       >
-        <span style="font-size: 14px; color: #ccc">
-          参数{{ index + 1 }}：
-          <el-input
-            v-show="isshow"
-            v-model="itme.parameters"
-            style="width: 260px"
-            size="mini"
-            placeholder="请输入参数"
-          />
-        </span>
+        <div>
+          <span style="font-size: 14px; color: #ccc"
+            ><i style="color: #000; padding-right: 40px"
+              >可配置参数：{{ itme.parameter }}</i
+            >
+            参数{{ index + 1 }}：
+            <el-input
+              v-show="isshow"
+              v-model="itme.parameters"
+              style="width: 260px"
+              size="mini"
+              placeholder="请输入参数"
+            />
+          </span>
+        </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="DialogVisiBle = false">取 消</el-button>
         <el-button type="primary" @click="ReplaceParameter">确 定</el-button>
       </span>
     </el-dialog>
@@ -190,6 +195,7 @@ export default {
         age: '',
       },
       first: 'first',
+      DialogVisiBle: false,
       dialogVisible: false,
       activeName: 'second',
       TableData: [
@@ -207,7 +213,7 @@ export default {
       drawer: false,
       isshow: true,
       input: '',
-      code: {},
+      code: '',
       SingleData: {},
       taskParam: [],
       datasourceListQuery: {
@@ -220,6 +226,7 @@ export default {
       password: '',
       loglist: [],
       tableData: [],
+      code: '',
     }
   },
   created() {
@@ -232,7 +239,13 @@ export default {
   },
   methods: {
     ReplaceParameter() {
-      this.dialogVisible = true
+      for (let i = 0; i < this.parameters.length; i++) {
+        let reg = new RegExp(this.ReplaceParameters[i].parameter, 'g')
+        let Code = this.code.replace(reg, this.ReplaceParameters[i].parameters)
+      }
+      const lookupdata = []
+      const reg = new RegExp(this.ReplaceParameters[i].parameter, 'g')
+      this.DialogVisiBle = true
       console.log('234561---->', this.ReplaceParameters)
     },
     GetParameters() {
@@ -282,7 +295,8 @@ export default {
       })
     },
     async runQuery(val) {
-      console.log('类型判断', val.jobtype)
+      this.code = val.code
+      console.log('类型判断', val)
       this.loading = true
       if (val.jobtype === 'HIVE') {
         console.log('HIVE', val)
@@ -616,6 +630,7 @@ export default {
       }
     },
     saveQuery(val) {
+      console.log('2222', val)
       this.SingleData = this.$store.state.taskAdmin.SingleData
       console.log('ID------>>>>>', this.SingleData)
       if (this.$store.state.taskAdmin.GroupId) {
