@@ -73,8 +73,8 @@
                 placeholder="请输入参数"
               />
               <el-popconfirm
-                @confirm="Delete(itme, index)"
                 title="确定删除此参数吗？"
+                @confirm="Delete(itme, index)"
               >
                 <el-button
                   slot="reference"
@@ -89,10 +89,10 @@
           </div>
           <div v-show="isshow" style="margin-top: 20px">
             <el-button
-              @click="Addhandel"
               size="small"
               style="margin-bottom: 20px"
               type="success"
+              @click="Addhandel"
               >添加</el-button
             >
             <el-button
@@ -107,10 +107,10 @@
               >取消</el-button
             >
             <el-button
-              @click="SaveParameter"
               size="small"
               style="margin-bottom: 20px"
               type="success"
+              @click="SaveParameter"
               >保存</el-button
             >
           </div>
@@ -118,7 +118,7 @@
       </el-drawer>
     </div>
     <div class="logs">
-      <div class="Navigation">
+      <div class="Navigation1">
         <span
           :class="{ color: color === 1 ? 'color' : '' }"
           @click="
@@ -258,7 +258,7 @@ export default {
         })
     },
     SaveParameter() {
-      let arr = []
+      const arr = []
       this.parameters.forEach((itme) => {
         arr.push(itme.parameter)
       })
@@ -285,7 +285,7 @@ export default {
         }
         console.log('delete----->', res)
       })
-      //this.parameters.splice(index, 1) // 删除了数组中对应的数据也就将这个位置的输入框删除
+      // this.parameters.splice(index, 1) // 删除了数组中对应的数据也就将这个位置的输入框删除
     },
     Addhandel() {
       this.parameters.push({
@@ -302,7 +302,7 @@ export default {
         console.log('HIVE', val)
         this.SingleData = this.$store.state.taskAdmin.SingleData
         this.datasourceListQuery.projectId = this.SingleData.projectId
-        //获取数据源
+        // 获取数据源
         const Hivesource = await JOB.getJobList(this.datasourceListQuery).catch(
           (err) => {
             console.log(err)
@@ -340,7 +340,7 @@ export default {
             },
           }
           console.log('params1', params1)
-          //创建连接
+          // 创建连接
           const Createconnection = await createConnection(params1).catch(
             (err) => {
               console.log(err)
@@ -359,7 +359,7 @@ export default {
             },
           }
           console.log('params2', params2)
-          //初始化连接
+          // 初始化连接
           const resInitConnection = await initConnection(params2).catch(
             (err) => {
               console.log(err)
@@ -466,7 +466,7 @@ export default {
         console.log('IMPALA--->', val)
         this.SingleData = this.$store.state.taskAdmin.SingleData
         this.datasourceListQuery.projectId = this.SingleData.projectId
-        //获取数据源
+        // 获取数据源
         const source = await JOB.getJobList(this.datasourceListQuery).catch(
           (err) => {
             console.log(err)
@@ -505,7 +505,7 @@ export default {
             },
           }
           console.log('params1', params1)
-          //创建连接
+          // 创建连接
           const Createconnection = await createConnection(params1).catch(
             (err) => {
               console.log(err)
@@ -524,7 +524,7 @@ export default {
             },
           }
           console.log('params2', params2)
-          //初始化连接
+          // 初始化连接
           const resInitConnection = await initConnection(params2).catch(
             (err) => {
               console.log(err)
@@ -785,12 +785,12 @@ export default {
   width: 100%;
   height: auto;
 }
-.Navigation {
+.Navigation1 {
   height: 30px;
   width: 100%;
   background: #f5f7fa;
 }
-.Navigation .color {
+.Navigation1 .color {
   font-weight: 400px;
   cursor: pointer;
   color: blue;
@@ -800,11 +800,10 @@ export default {
   display: inline-block;
   line-height: 30px;
   text-align: center;
-  width: 150px;
   height: 30px;
   background: #fff;
 }
-.Navigation span {
+.Navigation1 span {
   font-weight: 400px;
   cursor: pointer;
   margin: 0;
@@ -813,7 +812,6 @@ export default {
   display: inline-block;
   line-height: 30px;
   text-align: center;
-  width: 150px;
   height: 30px;
   background: #f5f7fa;
 }

@@ -18,8 +18,7 @@
         <div
           ref="querylog"
           class="Navigation"
-          style="height:300px"
-          onload="window.scrollTo(0,document.getElemetnById('last').scrollHeight);"
+          style="height:300px;width:100%"
         >
           <div v-for="item in loglist" :key="item.id">
             <div v-if="item.tableData">
@@ -1375,6 +1374,7 @@ export default {
   -webkit-box-orient: vertical;
 }
 .Navigation {
+  box-sizing: border-box;
   padding: 20px;
   // height: 30px;
   overflow: scroll;
@@ -1388,17 +1388,18 @@ export default {
   color: red;
 }
 .Navigation span {
+   width: 100%;
   font-weight: 400px;
   cursor: pointer;
   margin: 0;
   padding: 0;
   font-size: 13px;
-  display: inline-block;
+  // display: inline-block;
   // line-height: 20px;
   background: #f5f7fa;
 }
-.logs {
-  width: 100%;
-  height: auto;
-}
+// .logs {
+//   width: 100%;
+//   height: auto;
+// }
 </style>
