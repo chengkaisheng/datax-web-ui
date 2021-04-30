@@ -469,13 +469,24 @@ export default {
         // 触发autocomplete
         console.log(change)
         if (change.origin === '+input') {
-          var text = change.text
+          // debugger
+          var text = change.text[0]
           if (
             text !== ' ' &&
             text !== ';' &&
-            text.length !== 2 &&
+            change.text.length !== 2 &&
             text !== '*' &&
             text !== '  '
+
+          // text !== ' ' &&
+          // change.text.length !== 2 &&
+          // text !== '*' &&
+          // text !== '  ' &&
+          // text !== ';'
+          // text !== ' ' |
+          // text.length !== 2 |
+          // text !== '*' |
+          // text !== '  '
           ) {
             // 不提示
             editor.execCommand('autocomplete')
@@ -502,22 +513,6 @@ export default {
     DejaVu Sans Mono,
     Bitstream Vera Sans Mono, Courier New, monospace, serif; */
 }
-// .CodeMirror-lines {
-// >>>.CodeMirror-dialog {
-  .CodeMirror-dCodeMirror-dialog .CodeMirror-dialog-topialog {
-    position: absolute;
-    left: 650px;
-    right: 0;
-    background: inherit;
-    z-index: 15;
-    padding: .1em .8em;
-    overflow: hidden;
-    color: inherit;
-}
-
-// }
-// }
-
 .btnContent {
   padding-left: 15px;
   height: 40px;
@@ -525,6 +520,7 @@ export default {
   background-color: #fff;
   border-bottom: 1px solid #f5f7fa;
   font-size: 13px;
+
   ul {
     overflow: hidden;
     li {
@@ -549,7 +545,9 @@ export default {
   overflow-x: hidden;
   font-size: 13px;
   z-index: 1;
-  // padding-top:23px ;
+//   >>>.CodeMirror-dialog.CodeMirror-dialog-top {
+//    left: 650px;
+// }
   .lookup {
     position: absolute;
     top: 40px;
@@ -559,18 +557,27 @@ export default {
   }
 
 }
->>> .CodeMirror-dialog.CodeMirror-dialog-top {
-   left: 650px;
+// >>>.CodeMirror{
+  >>> .CodeMirror-dialog.CodeMirror-dialog-top {
+    left: 40.625rem
+      // background-color: rgba(0, 0, 0, 0.4); // 透明背景
+  }
+// }
+ >>>.CodeMirror-gutter.CodeMirror-linenumbers{
+   background-color:#fff !important;
 }
+>>>.CodeMirror-gutters {
+  background-color: #fff !important;
+  border-right: none !important;
 
+}
+>>>.CodeMirror-linenumber.CodeMirror-gutter-elt {
+background-color: #fff;
+}
 .sqlArea::-webkit-scrollbar {
   display: none;
 }
 
->>> .CodeMirror-gutters {
-  background-color: #fff;
-  border-right: none;
-}
 .lookup {
   width: 300px;
   height: auto;

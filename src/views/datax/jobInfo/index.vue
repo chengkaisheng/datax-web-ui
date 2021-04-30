@@ -607,11 +607,7 @@ rkJggg=="
       </el-tabs>
     </div>
     <!-- 重命名对话框 -->
-    <el-dialog
-      :visible.sync="dialogRenameVisible"
-      width="40%"
-      title="重命名"
-    >
+    <el-dialog :visible.sync="dialogRenameVisible" width="40%" title="重命名">
       <span style="margin-left: 20px">名称：</span><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelDialog"> 取消 </el-button>
@@ -906,9 +902,7 @@ export default {
     },
     filterList() {
       return this.List.filter((item) => {
-        if (
-          item.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1
-        ) {
+        if (item.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1) {
           return true
         }
         if (this.search === item.id.toString()) {
@@ -1364,21 +1358,24 @@ export default {
           name: this.Rename
         }
       }
-      job.dragReName(reParams).then((res) => {
-        if (res.code === 200) {
-          this.dialogRenameVisible = false
-          this.$message.success('重命名' + res.msg)
-          this.getDataTree()
-          this.Rename = ''
-          this.getJobDetail(this.detailData)
-          this.removeJobTab(this.selectRow.id)
-          // this.handleNodeClick()
-        } else {
-          this.$message.err(res.msg)
-        }
-      }).catch((err) => {
-        console.log(err)
-      })
+      job
+        .dragReName(reParams)
+        .then((res) => {
+          if (res.code === 200) {
+            this.dialogRenameVisible = false
+            this.$message.success('重命名' + res.msg)
+            this.getDataTree()
+            this.Rename = ''
+            this.getJobDetail(this.detailData)
+            this.removeJobTab(this.selectRow.id)
+            // this.handleNodeClick()
+          } else {
+            this.$message.err(res.msg)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     },
     // 复制
     copyFile() {
@@ -1701,6 +1698,18 @@ export default {
         this.currentJobName = data.name
         console.log('123')
         if (data.jobId) {
+          job
+            .ParametersList({
+              jobId: data.jobId
+            })
+            .then((res) => {
+              console.log('ParametersList', res.content)
+              this.$store.commit('ParametersList', res.content)
+              this.parameters = res.content
+            })
+            .catch((err) => {
+              console.log(err)
+            })
           console.log('123', data.jobId)
           this.$store.commit('changeJobId', data.jobId)
           job

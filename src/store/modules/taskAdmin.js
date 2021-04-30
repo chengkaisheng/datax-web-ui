@@ -120,7 +120,7 @@ const state = {
   scheduleId: '', // 调度任务修改id
 
   SingleData: '', // 单条数据信息
-
+  ParametersList: [],//配置参数
   sqlParams: {
     projectId: '', // 项目ID
     datasourceId: '', // 数据源ID
@@ -133,6 +133,9 @@ const state = {
 }
 
 const mutations = {
+  ParametersList: (state, data) => {
+    state.ParametersList = data
+  },
   // 修改当前任务信息
   set_edit_task: (state, payload) => {
     state.currentTask = payload

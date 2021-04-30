@@ -1,5 +1,39 @@
 <template>
   <div v-loading="loading" element-loading-text="运行中" class="wrap">
+    <el-dialog
+      title="参数配置"
+      :visible.sync="DialogVisiBle"
+      width="35%"
+      :before-close="handleClose"
+    >
+      <div
+        v-for="(itme, index) in ReplaceParameters"
+        v-show="isshow"
+        :key="index"
+        style="margin-top: 20px"
+        class="DraWer"
+      >
+        <div>
+          <span style="font-size: 14px; color: #ccc"
+            ><i style="color: #000; padding-right: 40px"
+              >可配置参数：{{ itme.parameter }}</i
+            >
+            参数{{ index + 1 }}：
+            <el-input
+              v-show="isshow"
+              v-model="itme.parameters"
+              style="width: 260px"
+              size="mini"
+              placeholder="请输入参数"
+            />
+          </span>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="DialogVisiBle = false">取 消</el-button>
+        <el-button type="primary" @click="ReplaceParameter">确 定</el-button>
+      </span>
+    </el-dialog>
     <div class="elid">
       <CodeMirror
         ref="codemirror"
@@ -38,22 +72,27 @@
                 size="mini"
                 placeholder="请输入参数"
               />
-              <el-button
-                size="small"
-                style="margin-left: 10px"
-                type="danger"
-                icon="el-icon-delete"
-                circle
-                @click="Delete(itme, index)"
-              />
+              <el-popconfirm
+                title="确定删除此参数吗？"
+                @confirm="Delete(itme, index)"
+              >
+                <el-button
+                  slot="reference"
+                  size="small"
+                  style="margin-left: 10px"
+                  type="danger"
+                  icon="el-icon-delete"
+                  circle
+                />
+              </el-popconfirm>
             </span>
           </div>
           <div v-show="isshow" style="margin-top: 20px">
             <el-button
-              @click="Addhandel"
               size="small"
               style="margin-bottom: 20px"
               type="success"
+              @click="Addhandel"
               >添加</el-button
             >
             <el-button
@@ -68,10 +107,10 @@
               >取消</el-button
             >
             <el-button
-              @click="SaveParameter"
               size="small"
               style="margin-bottom: 20px"
               type="success"
+              @click="SaveParameter"
               >保存</el-button
             >
           </div>
@@ -79,7 +118,7 @@
       </el-drawer>
     </div>
     <div class="logs">
-      <div class="Navigation">
+      <div class="Navigation1">
         <span
           :class="{ color: color === 1 ? 'color' : '' }"
           @click="
@@ -141,6 +180,7 @@ export default {
   data() {
     return {
       loading: false,
+      ReplaceParameters: [],
       parameters: [
         // {
         //   id: '',
@@ -155,6 +195,7 @@ export default {
         age: '',
       },
       first: 'first',
+      DialogVisiBle: false,
       dialogVisible: false,
       activeName: 'second',
       TableData: [
@@ -172,8 +213,7 @@ export default {
       drawer: false,
       isshow: true,
       input: '',
-      ddd: [],
-      code: {},
+      code: '',
       SingleData: {},
       taskParam: [],
       datasourceListQuery: {
@@ -186,12 +226,28 @@ export default {
       password: '',
       loglist: [],
       tableData: [],
+      code: '',
     }
   },
   created() {
     console.log('lang---->', this.TableData.length)
+    console.log(
+      'ParametersList=====>>>',
+      this.$store.state.taskAdmin.ParametersList
+    )
+    this.ReplaceParameters = this.$store.state.taskAdmin.ParametersList
   },
   methods: {
+    ReplaceParameter() {
+      for (let i = 0; i < this.parameters.length; i++) {
+        let reg = new RegExp(this.ReplaceParameters[i].parameter, 'g')
+        let Code = this.code.replace(reg, this.ReplaceParameters[i].parameters)
+      }
+      const lookupdata = []
+      const reg = new RegExp(this.ReplaceParameters[i].parameter, 'g')
+      this.DialogVisiBle = true
+      console.log('234561---->', this.ReplaceParameters)
+    },
     GetParameters() {
       this.drawer = true
       job
@@ -202,12 +258,17 @@ export default {
         })
     },
     SaveParameter() {
-      const id = this.$store.state.taskAdmin.SingleData.jobId
-      console.log(this.parameters)
-      job.SaveParameters(this.parameters).then((res) => {
-        console.log('保存参数', res)
-        this.$message.success(res.content)
+      const arr = []
+      this.parameters.forEach((itme) => {
+        arr.push(itme.parameter)
       })
+      if (arr.includes('')) {
+        this.$message('参数不能为空')
+      } else {
+        job.SaveParameters(this.parameters).then((res) => {
+          this.$message.success(res.content)
+        })
+      }
     },
     Delete(itme, index) {
       console.log('index---->>>', index, itme)
@@ -224,7 +285,7 @@ export default {
         }
         console.log('delete----->', res)
       })
-      //this.parameters.splice(index, 1) // 删除了数组中对应的数据也就将这个位置的输入框删除
+      // this.parameters.splice(index, 1) // 删除了数组中对应的数据也就将这个位置的输入框删除
     },
     Addhandel() {
       this.parameters.push({
@@ -234,13 +295,14 @@ export default {
       })
     },
     async runQuery(val) {
-      console.log('类型判断', val.jobtype)
+      this.code = val.code
+      console.log('类型判断', val)
       this.loading = true
       if (val.jobtype === 'HIVE') {
         console.log('HIVE', val)
         this.SingleData = this.$store.state.taskAdmin.SingleData
         this.datasourceListQuery.projectId = this.SingleData.projectId
-        //获取数据源
+        // 获取数据源
         const Hivesource = await JOB.getJobList(this.datasourceListQuery).catch(
           (err) => {
             console.log(err)
@@ -278,7 +340,7 @@ export default {
             },
           }
           console.log('params1', params1)
-          //创建连接
+          // 创建连接
           const Createconnection = await createConnection(params1).catch(
             (err) => {
               console.log(err)
@@ -293,7 +355,7 @@ export default {
             },
           }
           console.log('params2', params2)
-          //初始化连接
+          // 初始化连接
           const resInitConnection = await initConnection(params2).catch(
             (err) => {
               console.log(err)
@@ -393,13 +455,14 @@ export default {
             console.log('执行成功--->', resGetSqlExecuteTaskResults)
           }
         } else if (datasource.length === 0) {
+          this.loading = false
           alert('请确认是否选择数据源')
         }
       } else if (val.jobtype === 'IMPALA') {
         console.log('IMPALA--->', val)
         this.SingleData = this.$store.state.taskAdmin.SingleData
         this.datasourceListQuery.projectId = this.SingleData.projectId
-        //获取数据源
+        // 获取数据源
         const source = await JOB.getJobList(this.datasourceListQuery).catch(
           (err) => {
             console.log(err)
@@ -438,7 +501,7 @@ export default {
             },
           }
           console.log('params1', params1)
-          //创建连接
+          // 创建连接
           const Createconnection = await createConnection(params1).catch(
             (err) => {
               console.log(err)
@@ -453,7 +516,7 @@ export default {
             },
           }
           console.log('params2', params2)
-          //初始化连接
+          // 初始化连接
           const resInitConnection = await initConnection(params2).catch(
             (err) => {
               console.log(err)
@@ -494,6 +557,7 @@ export default {
             console.log('resGetAsyncTaskInfo--->', resGetAsyncTaskInfo)
             if (resGetAsyncTaskInfo.data.taskInfo.error) {
               console.log(resGetAsyncTaskInfo.data.taskInfo.error.message)
+              this.loading = false
               this.loglist.unshift({
                 title: '错误sql返回',
                 logtime: new Date(),
@@ -547,15 +611,18 @@ export default {
               content: val.code,
               tableData: this.tableData,
             })
+            this.loading = false
             this.$message.success('执行成功')
             console.log('执行成功--->', resGetSqlExecuteTaskResults)
           }
         } else if (datasource.length === 0) {
+          this.loading = false
           alert('请确认是否选择数据源')
         }
       }
     },
     saveQuery(val) {
+      console.log('2222', val)
       this.SingleData = this.$store.state.taskAdmin.SingleData
       console.log('ID------>>>>>', this.SingleData)
       if (this.$store.state.taskAdmin.GroupId) {
@@ -710,12 +777,12 @@ export default {
   width: 100%;
   height: auto;
 }
-.Navigation {
+.Navigation1 {
   height: 30px;
   width: 100%;
   background: #f5f7fa;
 }
-.Navigation .color {
+.Navigation1 .color {
   font-weight: 400px;
   cursor: pointer;
   color: blue;
@@ -725,11 +792,10 @@ export default {
   display: inline-block;
   line-height: 30px;
   text-align: center;
-  width: 150px;
   height: 30px;
   background: #fff;
 }
-.Navigation span {
+.Navigation1 span {
   font-weight: 400px;
   cursor: pointer;
   margin: 0;
@@ -738,7 +804,6 @@ export default {
   display: inline-block;
   line-height: 30px;
   text-align: center;
-  width: 150px;
   height: 30px;
   background: #f5f7fa;
 }
