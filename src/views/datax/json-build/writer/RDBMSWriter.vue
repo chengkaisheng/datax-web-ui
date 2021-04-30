@@ -279,6 +279,7 @@ export default {
       this.writerForm.checkAll = checkedCount === this.fromColumnList.length
       this.writerForm.isIndeterminate = checkedCount > 0 && checkedCount < this.fromColumnList.length
       this.$store.commit('SET_SELECT_WRITERCOLUMN', value)
+      console.log(value)
     },
     getData() {
       if (Bus.dataSourceId) {

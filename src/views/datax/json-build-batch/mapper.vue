@@ -10,6 +10,7 @@ export default {
   components: { TableMapper },
   methods: {
     sendTables(fromTablesList, toTablesList) {
+      console.log(fromTablesList)
       this.$refs.mapper.fromTablesList = fromTablesList
       this.$refs.mapper.toTablesList = toTablesList
     },

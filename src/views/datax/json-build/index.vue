@@ -346,7 +346,7 @@ export default {
       //         )
       //       }
       //     }
-      //     this.buildJson();
+      // this.buildJson()
       //   }
       //   if (this.active === 5) {
       this.$refs.create.createTask()
@@ -366,12 +366,16 @@ export default {
     },
     // 构建json
     buildJson() {
+      console.log(2222222222222222)
       const readerData = this.$refs.reader.getData()
       const writeData = this.$refs.writer.getData()
       console.log(writeData, 'writeData')
       const readerColumns = this.$refs.mapper.getLColumns()
+      // const readerColumns = this.$store.state.taskAdmin.selectReaderColumn
       const writerColumns = this.$refs.mapper.getRColumns()
+      // const writerColumns = this.$refs.mapper.getRColumns()
       const transformer = this.$refs.mapper.getRules()
+      console.log(readerColumns, 'readerColumns')
       const hiveReader = {
         readerPath: readerData.path,
         readerDefaultFS: readerData.defaultFS,

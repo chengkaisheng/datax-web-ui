@@ -1042,8 +1042,10 @@ export default {
     },
     /**
      * @description: 提交
-     */
+    //  */
+    // 编辑提交
     handleSubmit() {
+      console.log(11111111111111111111)
       this.$store.commit('SET_SELECT_WRITERCOLUMN', this.tableForm.rcolumns)
       this.$store.commit('SET_SELECT_READERCOLUMN', this.tableForm.lcolumns)
       const jobParam = {
@@ -1065,7 +1067,7 @@ export default {
         mongoDBReader: this.taskParam.mongoDBReader,
         mongoDBWriter: this.taskParam.mongoDBWriter
       }
-
+      // console.log(jobParam)
       if (this.currentTask.glueType === 'BEAN' && !isJSON(this.currentTask.jobJson)) {
         this.$notify({
           title: 'Fail',

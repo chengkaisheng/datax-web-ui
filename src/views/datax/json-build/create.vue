@@ -448,6 +448,7 @@ export default {
     },
 
     createTask() {
+      console.log('33333333333333333333333333333333')
       this.temp.jobJson = JSON.stringify(this.fjson, null, 2)
       this.temp.projectId = this.$store.state.taskAdmin.projectId
       let str = ''
