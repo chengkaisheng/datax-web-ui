@@ -245,6 +245,12 @@ export const asyncRoutes = [
         name: 'JobInfo2',
         component: () => import('@/views/datax/jobInfo/index1'),
         meta: { title: '任务管理2', icon: 'renwu' }
+      },
+      {
+        path: 'workflowDev',
+        name: 'workflowDev',
+        component: () => import('@/views/datax/workflowDev/index'),
+        meta: { title: '任务流开发', icon: 'renwu' }
       }
       // {
       //   path: 'jsonBuild',
