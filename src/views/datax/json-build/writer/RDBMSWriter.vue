@@ -272,13 +272,17 @@ export default {
     wHandleCheckAllChange(val) {
       this.writerForm.columns = val ? this.fromColumnList : []
       this.writerForm.isIndeterminate = false
+
       this.$store.commit('SET_SELECT_WRITERCOLUMN', this.writerForm.columns)
     },
     wHandleCheckedChange(value) {
       const checkedCount = value.length
       this.writerForm.checkAll = checkedCount === this.fromColumnList.length
       this.writerForm.isIndeterminate = checkedCount > 0 && checkedCount < this.fromColumnList.length
+      // this.writerForm.columns = value
       this.$store.commit('SET_SELECT_WRITERCOLUMN', value)
+      // console.log(this.writerForm.columns)
+      // console.log(this.$store.state.taskAdmin.selectReaderColumn)
       console.log(value)
     },
     getData() {

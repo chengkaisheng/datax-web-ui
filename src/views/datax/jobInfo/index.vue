@@ -1687,15 +1687,17 @@ export default {
     handleNodeClick(data) {
       console.log('任务数据', data)
       this.selectRow = data
+      // this.currentJobName = data.name
       this.delType = data.type === 1 ? '文件夹' : '任务'
       this.$store.commit('Singledata', data)
       this.$store.commit('SETPJTID', data.projectId)
       this.$store.commit('SETCODE', '')
+
       if (data.type === 2) {
         this.jobType = data.jobType
         this.$store.commit('changeGroupData', data)
         this.$store.commit('changeGroupName', data.name)
-        this.currentJobName = data.name
+        // this.currentJobName = data.name
         console.log('123')
         if (data.jobId) {
           job
@@ -1703,7 +1705,7 @@ export default {
               jobId: data.jobId
             })
             .then((res) => {
-              console.log('ParametersList', res.content)
+              console.log('ParametersList', res)
               this.$store.commit('ParametersList', res.content)
               this.parameters = res.content
             })
@@ -1738,7 +1740,7 @@ export default {
           this.createNewJob(data.jobType)
         }
       } else {
-        this.currentJobName = ''
+        // this.currentJobName = ''
       }
       console.log(this.currentJobName, '当前任务的名称')
     },
