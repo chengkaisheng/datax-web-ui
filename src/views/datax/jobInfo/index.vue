@@ -1213,13 +1213,16 @@ export default {
     },
     JobTabClick(ele) {
       console.log(ele)
-      console.log(this.List, '>>>>>>>>>>>>>>>>>>>>>')
+      console.log(this.List, '>>>>>>>>>>>>>>>>>>>>>', this.jobDetailIdx)
       this.jobType = ele.name
       const t = this.List.filter(
         (item) => item.id === parseInt(this.jobDetailIdx)
       )
       console.log(t, 'tttttttttttttttttttttttttt')
       this.$store.commit('SET_JOB_INFO', t[0])
+      if (t[0].projectGroupId) {
+        this.$store.commit('changeTreeId', t[0].projectGroupId)
+      }
     },
     clearJobTab(name) {
       console.log(name, 'clearJobTab')
@@ -1624,6 +1627,7 @@ export default {
             if (res.content !== '请选择父级目录') {
               this.$store.commit('changeGroupName', this.allName)
               this.$store.commit('changeJobId', parseInt(res.content))
+              this.$store.commit('changeTreeId', parseInt(res.content))
               console.log(res.content)
               console.log(
                 this.$store.state.taskAdmin.GroupId,
@@ -1697,7 +1701,8 @@ export default {
         this.jobType = data.jobType
         this.$store.commit('changeGroupData', data)
         this.$store.commit('changeGroupName', data.name)
-        // this.currentJobName = data.name
+        this.$store.commit('changeTreeId', data.id)
+        this.currentJobName = data.name
         console.log('123')
         if (data.jobId) {
           job
@@ -1705,7 +1710,7 @@ export default {
               jobId: data.jobId
             })
             .then((res) => {
-              console.log('ParametersList', res)
+              console.log('ParametersList===---', res)
               this.$store.commit('ParametersList', res.content)
               this.parameters = res.content
             })

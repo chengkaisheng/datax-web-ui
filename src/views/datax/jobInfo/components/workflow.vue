@@ -779,7 +779,7 @@ export default {
               jobJson: this.myDiagram.model.toJson(),
               jobType: this.jobType,
               triggerStatus: this.taskTrigger ? 1 : 0,
-              projectGroupId: this.$store.state.taskAdmin.Group.id
+              projectGroupId: this.$store.state.taskAdmin.TreeId
               // triggerNextTime: 0
             }
           ).then(response => {

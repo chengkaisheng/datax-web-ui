@@ -117,7 +117,7 @@ export default {
 -- 备       注       ：
 -- 脚 本 版 本    :       修 改 人  :        修 改 日 期  :         修 改 内 容  :
 -- v1
--- ===================================================================================================`,
+-- ===================================================================================================--`,
       code: '',
       sqlLoading: false,
       tips: {},
@@ -260,26 +260,6 @@ export default {
         }, delay || 1000)
       }
     },
-    //点击查找
-    // LookUp() {
-    //   const reg = /^\$\{((?!\{).)*\}$/
-    //   const obj = this.code.replace(reg, '22222')
-    //   console.log('th', obj)
-    //   console.log('this.code', this.code)
-    // },
-    //查找按键事件
-    // handelkeydown(event) {
-    //   const _this = this
-    //   const e = event || window.event || arguments.callee.caller.arguments[0]
-    //   if (e.ctrlKey && e.keyCode === 88) {
-    //     e.preventDefault()
-    //     _this.lookup = true
-    //     e.preventDefault()
-    //   } else if (e.ctrlKey && e.keyCode === 88) {
-    //     _this.debounce(_this.saveQuery(), 2000)
-    //     e.preventDefault()
-    //   }
-    // },
     chooseSql() {},
     SelectSQL(instance) {},
     /**
@@ -288,7 +268,7 @@ export default {
     fromChild() {
       this.$emit('querysql', {
         msg: this.infoMsg,
-        code: this._editor.getValue(),
+        code: this.code,
         jobtype: this.jobtype.jobType,
       })
     },
@@ -454,7 +434,7 @@ export default {
     /**
      * @description: 回显sql
      */
-  }
+  },
 }
 </script>
 
