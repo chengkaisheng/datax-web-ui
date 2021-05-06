@@ -314,6 +314,18 @@ export const asyncRoutes = [
         component: () => import('@/views/dataDev/ddlTransform'),
         name: 'ddlTransform',
         meta: { title: 'DDL构建', icon: 'icon_svg07', keepAlive: true }
+      },
+      {
+        path: 'workflow',
+        component: () => import('@/views/dataDev/workflow/monitor'),
+        name: 'workflow',
+        meta: { title: '工作流监控', icon: 'icon_svg07', keepAlive: true }
+      },
+      {
+        path: 'wfdev',
+        component: () => import('@/views/dataDev/workflow/dev'),
+        name: 'wfdev',
+        meta: { title: '工作流开发', icon: 'icon_svg07', keepAlive: true }
       }
     ]
   },

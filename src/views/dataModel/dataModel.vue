@@ -65,8 +65,8 @@
 </template>
 
 <script>
-import LeftBar from './components/leftBar';
-import Modeling from './components/modeling';
+import LeftBar from './components/leftBar'
+import Modeling from './components/modeling'
 export default {
   components: {
     LeftBar,
@@ -83,29 +83,29 @@ export default {
       editableTabs: [{
         title: 'tablename'
       }]
-    };
+    }
   },
   methods: {
     createTab() {
       // 新建模型
       this.editableTabs.push({
         title: this.form.modelName
-      });
-      this.editableTabsValue = this.editableTabs.length - 1 + '';
-      this.createModel = false;
+      })
+      this.editableTabsValue = this.editableTabs.length - 1 + ''
+      this.createModel = false
       this.form = {
         modelName: '',
         DBMS: ''
-      };
+      }
     },
 
     removeTab(target) {
-      this.editableTabs.splice(+target, 1);
+      this.editableTabs.splice(+target, 1)
       this.editableTabsValue =
-        +target === this.editableTabs.length ? target - 1 + '' : target;
+        +target === this.editableTabs.length ? target - 1 + '' : target
     }
   }
-};
+}
 </script>
 
 <style scoped>

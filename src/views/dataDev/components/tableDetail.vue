@@ -1388,7 +1388,7 @@ export default {
   color: red;
 }
 .Navigation span {
-   width: 100%;
+  //  width: 100%;
   font-weight: 400px;
   cursor: pointer;
   margin: 0;

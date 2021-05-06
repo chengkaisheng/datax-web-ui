@@ -288,7 +288,7 @@ export default {
     fromChild() {
       this.$emit('querysql', {
         msg: this.infoMsg,
-        code: this.code,
+        code: this._editor.getValue(),
         jobtype: this.jobtype.jobType,
       })
     },
@@ -435,11 +435,11 @@ export default {
       editor.on('change', function (editor, change) {
         // 触发autocomplete
         if (change.origin === '+input') {
-          var text = change.text
+          var text = change.text[0]
           if (
             text !== ' ' &&
             text !== ';' &&
-            text.length !== 2 &&
+            change.text.length !== 2 &&
             text !== '*' &&
             text !== '  '
           ) {
@@ -454,7 +454,7 @@ export default {
     /**
      * @description: 回显sql
      */
-  },
+  }
 }
 </script>
 
