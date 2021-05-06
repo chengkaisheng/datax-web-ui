@@ -148,7 +148,6 @@ export default {
           this.dialogFormVisible = true
           this.selectedNodeKey = e.subject.part.data.key
           console.log(this.selectedNodeKey)
-          console.log(this.form.name)
         }
       })
 
@@ -187,7 +186,7 @@ export default {
                 maxSize: new go.Size(160, NaN),
                 wrap: go.TextBlock.WrapFit
               },
-              new go.Binding('text', this.form.name).makeTwoWay())
+              new go.Binding('text', '子任务').makeTwoWay())
           ),
           // 四个指定的端口，每边一个:
           makePort('T', go.Spot.Top, go.Spot.TopSide, false, true),

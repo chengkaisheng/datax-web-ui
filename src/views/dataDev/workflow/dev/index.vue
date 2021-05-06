@@ -11,7 +11,7 @@
       </el-card>
     </div>
     <div class="main">
-      <div class="lt">
+      <div id="menu_lt" class="lt">
         <!-- <ul>
           <li v-for="item in workflowList" :key="item.id" @click="handleWorkFlow(item)">{{ item.name }}</li>
         </ul> -->
@@ -56,6 +56,8 @@
           @update:show="(show) => (contextMenuVisible = show)"
         >
           <a href="javascript:0" @click="newWorkFlow">新建工作流</a>
+          <a href="javascript:0" @click="reName">重命名</a>
+          <a href="javascript:0" @click="delWorkFlow">删除</a>
         </vue-context-menu>
       </div>
       <div class="rg">
@@ -68,7 +70,7 @@
             closable
           >
             <!-- :closable="item.name !== '首页'" -->
-            {{ item.content }}
+            <!-- {{ item.content }} -->
             <div v-if="item.name === '首页'" class="title_h3">一站式数据开发解决方案</div>
             <svg-icon
               v-if="item.name === '首页'"
@@ -79,6 +81,14 @@
           </el-tab-pane>
         </el-tabs>
       </div>
+      <!-- 新建工作流对话框 -->
+      <el-dialog :visible.sync="newETLdialog" width="40%" title="新建工作流">
+        <span style="margin-left: 20px">名称：</span><el-input v-model="workflowName" style="width: 80%; margin-left: 20px" />
+        <div slot="footer" class="dialog-footer">
+          <el-button size="small" @click="cancelDialog"> 取消 </el-button>
+          <el-button type="goon" size="small" @click="createWorkflow"> 确定 </el-button>
+        </div>
+      </el-dialog>
     </div>
 
   </div>
@@ -128,6 +138,8 @@ export default {
           workFlowData: {}
         }
       ],
+      workflowName: '', // 新建工作流名称
+      newETLdialog: false, // 新建工作流对话框显示与否
       form: {
         projectId: '',
         datasourceId: '', // 数据源id
@@ -262,7 +274,8 @@ export default {
   },
   mounted() {
     window.addEventListener('scroll', this.getPos)
-    const myChartContainer = document.getElementById('main_span')
+    // const myChartContainer = document.getElementById('main_span')
+    const myChartContainer = document.getElementById('menu_lt')
     // 右击显示菜单 区域位置
     this.contextMenuTarget = myChartContainer
     this.contextMenu1Target = myChartContainer
@@ -298,11 +311,51 @@ export default {
     // 右键菜单方法 ————————————
     // 新建工作流
     newWorkFlow (val) {
-      console.log(val, '123')
+      console.log('123')
+      this.newETLdialog = true
+    },
+    // 确定新建工作流
+    createWorkflow () {
+      console.log('新建工作流')
+      this.$message.success('新建工作流成功')
+      this.workflowList.push(
+        {
+          id: new Date().getTime(),
+          name: this.workflowName,
+          workFlowData: {}
+        }
+      )
+      this.handleWorkFlow(this.workflowList[this.workflowList.length - 1])
+      this.newETLdialog = false
+    },
+    // 重命名工作流
+    reName (val) {
+      console.log('重命名')
+    },
+    // 删除工作流
+    delWorkFlow () {
+      console.log('删除')
+      for (let i = 0; i < this.workflowList.length; i++) {
+        if (this.workflowList[i] === this.$store.state.workflow.currentData) {
+          this.workflowList.splice(i, 1)
+        }
+      }
+      for (let i = 0; i < this.editableTabs.length; i++) {
+        if (this.editableTabs[i].title === this.$store.state.workflow.currentData.name) {
+          this.removeTab(this.editableTabs[i].name)
+        }
+      }
+      this.$message.success('删除成功')
+
+    },
+    // 取消对话框
+    cancelDialog () {
+      this.newETLdialog = false
     },
     // 点击左侧工作流列表
     handleWorkFlow(e) {
       console.log(e, e.name)
+      this.$store.commit('changeCurrent', e)
       this.changeTabs(e)
     },
     // 点击当前tabs窗口
@@ -315,9 +368,9 @@ export default {
       if (this.editableTabs.length > 0) {
         for (let j = 0; j < this.editableTabs.length; j++) {
           if (this.editableTabs[j].title === obj.name) {
-            this.editableTabsValue = j + ''
-            console.log(j, 'j')
-          } else {
+            this.editableTabsValue = this.editableTabs[j].name
+            return
+          } else if (this.editableTabs[j].title !== '未命名工作流') {
             const newTabName = ++this.tabIndex + ''
             this.editableTabs.push({
               title: obj.name,
@@ -326,6 +379,8 @@ export default {
             })
             this.editableTabsValue = newTabName
             console.log(this.editableTabsValue, this.tabIndex)
+          } else {
+            return
           }
         }
       } else {
@@ -340,6 +395,7 @@ export default {
     },
     // 删除tabs窗口
     removeTab(targetName) {
+      console.log(targetName, 'targetName')
       const tabs = this.editableTabs
       let activeName = this.editableTabsValue
       if (activeName === targetName) {
@@ -755,6 +811,7 @@ export default {
         .el-tabs__header {
           height: 32px;
           line-height: 32px;
+          margin: 0;
           .el-tabs__nav {
             width: 200px;
             border-top: 1px solid #f8f8fa;
