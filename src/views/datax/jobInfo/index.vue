@@ -1709,7 +1709,7 @@ export default {
               jobId: data.jobId,
             })
             .then((res) => {
-              console.log('ParametersList', res.content)
+              console.log('ParametersList===---', res)
               this.$store.commit('ParametersList', res.content)
               this.parameters = res.content
             })
