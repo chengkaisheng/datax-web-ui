@@ -40,49 +40,10 @@
                 "
           >
             <p style="height: 26px; line-height: 26px">
-              <!-- <svg-icon
-                v-if="data.jobType && data.jobType !== 'IMPORT'"
-                :icon-class="data.jobType"
+              <svg-icon
+                icon-class="workflow_dev"
                 style="font-size: 15px; margin-right: 3px"
               />
-              <svg
-                v-else
-                id="Layer_1"
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                x="0px"
-                y="3px"
-                width="15px"
-                height="15px"
-                style="margin-right: 3px"
-                viewBox="0 3 15 15"
-                enable-background="new 0 3 15 15"
-                xml:space="preserve"
-              >
-                <image
-                  id="image0"
-                  width="15"
-                  height="15"
-                  x="0"
-                  y="6"
-                  href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
-AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAXVBMVEX/////kUj/kkj/kUj/
-lUr/i0b/k0b/kkf/kkf/kEf/k0f/k0b/kkf/kkf/kUj/kkf/kEj/lEf/kUf/kUf/kUj/j0f/kUb/
-k0j/kkf/lkv/kUj/kUf//wD/kUf///+LAJe9AAAAHXRSTlMAw9mjGAtQcP7pYUnnto7pYzLrQaQZ
-smrwEeTaAcB/ix4AAAABYktHRACIBR1IAAAAB3RJTUUH5QIFADcDzk1yTQAAAE1JREFUGNNjYCAD
-MMoiAUaggCyyrCw2ASYQg5kFIcDAwMrGzsHJhRDg5uHlk+UXgAsICgkzMIiIIrSIiaMZKiGJJiDF
-wCCN4jAZUr0GALWzBTkD4ue4AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIxLTAyLTA0VDE2OjU1OjAz
-KzA4OjAw5fkjmwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMS0wMi0wNFQxNjo1NTowMyswODowMJSk
-mycAAAAgdEVYdHNvZnR3YXJlAGh0dHBzOi8vaW1hZ2VtYWdpY2sub3JnvM8dnQAAABh0RVh0VGh1
-bWI6OkRvY3VtZW50OjpQYWdlcwAxp/+7LwAAABd0RVh0VGh1bWI6OkltYWdlOjpIZWlnaHQAMTYd
-r15vAAAAFnRFWHRUaHVtYjo6SW1hZ2U6OldpZHRoADE25QCe4gAAABl0RVh0VGh1bWI6Ok1pbWV0
-eXBlAGltYWdlL3BuZz+yVk4AAAAXdEVYdFRodW1iOjpNVGltZQAxNjEyNDI4OTAz6wc9eAAAABF0
-RVh0VGh1bWI6OlNpemUAMjk4QkK3drNWAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8vYXBwL3Rt
-cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
-rkJggg=="
-                />
-              </svg> -->
               {{ data.name }}
             </p>
           </span>
@@ -94,7 +55,7 @@ rkJggg=="
           :show="contextMenuVisible"
           @update:show="(show) => (contextMenuVisible = show)"
         >
-          <a href="javascript:" @click="showAllName">新建文件夹</a>
+          <a href="javascript:0" @click="newWorkFlow">新建工作流</a>
         </vue-context-menu>
       </div>
       <div class="rg">
@@ -111,9 +72,9 @@ rkJggg=="
             <div v-if="item.name === '首页'" class="title_h3">一站式数据开发解决方案</div>
             <svg-icon
               v-if="item.name === '首页'"
-              style="width: 100%; height: 90%; margin-top: 25px"
+              style="width: 100%; height: 600px; margin-top: 25px"
               icon-class="fengdie"
-            />
+            /> 
             <Workflow v-if="item.name !== '首页'" />
           </el-tab-pane>
         </el-tabs>
@@ -334,6 +295,11 @@ export default {
     window.removeEventListener('scroll', this.getPos)
   },
   methods: {
+    // 右键菜单方法 ————————————
+    // 新建工作流
+    newWorkFlow (val) {
+      console.log(val, '123')
+    },
     // 点击左侧工作流列表
     handleWorkFlow(e) {
       console.log(e, e.name)
@@ -348,7 +314,7 @@ export default {
       console.log(obj, 'obj', this.editableTabs)
       if (this.editableTabs.length > 0) {
         for (let j = 0; j < this.editableTabs.length; j++) {
-          if (this.editableTabs[j].content.id === obj.id) {
+          if (this.editableTabs[j].title === obj.name) {
             this.editableTabsValue = j + ''
             console.log(j, 'j')
           } else {
@@ -653,7 +619,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .app-container {
   padding: 0;
   .head-container {
@@ -684,7 +650,7 @@ export default {
   }
 
   .main {
-    padding: 0px 24px 24px 0;
+    padding: 0px 24px 0px 0;
     background-color: #fff;
     overflow: hidden;
     margin: 20px 20px 0 20px;
@@ -718,6 +684,7 @@ export default {
     .lt {
       width: 360px;
       padding: 10px;
+      height: calc(100vh - 181px);
       background: #f8f8fa;
       ul {
         li {
@@ -733,6 +700,46 @@ export default {
           background-color: #3b4986;
         }
       }
+      .right-menu {
+        border: 1px solid #eee;
+        box-shadow: 0 0.5em 1em 0 rgba(0, 0, 0, 0.1);
+        border-radius: 1px;
+        display: block;
+        font-family: Microsoft Yahei, Avenir, Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-align: center;
+        color: #2c3e50;
+        position: fixed;
+        background: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 3px;
+        z-index: 999;
+        display: none;
+        padding: 2px;
+        box-shadow: 5px 5px 10px gray;
+        a {
+          padding: 2px 15px;
+          // width: 120px;
+          height: 28px;
+          line-height: 28px;
+          text-align: left;
+          display: block;
+          color: #1a1a1a;
+          text-decoration: none;
+          font-size: 13px;
+          i {
+            margin-left: 20px;
+          }
+        }
+        a:hover {
+          background: #42b983;
+          color: #fff;
+        }
+        hr {
+          color: #eee;
+        }
+      }
     }
     .rg {
       flex: 1;
@@ -741,10 +748,9 @@ export default {
       }
       .el-tabs {
         .el-tabs__content {
-          height: calc(100vh - 80px);
+          // height: calc(100vh - 80px);
           overflow-y: auto;
           overflow-x: auto;
-          // background-color: #f7f9fb;
         }
         .el-tabs__header {
           height: 32px;
@@ -783,7 +789,7 @@ export default {
         // }
         .el-tab-pane {
           // padding: 10px;
-          height: 100%;
+          // height: 100%;
           position: relative;
           .job_detail {
             height: 100%;

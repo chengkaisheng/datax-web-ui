@@ -549,7 +549,7 @@ export default {
               }
 
               this.temp.jobType = this.$store.state.taskAdmin.tabType
-              this.temp.projectGroupId = this.$store.state.taskAdmin.Group.id
+              this.temp.projectGroupId = this.$store.state.taskAdmin.TreeId
               job.createJob(this.temp).then((res) => {
                 this.fetchData()
                 this.$store.commit('changeWatch', 1)

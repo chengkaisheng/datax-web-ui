@@ -103,6 +103,8 @@ const state = {
 
   GroupId: '', // 选中任务Id
 
+  TreeId: '', // 选中树分组Id
+
   GroupName: {}, // 选中任务对象名称
 
   readerIsEdit: true, // true编辑，false更新
@@ -133,6 +135,10 @@ const state = {
 }
 
 const mutations = {
+  //更改treeId
+  changeTreeId: (state, payload) => {
+    state.TreeId = payload
+  },
   ParametersList: (state, data) => {
     state.ParametersList = data
   },

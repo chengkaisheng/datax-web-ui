@@ -490,8 +490,8 @@ export default {
 
           this.temp.projectId = this.$store.state.taskAdmin.projectId
           this.temp.jobType = this.$store.state.taskAdmin.tabType
-          console.log(this.$store.state.taskAdmin.Group.id, this.$store.state.taskAdmin.Group, 'this.$store.state.taskAdmin.Group.id')
-          this.temp.projectGroupId = this.$store.state.taskAdmin.Group.id
+          console.log(this.$store.state.taskAdmin.Group.id, this.$store.state.taskAdmin.Group, this.$store.state.taskAdmin.TreeId, 'this.$store.state.taskAdmin.TreeId')
+          this.temp.projectGroupId = this.$store.state.taskAdmin.TreeId
           // this.temp.projectGroupId = 99999
           console.log(this.temp.projectGroupId, 'this.temp.projectGroupId')
           job.createJob(this.temp).then((res) => {

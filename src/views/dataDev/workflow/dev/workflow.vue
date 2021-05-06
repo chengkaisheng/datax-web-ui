@@ -1,5 +1,11 @@
 <template>
   <div class="workflowCanves">
+    <div class="header">
+      <div class="header_action" style="margin-left:17px;" @click="DataSave">
+        <i class="el-icon-edit" />
+        <span>保存</span>
+      </div>
+    </div>
     <div style="width: 100%; display: flex; border: solid 1px lightgray;">
       <div :id="'myPaletteDiv' + myId" style="width: 100px; margin-right: 2px; " />
       <div :id="'myDiagramDiv' + myId" style="flex-grow: 1; height: 589px;" />
@@ -24,6 +30,10 @@ export default {
     this.init()
   },
   methods: {
+    // 保存
+    DataSave () {
+      console.log('保存')
+    },
     init() {
       // var myDiagramDiv = document.getElementById('myDiagramDiv')
       // var parentDiv = document.getElementById('parent')
@@ -391,4 +401,38 @@ export default {
     }
   }
 }
+</style>
+<style scoped>
+.header {
+  overflow: hidden;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(235, 235, 235, 1);
+}
+.header_action {
+    font-size: 14px;
+    font-family: PingFangHK-Regular, PingFangHK;
+    font-weight: 400;
+    line-height: 20px;
+    float: left;
+    cursor: pointer;
+}
+.svgIcon {
+  font-size: 18px;
+}
+.header_action:not(:first-child) {
+    margin-left: 32px;
+}
+.header_action span {
+    margin-left: 4px;
+}
+.header_switch {
+    float: right;
+}
+.header-second {
+  overflow: hidden;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(235, 235, 235, 1);
+  background: #f8f8fa;
+}
+
 </style>

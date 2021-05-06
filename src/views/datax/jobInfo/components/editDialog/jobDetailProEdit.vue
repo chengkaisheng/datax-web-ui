@@ -1124,7 +1124,7 @@ export default {
     handleShell() {
       this.temp.childJobId = this.temp.childJobId.toString()
       console.log(this.$store.state.taskAdmin.Group, 'data')
-      this.temp.projectGroupId = this.$store.state.taskAdmin.Group.id
+      this.temp.projectGroupId = this.$store.state.taskAdmin.TreeId
       console.log(this.temp, '123')
       updateTask(this.temp).then(() => {
         job.getTaskInfo(this.temp.id).then((res) => {
