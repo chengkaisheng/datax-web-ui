@@ -167,6 +167,9 @@ export default {
       this.toColumnsListChecked.splice(index, 1)
       this.readerForm.lcolumns.splice(index, 1)
       this.readerForm.rcolumns.splice(index, 1)
+      // this.$store.commit('SET_SELECT_WRITERCOLUMN', this.readerForm.lcolumns.splice(index, 1))
+
+      // console.log(this.fromColumnsListChecked)
     },
     getLColumns() {
       return this.readerForm.lcolumns
