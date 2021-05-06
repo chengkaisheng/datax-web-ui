@@ -152,7 +152,6 @@
             <span>>>{{ item.logtime }}; </span>
             <br />
             <!-- <span class="err1">[SQL] :{{ item.content }}</span> -->
-            <br />
             <span class="line1"
               >>>[EXCEPTION] : <span class="err1">{{ item.error }}</span></span
             >
@@ -254,37 +253,19 @@ export default {
     this.ReplaceParameters = this.$store.state.taskAdmin.ParametersList
   },
   methods: {
-    async ReplaceParameter() {
-      console.log('this.parameters-=-=-=-', this.parameters)
-      if (this.parameters) {
-        for (let i = 0; i < this.parameters.length; i++) {
-          const sss = this.CODE.code
-            .replace(
-              this.parameters[i].parameter.toString(),
-              this.ReplaceParameters[i].parameters ||
-                this.parameters[i].parameter.toString()
-            )
-            .replace(
-              this.parameters[i].parameter.toString(),
-              this.ReplaceParameters[i].parameters
-            )
-            .replace(
-              this.parameters[i].parameter.toString(),
-              this.ReplaceParameters[i].parameters ||
-                this.parameters[i].parameter.toString()
-            )
-          console.log('sssssssss', sss)
-        }
-        // .replace(
-        //   this.parameters[1].parameter.toString(),
-        //   this.ReplaceParameters[1].parameters
-        // )
-        // .replace(
-        //   this.parameters[2].parameter.toString(),
-        //   this.ReplaceParameters[2].parameters ||
-        //     this.parameters[2].parameter.toString()
-        // )
-      }
+    //参数替换
+    ReplaceParameter() {
+      console.log('this.parameters-=-=-=-', this.CODE)
+      console.log(`/${this.parameters[0].parameter.toString()}/g`)
+      const sss = this.CODE.code.replace(
+        `/\\${this.parameters[0].parameter.toString()}/g`,
+        this.ReplaceParameters[0].parameters ||
+          this.parameters[0].parameter.toString()
+      )
+      // this.CODE.code = sss
+      console.log('sssssssss', sss)
+      this.parameters.length = 0
+      this.runQuery(this.CODE)
     },
     GetParameters() {
       this.drawer = true
@@ -306,18 +287,21 @@ export default {
       } else {
         job.SaveParameters(this.parameters).then((res) => {
           if (res.content) {
-            this.drawer = false
             this.$message.success(res.content)
+            this.$forceUpdate()
+            this.GetParameters()
+            console.log('到底是个啥玩意', this.parameters)
+            this.drawer = false
           }
         })
       }
     },
     Delete(itme, index) {
       console.log('index---->>>', index, itme)
-      if (this.parameters.length <= 1) {
-        // 如果只有一个输入框则不可以删除
-        return false
-      }
+      // if (this.parameters.length <= 1) {
+      //   // 如果只有一个输入框则不可以删除
+      //   return false
+      // }
       job.DeleteParameters({ id: itme.id }).then((res) => {
         if (res.code === 200) {
           this.$message.success(res.content)
@@ -338,175 +322,177 @@ export default {
     },
     async runQuery(val) {
       console.log('qwe', val.code.split('--'))
-      this.parameters = this.$store.state.taskAdmin.ParametersList
-      // console.log('this.parameters===...', this.parameters)
-      // if (this.parameters.length !== 0) {
-      //   this.DialogVisiBle = true
-      // } else if (this.parameters.length === 0) {
-      //   this.DialogVisiBle = false
-      // }
+      // this.parameters = this.$store.state.taskAdmin.ParametersList
       this.CODE = val
       this.loglist = []
       this.listsql = []
       console.log('类型判断', val.jobtype)
       if (val.jobtype === 'HIVE') {
-        this.loglist.push({
-          logtime: new Date() + '开始执行sql...',
-          content: '',
-          tableData: '...',
-        })
-        console.log('HIVE', val)
-        this.SingleData = this.$store.state.taskAdmin.SingleData
-        this.datasourceListQuery.projectId = this.SingleData.projectId
-        // 获取数据源
-        const Hivesource = await JOB.getJobList(this.datasourceListQuery).catch(
-          (err) => {
+        if (this.parameters.length !== 0) {
+          this.DialogVisiBle = true
+        }
+        if (this.parameters.length === 0) {
+          this.DialogVisiBle = false
+          this.loglist.push({
+            logtime: new Date() + '开始执行sql...',
+            content: '',
+            tableData: '...',
+          })
+          console.log('HIVE', val)
+          this.SingleData = this.$store.state.taskAdmin.SingleData
+          this.datasourceListQuery.projectId = this.SingleData.projectId
+          // 获取数据源
+          const Hivesource = await JOB.getJobList(
+            this.datasourceListQuery
+          ).catch((err) => {
             console.log(err)
-          }
-        )
-        const datasource = Hivesource.records.filter((itme) => {
-          return itme.datasource === 'hive'
-        })
-        if (datasource.length !== 0) {
-          const host = datasource[0].jdbcUrl
-            .split('//')[1]
-            .split('/')[0]
-            .split(':')[0]
-          const port = datasource[0].jdbcUrl
-            .split('//')[1]
-            .split('/')[0]
-            .split(':')[1]
-          const databaseName = datasource[0].jdbcUrl
-            .split('//')[1]
-            .split('/')[1]
-          this.userName = datasource[0].secretMap.u
-          this.password = datasource[0].secretMap.p
-          const params1 = {
-            config: {
-              name: databaseName + '@' + host,
-              driverId: 'generic:apache_hive2',
-              host: host,
-              port: port,
-              databaseName: databaseName,
-              authModelId: 'native',
+          })
+          const datasource = Hivesource.records.filter((itme) => {
+            return itme.datasource === 'hive'
+          })
+          if (datasource.length !== 0) {
+            const host = datasource[0].jdbcUrl
+              .split('//')[1]
+              .split('/')[0]
+              .split(':')[0]
+            const port = datasource[0].jdbcUrl
+              .split('//')[1]
+              .split('/')[0]
+              .split(':')[1]
+            const databaseName = datasource[0].jdbcUrl
+              .split('//')[1]
+              .split('/')[1]
+            this.userName = datasource[0].secretMap.u
+            this.password = datasource[0].secretMap.p
+            const params1 = {
+              config: {
+                name: databaseName + '@' + host,
+                driverId: 'generic:apache_hive2',
+                host: host,
+                port: port,
+                databaseName: databaseName,
+                authModelId: 'native',
+                credentials: {
+                  username: this.userName,
+                  userPassword: this.password,
+                },
+              },
+            }
+            console.log('params1------>', params1)
+            // 创建连接
+            const Createconnection = await createConnection(params1).catch(
+              (err) => {
+                this.loading = false
+                console.log('888', err)
+              }
+            )
+            console.log('创建连接', Createconnection)
+            const params2 = {
+              id: Createconnection.data.createConnection.id,
               credentials: {
-                username: this.userName,
+                userName: this.userName,
                 userPassword: this.password,
               },
-            },
-          }
-          console.log('params1------>', params1)
-          // 创建连接
-          const Createconnection = await createConnection(params1).catch(
-            (err) => {
-              this.loading = false
-              console.log('888', err)
             }
-          )
-          console.log('创建连接', Createconnection)
-          const params2 = {
-            id: Createconnection.data.createConnection.id,
-            credentials: {
-              userName: this.userName,
-              userPassword: this.password,
-            },
-          }
-          console.log('params2------->', params2)
-          // 初始化连接
-          const resInitConnection = await initConnection(params2).catch(
-            (err) => {
-              this.loading = false
-              console.log(err)
-            }
-          )
-          const sqlarr = val.code.split(';')
-          for (var i = 0; i < sqlarr.length; i++) {
-            const sqlOne = sqlarr[i]
-            if (sqlOne === '') {
-              // console.log(sqlarr)
-              continue
-            }
-            console.log('初始化连接', resInitConnection)
-            const params3 = {
-              connectionId: resInitConnection.data.connection.id,
-            }
-            console.log('params3------->', params3)
-            const Createcontext = await sqlContextCreate(params3).catch(
+            console.log('params2------->', params2)
+            // 初始化连接
+            const resInitConnection = await initConnection(params2).catch(
               (err) => {
                 this.loading = false
                 console.log(err)
               }
             )
-            console.log('创建上下文', Createcontext.data.context.id)
-            const params4 = {
-              connectionId: params3.connectionId,
-              contextId: Createcontext.data.context.id,
-              query: sqlOne, // sql语句
-              filter: {
-                offset: 0,
-                limit: 200,
-                constraints: [],
-              },
-            }
-            console.log('params4------>', params4)
-            const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(params4)
-            console.log('执行sql', resAsyncSqlExecuteQuery)
-            const params5 = {
-              taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
-              removeOnFinish: false,
-            }
-            console.log('params5----->', params5)
-            let queryStatus = ''
-            let resGetAsyncTaskInfo
-            while (queryStatus !== 'Finished') {
-              resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
-              queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
-              console.log('resGetAsyncTaskInfo--->', resGetAsyncTaskInfo)
-              if (resGetAsyncTaskInfo.data.taskInfo.error) {
-                this.loading = false
-                console.log(resGetAsyncTaskInfo.data.taskInfo.error.message)
-                this.loglist.push({
-                  title: '错误sql返回',
-                  logtime: new Date(),
-                  listsql: val.code.split('--'),
-                  content: val.code,
-                  error: resGetAsyncTaskInfo.data.taskInfo.error.message,
-                })
-                this.listsql = val.code.split('--')
-                this.loading = false
-                this.$message.error(
-                  '执行错误',
-                  resGetAsyncTaskInfo.data.taskInfo.error
-                )
-                break
+            const sqlarr = val.code.split(';')
+            for (var i = 0; i < sqlarr.length; i++) {
+              const sqlOne = sqlarr[i]
+              if (sqlOne === '') {
+                // console.log(sqlarr)
+                continue
               }
-              console.log(queryStatus, 'queryStatus')
-            }
-            const params6 = {
-              taskId: resGetAsyncTaskInfo.data.taskInfo.id,
-            }
-            console.log('params6--->', params6)
-            const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
-              params6
-            ).catch((error) => {
-              this.loading = false
-              this.$message(error)
-            })
-            if (
-              resGetSqlExecuteTaskResults.data.result.statusMessage ===
-              'No Data'
-            ) {
-              this.loglist.push({
-                logtime: new Date(),
-                content: sqlOne,
-                listsql: val.code.split('--'),
-                tableData: this.tableData,
+              console.log('初始化连接', resInitConnection)
+              const params3 = {
+                connectionId: resInitConnection.data.connection.id,
+              }
+              console.log('params3------->', params3)
+              const Createcontext = await sqlContextCreate(params3).catch(
+                (err) => {
+                  this.loading = false
+                  console.log(err)
+                }
+              )
+              console.log('创建上下文', Createcontext.data.context.id)
+              const params4 = {
+                connectionId: params3.connectionId,
+                contextId: Createcontext.data.context.id,
+                query: sqlOne, // sql语句
+                filter: {
+                  offset: 0,
+                  limit: 200,
+                  constraints: [],
+                },
+              }
+              console.log('params4------>', params4)
+              const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(
+                params4
+              )
+              console.log('执行sql', resAsyncSqlExecuteQuery)
+              const params5 = {
+                taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
+                removeOnFinish: false,
+              }
+              console.log('params5----->', params5)
+              let queryStatus = ''
+              let resGetAsyncTaskInfo
+              while (queryStatus !== 'Finished') {
+                resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
+                queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
+                console.log('resGetAsyncTaskInfo--->', resGetAsyncTaskInfo)
+                if (resGetAsyncTaskInfo.data.taskInfo.error) {
+                  this.loading = false
+                  console.log(resGetAsyncTaskInfo.data.taskInfo.error.message)
+                  this.loglist.push({
+                    title: '错误sql返回',
+                    logtime: new Date(),
+                    listsql: val.code.split('--'),
+                    content: val.code,
+                    error: resGetAsyncTaskInfo.data.taskInfo.error.message,
+                  })
+                  this.listsql = val.code.split('--')
+                  this.loading = false
+                  this.$message.error(
+                    '执行错误',
+                    resGetAsyncTaskInfo.data.taskInfo.error
+                  )
+                  break
+                }
+                console.log(queryStatus, 'queryStatus')
+              }
+              const params6 = {
+                taskId: resGetAsyncTaskInfo.data.taskInfo.id,
+              }
+              console.log('params6--->', params6)
+              const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
+                params6
+              ).catch((error) => {
+                this.loading = false
+                this.$message(error)
               })
-              console.log('this.loglist====---->', this.loglist)
-              this.loading = false
-              this.listsql = val.code.split('--')
-              this.$message.success('执行成功')
-              console.log('执行成功--->', resGetSqlExecuteTaskResults)
+              if (
+                resGetSqlExecuteTaskResults.data.result.statusMessage ===
+                'No Data'
+              ) {
+                this.loglist.push({
+                  logtime: new Date(),
+                  content: sqlOne,
+                  listsql: val.code.split('--'),
+                  tableData: this.tableData,
+                })
+                console.log('this.loglist====---->', this.loglist)
+                this.loading = false
+                this.listsql = val.code.split('--')
+                this.$message.success('执行成功')
+                console.log('执行成功--->', resGetSqlExecuteTaskResults)
+              }
             }
           }
         } else if (datasource.length === 0) {
@@ -514,192 +500,203 @@ export default {
           alert('请确认是否选择数据源')
         }
       } else if (val.jobtype === 'IMPALA') {
-        console.log('IMPALA--->', val)
-        this.loglist.push({
-          title: '正在执行',
-          logtime: new Date() + '正在执行sql...',
-          listsql: val.code.split('--'),
-          content: '',
-          tableData: '...',
-        })
-        this.SingleData = this.$store.state.taskAdmin.SingleData
-        this.datasourceListQuery.projectId = this.SingleData.projectId
-        // 获取数据源
-        const source = await JOB.getJobList(this.datasourceListQuery).catch(
-          (err) => {
-            console.log(err)
-          }
-        )
-        const datasource = source.records.filter((itme) => {
-          return itme.datasource === 'impala'
-        })
-        console.log('datasource--->', datasource)
-        if (datasource.length !== 0) {
-          const host = datasource[0].jdbcUrl
-            .split('//')[1]
-            .split('/')[0]
-            .split(':')[0]
-          const port = datasource[0].jdbcUrl
-            .split('//')[1]
-            .split('/')[0]
-            .split(':')[1]
-          const databaseName = datasource[0].jdbcUrl
-            .split('//')[1]
-            .split('/')[1]
-          this.userName = datasource[0].secretMap.u
-          this.password = datasource[0].secretMap.p
-          const params1 = {
-            config: {
-              name: databaseName + '@' + host,
-              driverId: 'generic:cloudera_impala',
-              host: host,
-              port: port,
-              databaseName: databaseName,
-              authModelId: 'native',
-              credentials: {
-                username: this.userName,
-                userPassword: this.password,
+        if (this.parameters.length !== 0) {
+          this.DialogVisiBle = true
+        } else if (this.parameters.length === 0) {
+          this.DialogVisiBle = false
+          console.log('IMPALA--->', val)
+          this.loglist.push({
+            title: '正在执行',
+            logtime: new Date() + '正在执行sql...',
+            listsql: val.code.split('--'),
+            content: '',
+            tableData: '...',
+          })
+          this.SingleData = this.$store.state.taskAdmin.SingleData
+          this.datasourceListQuery.projectId = this.SingleData.projectId
+          // 获取数据源
+          const source = await JOB.getJobList(this.datasourceListQuery).catch(
+            (err) => {
+              console.log(err)
+            }
+          )
+          const datasource = source.records.filter((itme) => {
+            return itme.datasource === 'impala'
+          })
+          console.log('datasource--->', datasource)
+          if (datasource.length !== 0) {
+            const host = datasource[0].jdbcUrl
+              .split('//')[1]
+              .split('/')[0]
+              .split(':')[0]
+            const port = datasource[0].jdbcUrl
+              .split('//')[1]
+              .split('/')[0]
+              .split(':')[1]
+            const databaseName = datasource[0].jdbcUrl
+              .split('//')[1]
+              .split('/')[1]
+            this.userName = datasource[0].secretMap.u
+            this.password = datasource[0].secretMap.p
+            const params1 = {
+              config: {
+                name: databaseName + '@' + host,
+                driverId: 'generic:cloudera_impala',
+                host: host,
+                port: port,
+                databaseName: databaseName,
+                authModelId: 'native',
+                credentials: {
+                  username: this.userName,
+                  userPassword: this.password,
+                },
               },
-            },
-          }
-          console.log('params1------>', params1)
-          // 创建连接
-          const Createconnection = await createConnection(params1).catch(
-            (err) => {
-              console.log(err)
             }
-          )
-          console.log('创建连接', Createconnection.data)
-          const params2 = {
-            id: Createconnection.data.createConnection.id,
-            credentials: {
-              userName: this.userName,
-              userPassword: this.password,
-            },
-          }
-          console.log('params2------>', params2)
-          // 初始化连接
-          const resInitConnection = await initConnection(params2).catch(
-            (err) => {
-              console.log(err)
-            }
-          )
-          const sqlarr = val.code.split(';')
-          console.log('sqlarrsqlarrsqlarr-=-=-=', sqlarr)
-          for (var i = 0; i < sqlarr.length; i++) {
-            const sqlOne = sqlarr[i]
-            if (sqlOne === '') {
-              // console.log(sqlarr)
-              continue
-            }
-            console.log('初始化连接', resInitConnection)
-            const params3 = {
-              connectionId: resInitConnection.data.connection.id,
-            }
-            console.log('params3----->', params3)
-            const Createcontext = await sqlContextCreate(params3).catch(
+            console.log('params1------>', params1)
+            // 创建连接
+            const Createconnection = await createConnection(params1).catch(
               (err) => {
                 console.log(err)
               }
             )
-            console.log('创建上下文', Createcontext)
-            const params4 = {
-              connectionId: params3.connectionId,
-              contextId: Createcontext.data.context.id,
-              query: sqlOne, // sql语句
-              filter: {
-                offset: 0,
-                limit: 200,
-                constraints: [],
+            console.log('创建连接', Createconnection.data)
+            const params2 = {
+              id: Createconnection.data.createConnection.id,
+              credentials: {
+                userName: this.userName,
+                userPassword: this.password,
               },
             }
-            console.log('params4------>', params4)
-            const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(params4)
-            console.log('执行sql', resAsyncSqlExecuteQuery)
-            const params5 = {
-              taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
-              removeOnFinish: false,
-            }
-            console.log('params5----->', params5)
-            let queryStatus = ''
-            let resGetAsyncTaskInfo
-
-            while (queryStatus !== 'Finished') {
-              resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
-              queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
-              console.log('resGetAsyncTaskInfo--->', resGetAsyncTaskInfo)
-              if (resGetAsyncTaskInfo.data.taskInfo.error) {
-                console.log(resGetAsyncTaskInfo.data.taskInfo.error.message)
-                this.loading = false
-                this.loglist.push({
-                  title: '错误sql返回',
-                  logtime: new Date(),
-                  listsql: val.code.split('--'),
-                  content: val.code,
-                  error: resGetAsyncTaskInfo.data.taskInfo.error.message,
-                })
-                // this.$message.error(resGetAsyncTaskInfo.data.taskInfo.error)
-                this.$message.error(
-                  '执行错误',
-                  resGetAsyncTaskInfo.data.taskInfo.error
-                )
-                break
+            console.log('params2------>', params2)
+            // 初始化连接
+            const resInitConnection = await initConnection(params2).catch(
+              (err) => {
+                console.log(err)
               }
-              console.log(queryStatus, '<<<--------queryStatus')
-            }
-            const params6 = {
-              taskId: resGetAsyncTaskInfo.data.taskInfo.id,
-            }
-            const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
-              params6
-            ).catch((error) => {
-              console.log(error)
-            })
-            if (
-              resGetSqlExecuteTaskResults.data.result.statusMessage ===
-              'Success'
-            ) {
-              const columns =
-                resGetSqlExecuteTaskResults.data.result.results[0].resultSet
-                  .columns
-              const rows =
-                resGetSqlExecuteTaskResults.data.result.results[0].resultSet
-                  .rows
-              this.columns = columns
+            )
+            const sqlarr = val.code.split(';')
+            console.log('sqlarrsqlarrsqlarr-=-=-=', sqlarr)
+            for (var i = 0; i < sqlarr.length; i++) {
+              const sqlOne = sqlarr[i]
+              if (sqlOne === '') {
+                // console.log(sqlarr)
+                continue
+              }
+              console.log('初始化连接', resInitConnection)
+              const params3 = {
+                connectionId: resInitConnection.data.connection.id,
+              }
+              console.log('params3----->', params3)
+              const Createcontext = await sqlContextCreate(params3).catch(
+                (err) => {
+                  console.log(err)
+                }
+              )
+              console.log('创建上下文', Createcontext)
+              const params4 = {
+                connectionId: params3.connectionId,
+                contextId: Createcontext.data.context.id,
+                query: sqlOne, // sql语句
+                filter: {
+                  offset: 0,
+                  limit: 200,
+                  constraints: [],
+                },
+              }
+              console.log('params4------>', params4)
+              const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(
+                params4
+              )
+              console.log('执行sql', resAsyncSqlExecuteQuery)
+              const params5 = {
+                taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
+                removeOnFinish: false,
+              }
+              console.log('params5----->', params5)
+              let queryStatus = ''
+              let resGetAsyncTaskInfo
 
-              this.tableData = rows.map((ele) => {
-                const obj = {}
-                ele.forEach((fieldVal, index) => {
-                  obj[columns[index].name] = fieldVal
+              while (queryStatus !== 'Finished') {
+                resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
+                queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
+                console.log('resGetAsyncTaskInfo--->', resGetAsyncTaskInfo)
+                if (resGetAsyncTaskInfo.data.taskInfo.error) {
+                  console.log(resGetAsyncTaskInfo.data.taskInfo.error.message)
+                  this.loading = false
+                  this.loglist.push({
+                    title: '错误sql返回',
+                    logtime: new Date(),
+                    listsql: val.code.split('--'),
+                    content: val.code,
+                    error: resGetAsyncTaskInfo.data.taskInfo.error.message,
+                  })
+                  this.listsql = val.code.split('--')
+                  // this.$message.error(resGetAsyncTaskInfo.data.taskInfo.error)
+                  this.$message.error(
+                    '执行错误',
+                    resGetAsyncTaskInfo.data.taskInfo.error
+                  )
+                  break
+                }
+                console.log(queryStatus, '<<<--------queryStatus')
+              }
+              const params6 = {
+                taskId: resGetAsyncTaskInfo.data.taskInfo.id,
+              }
+              const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
+                params6
+              ).catch((error) => {
+                console.log(error)
+              })
+              if (
+                resGetSqlExecuteTaskResults.data.result.statusMessage ===
+                'Success'
+              ) {
+                const columns =
+                  resGetSqlExecuteTaskResults.data.result.results[0].resultSet
+                    .columns
+                const rows =
+                  resGetSqlExecuteTaskResults.data.result.results[0].resultSet
+                    .rows
+                this.columns = columns
+
+                this.tableData = rows.map((ele) => {
+                  const obj = {}
+                  ele.forEach((fieldVal, index) => {
+                    obj[columns[index].name] = fieldVal
+                  })
+                  return obj
                 })
-                return obj
-              })
-              this.loglist.push({
-                logtime: new Date(),
-                content: val.code,
-                tableData: this.tableData,
-              })
-              this.loading = false
-              this.$message.success('执行成功')
-              console.log('执行成功--->', resGetSqlExecuteTaskResults)
-            } else if (
-              resGetSqlExecuteTaskResults.data.result.statusMessage !==
-              'Success'
-            ) {
-              console.log(resGetSqlExecuteTaskResults.data.result.statusMessage)
-            }
-            if (
-              resGetSqlExecuteTaskResults.data.result.statusMessage ===
-              'No Data'
-            ) {
-              this.loglist.unshift({
-                logtime: new Date(),
-                content: sqlOne,
-                tableData: this.tableData,
-              })
-              this.loading = false
-              this.$message.success('执行成功')
-              console.log('执行成功--->', resGetSqlExecuteTaskResults)
+                this.loglist.push({
+                  logtime: new Date(),
+                  content: val.code,
+                  tableData: this.tableData,
+                })
+                this.listsql = val.code.split('--')
+                this.loading = false
+                this.$message.success('执行成功')
+                console.log('执行成功--->', resGetSqlExecuteTaskResults)
+              } else if (
+                resGetSqlExecuteTaskResults.data.result.statusMessage !==
+                'Success'
+              ) {
+                console.log(
+                  resGetSqlExecuteTaskResults.data.result.statusMessage
+                )
+              }
+              if (
+                resGetSqlExecuteTaskResults.data.result.statusMessage ===
+                'No Data'
+              ) {
+                this.loglist.unshift({
+                  logtime: new Date(),
+                  content: sqlOne,
+                  tableData: this.tableData,
+                })
+                this.loading = false
+                this.$message.success('执行成功')
+                console.log('执行成功--->', resGetSqlExecuteTaskResults)
+              }
             }
           }
         } else if (datasource.length === 0) {
