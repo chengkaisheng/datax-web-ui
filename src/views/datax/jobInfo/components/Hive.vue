@@ -132,10 +132,13 @@
       </div>
       <div class="LOGS">
         <div v-for="item in loglist" :key="item.id">
-          <div v-if="item.tableData" style="padding: 20px; font-size: 12px">
+          <div
+            v-if="item.tableData"
+            style="padding-left: 20px; font-size: 12px"
+          >
             <span style="fontweigth: 700">>>{{ item.logtime }} </span>
             <br />
-            <span v-show="item.content !== ''"> [SQL] :{{ item.content }}</span>
+            <!-- <span v-show="item.content !== ''"> [SQL] :{{ item.content }}</span> -->
             <br />
             <span v-show="item.tableData !== '...'" class="line1"
               >>>[ressult]:{{ item.tableData }}</span
@@ -148,14 +151,16 @@
           >
             <span>>>{{ item.logtime }}; </span>
             <br />
-            [SQL] :
-            <span class="err1">{{ item.content }}</span>
+            <!-- <span class="err1">[SQL] :{{ item.content }}</span> -->
             <br />
             <span class="line1"
               >>>[EXCEPTION] : <span class="err1">{{ item.error }}</span></span
             >
             <br />
           </div>
+        </div>
+        <div style="padding-left: 20px" v-for="itme in listsql" :key="itme">
+          <p style="font-size: 10px">{{ itme }}</p>
         </div>
       </div>
     </div>
@@ -186,6 +191,7 @@ export default {
   },
   data() {
     return {
+      listsql: [],
       loadingtext: '',
       loading: false,
       ReplaceParameters: [],
@@ -331,7 +337,7 @@ export default {
       })
     },
     async runQuery(val) {
-      console.log('qwe', val)
+      console.log('qwe', val.code.split('--'))
       this.parameters = this.$store.state.taskAdmin.ParametersList
       // console.log('this.parameters===...', this.parameters)
       // if (this.parameters.length !== 0) {
@@ -341,11 +347,11 @@ export default {
       // }
       this.CODE = val
       this.loglist = []
+      this.listsql = []
       console.log('类型判断', val.jobtype)
       if (val.jobtype === 'HIVE') {
         this.loglist.push({
-          title: '正在执行',
-          logtime: new Date() + '正在执行sql...',
+          logtime: new Date() + '开始执行sql...',
           content: '',
           tableData: '...',
         })
@@ -462,9 +468,11 @@ export default {
                 this.loglist.push({
                   title: '错误sql返回',
                   logtime: new Date(),
+                  listsql: val.code.split('--'),
                   content: val.code,
                   error: resGetAsyncTaskInfo.data.taskInfo.error.message,
                 })
+                this.listsql = val.code.split('--')
                 this.loading = false
                 this.$message.error(
                   '执行错误',
@@ -491,9 +499,12 @@ export default {
               this.loglist.push({
                 logtime: new Date(),
                 content: sqlOne,
+                listsql: val.code.split('--'),
                 tableData: this.tableData,
               })
+              console.log('this.loglist====---->', this.loglist)
               this.loading = false
+              this.listsql = val.code.split('--')
               this.$message.success('执行成功')
               console.log('执行成功--->', resGetSqlExecuteTaskResults)
             }
@@ -507,6 +518,7 @@ export default {
         this.loglist.push({
           title: '正在执行',
           logtime: new Date() + '正在执行sql...',
+          listsql: val.code.split('--'),
           content: '',
           tableData: '...',
         })
@@ -622,6 +634,7 @@ export default {
                 this.loglist.push({
                   title: '错误sql返回',
                   logtime: new Date(),
+                  listsql: val.code.split('--'),
                   content: val.code,
                   error: resGetAsyncTaskInfo.data.taskInfo.error.message,
                 })
