@@ -117,7 +117,7 @@ export default {
 -- 备       注       ：
 -- 脚 本 版 本    :       修 改 人  :        修 改 日 期  :         修 改 内 容  :
 -- v1
--- ===================================================================================================`,
+-- ===================================================================================================--`,
       code: '',
       sqlLoading: false,
       tips: {},
@@ -288,7 +288,7 @@ export default {
     fromChild() {
       this.$emit('querysql', {
         msg: this.infoMsg,
-        code: this._editor.getValue(),
+        code: this.code,
         jobtype: this.jobtype.jobType,
       })
     },
@@ -309,7 +309,7 @@ export default {
       // window.location.href = '/datax/job/JobInfo'
     },
 
-    mountCodeMirror(code) {
+    mountCodeMirror(DataMerging) {
       const mime = 'text/x-sql'
       //const theme = 'ambiance' // 设置主题，不设置的会使用默认主题
       const _this = this
@@ -454,7 +454,7 @@ export default {
     /**
      * @description: 回显sql
      */
-  }
+  },
 }
 </script>
 
