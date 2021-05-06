@@ -70,7 +70,7 @@
             </el-checkbox>
             <div style="margin: 15px 0;" />
             <el-checkbox-group
-              v-model="$store.state.taskAdmin.selectReaderColumn"
+              v-model="readerForm.columns"
               @change="rHandleCheckedChange"
             >
               <el-checkbox v-for="c in rColumnList" :key="c" :label="c">{{
@@ -255,6 +255,7 @@ export default {
         })
       }
     },
+    // 获取数据库表名
     getSchema() {
       const obj = {
         datasourceId: this.readerForm.datasourceId
@@ -286,12 +287,12 @@ export default {
       Bus.dataSourceId = e
       this.$emit('selectDataSource', this.dataSource)
     },
+    // 获取表所有字段
     getTableColumns() {
       const obj = {
         datasourceId: this.$store.state.taskAdmin.readerDataSourceID,
         tableName: this.$store.state.taskAdmin.readerTableName
       }
-
       dsQueryApi.getColumns(obj).then(response => {
         this.rColumnList = response
         this.readerForm.columns = response
@@ -301,6 +302,7 @@ export default {
         this.$store.commit('SET_READER_COLUMNS', response)
       })
     },
+    // 获取目标
     getColumnsByQuerySql() {
       const obj = {
         datasourceId: this.readerForm.datasourceId,
@@ -336,14 +338,17 @@ export default {
       this.readerForm.columns = val ? this.rColumnList : []
       this.readerForm.isIndeterminate = false
       this.$store.commit('SET_SELECT_READERCOLUMN', this.readerForm.columns)
+      console.log(this.readerForm.columns, 'aaaaaaaaaaaaa')
     },
     rHandleCheckedChange(value) {
+      console.log(value)
       const checkedCount = value.length
       this.readerForm.checkAll = checkedCount === this.rColumnList.length
       this.readerForm.isIndeterminate =
         checkedCount > 0 && checkedCount < this.rColumnList.length
-      // this.$store.commit('SET_READER_COLUMNS',value)
+      // this.$store.commit('SET_READER_COLUMNS', value)
       this.$store.commit('SET_SELECT_READERCOLUMN', value)
+      console.log(value, 'bbbbbbbbbbbbbbb')
     },
     getData() {
       if (Bus.dataSourceId) {

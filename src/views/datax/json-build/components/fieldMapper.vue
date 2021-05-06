@@ -96,12 +96,16 @@ export default {
   },
   computed: {
     ruleArr() {
-      return this.readerForm.rules;
+      return this.readerForm.rules
     },
 
     tableData() {
       return this.$store.state.taskAdmin.tableData
+      // return this.$store.state.taskAdmin.selectReaderColumn
     }
+    // lcolumns() {
+    //   return this.$store.state.taskAdmin.selectReaderColumn
+    // }
   },
   watch: {
     fromColumnsListChecked(newval) {
@@ -116,7 +120,7 @@ export default {
         arr.push(obj)
       })
       this.$store.commit('SET_TABLEDATA', arr)
-      console.log(this.tableData);
+      console.log(arr, 'fffffffffffffffffffff')
     },
 
     ruleArr() {
@@ -131,6 +135,7 @@ export default {
         arr.push(obj)
       })
       this.$store.commit('SET_TABLEDATA', arr)
+      console.log(arr, 'ccccccccccccccccccc')
     }
 
   },
@@ -156,11 +161,15 @@ export default {
     lHandleSelect(index, v) {},
     cHandleSelect(index, v) {},
     rHandleSelect(index, v) {},
+    // 删除映射字段
     bHandleClick(index, v) {
       this.fromColumnsListChecked.splice(index, 1)
       this.toColumnsListChecked.splice(index, 1)
       this.readerForm.lcolumns.splice(index, 1)
       this.readerForm.rcolumns.splice(index, 1)
+      // this.$store.commit('SET_SELECT_WRITERCOLUMN', this.readerForm.lcolumns.splice(index, 1))
+
+      // console.log(this.fromColumnsListChecked)
     },
     getLColumns() {
       return this.readerForm.lcolumns
