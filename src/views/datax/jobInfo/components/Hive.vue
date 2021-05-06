@@ -749,10 +749,12 @@ export default {
             .then((res) => {
               console.log('----=====>>>>', res.content)
               this.$message('保存成功')
+              this.loading = false
               this.$emit('gettreelist', res.content.projectId)
             })
             .catch((err) => {
               this.$message('保存失败')
+              this.loading = false
               console.log(err)
             })
         }
