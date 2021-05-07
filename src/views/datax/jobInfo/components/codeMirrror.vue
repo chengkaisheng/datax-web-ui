@@ -268,7 +268,7 @@ export default {
     fromChild() {
       this.$emit('querysql', {
         msg: this.infoMsg,
-        code: this.code,
+        code: this._editor.getValue(),
         jobtype: this.jobtype.jobType,
       })
     },

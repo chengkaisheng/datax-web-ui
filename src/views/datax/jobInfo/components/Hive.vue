@@ -139,11 +139,9 @@
             <span style="fontweigth: 700">>>{{ item.logtime }} </span>
             <br />
             <!-- <span v-show="item.content !== ''"> [SQL] :{{ item.content }}</span> -->
-            <br />
             <span v-show="item.tableData !== '...'" class="line1"
               >>>[ressult]:{{ item.tableData }}</span
             >
-            <br />
           </div>
           <div
             v-if="item.error"
@@ -891,6 +889,7 @@ export default {
   cursor: pointer;
   margin: 0;
   padding: 0;
+  width: 100px;
   font-size: 13px;
   display: inline-block;
   line-height: 30px;
