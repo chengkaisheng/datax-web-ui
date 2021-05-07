@@ -210,7 +210,7 @@ export default {
   mounted() {
     const editor = this.mountCodeMirror()
     this._editor = editor
-    // window.addEventListener('keydown', this.handelkeydown)
+    window.addEventListener('keydown', this.handelkeydown)
   },
   destroyed() {},
 
@@ -259,6 +259,9 @@ export default {
           fn.apply(self, args)
         }, delay || 1000)
       }
+    },
+    handelkeydown(e) {
+      console.log(e.keyCode)
     },
     chooseSql() {},
     SelectSQL(instance) {},

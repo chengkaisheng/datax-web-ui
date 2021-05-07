@@ -11,18 +11,38 @@
     <el-row>
       <el-col :span="24">
         <div class="searchBar">
-          <el-input v-model="searchEntityName" size="medium" prefix-icon="el-icon-search" placeholder="搜索实体" clearable>
-            <i slot="suffix" class="el-input__icon el-icon-caret-bottom" style="cursor: pointer;" @click="showSearchCardFun" />
+          <el-input
+            v-model="searchEntityName"
+            size="medium"
+            prefix-icon="el-icon-search"
+            placeholder="搜索实体"
+            clearable
+          >
+            <i
+              slot="suffix"
+              class="el-input__icon el-icon-caret-bottom"
+              style="cursor: pointer"
+              @click="showSearchCardFun"
+            />
           </el-input>
         </div>
       </el-col>
       <el-col :span="24">
         <div class="searchBarCard">
           <el-collapse-transition>
-            <el-card v-show="showSearchCard" key="card1" shadow="always" class="card-text">
-              <el-row style="margin-bottom: 15px;">
-                <span style="line-height: 32px;">
-                  高级<i class="el-icon-question" style="cursor: pointer;" @click="advanced=true" />
+            <el-card
+              v-show="showSearchCard"
+              key="card1"
+              shadow="always"
+              class="card-text"
+            >
+              <el-row style="margin-bottom: 15px">
+                <span style="line-height: 32px">
+                  高级<i
+                    class="el-icon-question"
+                    style="cursor: pointer"
+                    @click="advanced = true"
+                  />
                 </span>
                 <!-- <el-tooltip style="float:right; position:relative;" content="刷新" placement="top">
                   <el-button size="mini" type="primary" plain @click="test">
@@ -30,52 +50,92 @@
                   </el-button>
                 </el-tooltip> -->
               </el-row>
-              <el-row style="margin-top: 15px;">
-                通过类型查找
-              </el-row>
+              <el-row style="margin-top: 15px"> 通过类型查找 </el-row>
               <el-row>
                 <el-col :span="24">
-                  <el-select v-model="entityType" size="small" filterable placeholder="请选择实体" clearable>
+                  <el-select
+                    v-model="entityType"
+                    size="small"
+                    filterable
+                    placeholder="请选择实体"
+                    clearable
+                  >
                     <el-option
                       v-for="(item, index) in entities"
                       :key="index"
-                      :label="item.hasOwnProperty('countActive')?item.name.concat(' (').concat(item.countActive).concat(')'):item.name"
+                      :label="
+                        item.hasOwnProperty('countActive')
+                          ? item.name
+                              .concat(' (')
+                              .concat(item.countActive)
+                              .concat(')')
+                          : item.name
+                      "
                       :value="item.name"
                     />
                   </el-select>
                 </el-col>
               </el-row>
-              <el-row style="margin-top: 15px;">
-                通过查询语句查找
-              </el-row>
+              <el-row style="margin-top: 15px"> 通过查询语句查找 </el-row>
               <el-row :span="24">
-                <el-input v-model="searchByQuery" placeholder="通过查询语句查找 例如其中name=&quot;sales_fact&quot;" />
+                <el-input
+                  v-model="searchByQuery"
+                  placeholder='通过查询语句查找 例如其中name="sales_fact"'
+                />
               </el-row>
-              <el-row style="margin-top: 15px;">
-                <el-button size="small" plain type="primary" @click="clearCardInput">清空</el-button>
-                <el-button size="small" plain type="primary" :disabled="entityType===''&&searchByQuery===''" style="float:right; position:relative;" @click="searchEntity">搜索</el-button>
+              <el-row style="margin-top: 15px">
+                <el-button
+                  size="small"
+                  plain
+                  type="primary"
+                  @click="clearCardInput"
+                  >清空</el-button
+                >
+                <el-button
+                  size="small"
+                  plain
+                  type="primary"
+                  :disabled="entityType === '' && searchByQuery === ''"
+                  style="float: right; position: relative"
+                  @click="searchEntity"
+                  >搜索</el-button
+                >
               </el-row>
             </el-card>
           </el-collapse-transition>
           <el-collapse-transition>
-            <el-card v-show="showResultCard && !showSearchCard" key="card2" shadow="always" class="card-text">
+            <el-card
+              v-show="showResultCard && !showSearchCard"
+              key="card2"
+              shadow="always"
+              class="card-text"
+            >
               <el-row>
-                <el-col style="margin-top:10px;color:#909399;font-size:16px;">实体</el-col>
+                <el-col
+                  style="margin-top: 10px; color: #909399; font-size: 16px"
+                  >实体</el-col
+                >
                 <el-table :data="tableEntities" :show-header="false">
                   <el-table-column label="nothing">
                     <template v-slot:default="{ row }">
-                      <div style="cursor: pointer;" @click="gotoDetails(row)">
+                      <div style="cursor: pointer" @click="gotoDetails(row)">
                         <i class="el-icon-document" style="color: #409eff" />
                         {{ row.displayText }}({{ row.typeName }})
                       </div>
                     </template>
                   </el-table-column>
                 </el-table>
-                <el-col style="margin-top:10px;color:#909399;font-size:16px;">建议</el-col>
+                <el-col
+                  style="margin-top: 10px; color: #909399; font-size: 16px"
+                  >建议</el-col
+                >
                 <el-table :data="tableSuggest" :show-header="false">
                   <el-table-column label="nothing">
                     <template v-slot:default="{ row }">
-                      <div style="cursor: pointer;" @click="gotoResult(row.suggest)">
+                      <div
+                        style="cursor: pointer"
+                        @click="gotoResult(row.suggest)"
+                      >
                         {{ row.suggest }}
                       </div>
                     </template>
@@ -84,26 +144,31 @@
               </el-row>
             </el-card>
           </el-collapse-transition>
-        </div></el-col>
+        </div></el-col
+      >
     </el-row>
-    <el-dialog class="dialog" :visible.sync="advanced" width="40%" title="进阶搜寻查询" :before-close="handleClose" :append-to-body="true" :show-close="true">
+    <el-dialog
+      class="dialog"
+      :visible.sync="advanced"
+      width="40%"
+      title="进阶搜寻查询"
+      :before-close="handleClose"
+      :append-to-body="true"
+      :show-close="true"
+    >
       <!-- <div slot="title" class="dialog-title"></div> -->
       <div>使用DSL（特定于域的语言）构建查询</div>
       <ul>
         <li>
           <span>单次查询</span>
           <el-row>
-            <el-col>
-              数据库，其中name="Reporting"选择名称，所有者
-            </el-col>
+            <el-col> 数据库，其中name="Reporting"选择名称，所有者 </el-col>
           </el-row>
         </li>
         <li>
           <span>通过...分组</span>
           <el-row>
-            <el-col>
-              从国家（地区）的客户组中选择计数（客户ID），国家
-            </el-col>
+            <el-col> 从国家（地区）的客户组中选择计数（客户ID），国家 </el-col>
           </el-row>
         </li>
         <li>
@@ -123,9 +188,13 @@
           </el-row>
         </li>
       </ul>
-      <a href="http://atlas.apache.org/#/SearchAdvance" style="color:#409eff"><i class="el-icon-info" />更多示例查询和用例</a>
+      <a href="http://atlas.apache.org/#/SearchAdvance" style="color: #409eff"
+        ><i class="el-icon-info" />更多示例查询和用例</a
+      >
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" plain type="primary" @click="advanced = false">确 定</el-button>
+        <el-button size="small" plain type="primary" @click="advanced = false"
+          >确 定</el-button
+        >
       </div>
     </el-dialog>
   </div>
@@ -137,7 +206,7 @@ import * as apiatlas from '@/api/datax-metadata-atlas'
 export default {
   name: 'Search',
   props: {
-    entities: { type: Array, default: () => ([]) }
+    entities: { type: Array, default: () => [] },
   },
   data() {
     return {
@@ -147,7 +216,7 @@ export default {
       searchByQuery: '', // card查找
       tableEntities: [],
       tableSuggest: [],
-      advanced: false // 高级dialog
+      advanced: false, // 高级dialog
     }
   },
   computed: {
@@ -159,15 +228,15 @@ export default {
         if (!val) {
           this.searchEntityName = ''
         }
-      }
-    }
+      },
+    },
   },
   watch: {
     entities: {
       handler(val) {
         this.entities = val
       },
-      deep: true
+      deep: true,
     },
     searchEntityName: {
       handler(val, oldVal) {
@@ -178,7 +247,7 @@ export default {
           this.getQuickSearch()
           this.getQuickSuggest()
         }
-      }
+      },
     },
     showSearchCard: {
       handler(val) {
@@ -186,8 +255,8 @@ export default {
           this.entityType = ''
           this.searchByQuery = ''
         }
-      }
-    }
+      },
+    },
   },
   methods: {
     test(info) {
@@ -229,7 +298,7 @@ export default {
           message: '获取快速查找结果失败',
           showClose: true,
           type: 'error',
-          duration: 4000
+          duration: 4000,
         })
       }
     },
@@ -243,7 +312,7 @@ export default {
         var temp = res.data.suggestions
         for (var i in temp) {
           this.tableSuggest.push({
-            suggest: temp[i]
+            suggest: temp[i],
           })
         }
       } else {
@@ -251,7 +320,7 @@ export default {
           message: '获取快速查找建议失败',
           showClose: true,
           type: 'error',
-          duration: 4000
+          duration: 4000,
         })
       }
     },
@@ -266,8 +335,8 @@ export default {
         name: 'atlasDetails',
         query: this.$route.query,
         params: {
-          guid: item.guid
-        }
+          guid: item.guid,
+        },
       })
     },
     /**
@@ -278,13 +347,13 @@ export default {
       this.showSearchCard = false
       this.showResultCard = false
       // this.$emit('changeresult', 'query'.concat('?').concat(suggest))
-      console.log(suggest);
+      console.log(suggest)
       this.$router.replace({
         name: 'atlasResult',
         query: {
           searchType: 'basic',
-          query: suggest
-        }
+          query: suggest,
+        },
       })
     },
     /**
@@ -304,55 +373,55 @@ export default {
       temp.searchType = 'dsl'
       this.$router.replace({
         name: 'atlasResult',
-        query: temp
+        query: temp,
       })
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style lang="scss" scoped>
-  .searchBar {
-    position: relative;
-    left: 12.5%;
-    width: 75%;
+.searchBar {
+  position: relative;
+  left: 12.5%;
+  width: 75%;
+}
+.searchBarCard {
+  position: absolute;
+  z-index: 999;
+  left: 12.5%;
+  width: 75%;
+  .el-card {
+    .el-row {
+      .el-col {
+        ::v-deep .el-select {
+          width: 100%;
+        }
+      }
+    }
   }
-  .searchBarCard {
-    position: absolute;
-    z-index: 999;
-    left: 12.5%;
-    width: 75%;
-    .el-card {
+  .card-text {
+    font-size: 14px;
+  }
+}
+::v-deep .el-dialog__body {
+  font-size: 16px;
+  h1 {
+    font-size: 18px;
+  }
+  ul {
+    margin: 10px;
+    li {
+      margin-bottom: 8px;
+      span::before {
+        content: ' • ';
+      }
       .el-row {
         .el-col {
-          ::v-deep .el-select {
-            width: 100%;
-          }
-        }
-      }
-    }
-    .card-text {
-      font-size: 14px;
-    }
-  }
-  ::v-deep .el-dialog__body {
-    font-size: 16px;
-    h1 {
-      font-size: 18px;
-    }
-    ul {
-      margin: 10px;
-      li {
-        margin-bottom: 8px;
-        span::before {
-          content: " • ";
-        }
-        .el-row {
-          .el-col {
-            margin: 10px;
-          }
+          margin: 10px;
         }
       }
     }
   }
+}
 </style>
