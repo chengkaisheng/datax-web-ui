@@ -210,7 +210,7 @@ export default {
   mounted() {
     const editor = this.mountCodeMirror()
     this._editor = editor
-    // window.addEventListener('keydown', this.handelkeydown)
+    window.addEventListener('keydown', this.handelkeydown)
   },
   destroyed() {},
 
@@ -260,26 +260,9 @@ export default {
         }, delay || 1000)
       }
     },
-    //点击查找
-    // LookUp() {
-    //   const reg = /^\$\{((?!\{).)*\}$/
-    //   const obj = this.code.replace(reg, '22222')
-    //   console.log('th', obj)
-    //   console.log('this.code', this.code)
-    // },
-    //查找按键事件
-    // handelkeydown(event) {
-    //   const _this = this
-    //   const e = event || window.event || arguments.callee.caller.arguments[0]
-    //   if (e.ctrlKey && e.keyCode === 88) {
-    //     e.preventDefault()
-    //     _this.lookup = true
-    //     e.preventDefault()
-    //   } else if (e.ctrlKey && e.keyCode === 88) {
-    //     _this.debounce(_this.saveQuery(), 2000)
-    //     e.preventDefault()
-    //   }
-    // },
+    handelkeydown(e) {
+      console.log(e.keyCode)
+    },
     chooseSql() {},
     SelectSQL(instance) {},
     /**
@@ -288,7 +271,7 @@ export default {
     fromChild() {
       this.$emit('querysql', {
         msg: this.infoMsg,
-        code: this.code,
+        code: this._editor.getValue(),
         jobtype: this.jobtype.jobType,
       })
     },
@@ -309,7 +292,7 @@ export default {
       // window.location.href = '/datax/job/JobInfo'
     },
 
-    mountCodeMirror(DataMerging) {
+    mountCodeMirror(code) {
       const mime = 'text/x-sql'
       //const theme = 'ambiance' // 设置主题，不设置的会使用默认主题
       const _this = this

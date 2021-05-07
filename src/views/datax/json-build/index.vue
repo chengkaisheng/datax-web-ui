@@ -372,10 +372,11 @@ export default {
       console.log(writeData, 'writeData')
       const readerColumns = this.$refs.mapper.getLColumns()
       // const readerColumns = this.$store.state.taskAdmin.selectReaderColumn
+      // const writerColumns = this.$store.state.taskAdmin.selectWriterColumn
       const writerColumns = this.$refs.mapper.getRColumns()
-      // const writerColumns = this.$refs.mapper.getRColumns()
       const transformer = this.$refs.mapper.getRules()
-      console.log(readerColumns, 'readerColumns')
+      // console.log(readerColumns, 'readerColumns')
+      console.log(writerColumns, 'writerColumns')
       const hiveReader = {
         readerPath: readerData.path,
         readerDefaultFS: readerData.defaultFS,
@@ -496,6 +497,9 @@ export default {
       this.$refs.mapper.sendRuleSettings()
       const readerColumns = this.$refs.mapper.getLColumns()
       const writerColumns = this.$refs.mapper.getRColumns()
+      // const readerColumns = this.$store.state.taskAdmin.selectReaderColumn
+      // const writerColumns = this.$store.state.taskAdmin.selectWriterColumn
+
       var tmps = JSON.parse(JSON.stringify(readerColumns)).sort()
       for (var i = 0; i < tmps.length - 1; i++) {
         if (tmps[i] === tmps[i + 1]) {
