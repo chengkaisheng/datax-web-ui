@@ -229,11 +229,11 @@
 </template>
 
 <script>
-import * as log from '@/api/datax-job-log';
-import * as job from '@/api/datax-job-info';
-import waves from '@/directive/waves'; // waves directive
-import Pagination from '@/components/Pagination'; // secondary package based on el-pagination
-import { translaterMaster } from '@/utils/dictionary';
+import * as log from '@/api/datax-job-log'
+import * as job from '@/api/datax-job-info'
+import waves from '@/directive/waves' // waves directive
+import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import { translaterMaster } from '@/utils/dictionary'
 
 export default {
   name: 'JobLog',
@@ -245,8 +245,8 @@ export default {
         published: 'success',
         draft: 'gray',
         deleted: 'danger'
-      };
-      return statusMap[status];
+      }
+      return statusMap[status]
     }
   },
   data() {
@@ -315,7 +315,7 @@ export default {
       logShow: false,
       // 日志显示加载中效果
       logLoading: false
-    };
+    }
   },
   computed: {
     /**
@@ -323,12 +323,12 @@ export default {
      */
     triggerMsg() {
       return resource => {
-        const items = resource.split('<br>');
+        const items = resource.split('<br>')
         items.forEach(element => {
           if (element.indexOf('</span>') > -1 || element === '') {
-            return;
+            return
           } else {
-            var temp = element.split('：');
+            var temp = element.split('：')
             // console.log();
             resource = resource.replace(
               element,
@@ -337,11 +337,11 @@ export default {
                 '</span>：<span style="color:#333333;">' +
                 temp[1] +
                 '</span>'
-            );
+            )
           }
-        });
-        return resource;
-      };
+        })
+        return resource
+      }
     },
     /**
      * @description: 执行备注 格式化+翻译
@@ -349,55 +349,55 @@ export default {
     handleMsg() {
       return resource => {
         if (resource === null) {
-          return '无';
+          return '无'
         } else if (resource.indexOf('{') <= -1) {
-          return resource;
+          return resource
         } else {
-          var temp = '';
-          const reg = /^[A-Z]+$/;
-          var temp1 = resource.split('{');
-          var temp1Array = temp1[0].split('');
+          var temp = ''
+          const reg = /^[A-Z]+$/
+          var temp1 = resource.split('{')
+          var temp1Array = temp1[0].split('')
           for (var i = 0; i < temp1Array.length; i++) {
             if (reg.test(temp1Array[i])) {
-              temp1Array[i] = '_' + temp1Array[i];
+              temp1Array[i] = '_' + temp1Array[i]
             }
           }
-          temp1Array = temp1Array.join('');
+          temp1Array = temp1Array.join('')
           temp += `<span style="color:#666666;font-size:16px;">${translaterMaster(
             temp1Array
-          )}</span><br>{<br>`;
-          var temp2 = temp1[1].substring(0, temp1[1].length - 1);
-          var temp21 = temp2.split(', ');
+          )}</span><br>{<br>`
+          var temp2 = temp1[1].substring(0, temp1[1].length - 1)
+          var temp21 = temp2.split(', ')
           for (i = 0; i < temp21.length; i++) {
-            var temp22 = temp21[i].split('=')[0];
-            var temp2Array = temp22.split('');
+            var temp22 = temp21[i].split('=')[0]
+            var temp2Array = temp22.split('')
             for (var k = 0; k < temp2Array.length; k++) {
               if (reg.test(temp2Array[k])) {
-                temp2Array[k] = '_' + temp2Array[k];
+                temp2Array[k] = '_' + temp2Array[k]
               }
             }
-            temp2Array = temp2Array.join('');
+            temp2Array = temp2Array.join('')
             temp += `&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999;">${translaterMaster(
               temp2Array
             )}：</span><span style="color:#333333;">${
               temp21[i].split('=')[1]
-            }</span><br>`;
+            }</span><br>`
           }
-          temp += `}`;
+          temp += `}`
           // console.log(temp);
-          return temp;
+          return temp
         }
-      };
+      }
     }
   },
   created() {
-    this.fetchData();
-    this.getExecutor();
+    this.fetchData()
+    this.getExecutor()
   },
   methods: {
     fetchData() {
-      this.listLoading = true;
-      const param = Object.assign({}, this.listQuery);
+      this.listLoading = true
+      const param = Object.assign({}, this.listQuery)
       if (localStorage.getItem('userId') === '1') {
         console.log(localStorage.getItem('userId'))
         param.userId = 0
@@ -405,69 +405,72 @@ export default {
         console.log('2')
         param.userId = parseInt(localStorage.getItem('userId'))
       }
-      const urlJobId = this.$route.query.jobId;
+      const urlJobId = this.$route.query.jobId
       if (urlJobId > 0 && !param.jobId) {
-        param.jobId = urlJobId;
+        param.jobId = urlJobId
       } else if (!urlJobId && !param.jobId) {
-        param.jobId = 0;
+        param.jobId = 0
       }
       log.getList(param).then(response => {
-        const { content } = response;
-        this.total = content.recordsTotal;
-        this.list = content.data;
-        console.log(this.list);
-        this.listLoading = false;
-      });
+        const { content } = response
+        this.total = content.recordsTotal
+        this.list = content.data
+        console.log(this.list)
+        this.listLoading = false
+      })
     },
     getExecutor() {
       job.getExecutorList().then(response => {
-        const { content } = response;
-        this.executorList = content;
-        const defaultParam = { id: 0, title: '执行器 - 全部' };
-        this.executorList.unshift(defaultParam);
-        this.listQuery.jobGroup = this.executorList[0].id;
-      });
+        const { content } = response
+        this.executorList = content
+        const defaultParam = { id: 0, title: '执行器 - 全部' }
+        this.executorList.unshift(defaultParam)
+        this.listQuery.jobGroup = this.executorList[0].id
+      })
     },
     handlerDelete() {
-      this.dialogStatus = 'create';
-      this.dialogFormVisible = true;
+      this.dialogStatus = 'create'
+      this.dialogFormVisible = true
       this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate();
-      });
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     deleteLog() {
       log
         .clearLog(this.temp.jobGroup, this.temp.jobId, this.temp.deleteType)
         .then(response => {
-          this.fetchData();
-          this.dialogFormVisible = false;
+          this.fetchData()
+          this.dialogFormVisible = false
           this.$notify({
             title: 'Success',
             message: 'Delete Successfully',
             type: 'success',
             duration: 2000
-          });
-        });
+          })
+        })
       // const index = this.list.indexOf(row)
     },
     // 查看日志
     handleViewJobLog(row) {
       // const str = location.href.split('#')[0]
       // window.open(`${str}#/ router的name `)
-      this.dialogVisible = true;
+      this.dialogVisible = true
 
-      this.jobLogQuery.executorAddress = row.executorAddress;
-      this.jobLogQuery.id = row.id;
-      this.jobLogQuery.triggerTime = Date.parse(row.triggerTime);
+      this.jobLogQuery.executorAddress = row.executorAddress
+      this.jobLogQuery.id = row.id
+      this.jobLogQuery.triggerTime = Date.parse(row.triggerTime)
       if (this.logShow === false) {
-        this.logShow = true;
+        this.logShow = true
       }
       // window.open(`#/data/log?executorAddress=${this.jobLogQuery.executorAddress}&triggerTime=${this.jobLogQuery.triggerTime}&id=${this.jobLogQuery.id}&fromLineNum=${this.jobLogQuery.fromLineNum}`)
-      this.loadLog();
+      // this.loadLog()
+      setTimeout(() => {
+        this.loadLog()
+      }, 2000)
     },
     // 获取日志
     loadLog() {
-      this.logLoading = true;
+      this.logLoading = true
       if (this.$store.state.taskAdmin.logViewType === 0) {
         log
           .viewJobLog(
@@ -478,17 +481,18 @@ export default {
           )
           .then(response => {
             // 判断是否是 '\n'，如果是表示显示完成，不重新加载
-            if (response.content.logContent === '\n') {
+            // if (response.content.logContent === '\n') {
+            if (response.content.end === true) {
               // this.jobLogQuery.fromLineNum = response.toLineNum - 20;
               // 重新加载
-              // setTimeout(() => {
-              //   this.loadLog()
-              // }, 2000);
+              setTimeout(() => {
+                this.loadLog()
+              }, 2000)
             } else {
-              this.logContent = response.content.logContent;
+              this.logContent = response.content.logContent
             }
-            this.logLoading = false;
-          });
+            this.logLoading = false
+          })
       } else if (this.$store.state.taskAdmin.logViewType === 1) {
         log
           .viewJobLogVirtual(
@@ -499,30 +503,31 @@ export default {
           )
           .then(response => {
             // 判断是否是 '\n'，如果是表示显示完成，不重新加载
-            if (response.content.logContent === '\n') {
+            // if (response.content.logContent === '\n') {
+            if (response.content.end === true) {
               // this.jobLogQuery.fromLineNum = response.toLineNum - 20;
               // 重新加载
-              // setTimeout(() => {
-              //   this.loadLog()
-              // }, 2000);
+              setTimeout(() => {
+                this.loadLog()
+              }, 2000)
             } else {
-              this.logContent = response.content.logContent;
+              this.logContent = response.content.logContent
             }
-            this.logLoading = false;
-          });
+            this.logLoading = false
+          })
       }
     },
     killRunningJob(row) {
       log.killJob(row).then(response => {
-        this.fetchData();
-        this.dialogFormVisible = false;
+        this.fetchData()
+        this.dialogFormVisible = false
         this.$notify({
           title: 'Success',
           message: 'Kill Successfully',
           type: 'success',
           duration: 2000
-        });
-      });
+        })
+      })
     },
     /**
      * @description: 重置
@@ -534,7 +539,7 @@ export default {
       this.fetchData()
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
