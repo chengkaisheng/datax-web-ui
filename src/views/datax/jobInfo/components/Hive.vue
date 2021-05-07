@@ -138,7 +138,9 @@
           >
             <span style="fontweigth: 700">>>{{ item.logtime }} </span>
             <br />
-            <!-- <span v-show="item.content !== ''"> [SQL] :{{ item.content }}</span> -->
+            <span v-show="item.content !== ''">
+              [SQL] :{{ item.content[itme] }}</span
+            >
             <span v-show="item.tableData !== '...'" class="line1"
               >>>[ressult]:{{ item.tableData }}</span
             >
@@ -149,7 +151,7 @@
           >
             <span>>>{{ item.logtime }}; </span>
             <br />
-            <!-- <span class="err1">[SQL] :{{ item.content }}</span> -->
+            <span class="err1">[SQL] :{{ item.content }}</span>
             <span class="line1"
               >>>[EXCEPTION] : <span class="err1">{{ item.error }}</span></span
             >
@@ -157,7 +159,7 @@
           </div>
         </div>
         <div style="padding-left: 20px" v-for="itme in listsql" :key="itme">
-          <p style="font-size: 10px">{{ itme }}</p>
+          <p style="font-size: 8px">>>>{{ new Date() + itme }}</p>
         </div>
       </div>
     </div>
@@ -253,15 +255,25 @@ export default {
   methods: {
     //参数替换
     ReplaceParameter() {
-      console.log('this.parameters-=-=-=-', this.CODE)
-      console.log(`/${this.parameters[0].parameter.toString()}/g`)
-      const sss = this.CODE.code.replace(
-        `/\\${this.parameters[0].parameter.toString()}/g`,
-        this.ReplaceParameters[0].parameters ||
-          this.parameters[0].parameter.toString()
-      )
-      // this.CODE.code = sss
-      console.log('sssssssss', sss)
+      console.log('所有需要的参数', this.CODE)
+      console.log('SQL内容', this.ReplaceParameters)
+      let replacedata = []
+      for (let i = 0; i < this.parameters.length; i++) {
+        replacedata.push({
+          param: this.parameters[i].parameter,
+          value:
+            this.ReplaceParameters[i].parameters ||
+            this.parameters[i].parameter,
+        })
+      }
+      for (let i = 0; i < replacedata.length; i++) {
+        this.CODE.code = this.CODE.code.replace(
+          replacedata[i].param,
+          replacedata[i].value
+        )
+      }
+      console.log('this.CODE.code', this.CODE)
+      console.log('aaaaaaa', replacedata)
       this.parameters.length = 0
       this.runQuery(this.CODE)
     },
@@ -324,7 +336,7 @@ export default {
       this.CODE = val
       this.loglist = []
       this.listsql = []
-      console.log('类型判断', val.jobtype)
+      console.log('类型判断', val)
       if (val.jobtype === 'HIVE') {
         if (this.parameters.length !== 0) {
           this.DialogVisiBle = true
@@ -452,7 +464,7 @@ export default {
                     title: '错误sql返回',
                     logtime: new Date(),
                     listsql: val.code.split('--'),
-                    content: val.code,
+                    content: val.code.split('--'),
                     error: resGetAsyncTaskInfo.data.taskInfo.error.message,
                   })
                   this.listsql = val.code.split('--')
@@ -844,7 +856,7 @@ export default {
 .LOGS {
   width: 100%;
   height: 300px;
-  line-height: 20px;
+  /* line-height: 20px; */
   overflow: hidden;
   overflow-y: scroll;
   /* border: 1px solid #ccc; */
