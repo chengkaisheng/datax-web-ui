@@ -6,7 +6,7 @@
         <span>保存</span>
       </div>
     </div>
-    <div style="width: 100%; display: flex; border: solid 1px lightgray;">
+    <div id="parentDiv" style="width: 100%; display: flex; border: solid 1px lightgray;">
       <div :id="'myPaletteDiv' + myId" style="width: 100px; margin-right: 2px; " />
       <div :id="'myDiagramDiv' + myId" style="flex-grow: 1; height: 589px;" />
     </div>
@@ -17,30 +17,63 @@
 import go from 'gojs'
 export default {
   name: 'Flow',
+  props: {
+    tabsIds: { type: Number, default: () => ({}) }
+  },
   data() {
     return {
       /** 虚任务Id */
       myId: ''
     }
   },
-  create() {
-    this.myId = this.guid()
+  watch: {
+    'tabsIds' (val) {
+      this.myId = val
+    }
+  },
+  created() {
+    this.myId = this.tabsIds
+    console.log(this.myId, 'myId')
   },
   mounted() {
+    // this.myId = this.tabsIds
+    // console.log(document.getElementById('myDiagramDiv'))
     this.init()
+    console.log(this.tabsIds, 'tabsId')
   },
   methods: {
     // 保存
     DataSave () {
       console.log('保存')
+      // if (this.isSave.title === 'Untitled') {
+      //   this.open()
+      // } else {
+      //   this.save()
+      //   this.toParent()
+      // }
+      // this.showSaveBox = true
+      // this.myDiagram.model = go.Model.fromJson(this.isSave.content.jobJson)
+      console.log(JSON.parse(this.myDiagram.model.toJson()))
     },
     init() {
+      // var parentDiv = document.getElementById('parentDiv')
       // var myDiagramDiv = document.getElementById('myDiagramDiv')
-      // var parentDiv = document.getElementById('parent')
-      // parentDiv.removeChild(myDiagramDiv)
-      // var div = document.createElement('div')
-      // div.setAttribute('id', 'myDiagramDiv')
-      // parentDiv.appendChild(div)
+      // var myPaletteDiv = document.getElementById('myPaletteDiv')
+      // console.log(parentDiv, parentDiv.childNodes[0], myDiagramDiv)
+      // if (parentDiv) {
+      //   parentDiv.removeChild(myPaletteDiv, myDiagramDiv)
+      // }
+      // var div1 = document.createElement('div')
+      // var div2 = document.createElement('div')
+      // div1.setAttribute('id', 'myDiagramDiv' + this.myId)
+      // div1.style.width = 100 + 'px'
+      // div1.style.marginRight = 2 + 'px'
+      // div2.setAttribute('id', 'myPaletteDiv' + this.myId)
+      // div1.style.flexGrow = 1
+      // div1.style.height = 589 + 'px'
+      // parentDiv.appendChild(div1)
+      // parentDiv.appendChild(div2)
+      // console.log(div1, div2, parentDiv)
       // if (window.goSamples) goSamples();  // init for these samples -- you don't need to call this
       var $ = go.GraphObject.make // 为在定义模板的简洁
 
@@ -65,7 +98,6 @@ export default {
             'commandHandler.archetypeGroupData': { isGroup: true, text: 'NEW GROUP' },
             'undoManager.isEnabled': true
           })
-
       // 当文档被修改时，在标题中添加一个“*”，并启用“保存”按钮
       // this.myDiagram.addDiagramListener('Modified', function(e) {
       //   console.log(e)
@@ -85,7 +117,6 @@ export default {
       // console.log(this.myDiagram)
 
       // 节点模板的帮助器定义
-
       function nodeStyle() {
         return [
           // 这个节点位置来自节点数据的“loc”属性,
@@ -186,7 +217,7 @@ export default {
                 maxSize: new go.Size(160, NaN),
                 wrap: go.TextBlock.WrapFit
               },
-              new go.Binding('text', '子任务').makeTwoWay())
+              new go.Binding('text').makeTwoWay())
           ),
           // 四个指定的端口，每边一个:
           makePort('T', go.Spot.Top, go.Spot.TopSide, false, true),
@@ -399,6 +430,20 @@ export default {
       margin: 0px 24px;
     }
   }
+  // .parent {
+  //     width: 100%;
+  //     height: 100%;
+  //     display: flex;
+  //     border: solid 1px lightgray;
+  //   .myPalette {
+  //     width: 100px;
+  //     margin-right: 2px; 
+  //   }
+  //   .myDiagram {
+  //     flex-grow: 1;
+  //     height: 589px;
+  //   }
+  // }
 }
 </style>
 <style scoped>
