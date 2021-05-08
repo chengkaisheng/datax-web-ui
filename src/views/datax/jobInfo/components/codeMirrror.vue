@@ -3,8 +3,18 @@
     <div class="btnContent">
       <ul>
         <li>
-          <a :loading="$store.state.graphQL.sqlBtnLoading" @click="fromChild">
-            <i class="el-icon-video-play" />运行
+          <i
+            style="cursor: pointer"
+            @click="interrupt"
+            class="el-icon-video-play"
+          />
+          <i style="display: inline-block; width: 10px"></i>
+          <a
+            :style="desbel"
+            :loading="$store.state.graphQL.sqlBtnLoading"
+            @click="fromChild"
+          >
+            运行
           </a>
         </li>
         <li>
@@ -94,7 +104,7 @@ export default {
     DataMerging: String,
     require: true,
   },
-  props: ['sqlHeight', 'columnList', 'tableList', 'sqlparams'],
+  props: ['sqlHeight', 'columnList', 'tableList', 'sqlparams', 'desbel'],
   data() {
     return {
       datalength: false,
@@ -154,7 +164,6 @@ export default {
       this.infoMsg++
     },
     sqlparams(val) {
-      console.log('hahahahahahahaha')
       if (val.level === 3) {
         this.code =
           'SELECT * FROM ' + val.data.schema + '.' + val.data.tableName + ';'
@@ -215,6 +224,10 @@ export default {
   destroyed() {},
 
   methods: {
+    interrupt() {
+      console.log('111')
+      this.$emit('interrupt', '')
+    },
     searchCode(e) {
       this.codemirror.execCommand('find') //触发
     },
@@ -261,7 +274,10 @@ export default {
       }
     },
     handelkeydown(e) {
-      console.log(e.keyCode)
+      if (e.ctrlKey && e.keyCode === 83) {
+        e.preventDefault()
+        this.saveQuery()
+      }
     },
     chooseSql() {},
     SelectSQL(instance) {},
