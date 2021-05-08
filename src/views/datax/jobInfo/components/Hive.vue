@@ -137,41 +137,57 @@
             style="padding-left: 20px; font-size: 12px"
           >
             <p v-show="item.content == ''" style="fontweigth: 700">
-              >>{{ item.logtime }}
+              >> {{ item.logtime }}
             </p>
-            <span v-if="item.content !== ''">
-              {{ item.logtime }}
-              <span style="display: inline-block; width: 6px"></span> >>[SQL]
-              :{{ item.content }}</span
+            <span
+              style="
+                display: inline-block;
+                width: 100%;
+                height: 12px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+              "
+              v-if="item.content !== ''"
+            >
+              >> {{ item.logtime }}
+              <span style="display: inline-block; width: 6px"></span> [SQL] :{{
+                item.content
+              }}</span
             >
             <br />
             <span v-if="item.tableData !== '...'" class="line1"
-              >>>{{ item.logtime }}>>[ressult]:Success</span
+              >>> {{ item.logtime }}
+              <span style="display: inline-block; width: 6px"></span>
+              [RESSULT]:Success</span
             >
           </div>
           <div
             v-if="item.error"
             style="padding: 20px; font-size: 12px; color: red"
           >
-            <span class="err1"
-              >{{ item.logtime }}
-              <span style="display: inline-block; width: 6px"></span> >>[SQL]
-              :{{ item.logtime }}{{ item.content }}</span
+            <span
+              style="
+                display: inline-block;
+                width: 100%;
+                height: 12px;
+                overflow: hidden;
+              "
+              class="err1"
+            >
+              >> {{ item.logtime }}
+              <span style="display: inline-block; width: 6px"></span> [SQL] :{{
+                item.content
+              }}</span
             >
             <br />
             <span class="line1">
-              {{ item.logtime }}
-              <span style="display: inline-block; width: 10px"></span>
-              >>[EXCEPTION] :
-              <span class="err1">{{ item.error }}</span></span
+              >> {{ item.logtime }}
+              <span style="display: inline-block; width: 10px"></span
+              >[EXCEPTION] : <span class="err1">{{ item.error }}</span></span
             >
           </div>
         </div>
-        <!-- <div style="padding-left: 20px" v-for="itme in listsql" :key="itme">
-          <p style="font-size: 8px">
-            {{ moment(new Date()).format('YYYY-MM-DD hh:mm:ss') }}{{ itme }}
-          </p>
-        </div> -->
       </div>
     </div>
   </div>
@@ -203,7 +219,6 @@ export default {
   data() {
     return {
       moment: moment,
-      listsql: [],
       loadingtext: '',
       loading: false,
       ReplaceParameters: [],
@@ -347,7 +362,6 @@ export default {
       // this.parameters = this.$store.state.taskAdmin.ParametersList
       this.CODE = val
       this.loglist = []
-      this.listsql = []
       console.log('类型判断', val)
       if (val.jobtype === 'HIVE') {
         if (this.parameters.length !== 0) {
@@ -356,11 +370,11 @@ export default {
         if (this.parameters.length === 0 || this.getinto === true) {
           this.DialogVisiBle = false
           this.loglist.push({
-            logtime: new Date() + '开始运行...',
+            logtime:
+              moment(new Date()).format('YYYY-MM-DD hh:mm:ss') + '开始运行...',
             content: '',
             tableData: '...',
           })
-          console.log('HIVE', val)
           this.SingleData = this.$store.state.taskAdmin.SingleData
           this.datasourceListQuery.projectId = this.SingleData.projectId
           // 获取数据源
@@ -434,10 +448,9 @@ export default {
               )
               console.log('初始化连接', resInitConnection)
               const sqlarr = val.code.split(';')
-              for (var i = 0; i < sqlarr.length; i++) {
+              for (let i = 0; i < sqlarr.length; i++) {
                 const sqlOne = sqlarr[i]
                 if (sqlOne === '') {
-                  // console.log(sqlarr)
                   continue
                 }
                 this.loglist.push({
@@ -495,24 +508,21 @@ export default {
                 while (queryStatus !== 'Finished') {
                   resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
                   queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
-                  console.log('resGetAsyncTaskInfo--->', resGetAsyncTaskInfo)
+                  console.log('循环执行语句', queryStatus)
                   if (resGetAsyncTaskInfo.data.taskInfo.error) {
                     this.loading = false
+                    this.getinto = false
                     console.log(
                       '失败了',
-                      resGetAsyncTaskInfo.data.taskInfo.error.status
+                      resGetAsyncTaskInfo.data.taskInfo.error.errorCode
                     )
                     this.loglist.push({
                       title: '错误sql返回',
                       logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                      listsql: val.code.split('--'),
-                      content: val.code.split('--'),
+                      content: val.code,
                       error: resGetAsyncTaskInfo.data.taskInfo.error.message,
                     })
-                    this.getinto = false
                     this.parameters = this.$store.state.taskAdmin.ParametersList
-                    this.listsql = val.code.split('--')
-                    this.loading = false
                     this.$message.error(
                       '执行错误',
                       resGetAsyncTaskInfo.data.taskInfo.error.message
@@ -520,15 +530,16 @@ export default {
                     break
                   }
                   this.loglist.push({
+                    logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                     content: '执行状态>>>' + queryStatus,
                     tableData: '...',
                   })
                   console.log(queryStatus, 'queryStatus')
+                  break
                 }
                 const params6 = {
                   taskId: resGetAsyncTaskInfo.data.taskInfo.id,
                 }
-                console.log('params6--->', params6)
                 const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
                   params6
                 ).catch((error) => {
@@ -542,13 +553,11 @@ export default {
                   this.loglist.push({
                     logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                     content: sqlOne,
-                    listsql: val.code.split('--'),
                     tableData: this.tableData,
                   })
                   this.getinto = false
                   console.log('this.loglist====---->', this.loglist)
                   this.loading = false
-                  this.listsql = val.code.split('--')
                   this.$message.success('执行成功')
                   console.log('成功了', resGetSqlExecuteTaskResults)
                 }
@@ -577,7 +586,6 @@ export default {
                     tableData: this.tableData,
                   })
                   this.getinto = false
-                  this.listsql = val.code.split('--')
                   this.loading = false
                   this.$message.success('执行成功')
                   console.log('成功了', resGetSqlExecuteTaskResults)
@@ -610,7 +618,8 @@ export default {
           console.log('IMPALA--->', val)
           this.loglist.push({
             title: '正在执行',
-            logtime: new Date() + '开始运行...',
+            logtime:
+              moment(new Date()).format('YYYY-MM-DD hh:mm:ss') + '开始运行...',
             content: '',
             tableData: '...',
           })
@@ -757,7 +766,6 @@ export default {
                     this.loglist.push({
                       title: '错误sql返回',
                       logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                      listsql: val.code.split('--'),
                       content: val.code,
                       error: resGetAsyncTaskInfo.data.taskInfo.error.message,
                     })
@@ -769,6 +777,7 @@ export default {
                     break
                   }
                   this.loglist.push({
+                    logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                     content: '执行状态>>>' + queryStatus,
                     tableData: '...',
                   })
@@ -807,7 +816,6 @@ export default {
                     tableData: this.tableData,
                   })
                   this.getinto = false
-                  this.listsql = val.code.split('--')
                   this.loading = false
                   this.$message.success('执行成功')
                   console.log('执行成功--->', resGetSqlExecuteTaskResults)
