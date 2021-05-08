@@ -974,7 +974,10 @@ export default {
     },
     clickTabs(val) {
       if (val.label === '任务日志') {
-        this.logList()
+        // this.logList()
+        setTimeout(() => {
+          this.logList()
+        }, 1000)
       }
     },
 

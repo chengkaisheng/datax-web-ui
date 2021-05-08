@@ -77,7 +77,7 @@
               style="width: 100%; height: 600px; margin-top: 25px"
               icon-class="fengdie"
             /> 
-            <Workflow v-if="item.name !== '首页'" />
+            <Workflow :tabsIds="item.content.id" v-if="item.name !== '首页'" />
           </el-tab-pane>
         </el-tabs>
       </div>
@@ -87,6 +87,14 @@
         <div slot="footer" class="dialog-footer">
           <el-button size="small" @click="cancelDialog"> 取消 </el-button>
           <el-button type="goon" size="small" @click="createWorkflow"> 确定 </el-button>
+        </div>
+      </el-dialog>
+      <!-- 工作流重命名 -->
+      <el-dialog :visible.sync="ReETLdialog" width="40%" title="新建工作流">
+        <span style="margin-left: 20px">名称：</span><el-input v-model="reWorkflowName" style="width: 80%; margin-left: 20px" />
+        <div slot="footer" class="dialog-footer">
+          <el-button size="small" @click="cancelDialog"> 取消 </el-button>
+          <el-button type="goon" size="small" @click="ReNameWorkflow"> 确定 </el-button>
         </div>
       </el-dialog>
     </div>
@@ -104,7 +112,7 @@ import {
   getTableListWithComment,
   // getTableList,
   // getTableColumns,
-  db2hive
+  // db2hive
 } from '@/api/metadata-query'
 
 export default {
@@ -139,7 +147,10 @@ export default {
         }
       ],
       workflowName: '', // 新建工作流名称
+      reWorkflowName: '', // 重命名工作流名称
       newETLdialog: false, // 新建工作流对话框显示与否
+      ReETLdialog: false, // 重命名工作流对话框
+      nowObject: {}, // 当前选择的工作流数据对象
       form: {
         projectId: '',
         datasourceId: '', // 数据源id
@@ -267,10 +278,10 @@ export default {
       if (val === 'source') {
         this.form.dbNamePattern = '%s'
       }
-    },
-    '$store.state.project.currentItem'(val) {
-      this.loadProject(val)
     }
+    // '$store.state.project.currentItem'(val) {
+    //   this.loadProject(val)
+    // }
   },
   mounted() {
     window.addEventListener('scroll', this.getPos)
@@ -302,7 +313,7 @@ export default {
   created() {
     this.formCopy = JSON.parse(JSON.stringify(this.form))
     this.getProjectList()
-    this.loadProject(this.$store.state.project.currentItem)
+    // this.loadProject(this.$store.state.project.currentItem)
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.getPos)
@@ -331,6 +342,23 @@ export default {
     // 重命名工作流
     reName (val) {
       console.log('重命名')
+      this.ReETLdialog = true
+    },
+    // 确定重命名工作流
+    ReNameWorkflow () {
+      this.$message.success('重命名工作流成功')
+      for (let i = 0; i < this.workflowList.length; i++) {
+        if (this.workflowList[i] === this.nowObject) {
+          this.workflowList[i].name = this.reWorkflowName
+        }
+      }
+      for (let i = 0; i < this.editableTabs.length; i++) {
+        if (this.editableTabs[i].content === this.nowObject) {
+          this.editableTabs[i].title = this.reWorkflowName
+        }
+      }
+      console.log(this.editableTabs)
+      this.ReETLdialog = false
     },
     // 删除工作流
     delWorkFlow () {
@@ -356,6 +384,7 @@ export default {
     handleWorkFlow(e) {
       console.log(e, e.name)
       this.$store.commit('changeCurrent', e)
+      this.nowObject = e
       this.changeTabs(e)
     },
     // 点击当前tabs窗口
@@ -364,26 +393,45 @@ export default {
     },
     // 添加或查找tabs页面
     changeTabs(obj) {
-      console.log(obj, 'obj', this.editableTabs)
       if (this.editableTabs.length > 0) {
-        for (let j = 0; j < this.editableTabs.length; j++) {
-          if (this.editableTabs[j].title === obj.name) {
-            this.editableTabsValue = this.editableTabs[j].name
-            return
-          } else if (this.editableTabs[j].title !== '未命名工作流') {
-            const newTabName = ++this.tabIndex + ''
-            this.editableTabs.push({
-              title: obj.name,
-              name: newTabName,
-              content: obj
-            })
-            this.editableTabsValue = newTabName
-            console.log(this.editableTabsValue, this.tabIndex)
-          } else {
-            return
-          }
+        // for (let j = 0; j < this.editableTabs.length; j++) {
+        //   if (this.editableTabs[j].title === obj.name) {
+        //     this.editableTabsValue = this.editableTabs[j].name
+        //     console.log('查找tabs')
+        //     return
+        //   } else if (this.editableTabs[j].title !== '未命名工作流') {
+        //     console.log('添加tabs')
+        //     const newTabName = ++this.tabIndex + ''
+        //     this.editableTabs.push({
+        //       title: obj.name,
+        //       name: newTabName,
+        //       content: obj
+        //     })
+        //     this.editableTabsValue = newTabName
+        //     console.log(this.editableTabsValue, this.tabIndex)
+        //     return
+        //   } else {
+        //     console.log('不操作')
+        //     return
+        //   }
+        // }
+        let indexTabs = this.editableTabs.map(item => item.title).indexOf(obj.name)
+        console.log(indexTabs)
+        if (indexTabs !== -1) {
+          this.editableTabsValue = indexTabs + ''
+          console.log('this.editableTabsValue', this.editableTabsValue)
+        } else {
+          const newTabName = ++this.tabIndex + ''
+          this.editableTabs.push({
+            title: obj.name,
+            name: newTabName,
+            content: obj
+          })
+          this.editableTabsValue = newTabName
+          console.log('add', this.editableTabs, newTabName)
         }
       } else {
+        console.log('只有首页时，添加tabs')
         const newTabName = ++this.tabIndex + ''
         this.editableTabs.push({
           title: obj.name,
@@ -391,6 +439,7 @@ export default {
           content: obj
         })
         this.editableTabsValue = newTabName
+        return
       }
     },
     // 删除tabs窗口

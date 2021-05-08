@@ -795,6 +795,7 @@ export default {
     },
     readerColumns() {
       return this.$store.state.taskAdmin.selectReaderColumn
+      // return this.taskParam.readerColumns
     },
     writerColumns() {
       return this.taskParam.writerColumns
@@ -1014,6 +1015,7 @@ export default {
       this.writerColumnsParam.checkAll = checkedCount === this.fromColumnList.length
       this.writerColumnsParam.isIndeterminate =
         checkedCount > 0 && checkedCount < this.fromColumnList.length
+
       this.$store.commit('SET_SELECT_WRITERCOLUMN', value)
     },
     /**
@@ -1033,8 +1035,9 @@ export default {
      * @description: map点击删除
      */
     bHandleClick(index, v) {
-      this.fromColumnsListChecked.splice(index, 1)
-      this.toColumnsListChecked.splice(index, 1)
+      console.log(index)
+      // this.fromColumnsListChecked.splice(index, 1)
+      // this.toColumnsListChecked.splice(index, 1)
 
       this.tableForm.lcolumns.splice(index, 1)
       this.tableForm.rcolumns.splice(index, 1)
