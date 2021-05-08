@@ -997,7 +997,7 @@ export default {
 
         this.$store.commit('SET_WRITER_COLUMNS', response)
 
-        // this.tableForm.rcolumns = response
+        this.tableForm.rcolumns = response
         this.toColumnsList = response
       })
     },
