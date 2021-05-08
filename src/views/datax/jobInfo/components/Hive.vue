@@ -356,7 +356,7 @@ export default {
         if (this.parameters.length === 0 || this.getinto === true) {
           this.DialogVisiBle = false
           this.loglist.push({
-            logtime: new Date() + '开始执行sql...',
+            logtime: new Date() + '开始运行...',
             content: '',
             tableData: '...',
           })
@@ -517,8 +517,12 @@ export default {
                       '执行错误',
                       resGetAsyncTaskInfo.data.taskInfo.error.message
                     )
-                    continue
+                    break
                   }
+                  this.loglist.push({
+                    content: '执行状态>>>' + queryStatus,
+                    tableData: '...',
+                  })
                   console.log(queryStatus, 'queryStatus')
                 }
                 const params6 = {
@@ -606,8 +610,7 @@ export default {
           console.log('IMPALA--->', val)
           this.loglist.push({
             title: '正在执行',
-            logtime: new Date() + '正在执行sql...',
-            listsql: val.code.split('--'),
+            logtime: new Date() + '开始运行...',
             content: '',
             tableData: '...',
           })
@@ -679,6 +682,11 @@ export default {
                   console.log(err)
                 }
               )
+              this.loglist.push({
+                content:
+                  '初始化连接>>>' + resInitConnection.data.connection.name,
+                tableData: '...',
+              })
               const sqlarr = val.code.split(';')
               console.log('sqlarrsqlarrsqlarr-=-=-=', sqlarr)
               for (var i = 0; i < sqlarr.length; i++) {
@@ -754,14 +762,16 @@ export default {
                       error: resGetAsyncTaskInfo.data.taskInfo.error.message,
                     })
                     this.getinto = false
-                    this.listsql = val.code.split('--')
-                    // this.$message.error(resGetAsyncTaskInfo.data.taskInfo.error)
                     this.$message.error(
                       '执行错误',
                       resGetAsyncTaskInfo.data.taskInfo.error
                     )
                     break
                   }
+                  this.loglist.push({
+                    content: '执行状态>>>' + queryStatus,
+                    tableData: '...',
+                  })
                   console.log(queryStatus, '<<<--------queryStatus')
                 }
                 const params6 = {
