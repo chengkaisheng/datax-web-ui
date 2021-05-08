@@ -18,7 +18,6 @@
             ><i style="color: #000; padding-right: 40px"
               >可配置参数：{{ itme.parameter }}</i
             >
-            参数{{ index + 1 }}：
             <el-input
               v-show="isshow"
               v-model="itme.parameters"
@@ -30,7 +29,7 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取xiao 消</el-button>
+        <el-button @click="cancel">取 消</el-button>
         <el-button type="primary" @click="ReplaceParameter">确 定</el-button>
       </span>
     </el-dialog>
@@ -38,6 +37,7 @@
       <CodeMirror
         :desbel="desbel"
         ref="codemirror"
+        @interrupt="interrupt"
         @querysql="runQuery"
         @saveQuery="saveQuery"
       />
@@ -263,6 +263,11 @@ export default {
   },
   watch: {},
   methods: {
+    //中断运行
+    interrupt() {
+      this.desbel = ''
+      this.runQuery('')
+    },
     // 参数替换
     ReplaceParameter() {
       const replacedata = []
@@ -340,6 +345,9 @@ export default {
       this.desbel = ''
     },
     async runQuery(val) {
+      if (val === '') {
+        return false
+      }
       this.desbel = 'pointer-events:none'
       this.CODE = val
       this.loglist = []
