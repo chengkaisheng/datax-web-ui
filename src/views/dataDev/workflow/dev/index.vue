@@ -15,6 +15,13 @@
         <!-- <ul>
           <li v-for="item in workflowList" :key="item.id" @click="handleWorkFlow(item)">{{ item.name }}</li>
         </ul> -->
+        <el-input
+          v-model="search"
+          class="input_serach"
+          prefix-icon="el-icon-search"
+          placeholder="文件夹或工作流名称"
+          clearable
+        />
         <el-tree
           id="main_span"
           ref="tree"
@@ -26,6 +33,7 @@
           node-key="id"
           :expand-on-click-node="false"
           @node-click="handleWorkFlow"
+          :filter-node-method="filterNode"
         >
           <span
             slot-scope="{ node, data }"
@@ -41,6 +49,12 @@
           >
             <p style="height: 26px; line-height: 26px">
               <svg-icon
+                v-if="data.type === 1"
+                :icon-class="data.jobType"
+                style="font-size: 15px; margin-right: 3px"
+              />
+              <svg-icon
+              v-else
                 icon-class="workflow_dev"
                 style="font-size: 15px; margin-right: 3px"
               />
@@ -55,6 +69,7 @@
           :show="contextMenuVisible"
           @update:show="(show) => (contextMenuVisible = show)"
         >
+          <a href="javascript:0" @click="newFolder">新建文件夹</a>
           <a href="javascript:0" @click="newWorkFlow">新建工作流</a>
           <a href="javascript:0" @click="reName">重命名</a>
           <a href="javascript:0" @click="delWorkFlow">删除</a>
@@ -69,8 +84,6 @@
             :name="item.name"
             closable
           >
-            <!-- :closable="item.name !== '首页'" -->
-            <!-- {{ item.content }} -->
             <div v-if="item.name === '首页'" class="title_h3">一站式数据开发解决方案</div>
             <svg-icon
               v-if="item.name === '首页'"
@@ -81,6 +94,14 @@
           </el-tab-pane>
         </el-tabs>
       </div>
+      <!-- 新建文件夹对话框 -->
+      <el-dialog :visible.sync="newFolderDialog" width="40%" title="新建文件夹">
+        <span style="margin-left: 20px">名称：</span><el-input v-model="folderName" style="width: 80%; margin-left: 20px" />
+        <div slot="footer" class="dialog-footer">
+          <el-button size="small" @click="cancelDialog"> 取消 </el-button>
+          <el-button type="goon" size="small" @click="createFolder"> 确定 </el-button>
+        </div>
+      </el-dialog>
       <!-- 新建工作流对话框 -->
       <el-dialog :visible.sync="newETLdialog" width="40%" title="新建工作流">
         <span style="margin-left: 20px">名称：</span><el-input v-model="workflowName" style="width: 80%; margin-left: 20px" />
@@ -104,6 +125,7 @@
 
 <script>
 import * as jobProjectApi from '@/api/datax-job-project'
+import * as workFlowApi from '@/api/datax-job-info'
 import * as datasourceApi from '@/api/datax-jdbcDatasource'
 import Workflow from './workflow.vue'
 import { component as VueContextMenu } from '@xunlei/vue-context-menu'
@@ -150,7 +172,10 @@ export default {
       reWorkflowName: '', // 重命名工作流名称
       newETLdialog: false, // 新建工作流对话框显示与否
       ReETLdialog: false, // 重命名工作流对话框
+      newFolderDialog: false, // 文件夹对话框
+      folderName: '', // 文件夹名称
       nowObject: {}, // 当前选择的工作流数据对象
+      search: '', // 树形控件快速检索值
       form: {
         projectId: '',
         datasourceId: '', // 数据源id
@@ -262,7 +287,8 @@ export default {
         format: 0,
         storage: 0
       },
-      navActive: '0'
+      navActive: '0',
+      project_id: '' // 当前项目id
     }
   },
   watch: {
@@ -278,10 +304,23 @@ export default {
       if (val === 'source') {
         this.form.dbNamePattern = '%s'
       }
+    },
+    '$store.state.project.currentItem'(val) {
+      // this.loadProject(val)
+      console.log(val, '当前项目')
+      if (typeof val === 'string') {
+        this.project_id = parseInt(val.split('/')[0])
+        this.serachWorkFlowList(parseInt(val.split('/')[0]))
+      }
+    },
+    // 快速检索工作流
+    search: function(val) {
+      this.$refs.tree.filter(val)
+    },
+    // 当前选择的工作流节点数据
+    nowObject: function(val) {
+      this.$store.commit('changeCurrent', val)
     }
-    // '$store.state.project.currentItem'(val) {
-    //   this.loadProject(val)
-    // }
   },
   mounted() {
     window.addEventListener('scroll', this.getPos)
@@ -311,6 +350,13 @@ export default {
     // }
   },
   created() {
+    if (this.$store.state.project.currentItem) {
+      if (typeof this.$store.state.project.currentItem === 'string') {
+        this.project_id = parseInt(this.$store.state.project.currentItem.split('/')[0])
+        this.serachWorkFlowList(this.$store.state.project.currentItem.split('/')[0])
+      }
+    }
+    this.serachWorkFlowList()
     this.formCopy = JSON.parse(JSON.stringify(this.form))
     this.getProjectList()
     // this.loadProject(this.$store.state.project.currentItem)
@@ -319,27 +365,95 @@ export default {
     window.removeEventListener('scroll', this.getPos)
   },
   methods: {
-    // 右键菜单方法 ————————————
+    // 快速检索关键字
+    filterNode(value, data) {
+      console.log(value, data)
+      if (!value) return true
+      return data.name.indexOf(value) !== -1
+    },
+    // 查询工作流列表
+    serachWorkFlowList (id) {
+      if (id) {
+        workFlowApi.workflowTree(id).then(
+          res => {
+            console.log(res)
+            if (res.code === 200) {
+              this.workflowList = res.content
+            } else {
+              if (res.msg) {
+                this.$message.error(res.msg)
+              } else {
+                this.$message.error('工作流列表查询报错')
+              }
+            }
+          }
+        ).catch(err => {
+          console.log(err)
+        })
+      }
+    },
+
+
+    // ———————————— 右键菜单方法 ————————————start
+
+    // 展示新建文件夹对话框
+    newFolder () {
+      if (this.nowObject.type === 2) {
+        this.$message.info('请选择文件夹')
+      } else {
+        this.newFolderDialog = true
+      }
+    },
+    // 确定新建文件夹
+    createFolder () {
+      console.log(this.nowObject, '当前选择目标节点')
+      const params = {
+        projectId: this.project_id,
+        parentId: this.nowObject.id,
+        type: 1,
+        name: this.folderName
+      }
+      this.saveWorkflow(params)
+      this.contextMenuVisible = false
+      this.newFolderDialog = false
+    },
     // 新建工作流
     newWorkFlow (val) {
-      console.log('123')
-      this.newETLdialog = true
+      if (this.nowObject.type === 2) {
+        this.$message.info('请选择文件夹')
+      } else {
+        this.newETLdialog = true
+      }
     },
     // 确定新建工作流
     createWorkflow () {
       console.log('新建工作流')
-      this.$message.success('新建工作流成功')
-      this.workflowList.push(
-        {
-          id: new Date().getTime(),
-          name: this.workflowName,
-          workFlowData: {}
-        }
-      )
-      this.handleWorkFlow(this.workflowList[this.workflowList.length - 1])
+      const params = {
+        projectId: this.project_id,
+        parentId: this.nowObject.id,
+        type: 2,
+        name: this.workflowName
+      }
+      this.saveWorkflow(params)
+      this.contextMenuVisible = false
       this.newETLdialog = false
     },
-    // 重命名工作流
+    // 新增工作流或文件夹通用方法
+    saveWorkflow (params) {
+      workFlowApi.addWorkflow(params).then(
+        (res) => {
+          if (res.code === 200){
+            console.log(res, '新增工作流或文件夹')
+            this.serachWorkFlowList(this.project_id)
+          }
+        }
+      ).catch(
+        (err) => {
+          console.log(err)
+        }
+      )
+    },
+    // 显示重命名工作流对话框
     reName (val) {
       console.log('重命名')
       this.ReETLdialog = true
@@ -363,29 +477,65 @@ export default {
     // 删除工作流
     delWorkFlow () {
       console.log('删除')
-      for (let i = 0; i < this.workflowList.length; i++) {
-        if (this.workflowList[i] === this.$store.state.workflow.currentData) {
-          this.workflowList.splice(i, 1)
+      // for (let i = 0; i < this.workflowList.length; i++) {
+      //   if (this.workflowList[i] === this.$store.state.workflow.currentData) {
+      //     this.workflowList.splice(i, 1)
+      //   }
+      // }
+      // this.$message.success('删除成功')
+      workFlowApi.delWorkflow(this.nowObject.id).then((res) => {
+        if (res.code === 200) {
+          this.$message.success('删除成功')
+          this.nowObject = {}
+          this.contextMenuVisible = false
+          for (let i = 0; i < this.editableTabs.length; i++) {
+            if (this.editableTabs[i].title === this.nowObject.name) {
+              console.log('0000000')
+              this.removeTab(this.editableTabs[i].name)
+            }
+          }
+          this.serachWorkFlowList(this.project_id)
         }
-      }
-      for (let i = 0; i < this.editableTabs.length; i++) {
-        if (this.editableTabs[i].title === this.$store.state.workflow.currentData.name) {
-          this.removeTab(this.editableTabs[i].name)
-        }
-      }
-      this.$message.success('删除成功')
+      }).catch( err => {
+        console.log(err)
+      })
 
     },
     // 取消对话框
     cancelDialog () {
       this.newETLdialog = false
+      this.newFolderDialog = false
     },
+    // 删除tabs窗口
+    removeTab(targetName) {
+      console.log(targetName, 'targetName')
+      const tabs = this.editableTabs
+      let activeName = this.editableTabsValue
+      if (activeName === targetName) {
+        tabs.forEach((tab, index) => {
+          if (tab.name === targetName) {
+            const nextTab = tabs[index + 1] || tabs[index - 1]
+            if (nextTab) {
+              activeName = nextTab.name
+            }
+          }
+        })
+      }
+      this.tabIndex -= 1
+      this.editableTabsValue = activeName
+      this.editableTabs = tabs.filter(tab => tab.name !== targetName)
+    },
+    // ———————————— 右键菜单方法 ————————————end
+
+
     // 点击左侧工作流列表
     handleWorkFlow(e) {
       console.log(e, e.name)
       this.$store.commit('changeCurrent', e)
       this.nowObject = e
-      this.changeTabs(e)
+      if (e.type === 2) {
+        this.changeTabs(e)
+      }
     },
     // 点击当前tabs窗口
     handleTabs(e) {
@@ -394,27 +544,6 @@ export default {
     // 添加或查找tabs页面
     changeTabs(obj) {
       if (this.editableTabs.length > 0) {
-        // for (let j = 0; j < this.editableTabs.length; j++) {
-        //   if (this.editableTabs[j].title === obj.name) {
-        //     this.editableTabsValue = this.editableTabs[j].name
-        //     console.log('查找tabs')
-        //     return
-        //   } else if (this.editableTabs[j].title !== '未命名工作流') {
-        //     console.log('添加tabs')
-        //     const newTabName = ++this.tabIndex + ''
-        //     this.editableTabs.push({
-        //       title: obj.name,
-        //       name: newTabName,
-        //       content: obj
-        //     })
-        //     this.editableTabsValue = newTabName
-        //     console.log(this.editableTabsValue, this.tabIndex)
-        //     return
-        //   } else {
-        //     console.log('不操作')
-        //     return
-        //   }
-        // }
         let indexTabs = this.editableTabs.map(item => item.title).indexOf(obj.name)
         console.log(indexTabs)
         if (indexTabs !== -1) {
@@ -442,25 +571,12 @@ export default {
         return
       }
     },
-    // 删除tabs窗口
-    removeTab(targetName) {
-      console.log(targetName, 'targetName')
-      const tabs = this.editableTabs
-      let activeName = this.editableTabsValue
-      if (activeName === targetName) {
-        tabs.forEach((tab, index) => {
-          if (tab.name === targetName) {
-            const nextTab = tabs[index + 1] || tabs[index - 1]
-            if (nextTab) {
-              activeName = nextTab.name
-            }
-          }
-        })
-      }
-      this.tabIndex -= 1
-      this.editableTabsValue = activeName
-      this.editableTabs = tabs.filter(tab => tab.name !== targetName)
-    },
+
+
+
+
+
+    // _______________________________________
     /**
      * @description: 从vuex加载项目
      */
@@ -791,6 +907,9 @@ export default {
       padding: 10px;
       height: calc(100vh - 181px);
       background: #f8f8fa;
+      .el-input {
+        margin-bottom: 20px;
+      }
       ul {
         li {
           height: 40px;

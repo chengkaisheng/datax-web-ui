@@ -286,3 +286,36 @@ export function dataRollBack(data) {
   })
 }
 
+// 查询工作流tree列表接口
+export function workflowTree(query) {
+  return request({
+    url: `api/jobWorkflow/tree?projectId=${query}`,
+    method: 'get',
+  })
+}
+
+// 新建工作流或文件夹接口
+export function addWorkflow(data) {
+  return request({
+    url: 'api/jobWorkflow/save',
+    method: 'post',
+    data
+  })
+}
+
+// 编辑更新工作流接口
+export function updateWorkflow(data) {
+  return request({
+    url: 'api/jobWorkflow/update',
+    method: 'post',
+    data
+  })
+}
+
+// 删除工作流或文件夹接口
+export function delWorkflow(query) {
+  return request({
+    url: `api/jobWorkflow/delete?id=${query}`,
+    method: 'post'
+  })
+}
