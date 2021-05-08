@@ -1037,32 +1037,32 @@ export default {
     test3() {
       console.log(this.$router, this.$route);
     },
-    initPage() {
-      apiatlas
-        .simulatePostAccount({
-          j_username: "admin",
-          j_password: "admin",
-        })
-        .then((res) => {
-          if (res.status === 200 && res.statusText === "OK") {
-            this.loadLeftListNotEmptyNameList().then(this.loadLeftList());
-          } else {
-            this.$message({
-              message: "Atlas登录失败",
-              showClose: true,
-              type: "error",
-              duration: 4000,
-            });
-          }
-        })
-        .catch((_) => {
-          this.initPage();
-        });
-      // 展开项name
-      this.collapseActiveName = this.collapseExistName; // 'businessMetadata', 'glossaries',
-      // this.leftLoading = this.collapseExistName
-      this.isLoading = false;
-    },
+    // initPage() {
+    //   apiatlas
+    //     .simulatePostAccount({
+    //       j_username: "admin",
+    //       j_password: "admin",
+    //     })
+    //     .then((res) => {
+    //       if (res.status === 200 && res.statusText === "OK") {
+    //         this.loadLeftListNotEmptyNameList().then(this.loadLeftList());
+    //       } else {
+    //         this.$message({
+    //           message: "Atlas登录失败",
+    //           showClose: true,
+    //           type: "error",
+    //           duration: 4000,
+    //         });
+    //       }
+    //     })
+    //     .catch((_) => {
+    //       this.initPage();
+    //     });
+    //   // 展开项name
+    //   this.collapseActiveName = this.collapseExistName; // 'businessMetadata', 'glossaries',
+    //   // this.leftLoading = this.collapseExistName
+    //   this.isLoading = false;
+    // },
     /**
      * @description: entity el-tree节点点击事件
      */
