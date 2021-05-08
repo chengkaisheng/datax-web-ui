@@ -140,14 +140,7 @@
               >> {{ item.logtime }}
             </p>
             <span
-              style="
-                display: inline-block;
-                width: 100%;
-                height: 12px;
-                overflow: hidden;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-              "
+              style="display: inline-block; width: 100%"
               v-if="item.content !== ''"
             >
               >> {{ item.logtime }}
@@ -166,15 +159,7 @@
             v-if="item.error"
             style="padding: 20px; font-size: 12px; color: red"
           >
-            <span
-              style="
-                display: inline-block;
-                width: 100%;
-                height: 12px;
-                overflow: hidden;
-              "
-              class="err1"
-            >
+            <span style="display: inline-block; width: 100%" class="err1">
               >> {{ item.logtime }}
               <span style="display: inline-block; width: 6px"></span> [SQL] :{{
                 item.content
@@ -358,16 +343,18 @@ export default {
     },
     handleClose() {},
     async runQuery(val) {
-      console.log('qwe', val.code.split('--'))
       // this.parameters = this.$store.state.taskAdmin.ParametersList
       this.CODE = val
       this.loglist = []
       console.log('类型判断', val)
       if (val.jobtype === 'HIVE') {
-        if (this.parameters.length !== 0) {
+        if (this.parameters.length !== 0 || this.getinto === false) {
           this.DialogVisiBle = true
         }
         if (this.parameters.length === 0 || this.getinto === true) {
+          if (this.parameters.length !== 0) {
+            this.getinto = false
+          }
           this.DialogVisiBle = false
           this.loglist.push({
             logtime:
@@ -448,7 +435,8 @@ export default {
               )
               console.log('初始化连接', resInitConnection)
               const sqlarr = val.code.split(';')
-              for (let i = 0; i < sqlarr.length; i++) {
+              console.log('sqlarrsqlarrsqlarr-=-=-=--=-=-', sqlarr)
+              for (let i = 0; i < sqlarr.length - 1; i++) {
                 const sqlOne = sqlarr[i]
                 if (sqlOne === '') {
                   continue
@@ -510,8 +498,6 @@ export default {
                   queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
                   console.log('循环执行语句', queryStatus)
                   if (resGetAsyncTaskInfo.data.taskInfo.error) {
-                    this.loading = false
-                    this.getinto = false
                     console.log(
                       '失败了',
                       resGetAsyncTaskInfo.data.taskInfo.error.errorCode
@@ -522,6 +508,8 @@ export default {
                       content: val.code,
                       error: resGetAsyncTaskInfo.data.taskInfo.error.message,
                     })
+                    this.loading = false
+                    this.getinto = false
                     this.parameters = this.$store.state.taskAdmin.ParametersList
                     this.$message.error(
                       '执行错误',
@@ -610,10 +598,13 @@ export default {
         }
       } else if (val.jobtype === 'IMPALA') {
         console.log('parameters---=-=-=-999', this.parameters)
-        if (this.parameters.length !== 0) {
+        if (this.parameters.length !== 0 || this.getinto === false) {
           this.DialogVisiBle = true
         }
         if (this.parameters.length === 0 || this.getinto === true) {
+          if (this.parameters.length !== 0) {
+            this.getinto = false
+          }
           this.DialogVisiBle = false
           console.log('IMPALA--->', val)
           this.loglist.push({
