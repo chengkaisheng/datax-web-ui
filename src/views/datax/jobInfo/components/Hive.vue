@@ -353,7 +353,7 @@ export default {
         if (this.parameters.length === 0 || this.getinto === true) {
           this.DialogVisiBle = false
           this.loglist.push({
-            logtime: new Date() + '开始执行sql...',
+            logtime: new Date() + '开始运行...',
             content: '',
             tableData: '...',
           })
@@ -406,7 +406,12 @@ export default {
                   console.log('888', err)
                 }
               )
-              console.log('创建连接', Createconnection)
+              this.loglist.push({
+                content:
+                  '创建连接>>>' + Createconnection.data.createConnection.name,
+                tableData: '...',
+              })
+              console.log('创建连接>>>', Createconnection)
               const params2 = {
                 id: Createconnection.data.createConnection.id,
                 credentials: {
@@ -422,6 +427,12 @@ export default {
                   console.log(err)
                 }
               )
+              this.loglist.push({
+                content:
+                  '初始化连接>>>' + resInitConnection.data.connection.name,
+                tableData: '...',
+              })
+              console.log('初始化连接', resInitConnection)
               const sqlarr = val.code.split(';')
               for (var i = 0; i < sqlarr.length; i++) {
                 const sqlOne = sqlarr[i]
@@ -440,7 +451,12 @@ export default {
                     console.log(err)
                   }
                 )
-                console.log('创建上下文', Createcontext.data.context.id)
+                this.loglist.push({
+                  content:
+                    '创建上下文>>>' + Createcontext.data.context.defaultSchema,
+                  tableData: '...',
+                })
+                console.log('创建上下文', Createcontext.data)
                 const params4 = {
                   connectionId: params3.connectionId,
                   contextId: Createcontext.data.context.id,
@@ -455,6 +471,11 @@ export default {
                 const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(
                   params4
                 )
+                this.loglist.push({
+                  content:
+                    '执行sql>>>' + resAsyncSqlExecuteQuery.data.taskInfo.name,
+                  tableData: '...',
+                })
                 console.log('执行sql', resAsyncSqlExecuteQuery)
                 const params5 = {
                   taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
@@ -488,8 +509,12 @@ export default {
                       '执行错误',
                       resGetAsyncTaskInfo.data.taskInfo.error.message
                     )
-                    break
+                    return
                   }
+                  this.loglist.push({
+                    content: '执行状态>>>' + queryStatus,
+                    tableData: '...',
+                  })
                   console.log(queryStatus, 'queryStatus')
                 }
                 const params6 = {
@@ -577,8 +602,7 @@ export default {
           console.log('IMPALA--->', val)
           this.loglist.push({
             title: '正在执行',
-            logtime: new Date() + '正在执行sql...',
-            listsql: val.code.split('--'),
+            logtime: new Date() + '开始运行...',
             content: '',
             tableData: '...',
           })
@@ -629,6 +653,12 @@ export default {
                   console.log(err)
                 }
               )
+              this.loglist.push({
+                title: '正在执行',
+                content:
+                  '创建连接>>>' + Createconnection.data.createConnection.name,
+                tableData: '...',
+              })
               console.log('创建连接', Createconnection.data)
               const params2 = {
                 id: Createconnection.data.createConnection.id,
@@ -644,6 +674,11 @@ export default {
                   console.log(err)
                 }
               )
+              this.loglist.push({
+                content:
+                  '初始化连接>>>' + resInitConnection.data.connection.name,
+                tableData: '...',
+              })
               const sqlarr = val.code.split(';')
               console.log('sqlarrsqlarrsqlarr-=-=-=', sqlarr)
               for (var i = 0; i < sqlarr.length; i++) {
@@ -662,6 +697,11 @@ export default {
                     console.log(err)
                   }
                 )
+                this.loglist.push({
+                  content:
+                    '创建上下文>>>' + Createcontext.data.context.defaultSchema,
+                  tableData: '...',
+                })
                 console.log('创建上下文', Createcontext)
                 const params4 = {
                   connectionId: params3.connectionId,
@@ -677,6 +717,11 @@ export default {
                 const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(
                   params4
                 )
+                this.loglist.push({
+                  content:
+                    '执行sql>>>' + resAsyncSqlExecuteQuery.data.taskInfo.name,
+                  tableData: '...',
+                })
                 console.log('执行sql', resAsyncSqlExecuteQuery)
                 const params5 = {
                   taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
@@ -696,19 +741,20 @@ export default {
                     this.loglist.push({
                       title: '错误sql返回',
                       logtime: new Date(),
-                      listsql: val.code.split('--'),
                       content: val.code,
                       error: resGetAsyncTaskInfo.data.taskInfo.error.message,
                     })
                     this.getinto = false
-                    this.listsql = val.code.split('--')
-                    // this.$message.error(resGetAsyncTaskInfo.data.taskInfo.error)
                     this.$message.error(
                       '执行错误',
                       resGetAsyncTaskInfo.data.taskInfo.error
                     )
                     break
                   }
+                  this.loglist.push({
+                    content: '执行状态>>>' + queryStatus,
+                    tableData: '...',
+                  })
                   console.log(queryStatus, '<<<--------queryStatus')
                 }
                 const params6 = {
