@@ -3,7 +3,11 @@
     <div class="btnContent">
       <ul>
         <li>
-          <a :loading="$store.state.graphQL.sqlBtnLoading" @click="fromChild">
+          <a
+            :style="desbel"
+            :loading="$store.state.graphQL.sqlBtnLoading"
+            @click="fromChild"
+          >
             <i class="el-icon-video-play" />运行
           </a>
         </li>
@@ -94,7 +98,7 @@ export default {
     DataMerging: String,
     require: true,
   },
-  props: ['sqlHeight', 'columnList', 'tableList', 'sqlparams'],
+  props: ['sqlHeight', 'columnList', 'tableList', 'sqlparams', 'desbel'],
   data() {
     return {
       datalength: false,
@@ -154,7 +158,6 @@ export default {
       this.infoMsg++
     },
     sqlparams(val) {
-      console.log('hahahahahahahaha')
       if (val.level === 3) {
         this.code =
           'SELECT * FROM ' + val.data.schema + '.' + val.data.tableName + ';'
@@ -261,7 +264,10 @@ export default {
       }
     },
     handelkeydown(e) {
-      console.log(e.keyCode)
+      if (e.ctrlKey && e.keyCode === 83) {
+        e.preventDefault()
+        this.saveQuery()
+      }
     },
     chooseSql() {},
     SelectSQL(instance) {},

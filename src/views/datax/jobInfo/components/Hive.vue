@@ -30,12 +30,13 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="DialogVisiBle = false">取 消</el-button>
+        <el-button @click="cancel">取xiao 消</el-button>
         <el-button type="primary" @click="ReplaceParameter">确 定</el-button>
       </span>
     </el-dialog>
     <div class="elid">
       <CodeMirror
+        :desbel="desbel"
         ref="codemirror"
         @querysql="runQuery"
         @saveQuery="saveQuery"
@@ -203,10 +204,13 @@ export default {
   },
   data() {
     return {
+      desbel: '',
       moment: moment,
       loadingtext: '',
       loading: false,
+      //替换参数
       ReplaceParameters: [],
+      //配置参数
       parameters: [
         // {
         //   id: '',
@@ -224,15 +228,6 @@ export default {
       DialogVisiBle: false,
       dialogVisible: false,
       activeName: 'second',
-      TableData: [
-        // { FunctionDescription: 'a' },
-        // { FunctionDescription: 'b' },
-        // { FunctionDescription: 'c' },
-        // { FunctionDescription: 'd' },
-        // { FunctionDescription: 'e' },
-        // { FunctionDescription: 'f' },
-        // { FunctionDescription: 'g' },
-      ],
       temp: {
         triggerStatus: '1',
       },
@@ -259,7 +254,6 @@ export default {
   },
   created() {
     console.log('时间戳', moment(new Date()).format('YYYY-MM-DD hh:mm:ss'))
-    console.log('lang---->', this.TableData.length)
     console.log(
       'ParametersList=====>>>',
       this.$store.state.taskAdmin.ParametersList
@@ -267,10 +261,10 @@ export default {
     this.parameters = this.$store.state.taskAdmin.ParametersList
     this.ReplaceParameters = this.$store.state.taskAdmin.ParametersList
   },
+  watch: {},
   methods: {
     // 参数替换
     ReplaceParameter() {
-      console.log('所有需要的参数', this.CODE)
       const replacedata = []
       for (let i = 0; i < this.parameters.length; i++) {
         replacedata.push({
@@ -285,7 +279,6 @@ export default {
           .split(replacedata[i].param)
           .join(replacedata[i].value)
       }
-      console.log('替换后的', this.CODE.code)
       this.getinto = true
       this.runQuery(this.CODE)
     },
@@ -342,11 +335,15 @@ export default {
       })
     },
     handleClose() {},
+    cancel() {
+      this.DialogVisiBle = false
+      this.desbel = ''
+    },
     async runQuery(val) {
-      // this.parameters = this.$store.state.taskAdmin.ParametersList
+      this.desbel = 'pointer-events:none'
       this.CODE = val
       this.loglist = []
-      console.log('类型判断', val)
+      console.log('类型判断', this.desbel, val)
       if (val.jobtype === 'HIVE') {
         if (this.parameters.length !== 0 || this.getinto === false) {
           this.DialogVisiBle = true
@@ -508,6 +505,7 @@ export default {
                       content: val.code,
                       error: resGetAsyncTaskInfo.data.taskInfo.error.message,
                     })
+                    this.desbel = ''
                     this.loading = false
                     this.getinto = false
                     this.parameters = this.$store.state.taskAdmin.ParametersList
@@ -538,6 +536,7 @@ export default {
                   resGetSqlExecuteTaskResults.data.result.statusMessage ===
                   'No Data'
                 ) {
+                  this.desbel = ''
                   this.loglist.push({
                     logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                     content: sqlOne,
@@ -553,6 +552,7 @@ export default {
                   resGetSqlExecuteTaskResults.data.result.statusMessage ===
                   'Success'
                 ) {
+                  this.desbel = ''
                   const columns =
                     resGetSqlExecuteTaskResults.data.result.results[0].resultSet
                       .columns
@@ -581,6 +581,7 @@ export default {
                   resGetSqlExecuteTaskResults.data.result.statusMessage !==
                   'Success'
                 ) {
+                  this.desbel = ''
                   this.getinto = false
                   console.log(
                     resGetSqlExecuteTaskResults.data.result.statusMessage
@@ -588,6 +589,7 @@ export default {
                 }
               }
             } else if (datasource.length === 0) {
+              this.desbel = ''
               this.loading = false
               this.$message('请确认是否选择数据源')
             }
@@ -966,10 +968,6 @@ export default {
     },
     handleEdit() {
       this.dialogVisible = true
-    },
-    handleDelete(a, b) {
-      console.log(a)
-      this.TableData.splice(a, 1)
     },
     handleClick(tab, event) {
       console.log(tab, event)
