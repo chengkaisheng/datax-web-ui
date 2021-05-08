@@ -27,9 +27,9 @@ export default {
         if (response.content.logContent === '\n') {
           // this.jobLogQuery.fromLineNum = response.toLineNum - 20;
           // 重新加载
-          // setTimeout(() => {
-          //   this.loadLog()
-          // }, 2000);
+          setTimeout(() => {
+            this.loadLog()
+          }, 2000)
         } else {
           this.logContent = response.content.logContent
         }

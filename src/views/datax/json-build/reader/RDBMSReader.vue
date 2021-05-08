@@ -163,7 +163,7 @@ export default {
       readerForm: {
         datasourceId: undefined,
         tableName: '',
-        columns: [],
+        columns: this.$store.state.taskAdmin.selectReaderColumn,
         where: '',
         querySql: '',
         checkAll: false,
@@ -295,7 +295,7 @@ export default {
       }
       dsQueryApi.getColumns(obj).then(response => {
         this.rColumnList = response
-        this.readerForm.columns = response
+        // this.readerForm.columns = response
         this.readerForm.checkAll = true
         this.readerForm.isIndeterminate = false
 
@@ -309,8 +309,9 @@ export default {
         querySql: this.readerForm.querySql
       }
       dsQueryApi.getColumnsByQuerySql(obj).then(response => {
+        console.log(response)
         this.rColumnList = response
-        this.readerForm.columns = response
+        // this.readerForm.columns = response
         this.readerForm.checkAll = true
         this.readerForm.isIndeterminate = false
       })

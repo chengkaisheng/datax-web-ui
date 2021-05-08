@@ -30,12 +30,13 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="DialogVisiBle = false">取 消</el-button>
+        <el-button @click="cancel">取xiao 消</el-button>
         <el-button type="primary" @click="ReplaceParameter">确 定</el-button>
       </span>
     </el-dialog>
     <div class="elid">
       <CodeMirror
+        :desbel="desbel"
         ref="codemirror"
         @querysql="runQuery"
         @saveQuery="saveQuery"
@@ -136,38 +137,43 @@
             v-if="item.tableData"
             style="padding-left: 20px; font-size: 12px"
           >
-            <span style="fontweigth: 700">>>{{ item.logtime }} </span>
-            <br />
-            <span v-if="item.content !== ''">
-              >>{{ item.logtime }} [SQL] :{{ item.content }}</span
+            <p v-show="item.content == ''" style="fontweigth: 700">
+              >> {{ item.logtime }}
+            </p>
+            <span
+              style="display: inline-block; width: 100%"
+              v-if="item.content !== ''"
+            >
+              >> {{ item.logtime }}
+              <span style="display: inline-block; width: 6px"></span> [SQL] :{{
+                item.content
+              }}</span
             >
             <br />
             <span v-if="item.tableData !== '...'" class="line1"
-              >>>{{ item.logtime }}>>[ressult]:{{ item.tableData }}</span
+              >>> {{ item.logtime }}
+              <span style="display: inline-block; width: 6px"></span>
+              [RESSULT]:Success</span
             >
           </div>
           <div
             v-if="item.error"
             style="padding: 20px; font-size: 12px; color: red"
           >
-            <span>>>{{ item.logtime }}; </span>
-            <br />
-            <span class="err1"
-              >>>{{ item.logtime }}[SQL] :{{ item.logtime
-              }}{{ item.content }}</span
+            <span style="display: inline-block; width: 100%" class="err1">
+              >> {{ item.logtime }}
+              <span style="display: inline-block; width: 6px"></span> [SQL] :{{
+                item.content
+              }}</span
             >
             <br />
-            <span class="line1"
-              >>>[EXCEPTION] :
-              <span class="err1">{{ item.logtime }}{{ item.error }}</span></span
+            <span class="line1">
+              >> {{ item.logtime }}
+              <span style="display: inline-block; width: 10px"></span
+              >[EXCEPTION] : <span class="err1">{{ item.error }}</span></span
             >
           </div>
         </div>
-        <!-- <div style="padding-left: 20px" v-for="itme in listsql" :key="itme">
-          <p style="font-size: 8px">
-            {{ moment(new Date()).format('YYYY-MM-DD hh:mm:ss') }}{{ itme }}
-          </p>
-        </div> -->
       </div>
     </div>
   </div>
@@ -198,11 +204,13 @@ export default {
   },
   data() {
     return {
+      desbel: '',
       moment: moment,
-      listsql: [],
       loadingtext: '',
       loading: false,
+      //替换参数
       ReplaceParameters: [],
+      //配置参数
       parameters: [
         // {
         //   id: '',
@@ -220,15 +228,6 @@ export default {
       DialogVisiBle: false,
       dialogVisible: false,
       activeName: 'second',
-      TableData: [
-        // { FunctionDescription: 'a' },
-        // { FunctionDescription: 'b' },
-        // { FunctionDescription: 'c' },
-        // { FunctionDescription: 'd' },
-        // { FunctionDescription: 'e' },
-        // { FunctionDescription: 'f' },
-        // { FunctionDescription: 'g' },
-      ],
       temp: {
         triggerStatus: '1',
       },
@@ -255,7 +254,6 @@ export default {
   },
   created() {
     console.log('时间戳', moment(new Date()).format('YYYY-MM-DD hh:mm:ss'))
-    console.log('lang---->', this.TableData.length)
     console.log(
       'ParametersList=====>>>',
       this.$store.state.taskAdmin.ParametersList
@@ -263,11 +261,11 @@ export default {
     this.parameters = this.$store.state.taskAdmin.ParametersList
     this.ReplaceParameters = this.$store.state.taskAdmin.ParametersList
   },
+  watch: {},
   methods: {
-    //参数替换
+    // 参数替换
     ReplaceParameter() {
-      console.log('所有需要的参数', this.CODE)
-      let replacedata = []
+      const replacedata = []
       for (let i = 0; i < this.parameters.length; i++) {
         replacedata.push({
           param: this.parameters[i].parameter,
@@ -281,7 +279,6 @@ export default {
           .split(replacedata[i].param)
           .join(replacedata[i].value)
       }
-      console.log('替换后的', this.CODE.code)
       this.getinto = true
       this.runQuery(this.CODE)
     },
@@ -308,7 +305,6 @@ export default {
             this.$message.success(res.content)
             this.$forceUpdate()
             this.GetParameters()
-            console.log('到底是个啥玩意', this.parameters)
             this.drawer = false
           }
         })
@@ -339,25 +335,30 @@ export default {
       })
     },
     handleClose() {},
+    cancel() {
+      this.DialogVisiBle = false
+      this.desbel = ''
+    },
     async runQuery(val) {
-      console.log('qwe', val.code.split('--'))
-      //this.parameters = this.$store.state.taskAdmin.ParametersList
+      this.desbel = 'pointer-events:none'
       this.CODE = val
       this.loglist = []
-      this.listsql = []
-      console.log('类型判断', val)
+      console.log('类型判断', this.desbel, val)
       if (val.jobtype === 'HIVE') {
-        if (this.parameters.length !== 0) {
+        if (this.parameters.length !== 0 || this.getinto === false) {
           this.DialogVisiBle = true
         }
         if (this.parameters.length === 0 || this.getinto === true) {
+          if (this.parameters.length !== 0) {
+            this.getinto = false
+          }
           this.DialogVisiBle = false
           this.loglist.push({
-            logtime: new Date() + '开始执行sql...',
+            logtime:
+              moment(new Date()).format('YYYY-MM-DD hh:mm:ss') + '开始运行...',
             content: '',
             tableData: '...',
           })
-          console.log('HIVE', val)
           this.SingleData = this.$store.state.taskAdmin.SingleData
           this.datasourceListQuery.projectId = this.SingleData.projectId
           // 获取数据源
@@ -403,9 +404,16 @@ export default {
               const Createconnection = await createConnection(params1).catch(
                 (err) => {
                   this.loading = false
+                  this.$message('创建连接失败')
                   console.log('888', err)
                 }
               )
+              this.loglist.push({
+                logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                content:
+                  '创建连接' + Createconnection.data.createConnection.name,
+                tableData: '...',
+              })
               console.log('创建连接', Createconnection)
               const params2 = {
                 id: Createconnection.data.createConnection.id,
@@ -422,13 +430,20 @@ export default {
                   console.log(err)
                 }
               )
+              console.log('初始化连接', resInitConnection)
               const sqlarr = val.code.split(';')
-              for (var i = 0; i < sqlarr.length; i++) {
+              console.log('sqlarrsqlarrsqlarr-=-=-=--=-=-', sqlarr)
+              for (let i = 0; i < sqlarr.length - 1; i++) {
                 const sqlOne = sqlarr[i]
                 if (sqlOne === '') {
-                  // console.log(sqlarr)
                   continue
                 }
+                this.loglist.push({
+                  logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                  content:
+                    '初始化连接>>>' + resInitConnection.data.connection.name,
+                  tableData: '...',
+                })
                 console.log('初始化连接', resInitConnection)
                 const params3 = {
                   connectionId: resInitConnection.data.connection.id,
@@ -440,7 +455,13 @@ export default {
                     console.log(err)
                   }
                 )
-                console.log('创建上下文', Createcontext.data.context.id)
+                this.loglist.push({
+                  logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                  content:
+                    '创建上下文>>>' + Createcontext.data.context.defaultSchema,
+                  tableData: '...',
+                })
+                console.log('创建上下文', Createcontext.data.context)
                 const params4 = {
                   connectionId: params3.connectionId,
                   contextId: Createcontext.data.context.id,
@@ -455,6 +476,12 @@ export default {
                 const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(
                   params4
                 )
+                this.loglist.push({
+                  logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                  content:
+                    '执行sql>>>' + resAsyncSqlExecuteQuery.data.taskInfo.name,
+                  tableData: '...',
+                })
                 console.log('执行sql', resAsyncSqlExecuteQuery)
                 const params5 = {
                   taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
@@ -466,36 +493,39 @@ export default {
                 while (queryStatus !== 'Finished') {
                   resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
                   queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
-                  console.log('resGetAsyncTaskInfo--->', resGetAsyncTaskInfo)
+                  console.log('循环执行语句', queryStatus)
                   if (resGetAsyncTaskInfo.data.taskInfo.error) {
-                    this.loading = false
                     console.log(
                       '失败了',
-                      resGetAsyncTaskInfo.data.taskInfo.error.status
+                      resGetAsyncTaskInfo.data.taskInfo.error.errorCode
                     )
                     this.loglist.push({
                       title: '错误sql返回',
-                      logtime: new Date(),
-                      listsql: val.code.split('--'),
-                      content: val.code.split('--'),
+                      logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                      content: val.code,
                       error: resGetAsyncTaskInfo.data.taskInfo.error.message,
                     })
+                    this.desbel = ''
+                    this.loading = false
                     this.getinto = false
                     this.parameters = this.$store.state.taskAdmin.ParametersList
-                    this.listsql = val.code.split('--')
-                    this.loading = false
                     this.$message.error(
                       '执行错误',
                       resGetAsyncTaskInfo.data.taskInfo.error.message
                     )
                     break
                   }
+                  this.loglist.push({
+                    logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                    content: '执行状态>>>' + queryStatus,
+                    tableData: '...',
+                  })
                   console.log(queryStatus, 'queryStatus')
+                  break
                 }
                 const params6 = {
                   taskId: resGetAsyncTaskInfo.data.taskInfo.id,
                 }
-                console.log('params6--->', params6)
                 const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
                   params6
                 ).catch((error) => {
@@ -506,16 +536,15 @@ export default {
                   resGetSqlExecuteTaskResults.data.result.statusMessage ===
                   'No Data'
                 ) {
+                  this.desbel = ''
                   this.loglist.push({
-                    logtime: new Date(),
+                    logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                     content: sqlOne,
-                    listsql: val.code.split('--'),
                     tableData: this.tableData,
                   })
                   this.getinto = false
                   console.log('this.loglist====---->', this.loglist)
                   this.loading = false
-                  this.listsql = val.code.split('--')
                   this.$message.success('执行成功')
                   console.log('成功了', resGetSqlExecuteTaskResults)
                 }
@@ -523,6 +552,7 @@ export default {
                   resGetSqlExecuteTaskResults.data.result.statusMessage ===
                   'Success'
                 ) {
+                  this.desbel = ''
                   const columns =
                     resGetSqlExecuteTaskResults.data.result.results[0].resultSet
                       .columns
@@ -539,12 +569,11 @@ export default {
                     return obj
                   })
                   this.loglist.push({
-                    logtime: new Date(),
+                    logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                     content: val.code,
                     tableData: this.tableData,
                   })
                   this.getinto = false
-                  this.listsql = val.code.split('--')
                   this.loading = false
                   this.$message.success('执行成功')
                   console.log('成功了', resGetSqlExecuteTaskResults)
@@ -552,6 +581,7 @@ export default {
                   resGetSqlExecuteTaskResults.data.result.statusMessage !==
                   'Success'
                 ) {
+                  this.desbel = ''
                   this.getinto = false
                   console.log(
                     resGetSqlExecuteTaskResults.data.result.statusMessage
@@ -559,6 +589,7 @@ export default {
                 }
               }
             } else if (datasource.length === 0) {
+              this.desbel = ''
               this.loading = false
               this.$message('请确认是否选择数据源')
             }
@@ -569,16 +600,19 @@ export default {
         }
       } else if (val.jobtype === 'IMPALA') {
         console.log('parameters---=-=-=-999', this.parameters)
-        if (this.parameters.length !== 0) {
+        if (this.parameters.length !== 0 || this.getinto === false) {
           this.DialogVisiBle = true
         }
         if (this.parameters.length === 0 || this.getinto === true) {
+          if (this.parameters.length !== 0) {
+            this.getinto = false
+          }
           this.DialogVisiBle = false
           console.log('IMPALA--->', val)
           this.loglist.push({
             title: '正在执行',
-            logtime: new Date() + '正在执行sql...',
-            listsql: val.code.split('--'),
+            logtime:
+              moment(new Date()).format('YYYY-MM-DD hh:mm:ss') + '开始运行...',
             content: '',
             tableData: '...',
           })
@@ -629,6 +663,12 @@ export default {
                   console.log(err)
                 }
               )
+              this.loglist.push({
+                logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                content:
+                  '创建连接' + Createconnection.data.createConnection.name,
+                tableData: '...',
+              })
               console.log('创建连接', Createconnection.data)
               const params2 = {
                 id: Createconnection.data.createConnection.id,
@@ -644,6 +684,11 @@ export default {
                   console.log(err)
                 }
               )
+              this.loglist.push({
+                content:
+                  '初始化连接>>>' + resInitConnection.data.connection.name,
+                tableData: '...',
+              })
               const sqlarr = val.code.split(';')
               console.log('sqlarrsqlarrsqlarr-=-=-=', sqlarr)
               for (var i = 0; i < sqlarr.length; i++) {
@@ -652,6 +697,12 @@ export default {
                   // console.log(sqlarr)
                   continue
                 }
+                this.loglist.push({
+                  logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                  content:
+                    '初始化连接>>>' + resInitConnection.data.connection.name,
+                  tableData: '...',
+                })
                 console.log('初始化连接', resInitConnection)
                 const params3 = {
                   connectionId: resInitConnection.data.connection.id,
@@ -662,6 +713,12 @@ export default {
                     console.log(err)
                   }
                 )
+                this.loglist.push({
+                  logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                  content:
+                    '创建上下文>>>' + Createcontext.data.context.defaultSchema,
+                  tableData: '...',
+                })
                 console.log('创建上下文', Createcontext)
                 const params4 = {
                   connectionId: params3.connectionId,
@@ -677,6 +734,12 @@ export default {
                 const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(
                   params4
                 )
+                this.loglist.push({
+                  logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                  content:
+                    '执行sql>>>' + resAsyncSqlExecuteQuery.data.taskInfo.name,
+                  tableData: '...',
+                })
                 console.log('执行sql', resAsyncSqlExecuteQuery)
                 const params5 = {
                   taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
@@ -695,20 +758,22 @@ export default {
                     this.loading = false
                     this.loglist.push({
                       title: '错误sql返回',
-                      logtime: new Date(),
-                      listsql: val.code.split('--'),
+                      logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                       content: val.code,
                       error: resGetAsyncTaskInfo.data.taskInfo.error.message,
                     })
                     this.getinto = false
-                    this.listsql = val.code.split('--')
-                    // this.$message.error(resGetAsyncTaskInfo.data.taskInfo.error)
                     this.$message.error(
                       '执行错误',
                       resGetAsyncTaskInfo.data.taskInfo.error
                     )
                     break
                   }
+                  this.loglist.push({
+                    logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                    content: '执行状态>>>' + queryStatus,
+                    tableData: '...',
+                  })
                   console.log(queryStatus, '<<<--------queryStatus')
                 }
                 const params6 = {
@@ -739,12 +804,11 @@ export default {
                     return obj
                   })
                   this.loglist.push({
-                    logtime: new Date(),
+                    logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                     content: val.code,
                     tableData: this.tableData,
                   })
                   this.getinto = false
-                  this.listsql = val.code.split('--')
                   this.loading = false
                   this.$message.success('执行成功')
                   console.log('执行成功--->', resGetSqlExecuteTaskResults)
@@ -762,7 +826,7 @@ export default {
                   'No Data'
                 ) {
                   this.loglist.push({
-                    logtime: new Date(),
+                    logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                     content: sqlOne,
                     tableData: this.tableData,
                   })
@@ -905,10 +969,6 @@ export default {
     handleEdit() {
       this.dialogVisible = true
     },
-    handleDelete(a, b) {
-      console.log(a)
-      this.TableData.splice(a, 1)
-    },
     handleClick(tab, event) {
       console.log(tab, event)
     },
@@ -926,7 +986,7 @@ export default {
   padding-top: 10px;
   width: 100%;
   height: 300px;
-  /* line-height: 20px; */
+  line-height: 12px;
   overflow: scroll;
   /* border: 1px solid #ccc; */
 }
