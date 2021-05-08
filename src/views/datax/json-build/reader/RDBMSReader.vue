@@ -309,6 +309,7 @@ export default {
         querySql: this.readerForm.querySql
       }
       dsQueryApi.getColumnsByQuerySql(obj).then(response => {
+        console.log(response)
         this.rColumnList = response
         // this.readerForm.columns = response
         this.readerForm.checkAll = true

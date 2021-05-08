@@ -944,9 +944,9 @@ export default {
      * @description: 等待trigger执行完再获取log列表
      */
     '$store.state.taskAdmin.logWatch'(val) {
-      // timer = setInterval(() => {
-      this.logList()
-      // }, 5000)
+      timer = setInterval(() => {
+        this.logList()
+      }, 5000)
     }
   },
 
@@ -974,10 +974,11 @@ export default {
     },
     clickTabs(val) {
       if (val.label === '任务日志') {
+        // this.newstlogContent = ''
         // this.logList()
-        setTimeout(() => {
-          this.logList()
-        }, 1000)
+        // setTimeout(() => {
+        //   this.logList()
+        // }, 1000)
       }
     },
 
@@ -1037,6 +1038,7 @@ export default {
      * @param {object} taskInfo
      */
     handlerExecute(taskInfo) {
+      this.newstlogContent = ''
       handlerExecute.call(this, taskInfo).then((response) => {
         this.newstlogContent = ''
         this.showLog = true

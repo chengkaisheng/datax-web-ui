@@ -41,7 +41,8 @@
       </el-col>
       <el-col>
         <quality-reader v-if="$store.state.taskAdmin.jobInfoType === 'DQCJOB'" ref="qualityReader" />
-        <reader v-else ref="reader" />
+        <reader v-else ref="reader" :from-columns-list1="fromColumnsList" />
+
       </el-col>
       <el-col>
         <h1 class="tab-title">{{ tabTitle(3) }}</h1>
@@ -794,8 +795,8 @@ export default {
       }
     },
     readerColumns() {
-      return this.$store.state.taskAdmin.selectReaderColumn
-      // return this.taskParam.readerColumns
+      // return this.$store.state.taskAdmin.selectReaderColumn
+      return this.taskParam.readerColumns
     },
     writerColumns() {
       return this.taskParam.writerColumns
@@ -848,6 +849,7 @@ export default {
       })
     },
     writerColumns(val) {
+      console.log(val)
       this.tableForm.rcolumns = JSON.parse(JSON.stringify(val))
       this.toColumnsList = val
     }
@@ -979,6 +981,7 @@ export default {
       obj.datasourceId = this.taskParam.writerDatasourceId
       obj.tableName = this.taskParam.writerTables[0]
       dsQueryGetColumns(obj).then(response => {
+        console.log(response)
         this.fromColumnList = response
 
         if (JSON.parse(this.currentTask.jobParam).writerTables[0] === this.taskParam.writerTables[0] &&
@@ -994,7 +997,7 @@ export default {
 
         this.$store.commit('SET_WRITER_COLUMNS', response)
 
-        this.tableForm.rcolumns = response
+        // this.tableForm.rcolumns = response
         this.toColumnsList = response
       })
     },
@@ -1111,7 +1114,8 @@ export default {
         jobParam.rule = tempjobRule
       }
       this.$set(this.currentTask, 'jobParam', JSON.stringify(jobParam))
-      updateJob(this.currentTask).then(() => {
+      updateJob(this.currentTask).then((res) => {
+        console.log(res)
         this.$emit('fetchData')
         this.$emit('close')
         this.$notify({
