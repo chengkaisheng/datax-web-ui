@@ -2,14 +2,61 @@
   <div class="workflowCanves">
     <div class="header">
       <div class="header_action" style="margin-left:17px;" @click="DataSave">
-        <i class="el-icon-edit" />
+        <i class="el-icon-s-order" />
         <span>保存</span>
+      </div>
+      <div class="header_action" style="margin-left:27px;" @click="runData">
+        <i class="el-icon-video-play" />
+        <span>执行</span>
+      </div>
+      <div class="header_action" style="margin-left:27px;" @click="startData">
+        <i class="el-icon-success" />
+        <span>提交</span>
+      </div>
+      <div class="header_action" style="margin-left:27px;" @click="logData">
+        <i class="el-icon-s-order" />
+        <span>查询日志</span>
+      </div>
+      <div class="header_action" style="margin-left:27px;" @click="dispatchData">
+        <i class="el-icon-s-marketing" />
+        <span>调度配置</span>
       </div>
     </div>
     <div id="parentDiv" style="width: 100%; display: flex; border: solid 1px lightgray;">
       <div :id="'myPaletteDiv' + myId" style="width: 100px; margin-right: 2px; " />
       <div :id="'myDiagramDiv' + myId" style="flex-grow: 1; height: 589px;" />
     </div>
+    <!-- 选择任务面板 -->
+    <el-dialog id="taskDialog" title="选择任务" :visible.sync="dialogFormVisible" width="30%">
+      <el-form :model="form">
+        <el-form-item label="任务类别" label-width="120px">
+          <el-select v-model="form.taskType" placeholder="请选择任务名称" style="width: 100%;">
+            <el-option
+              v-for="(item, index) in typeList"
+              :key="index"
+              :label="item"
+              :value="index"
+            />
+            <!-- <el-option label="task_02" value="task_02" /> -->
+          </el-select>
+        </el-form-item>
+        <el-form-item label="任务名称" label-width="120px">
+          <el-select v-model="form.taskName" placeholder="请选择任务名称" style="width: 100%;">
+            <el-option
+              v-for="(item, index) in taskList"
+              :key="index"
+              :label="item.jobDesc"
+              :value="index"
+            />
+            <!-- <el-option label="task_02" value="task_02" /> -->
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="dialogFormVisible = false">取 消</el-button>
+        <el-button size="small" type="primary" @click="sure">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -22,22 +69,40 @@ export default {
   },
   data() {
     return {
-      /** 虚任务Id */
-      myId: ''
+      /** 工作流Id */
+      myId: '',
+      taskList: '', // 当前任务列表
+      form: {
+        // taskName: '子任务' // 选中任务名称
+      },
+      typeList: [
+        'hive',
+        'impala',
+        '普通任务',
+        '引入任务',
+        '导出任务',
+        '虚任务',
+        'shell任务'
+      ],
+      dialogFormVisible: false
     }
   },
   watch: {
     'tabsIds' (val) {
       this.myId = val
-    }
+    },
+    'form.taskName'(val) {
+      this.form.name = this.taskList[val].jobDesc
+    },
+    'this.myDiagram.model'(val) {
+      console.log(val, 'model')
+    },
   },
   created() {
     this.myId = this.tabsIds
     console.log(this.myId, 'myId')
   },
   mounted() {
-    // this.myId = this.tabsIds
-    // console.log(document.getElementById('myDiagramDiv'))
     this.init()
     console.log(this.tabsIds, 'tabsId')
   },
@@ -54,26 +119,37 @@ export default {
       // this.showSaveBox = true
       // this.myDiagram.model = go.Model.fromJson(this.isSave.content.jobJson)
       console.log(JSON.parse(this.myDiagram.model.toJson()))
+      console.log(this.myDiagram.model.toJson())
+    },
+    // 执行
+    runData () {
+      console.log('执行')
+    },
+    // 提交
+    startData () {
+      console.log('提交')
+    },
+    // 查询日志
+    logData () {
+      console.log('查询日志')
+    },
+    // 调度配置
+    dispatchData () {
+      console.log('调度配置')
+    },
+    // 选择任务
+    sure () {
+      console.log('选择任务')
+      const key = this.selectedNodeKey
+      var selectNode = this.myDiagram.nodes.filter(function(e) {
+        return e.data.key === key
+      })
+      console.log(selectNode, 'node')
+      selectNode.tb.j[0].data.text = this.form.taskType
+      this.myDiagram.model.updateTargetBindings(selectNode.tb.j[0].data)
+      this.dialogFormVisible = false
     },
     init() {
-      // var parentDiv = document.getElementById('parentDiv')
-      // var myDiagramDiv = document.getElementById('myDiagramDiv')
-      // var myPaletteDiv = document.getElementById('myPaletteDiv')
-      // console.log(parentDiv, parentDiv.childNodes[0], myDiagramDiv)
-      // if (parentDiv) {
-      //   parentDiv.removeChild(myPaletteDiv, myDiagramDiv)
-      // }
-      // var div1 = document.createElement('div')
-      // var div2 = document.createElement('div')
-      // div1.setAttribute('id', 'myDiagramDiv' + this.myId)
-      // div1.style.width = 100 + 'px'
-      // div1.style.marginRight = 2 + 'px'
-      // div2.setAttribute('id', 'myPaletteDiv' + this.myId)
-      // div1.style.flexGrow = 1
-      // div1.style.height = 589 + 'px'
-      // parentDiv.appendChild(div1)
-      // parentDiv.appendChild(div2)
-      // console.log(div1, div2, parentDiv)
       // if (window.goSamples) goSamples();  // init for these samples -- you don't need to call this
       var $ = go.GraphObject.make // 为在定义模板的简洁
 
@@ -209,7 +285,7 @@ export default {
           // 主要对象是一个用矩形形状包围文本块的面板
           $(go.Panel, 'Auto',
             $(go.Shape, 'RoundedRectangle',
-              { desiredSize: new go.Size(74, 56), fill: '#E0F2E0', stroke: '#00B600', strokeWidth: 1.5 },
+              { desiredSize: new go.Size(74, 30), fill: '#E0F2E0', stroke: '#00B600', strokeWidth: 1.5 },
               new go.Binding('figure', 'figure')),
             $(go.TextBlock, textStyle(),
               {
@@ -217,7 +293,7 @@ export default {
                 maxSize: new go.Size(160, NaN),
                 wrap: go.TextBlock.WrapFit
               },
-              new go.Binding('text').makeTwoWay())
+              new go.Binding('text', this.form.taskName).makeTwoWay())
           ),
           // 四个指定的端口，每边一个:
           makePort('T', go.Spot.Top, go.Spot.TopSide, false, true),
@@ -365,7 +441,12 @@ export default {
           nodeTemplateMap: this.myDiagram.nodeTemplateMap, // 共享myDiagram使用的模板
           model: new go.GraphLinksModel([ // 指定调色板的内容
             { category: 'Start', text: '开始' },
-            { text: '子任务', id: '' },
+            { text: '普通任务', id: '1' },
+            { text: '引入任务', id: '2' },
+            { text: '导出任务', id: '3' },
+            { text: 'Hive任务', id: '4' },
+            { text: 'Impala任务', id: '5' },
+            { text: 'shell任务', id: '6' },
             { category: 'Conditional', text: '判断' },
             { category: 'End', text: '结束' }
             // { category: 'Comment', text: '注释' }

@@ -3,12 +3,18 @@
     <div class="btnContent">
       <ul>
         <li>
+          <i
+            style="cursor: pointer"
+            @click="interrupt"
+            class="el-icon-video-play"
+          />
+          <i style="display: inline-block; width: 10px"></i>
           <a
             :style="desbel"
             :loading="$store.state.graphQL.sqlBtnLoading"
             @click="fromChild"
           >
-            <i class="el-icon-video-play" />运行
+            运行
           </a>
         </li>
         <li>
@@ -217,6 +223,10 @@ export default {
   destroyed() {},
 
   methods: {
+    interrupt() {
+      console.log('111')
+      this.$emit('interrupt', '')
+    },
     searchCode(e) {
       this.codemirror.execCommand('find') //触发
     },
