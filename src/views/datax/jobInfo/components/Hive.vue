@@ -144,16 +144,11 @@
               style="display: inline-block; width: 100%"
               v-if="item.content !== ''"
             >
-              >> {{ item.logtime }}
-              <span style="display: inline-block; width: 6px"></span> [SQL] :{{
-                item.content
-              }}</span
-            >
+              >> {{ item.logtime }} {{item.content}}
+            </span>
             <br />
             <span v-if="item.tableData !== '...'" class="line1"
-              >>> {{ item.logtime }}
-              <span style="display: inline-block; width: 6px"></span>
-              [RESSULT]:Success</span
+              >>> {{ item.logtime }} [执行结果]: Success</span
             >
           </div>
           <div
@@ -162,7 +157,7 @@
           >
             <span style="display: inline-block; width: 100%" class="err1">
               >> {{ item.logtime }}
-              <span style="display: inline-block; width: 6px"></span> [SQL] :{{
+              <span style="display: inline-block; width: 6px"></span>{{
                 item.content
               }}</span
             >
@@ -170,7 +165,7 @@
             <span class="line1">
               >> {{ item.logtime }}
               <span style="display: inline-block; width: 10px"></span
-              >[EXCEPTION] : <span class="err1">{{ item.error }}</span></span
+              >[EXCEPTION]: <span class="err1">{{ item.error }}</span></span
             >
           </div>
         </div>
@@ -340,6 +335,24 @@ export default {
       this.desbel = ''
     },
     async runQuery(val) {
+      const splittedSql = val.code.split('\n')
+      console.log('splitted sql', splittedSql)
+      var processedSql = ''
+      for (var k = 0; k < splittedSql.length; k++) {
+        var line = splittedSql[k].trim()
+        if ((!line.startsWith('--')) && line !== '') {
+          processedSql = processedSql + line
+          console.log('*******-', processedSql)
+        }
+      }
+
+      const sqlarr = processedSql.split(';')
+      console.log('sqlarr:', sqlarr)
+      if (sqlarr.length == 0) {
+        this.$message('没有要执行的sql...')
+        return
+      }
+
       this.desbel = 'pointer-events:none'
       this.CODE = val
       this.loglist = []
@@ -353,12 +366,12 @@ export default {
             this.getinto = false
           }
           this.DialogVisiBle = false
-          this.loglist.push({
-            logtime:
-              moment(new Date()).format('YYYY-MM-DD hh:mm:ss') + '开始运行...',
-            content: '',
-            tableData: '...',
-          })
+          // this.loglist.push({
+          //   logtime:
+          //     moment(new Date()).format('YYYY-MM-DD hh:mm:ss') + ', 开始运行...',
+          //   content: '',
+          //   tableData: '...',
+          // })
           this.SingleData = this.$store.state.taskAdmin.SingleData
           this.datasourceListQuery.projectId = this.SingleData.projectId
           // 获取数据源
@@ -400,7 +413,19 @@ export default {
                 },
               }
               console.log('params1------>', params1)
-              // 创建连接
+              this.loglist.push({
+                logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                content:
+                  '开始执行sql...',
+                tableData: '...',
+              })
+              // 1. 创建连接
+              this.loglist.push({
+                logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                content:
+                  '创建连接...',
+                tableData: '...',
+              })
               const Createconnection = await createConnection(params1).catch(
                 (err) => {
                   this.loading = false
@@ -411,10 +436,18 @@ export default {
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                 content:
-                  '创建连接' + Createconnection.data.createConnection.name,
+                  '连接id: ' + Createconnection.data.createConnection.id,
                 tableData: '...',
               })
               console.log('创建连接', Createconnection)
+
+              // 2. 初始化连接
+              this.loglist.push({
+                logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                content:
+                  '初始化连接...',
+                tableData: '...',
+              })
               const params2 = {
                 id: Createconnection.data.createConnection.id,
                 credentials: {
@@ -423,7 +456,6 @@ export default {
                 },
               }
               console.log('params2------->', params2)
-              // 初始化连接
               const resInitConnection = await initConnection(params2).catch(
                 (err) => {
                   this.loading = false
@@ -431,17 +463,21 @@ export default {
                 }
               )
               console.log('初始化连接', resInitConnection)
-              const sqlarr = val.code.split(';')
-              console.log('sqlarrsqlarrsqlarr-=-=-=--=-=-', sqlarr)
+              this.loglist.push({
+                logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                content:
+                  '初始化连接完成: ' + resInitConnection.data.connection.id,
+                tableData: '...',
+              })
+
+
               for (let i = 0; i < sqlarr.length - 1; i++) {
                 const sqlOne = sqlarr[i]
-                if (sqlOne === '') {
-                  continue
-                }
+
                 this.loglist.push({
                   logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                   content:
-                    '初始化连接>>>' + resInitConnection.data.connection.name,
+                    '开始执行sql: [' + sqlOne + ']',
                   tableData: '...',
                 })
                 console.log('初始化连接', resInitConnection)
@@ -458,7 +494,7 @@ export default {
                 this.loglist.push({
                   logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                   content:
-                    '创建上下文>>>' + Createcontext.data.context.defaultSchema,
+                    '创建上下文, 上下文id: ' + Createcontext.data.context.id,
                   tableData: '...',
                 })
                 console.log('创建上下文', Createcontext.data.context)
@@ -476,17 +512,12 @@ export default {
                 const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(
                   params4
                 )
-                this.loglist.push({
-                  logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                  content:
-                    '执行sql>>>' + resAsyncSqlExecuteQuery.data.taskInfo.name,
-                  tableData: '...',
-                })
                 console.log('执行sql', resAsyncSqlExecuteQuery)
                 const params5 = {
                   taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
                   removeOnFinish: false,
                 }
+
                 console.log('params5----->', params5)
                 let queryStatus = ''
                 let resGetAsyncTaskInfo
@@ -517,11 +548,13 @@ export default {
                   }
                   this.loglist.push({
                     logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                    content: '执行状态>>>' + queryStatus,
+                    content: '执行状态: ' + queryStatus,
                     tableData: '...',
                   })
                   console.log(queryStatus, 'queryStatus')
-                  break
+                  // query every 2s
+                  // sleep(2000)
+                  // break
                 }
                 const params6 = {
                   taskId: resGetAsyncTaskInfo.data.taskInfo.id,
@@ -576,6 +609,12 @@ export default {
                   this.getinto = false
                   this.loading = false
                   this.$message.success('执行成功')
+                  this.loglist.push({
+                    logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                    content:
+                      '执行完成',
+                    tableData: '...',
+                  })
                   console.log('成功了', resGetSqlExecuteTaskResults)
                 } else if (
                   resGetSqlExecuteTaskResults.data.result.statusMessage !==
@@ -971,7 +1010,7 @@ export default {
     },
     handleClick(tab, event) {
       console.log(tab, event)
-    },
+    }
   },
 }
 </script>
@@ -986,7 +1025,7 @@ export default {
   padding-top: 10px;
   width: 100%;
   height: 300px;
-  line-height: 12px;
+  line-height: 16px;
   overflow: scroll;
   /* border: 1px solid #ccc; */
 }
