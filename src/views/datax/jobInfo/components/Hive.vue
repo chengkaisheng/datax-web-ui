@@ -340,7 +340,6 @@ export default {
       this.desbel = ''
     },
     async runQuery(val) {
-<<<<<<< HEAD
       const splittedSql = val.code.split('\n')
       console.log('splitted sql', splittedSql)
       var processedSql = ''
