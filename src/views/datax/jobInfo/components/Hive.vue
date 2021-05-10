@@ -144,7 +144,7 @@
               style="display: inline-block; width: 100%"
               v-if="item.content !== ''"
             >
-              >> {{ item.logtime }} {{item.content}}
+              >> {{ item.logtime }} {{ item.content }}
             </span>
             <br />
             <span v-if="item.tableData !== '...'" class="line1"
@@ -157,9 +157,8 @@
           >
             <span style="display: inline-block; width: 100%" class="err1">
               >> {{ item.logtime }}
-              <span style="display: inline-block; width: 6px"></span>{{
-                item.content
-              }}</span
+              <span style="display: inline-block; width: 6px"></span
+              >{{ item.content }}</span
             >
             <br />
             <span class="line1">
@@ -345,7 +344,7 @@ export default {
       var processedSql = ''
       for (var k = 0; k < splittedSql.length; k++) {
         var line = splittedSql[k].trim()
-        if ((!line.startsWith('--')) && line !== '') {
+        if (!line.startsWith('--') && line !== '') {
           processedSql = processedSql + line
           console.log('*******-', processedSql)
         }
@@ -420,15 +419,13 @@ export default {
               console.log('params1------>', params1)
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                content:
-                  '开始执行sql...',
+                content: '开始执行sql...',
                 tableData: '...',
               })
               // 1. 创建连接
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                content:
-                  '创建连接...',
+                content: '创建连接...',
                 tableData: '...',
               })
               const Createconnection = await createConnection(params1).catch(
@@ -440,8 +437,7 @@ export default {
               )
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                content:
-                  '连接id: ' + Createconnection.data.createConnection.id,
+                content: '连接id: ' + Createconnection.data.createConnection.id,
                 tableData: '...',
               })
               console.log('创建连接', Createconnection)
@@ -449,8 +445,7 @@ export default {
               // 2. 初始化连接
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                content:
-                  '初始化连接...',
+                content: '初始化连接...',
                 tableData: '...',
               })
               const params2 = {
@@ -467,6 +462,9 @@ export default {
                   console.log(err)
                 }
               )
+              if (resInitConnection === undefined) {
+                console.log('初始化连接失败')
+              }
               console.log('初始化连接', resInitConnection)
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
@@ -474,18 +472,17 @@ export default {
                   '初始化连接完成: ' + resInitConnection.data.connection.id,
                 tableData: '...',
               })
-
-
+              if (sqlarr[0] === '') {
+                this.$message('没有要执行的sql...')
+                return
+              }
               for (let i = 0; i < sqlarr.length - 1; i++) {
                 const sqlOne = sqlarr[i]
-
                 this.loglist.push({
                   logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                  content:
-                    '开始执行sql: [' + sqlOne + ']',
+                  content: '开始执行sql: [' + sqlOne + ']',
                   tableData: '...',
                 })
-                console.log('初始化连接', resInitConnection)
                 const params3 = {
                   connectionId: resInitConnection.data.connection.id,
                 }
@@ -538,7 +535,7 @@ export default {
                     this.loglist.push({
                       title: '错误sql返回',
                       logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                      content: val.code,
+                      content: sqlOne,
                       error: resGetAsyncTaskInfo.data.taskInfo.error.message,
                     })
                     this.desbel = ''
@@ -608,7 +605,7 @@ export default {
                   })
                   this.loglist.push({
                     logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                    content: val.code,
+                    content: sqlOne,
                     tableData: this.tableData,
                   })
                   this.getinto = false
@@ -616,12 +613,12 @@ export default {
                   this.$message.success('执行成功')
                   this.loglist.push({
                     logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                    content:
-                      '执行完成',
+                    content: '执行完成',
                     tableData: '...',
                   })
                   console.log('成功了', resGetSqlExecuteTaskResults)
-                } else if (
+                }
+                if (
                   resGetSqlExecuteTaskResults.data.result.statusMessage !==
                   'Success'
                 ) {
@@ -642,7 +639,8 @@ export default {
             this.$message('请确认是否选择数据源')
           }
         }
-      } else if (val.jobtype === 'IMPALA') {
+      }
+      if (val.jobtype === 'IMPALA') {
         console.log('parameters---=-=-=-999', this.parameters)
         if (this.parameters.length !== 0 || this.getinto === false) {
           this.DialogVisiBle = true
@@ -652,14 +650,6 @@ export default {
             this.getinto = false
           }
           this.DialogVisiBle = false
-          console.log('IMPALA--->', val)
-          this.loglist.push({
-            title: '正在执行',
-            logtime:
-              moment(new Date()).format('YYYY-MM-DD hh:mm:ss') + '开始运行...',
-            content: '',
-            tableData: '...',
-          })
           this.SingleData = this.$store.state.taskAdmin.SingleData
           this.datasourceListQuery.projectId = this.SingleData.projectId
           // 获取数据源
@@ -700,6 +690,17 @@ export default {
                   },
                 },
               }
+              this.loglist.push({
+                logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                content: '开始执行sql...',
+                tableData: '...',
+              })
+              // 1. 创建连接
+              this.loglist.push({
+                logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                content: '创建连接...',
+                tableData: '...',
+              })
               console.log('params1------>', params1)
               // 创建连接
               const Createconnection = await createConnection(params1).catch(
@@ -709,8 +710,15 @@ export default {
               )
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                content:
-                  '创建连接' + Createconnection.data.createConnection.name,
+                content: '连接id: ' + Createconnection.data.createConnection.id,
+                tableData: '...',
+              })
+              console.log('创建连接', Createconnection)
+
+              // 2. 初始化连接
+              this.loglist.push({
+                logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                content: '初始化连接...',
                 tableData: '...',
               })
               console.log('创建连接', Createconnection.data)
@@ -729,22 +737,21 @@ export default {
                 }
               )
               this.loglist.push({
+                logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                 content:
-                  '初始化连接>>>' + resInitConnection.data.connection.name,
+                  '初始化连接完成: ' + resInitConnection.data.connection.id,
                 tableData: '...',
               })
-              const sqlarr = val.code.split(';')
-              console.log('sqlarrsqlarrsqlarr-=-=-=', sqlarr)
-              for (var i = 0; i < sqlarr.length; i++) {
+              console.log('sqlarr', sqlarr)
+              if (sqlarr[0] === '') {
+                this.$message('没有要执行的sql...')
+                return
+              }
+              for (var i = 0; i < sqlarr.length - 1; i++) {
                 const sqlOne = sqlarr[i]
-                if (sqlOne === '') {
-                  // console.log(sqlarr)
-                  continue
-                }
                 this.loglist.push({
                   logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                  content:
-                    '初始化连接>>>' + resInitConnection.data.connection.name,
+                  content: '开始执行sql: [' + sqlOne + ']',
                   tableData: '...',
                 })
                 console.log('初始化连接', resInitConnection)
@@ -760,7 +767,7 @@ export default {
                 this.loglist.push({
                   logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                   content:
-                    '创建上下文>>>' + Createcontext.data.context.defaultSchema,
+                    '创建上下文, 上下文id: ' + Createcontext.data.context.id,
                   tableData: '...',
                 })
                 console.log('创建上下文', Createcontext)
@@ -792,7 +799,6 @@ export default {
                 console.log('params5----->', params5)
                 let queryStatus = ''
                 let resGetAsyncTaskInfo
-
                 while (queryStatus !== 'Finished') {
                   resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
                   queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
@@ -803,7 +809,7 @@ export default {
                     this.loglist.push({
                       title: '错误sql返回',
                       logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                      content: val.code,
+                      content: sqlOne,
                       error: resGetAsyncTaskInfo.data.taskInfo.error.message,
                     })
                     this.getinto = false
@@ -815,7 +821,7 @@ export default {
                   }
                   this.loglist.push({
                     logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                    content: '执行状态>>>' + queryStatus,
+                    content: '执行状态:' + queryStatus,
                     tableData: '...',
                   })
                   console.log(queryStatus, '<<<--------queryStatus')
@@ -832,6 +838,7 @@ export default {
                   resGetSqlExecuteTaskResults.data.result.statusMessage ===
                   'Success'
                 ) {
+                  this.desbel = ''
                   const columns =
                     resGetSqlExecuteTaskResults.data.result.results[0].resultSet
                       .columns
@@ -849,17 +856,24 @@ export default {
                   })
                   this.loglist.push({
                     logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                    content: val.code,
+                    content: sqlOne,
                     tableData: this.tableData,
                   })
                   this.getinto = false
                   this.loading = false
                   this.$message.success('执行成功')
-                  console.log('执行成功--->', resGetSqlExecuteTaskResults)
-                } else if (
+                  this.loglist.push({
+                    logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                    content: '执行完成',
+                    tableData: '...',
+                  })
+                  console.log('成功了', resGetSqlExecuteTaskResults)
+                }
+                if (
                   resGetSqlExecuteTaskResults.data.result.statusMessage !==
                   'Success'
                 ) {
+                  this.desbel = ''
                   this.getinto = false
                   console.log(
                     resGetSqlExecuteTaskResults.data.result.statusMessage
@@ -869,15 +883,17 @@ export default {
                   resGetSqlExecuteTaskResults.data.result.statusMessage ===
                   'No Data'
                 ) {
+                  this.desbel = ''
                   this.loglist.push({
                     logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                     content: sqlOne,
                     tableData: this.tableData,
                   })
                   this.getinto = false
+                  console.log('this.loglist====---->', this.loglist)
                   this.loading = false
                   this.$message.success('执行成功')
-                  console.log('执行成功--->', resGetSqlExecuteTaskResults)
+                  console.log('成功了', resGetSqlExecuteTaskResults)
                 }
               }
             } else if (datasource.length === 0) {
@@ -1015,7 +1031,7 @@ export default {
     },
     handleClick(tab, event) {
       console.log(tab, event)
-    }
+    },
   },
 }
 </script>
