@@ -1,6 +1,7 @@
 <template>
   <div v-loading="loading" :element-loading-text="loadingtext" class="wrap">
     <el-dialog
+      :show-close="false"
       title="参数配置"
       :visible.sync="DialogVisiBle"
       width="50%"
@@ -13,7 +14,7 @@
         style="margin-top: 20px"
         class="DraWer"
       >
-        <div>
+        <div class="parameter">
           <span style="font-size: 14px; color: #ccc"
             ><i style="color: #000; padding-right: 40px"
               >可配置参数：{{ itme.parameter }}</i
@@ -153,7 +154,7 @@
           </div>
           <div
             v-if="item.error"
-            style="padding: 20px; font-size: 12px; color: red"
+            style="padding: 20px; padding-top: 0px; font-size: 12px; color: red"
           >
             <span style="display: inline-block; width: 100%" class="err1">
               >> {{ item.logtime }}
@@ -198,7 +199,7 @@ export default {
   },
   data() {
     return {
-      desbel: '',
+      desbel: true,
       moment: moment,
       loadingtext: '',
       loading: false,
@@ -244,6 +245,7 @@ export default {
       tableData: [],
       code: '',
       getinto: false,
+      status: 'executing',
     }
   },
   created() {
@@ -259,8 +261,9 @@ export default {
   methods: {
     //中断运行
     interrupt() {
-      this.desbel = ''
-      this.runQuery('')
+      this.desbel = true
+      this.status = 'stop'
+      this.$message('已停止运行')
     },
     // 参数替换
     ReplaceParameter() {
@@ -336,9 +339,11 @@ export default {
     handleClose() {},
     cancel() {
       this.DialogVisiBle = false
-      this.desbel = ''
+      this.desbel = true
     },
     async runQuery(val) {
+      this.desbel = false
+      this.status = 'executing'
       const splittedSql = val.code.split('\n')
       console.log('splitted sql', splittedSql)
       var processedSql = ''
@@ -349,15 +354,13 @@ export default {
           console.log('*******-', processedSql)
         }
       }
-
       const sqlarr = processedSql.split(';')
       console.log('sqlarr:', sqlarr)
       if (sqlarr.length == 0) {
         this.$message('没有要执行的sql...')
         return
       }
-
-      this.desbel = 'pointer-events:none'
+      this.desbel = false
       this.CODE = val
       this.loglist = []
       console.log('类型判断', this.desbel, val)
@@ -370,12 +373,6 @@ export default {
             this.getinto = false
           }
           this.DialogVisiBle = false
-          // this.loglist.push({
-          //   logtime:
-          //     moment(new Date()).format('YYYY-MM-DD hh:mm:ss') + ', 开始运行...',
-          //   content: '',
-          //   tableData: '...',
-          // })
           this.SingleData = this.$store.state.taskAdmin.SingleData
           this.datasourceListQuery.projectId = this.SingleData.projectId
           // 获取数据源
@@ -430,9 +427,10 @@ export default {
               })
               const Createconnection = await createConnection(params1).catch(
                 (err) => {
-                  this.loading = false
+                  this.desbel = true
+                  this.getinto = false
                   this.$message('创建连接失败')
-                  console.log('888', err)
+                  console.log('ERR', err)
                 }
               )
               this.loglist.push({
@@ -458,11 +456,15 @@ export default {
               console.log('params2------->', params2)
               const resInitConnection = await initConnection(params2).catch(
                 (err) => {
-                  this.loading = false
+                  this.desbel = true
+                  this.getinto = false
                   console.log(err)
                 }
               )
               if (resInitConnection === undefined) {
+                this.desbel = true
+                this.getinto = false
+                this.$('初始化连接失败')
                 console.log('初始化连接失败')
               }
               console.log('初始化连接', resInitConnection)
@@ -477,6 +479,7 @@ export default {
                 return
               }
               for (let i = 0; i < sqlarr.length - 1; i++) {
+                if (this.status !== 'executing') break
                 const sqlOne = sqlarr[i]
                 this.loglist.push({
                   logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
@@ -489,7 +492,8 @@ export default {
                 console.log('params3------->', params3)
                 const Createcontext = await sqlContextCreate(params3).catch(
                   (err) => {
-                    this.loading = false
+                    this.desbel = true
+                    this.getinto = false
                     console.log(err)
                   }
                 )
@@ -525,38 +529,33 @@ export default {
                 let resGetAsyncTaskInfo
                 while (queryStatus !== 'Finished') {
                   resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
+                  console.log('while', resGetAsyncTaskInfo)
                   queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
                   console.log('循环执行语句', queryStatus)
                   if (resGetAsyncTaskInfo.data.taskInfo.error) {
-                    console.log(
-                      '失败了',
-                      resGetAsyncTaskInfo.data.taskInfo.error.errorCode
-                    )
                     this.loglist.push({
                       title: '错误sql返回',
                       logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                       content: sqlOne,
                       error: resGetAsyncTaskInfo.data.taskInfo.error.message,
                     })
-                    this.desbel = ''
-                    this.loading = false
+                    if (i === sqlarr.length - 2) {
+                      this.desbel = true
+                    }
                     this.getinto = false
-                    this.parameters = this.$store.state.taskAdmin.ParametersList
-                    this.$message.error(
-                      '执行错误',
-                      resGetAsyncTaskInfo.data.taskInfo.error.message
-                    )
+                    this.$message.error('执行错误')
                     break
+                  } else {
+                    this.loglist.push({
+                      logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                      content: '执行状态: ' + queryStatus,
+                      tableData: '...',
+                    })
+                    console.log(queryStatus, 'queryStatus')
+                    // query every 2s
+                    // sleep(2000)
+                    // break
                   }
-                  this.loglist.push({
-                    logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                    content: '执行状态: ' + queryStatus,
-                    tableData: '...',
-                  })
-                  console.log(queryStatus, 'queryStatus')
-                  // query every 2s
-                  // sleep(2000)
-                  // break
                 }
                 const params6 = {
                   taskId: resGetAsyncTaskInfo.data.taskInfo.id,
@@ -571,7 +570,9 @@ export default {
                   resGetSqlExecuteTaskResults.data.result.statusMessage ===
                   'No Data'
                 ) {
-                  this.desbel = ''
+                  if (i === sqlarr.length - 2) {
+                    this.desbel = true
+                  }
                   this.loglist.push({
                     logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                     content: sqlOne,
@@ -579,7 +580,6 @@ export default {
                   })
                   this.getinto = false
                   console.log('this.loglist====---->', this.loglist)
-                  this.loading = false
                   this.$message.success('执行成功')
                   console.log('成功了', resGetSqlExecuteTaskResults)
                 }
@@ -587,7 +587,9 @@ export default {
                   resGetSqlExecuteTaskResults.data.result.statusMessage ===
                   'Success'
                 ) {
-                  this.desbel = ''
+                  if (i === sqlarr.length - 2) {
+                    this.desbel = true
+                  }
                   const columns =
                     resGetSqlExecuteTaskResults.data.result.results[0].resultSet
                       .columns
@@ -609,7 +611,6 @@ export default {
                     tableData: this.tableData,
                   })
                   this.getinto = false
-                  this.loading = false
                   this.$message.success('执行成功')
                   this.loglist.push({
                     logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
@@ -622,7 +623,9 @@ export default {
                   resGetSqlExecuteTaskResults.data.result.statusMessage !==
                   'Success'
                 ) {
-                  this.desbel = ''
+                  if (i === sqlarr.length - 2) {
+                    this.desbel = true
+                  }
                   this.getinto = false
                   console.log(
                     resGetSqlExecuteTaskResults.data.result.statusMessage
@@ -630,12 +633,11 @@ export default {
                 }
               }
             } else if (datasource.length === 0) {
-              this.desbel = ''
-              this.loading = false
+              this.desbel = true
               this.$message('请确认是否选择数据源')
             }
           } else {
-            this.loading = false
+            this.desbel = true
             this.$message('请确认是否选择数据源')
           }
         }
@@ -705,6 +707,8 @@ export default {
               // 创建连接
               const Createconnection = await createConnection(params1).catch(
                 (err) => {
+                  this.desbel = true
+                  this.getinto = false
                   console.log(err)
                 }
               )
@@ -733,9 +737,17 @@ export default {
               // 初始化连接
               const resInitConnection = await initConnection(params2).catch(
                 (err) => {
+                  this.desbel = true
+                  this.getinto = false
                   console.log(err)
                 }
               )
+              if (resInitConnection === undefined) {
+                this.desbel = true
+                this.getinto = false
+                this.$('初始化连接失败')
+                console.log('初始化连接失败')
+              }
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                 content:
@@ -748,6 +760,7 @@ export default {
                 return
               }
               for (var i = 0; i < sqlarr.length - 1; i++) {
+                if (this.status !== 'executing') break
                 const sqlOne = sqlarr[i]
                 this.loglist.push({
                   logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
@@ -761,6 +774,8 @@ export default {
                 console.log('params3----->', params3)
                 const Createcontext = await sqlContextCreate(params3).catch(
                   (err) => {
+                    this.desbel = true
+                    this.getinto = false
                     console.log(err)
                   }
                 )
@@ -804,27 +819,26 @@ export default {
                   queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
                   console.log('resGetAsyncTaskInfo--->', resGetAsyncTaskInfo)
                   if (resGetAsyncTaskInfo.data.taskInfo.error) {
-                    console.log(resGetAsyncTaskInfo.data.taskInfo.error.message)
-                    this.loading = false
                     this.loglist.push({
                       title: '错误sql返回',
                       logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                       content: sqlOne,
                       error: resGetAsyncTaskInfo.data.taskInfo.error.message,
                     })
+                    if (i === sqlarr.length - 2) {
+                      this.desbel = true
+                    }
                     this.getinto = false
-                    this.$message.error(
-                      '执行错误',
-                      resGetAsyncTaskInfo.data.taskInfo.error
-                    )
+                    this.$message.error('执行错误')
                     break
+                  } else {
+                    this.loglist.push({
+                      logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                      content: '执行状态:' + queryStatus,
+                      tableData: '...',
+                    })
+                    console.log(queryStatus, '<<<--------queryStatus')
                   }
-                  this.loglist.push({
-                    logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                    content: '执行状态:' + queryStatus,
-                    tableData: '...',
-                  })
-                  console.log(queryStatus, '<<<--------queryStatus')
                 }
                 const params6 = {
                   taskId: resGetAsyncTaskInfo.data.taskInfo.id,
@@ -832,13 +846,17 @@ export default {
                 const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
                   params6
                 ).catch((error) => {
+                  this.desbel = true
+                  this.getinto = false
                   console.log(error)
                 })
                 if (
                   resGetSqlExecuteTaskResults.data.result.statusMessage ===
                   'Success'
                 ) {
-                  this.desbel = ''
+                  if (i === sqlarr.length - 2) {
+                    this.desbel = true
+                  }
                   const columns =
                     resGetSqlExecuteTaskResults.data.result.results[0].resultSet
                       .columns
@@ -859,8 +877,10 @@ export default {
                     content: sqlOne,
                     tableData: this.tableData,
                   })
+                  if (i === sqlarr.length - 2) {
+                    this.desbel = true
+                  }
                   this.getinto = false
-                  this.loading = false
                   this.$message.success('执行成功')
                   this.loglist.push({
                     logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
@@ -873,7 +893,9 @@ export default {
                   resGetSqlExecuteTaskResults.data.result.statusMessage !==
                   'Success'
                 ) {
-                  this.desbel = ''
+                  if (i === sqlarr.length - 2) {
+                    this.desbel = true
+                  }
                   this.getinto = false
                   console.log(
                     resGetSqlExecuteTaskResults.data.result.statusMessage
@@ -883,25 +905,25 @@ export default {
                   resGetSqlExecuteTaskResults.data.result.statusMessage ===
                   'No Data'
                 ) {
-                  this.desbel = ''
+                  if (i === sqlarr.length - 2) {
+                    this.desbel = true
+                  }
                   this.loglist.push({
                     logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                     content: sqlOne,
                     tableData: this.tableData,
                   })
                   this.getinto = false
-                  console.log('this.loglist====---->', this.loglist)
-                  this.loading = false
                   this.$message.success('执行成功')
                   console.log('成功了', resGetSqlExecuteTaskResults)
                 }
               }
             } else if (datasource.length === 0) {
-              this.loading = false
+              this.desbel = true
               this.$message('请确认是否选择数据源')
             }
           } else {
-            this.loading = false
+            this.desbel = true
             this.$message('请确认是否选择数据源')
           }
         }
@@ -1049,6 +1071,14 @@ export default {
   line-height: 16px;
   overflow: scroll;
   /* border: 1px solid #ccc; */
+}
+.parameter {
+  display: flex;
+  flex-direction: row;
+}
+.LOGS div {
+  margin: 0;
+  padding: 0;
 }
 .DraWer {
   display: flex;

@@ -3,18 +3,19 @@
     <div class="btnContent">
       <ul>
         <li>
-          <i
-            style="cursor: pointer"
-            @click="interrupt"
-            class="el-icon-video-play"
-          />
-          <i style="display: inline-block; width: 10px"></i>
           <a
-            :style="desbel"
+            v-if="desbel === true"
             :loading="$store.state.graphQL.sqlBtnLoading"
             @click="fromChild"
           >
-            运行
+            <i class="el-icon-video-play" />运行
+          </a>
+          <a
+            v-else
+            @click="interrupt"
+            :loading="$store.state.graphQL.sqlBtnLoading"
+          >
+            <i class="el-icon-video-pause"></i> 停止
           </a>
         </li>
         <li>
@@ -554,7 +555,7 @@ export default {
 }
 
 >>> .CodeMirror-lines {
-    padding: 4px 0;
-    line-height: 15px;
+  padding: 4px 0;
+  line-height: 15px;
 }
 </style>
