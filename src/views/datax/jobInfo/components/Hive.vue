@@ -461,12 +461,12 @@ export default {
                   console.log(err)
                 }
               )
-              if (resInitConnection === undefined) {
-                this.desbel = true
-                this.getinto = false
-                this.$('初始化连接失败')
-                console.log('初始化连接失败')
-              }
+              // if (resInitConnection === undefined) {
+              //   this.desbel = true
+              //   this.getinto = false
+              //   this.$('初始化连接失败')
+              //   console.log('初始化连接失败')
+              // }
               console.log('初始化连接', resInitConnection)
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
@@ -539,9 +539,10 @@ export default {
                       content: sqlOne,
                       error: resGetAsyncTaskInfo.data.taskInfo.error.message,
                     })
-                    if (i === sqlarr.length - 2) {
-                      this.desbel = true
-                    }
+                    // if (i === sqlarr.length - 2) {
+                    //   this.desbel = true
+                    // }
+                    this.desbel = true
                     this.getinto = false
                     this.$message.error('执行错误')
                     break

@@ -155,13 +155,13 @@ export default {
       this.code = this.$store.state.taskAdmin.setcode
     },
     code(val) {
-      this.$store.commit('SETREDDOT', true)
-      if (this.$store.state.taskAdmin.setcode !== val) {
-        this.$store.commit('SETREDDOT', true)
-      } else {
-        this.$store.commit('SETREDDOT', false)
-      }
-      this.infoMsg++
+      // this.$store.commit('SETREDDOT', true)
+      // if (this.$store.state.taskAdmin.setcode !== val) {
+      //   this.$store.commit('SETREDDOT', true)
+      // } else {
+      //   this.$store.commit('SETREDDOT', false)
+      // }
+      // this.infoMsg++
     },
     sqlparams(val) {
       if (val.level === 3) {
@@ -287,7 +287,7 @@ export default {
     fromChild() {
       this.$emit('querysql', {
         msg: this.infoMsg,
-        code: this._editor.getValue(),
+        code: this.editor.getSelection() || this._editor.getValue(),
         jobtype: this.jobtype.jobType,
       })
     },
@@ -295,7 +295,6 @@ export default {
      * @description: 保存查询
      */
     saveQuery() {
-      console.log('getValue', this._editor.getValue())
       this.TIPS = false
       this.$emit('saveQuery', this._editor.getValue())
     },
