@@ -29,27 +29,79 @@
     <!-- 选择任务面板 -->
     <el-dialog id="taskDialog" title="选择任务" :visible.sync="dialogFormVisible" width="30%">
       <el-form :model="form">
-        <el-form-item label="任务类别" label-width="120px">
-          <el-select v-model="form.taskType" placeholder="请选择任务名称" style="width: 100%;">
-            <el-option
-              v-for="(item, index) in typeList"
-              :key="index"
-              :label="item"
-              :value="index"
-            />
-            <!-- <el-option label="task_02" value="task_02" /> -->
-          </el-select>
-        </el-form-item>
-        <el-form-item label="任务名称" label-width="120px">
-          <el-select v-model="form.taskName" placeholder="请选择任务名称" style="width: 100%;">
-            <el-option
-              v-for="(item, index) in taskList"
-              :key="index"
-              :label="item.jobDesc"
-              :value="index"
-            />
-            <!-- <el-option label="task_02" value="task_02" /> -->
-          </el-select>
+        <el-form-item label="任务列表" label-width="100px">
+          <el-tree
+            ref="tree"
+            :data="taskList"
+            highlight-current
+            accordion
+            default-expand-all
+            draggable
+            node-key="id"
+            :expand-on-click-node="false"
+            @node-click="handleWorkFlow"
+            >
+            <span
+              slot-scope="{ node, data }"
+              class="custom-tree-node"
+              style="
+                height: 26px;
+                line-height: 26px;
+                position: relative;
+                display: block;
+                width: 100%;
+                font-size: 14px;
+              "
+            >
+              <!-- @dblclick="resetName(folderName)" -->
+              <p style="height: 26px; line-height: 26px">
+                <svg-icon
+                  v-if="data.jobType && data.jobType !== 'IMPORT'"
+                  :icon-class="data.jobType"
+                  style="font-size: 15px; margin-right: 3px"
+                />
+                <svg
+                  v-else
+                  id="Layer_1"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  x="0px"
+                  y="3px"
+                  width="15px"
+                  height="15px"
+                  style="margin-right: 3px"
+                  viewBox="0 3 15 15"
+                  enable-background="new 0 3 15 15"
+                  xml:space="preserve"
+                >
+                  <image
+                    id="image0"
+                    width="15"
+                    height="15"
+                    x="0"
+                    y="6"
+                    href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
+AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAXVBMVEX/////kUj/kkj/kUj/
+lUr/i0b/k0b/kkf/kkf/kEf/k0f/k0b/kkf/kkf/kUj/kkf/kEj/lEf/kUf/kUf/kUj/j0f/kUb/
+k0j/kkf/lkv/kUj/kUf//wD/kUf///+LAJe9AAAAHXRSTlMAw9mjGAtQcP7pYUnnto7pYzLrQaQZ
+smrwEeTaAcB/ix4AAAABYktHRACIBR1IAAAAB3RJTUUH5QIFADcDzk1yTQAAAE1JREFUGNNjYCAD
+MMoiAUaggCyyrCw2ASYQg5kFIcDAwMrGzsHJhRDg5uHlk+UXgAsICgkzMIiIIrSIiaMZKiGJJiDF
+wCCN4jAZUr0GALWzBTkD4ue4AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIxLTAyLTA0VDE2OjU1OjAz
+KzA4OjAw5fkjmwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMS0wMi0wNFQxNjo1NTowMyswODowMJSk
+mycAAAAgdEVYdHNvZnR3YXJlAGh0dHBzOi8vaW1hZ2VtYWdpY2sub3JnvM8dnQAAABh0RVh0VGh1
+bWI6OkRvY3VtZW50OjpQYWdlcwAxp/+7LwAAABd0RVh0VGh1bWI6OkltYWdlOjpIZWlnaHQAMTYd
+r15vAAAAFnRFWHRUaHVtYjo6SW1hZ2U6OldpZHRoADE25QCe4gAAABl0RVh0VGh1bWI6Ok1pbWV0
+eXBlAGltYWdlL3BuZz+yVk4AAAAXdEVYdFRodW1iOjpNVGltZQAxNjEyNDI4OTAz6wc9eAAAABF0
+RVh0VGh1bWI6OlNpemUAMjk4QkK3drNWAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8vYXBwL3Rt
+cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
+rkJggg=="
+                  />
+                </svg>
+                {{ data.name }}
+              </p>
+            </span>
+          </el-tree>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -62,6 +114,7 @@
 
 <script id="code">
 import go from 'gojs'
+import * as workFlowApi from '@/api/datax-job-info'
 export default {
   name: 'Flow',
   props: {
@@ -75,16 +128,36 @@ export default {
       form: {
         // taskName: '子任务' // 选中任务名称
       },
-      typeList: [
-        'hive',
-        'impala',
-        '普通任务',
-        '引入任务',
-        '导出任务',
-        '虚任务',
-        'shell任务'
+      currentType: '', // 当前选中节点的任务类型
+      dialogFormVisible: false,
+      taskArr: [
+        {
+          name: '1',
+          type: 'NORMAL'
+        },
+        {
+          name: '2',
+          type: 'IMPORT'
+        },
+        {
+          name: '3',
+          type: 'EXPORT'
+        },
+        {
+          name: '4',
+          type: 'HIVE'
+        },
+        {
+          name: '5',
+          type: 'IMPALA'
+        },
+        {
+          name: '6',
+          type: 'SHELL'
+        },
       ],
-      dialogFormVisible: false
+      project_id: '', // 当前项目Id
+      dataJob: {} // 当前任务数据
     }
   },
   watch: {
@@ -97,19 +170,51 @@ export default {
     'this.myDiagram.model'(val) {
       console.log(val, 'model')
     },
+    '$store.state.workflow.currentData'(val) {
+      this.project_id = val.projectId
+      console.log(this.project_id, '12356')
+    },
   },
   created() {
     this.myId = this.tabsIds
-    console.log(this.myId, 'myId')
+    if (this.$store.state.workflow.currentData) {
+      this.project_id = this.$store.state.workflow.currentData.projectId
+    }
+    console.log(this.myId, 'myId', this.project_id)
+    this.getCurrentProjectList()
+    // this.myDiagram.model = go.Model.fromJson(this.$store.state.workflow.currentData.jobJson)
+    // console.log(this.myDiagram.model)
   },
   mounted() {
     this.init()
+    this.myDiagram.model = go.Model.fromJson(this.$store.state.workflow.currentData.jobJson)
     console.log(this.tabsIds, 'tabsId')
   },
   methods: {
+    // 获取当前项目下的任务列表
+    getCurrentProjectList () {
+      let myType = ''
+      for (let i = 0; i < this.taskArr.length; i++) {
+        if (this.currentType === this.taskArr[i].name) {
+          myType = this.taskArr[i].type
+        }
+      }
+      workFlowApi.getTreeData({
+        projectId: this.project_id,
+        jobType: myType
+      }).then((res) => {
+        console.log(res)
+        if (res.code === 200) {
+          this.taskList = res.content
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
     // 保存
     DataSave () {
       console.log('保存')
+      // console.log(this.myDiagram.model)
       // if (this.isSave.title === 'Untitled') {
       //   this.open()
       // } else {
@@ -117,9 +222,30 @@ export default {
       //   this.toParent()
       // }
       // this.showSaveBox = true
-      // this.myDiagram.model = go.Model.fromJson(this.isSave.content.jobJson)
+      // this.myDiagram.model = go.Model.fromJson(this.$store.state.workflow.currentData.jobJson)
+      let params = {}
+      params = this.$store.state.workflow.currentData
+      params.jobJson = this.myDiagram.model.toJson()
+      console.log(params)
+      workFlowApi.updateWorkflow(
+        params
+      ).then((res) => {
+        if (res.code === 200) {
+          this.$message.success('保存' + res.msg)
+        }
+      }).catch(
+        err => {
+          console.log(err)
+        }
+      )
       console.log(JSON.parse(this.myDiagram.model.toJson()))
       console.log(this.myDiagram.model.toJson())
+
+    },
+    // 点击选中任务
+    handleWorkFlow (e) {
+      console.log(e)
+      this.dataJob = e
     },
     // 执行
     runData () {
@@ -145,7 +271,7 @@ export default {
         return e.data.key === key
       })
       console.log(selectNode, 'node')
-      selectNode.tb.j[0].data.text = this.form.taskType
+      selectNode.tb.j[0].data.text = this.dataJob.name
       this.myDiagram.model.updateTargetBindings(selectNode.tb.j[0].data)
       this.dialogFormVisible = false
     },
@@ -250,7 +376,16 @@ export default {
       this.myDiagram.addDiagramListener('ObjectDoubleClicked', (e) => {
         console.log('------------')
         console.log(e)
-        // console.log(e.subject.part.data.category)
+        console.log(e.subject.part)
+        console.log(e.subject.part.data)
+        // this.taskArr.forEach(item => {
+        //   if (item.name = e.subject.part.data) {
+        //     this.currentType = item.type
+        //   }
+        // })
+        this.currentType = e.subject.part.data.id
+        console.log(this.currentType, 'this.currentType')
+        this.getCurrentProjectList()
         if (e.subject.part.data.category === undefined) {
           this.dialogFormVisible = true
           this.selectedNodeKey = e.subject.part.data.key
@@ -285,7 +420,7 @@ export default {
           // 主要对象是一个用矩形形状包围文本块的面板
           $(go.Panel, 'Auto',
             $(go.Shape, 'RoundedRectangle',
-              { desiredSize: new go.Size(74, 30), fill: '#E0F2E0', stroke: '#00B600', strokeWidth: 1.5 },
+              { desiredSize: new go.Size(90, 30), fill: '#E0F2E0', stroke: '#00B600', strokeWidth: 1.5 },
               new go.Binding('figure', 'figure')),
             $(go.TextBlock, textStyle(),
               {
@@ -441,12 +576,12 @@ export default {
           nodeTemplateMap: this.myDiagram.nodeTemplateMap, // 共享myDiagram使用的模板
           model: new go.GraphLinksModel([ // 指定调色板的内容
             { category: 'Start', text: '开始' },
-            { text: '普通任务', id: '1' },
-            { text: '引入任务', id: '2' },
-            { text: '导出任务', id: '3' },
-            { text: 'Hive任务', id: '4' },
-            { text: 'Impala任务', id: '5' },
-            { text: 'shell任务', id: '6' },
+            { text: '普通任务', id: '1', type: 'NORMAL' },
+            { text: '引入任务', id: '2', type: 'IMPORT' },
+            { text: '导出任务', id: '3', type: 'EXPORT' },
+            { text: 'Hive任务', id: '4', type: 'HIVE' },
+            { text: 'Impala任务', id: '5', type: 'IMPALA' },
+            { text: 'shell任务', id: '6', type: 'SHELL' },
             { category: 'Conditional', text: '判断' },
             { category: 'End', text: '结束' }
             // { category: 'Comment', text: '注释' }

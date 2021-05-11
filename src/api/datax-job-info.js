@@ -208,10 +208,11 @@ export function exportTaskResult(params) {
 }
 
 // 获取tree数据结构建
-export function getTreeData(query) {
+export function getTreeData(params) {
   return request({
-    url: `/api/jobProjectGroup/tree?projectId=${query}`,
-    method: 'get'
+    url:  '/api/jobProjectGroup/tree',
+    method: 'get',
+    params
   })
 }
 
@@ -317,5 +318,14 @@ export function delWorkflow(query) {
   return request({
     url: `api/jobWorkflow/delete?id=${query}`,
     method: 'post'
+  })
+}
+
+// 触发工作流接口
+export function triggerWorkflow(data) {
+  return request({
+    url: 'api/jobWorkflow/triggerWorkFlow',
+    method: 'post',
+    data
   })
 }
