@@ -8,7 +8,7 @@
 -->
 
 <template>
-  <div class="job_detail">
+  <div ref="jobdetail" class="job_detail">
     <!-- action面板 -->
     <div class="header">
       <div
@@ -373,6 +373,7 @@ rkJggg=="
       :show="editPanelShow"
       :title="'编辑任务：' + currentTask.name + ' ( ' + projectName + ' )'"
       :job-id="editPanelId"
+
       @close="closeEdit"
       @fetchData="fetchData"
     />
@@ -937,17 +938,18 @@ export default {
         this.detailActiveName = 'detail'
       } else if (val === 'json') {
         this.jsons = this.jsonString
+        console.log(this.jsons)
       }
-    },
+    }
 
     /**
      * @description: 等待trigger执行完再获取log列表
      */
-    '$store.state.taskAdmin.logWatch'(val) {
-      timer = setInterval(() => {
-        this.logList()
-      }, 5000)
-    }
+    // '$store.state.taskAdmin.logWatch' (val) {
+    //   timer = setInterval(() => {
+    //     this.logList()
+    //   }, 5000)
+    // }
   },
 
   created() {
@@ -973,12 +975,20 @@ export default {
       return this.$refs.reader.getData()
     },
     clickTabs(val) {
+      // 点击查看JSON更新编辑后的jsons数据
+      if (val.label === '查看JSON') {
+        this.currentTask = this.jobInfo
+      }
       if (val.label === '任务日志') {
         // this.newstlogContent = ''
-        // this.logList()
-        // setTimeout(() => {
-        //   this.logList()
-        // }, 1000)
+        if (this.showLog === true) {
+          //     var dsq = setInterval(() => {
+          //       this.logList()
+          //     }, 2000)
+        }
+      //   // this.logList()
+      // } else {
+      //   clearInterval(dsq)
       }
     },
 
@@ -1038,12 +1048,18 @@ export default {
      * @param {object} taskInfo
      */
     handlerExecute(taskInfo) {
-      this.newstlogContent = ''
+      // this.newstlogContent = ''
       handlerExecute.call(this, taskInfo).then((response) => {
         this.newstlogContent = ''
         this.showLog = true
         this.jsonshow = false
         this.logList()
+        // setTimeout(() => {
+        //   this.logList()
+        // }, 2000)
+        setInterval(() => {
+          this.logList()
+        }, 3000)
       })
     },
 
@@ -1125,6 +1141,7 @@ export default {
       let status = 0
 
       logGetList(param).then((response) => {
+        console.log(response)
         const newestLog = response.content.data[0] || {}
         if (!newestLog?.executorAddress) {
           return
@@ -1132,6 +1149,9 @@ export default {
         status = newestLog.handleCode
         /** 触发时间 */
         const triggerTime = new Date().getTime(newestLog?.triggerTime)
+        // setTimeout(() => {
+        //   this.logList()
+        // }, 2000)
         /** 获取日志详情 */
         viewJobLog(
           newestLog?.executorAddress,
@@ -1139,8 +1159,9 @@ export default {
           newestLog?.id,
           1
         ).then((response) => {
+          console.log(response, '日志详情')
           this.newstlogContent = response.content.logContent
-          console.log(this.newstlogContent, '日志详情')
+          // console.log(this.newstlogContent, '日志详情')
           if (status !== 0) {
             clearInterval(timer)
             timer = null

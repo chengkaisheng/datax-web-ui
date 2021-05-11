@@ -4,11 +4,18 @@
       <ul>
         <li>
           <a
-            :style="desbel"
+            v-if="desbel === true"
             :loading="$store.state.graphQL.sqlBtnLoading"
             @click="fromChild"
           >
             <i class="el-icon-video-play" />运行
+          </a>
+          <a
+            v-else
+            @click="interrupt"
+            :loading="$store.state.graphQL.sqlBtnLoading"
+          >
+            <i class="el-icon-video-pause"></i> 停止
           </a>
         </li>
         <li>
@@ -108,20 +115,19 @@ export default {
       ReplaceBox: false,
       lookup: false,
       notes: `--============================================程序说明================================================
--- 脚 本 名 称   ：  HS_QHZ_CMP_P_CO_SETSAL_GAP_MONTH.HQL
--- 功 能 说 明   ：
--- 查 询 原 表   ：
--- 目   标  表     ：
--- 更 新 方 式   ：
--- 科 室 部 门   ：
--- 负  责  人      ：【${JSON.parse(localStorage.getItem('userName'))}】
--- 创 建 日 期   ：【${Math.round(new Date() / 1000)}】
--- 运 行 周 期   ：
--- 例       程       ：
--- 备       注       ：
--- 脚 本 版 本    :       修 改 人  :        修 改 日 期  :         修 改 内 容  :
+-- 脚本名称:
+-- 功能说明:
+-- 查询原表:
+-- 目标的表:
+-- 更新方式:
+-- 科室部门:
+-- 负责人员: ${JSON.parse(localStorage.getItem('userName'))}
+-- 创建日期: ${new Date()}
+-- 运行周期:
+-- 备注信息:
+-- 脚本版本: 修改人\t修改日期\t修改内容
 -- v1
--- ===================================================================================================--`,
+-- ===================================================================================================`,
       code: '',
       sqlLoading: false,
       tips: {},
@@ -149,13 +155,13 @@ export default {
       this.code = this.$store.state.taskAdmin.setcode
     },
     code(val) {
-      this.$store.commit('SETREDDOT', true)
-      if (this.$store.state.taskAdmin.setcode !== val) {
-        this.$store.commit('SETREDDOT', true)
-      } else {
-        this.$store.commit('SETREDDOT', false)
-      }
-      this.infoMsg++
+      // this.$store.commit('SETREDDOT', true)
+      // if (this.$store.state.taskAdmin.setcode !== val) {
+      //   this.$store.commit('SETREDDOT', true)
+      // } else {
+      //   this.$store.commit('SETREDDOT', false)
+      // }
+      // this.infoMsg++
     },
     sqlparams(val) {
       if (val.level === 3) {
@@ -218,6 +224,10 @@ export default {
   destroyed() {},
 
   methods: {
+    interrupt() {
+      console.log('111')
+      this.$emit('interrupt', '')
+    },
     searchCode(e) {
       this.codemirror.execCommand('find') //触发
     },
@@ -277,7 +287,7 @@ export default {
     fromChild() {
       this.$emit('querysql', {
         msg: this.infoMsg,
-        code: this._editor.getValue(),
+        code: this.editor.getSelection() || this._editor.getValue(),
         jobtype: this.jobtype.jobType,
       })
     },
@@ -285,7 +295,6 @@ export default {
      * @description: 保存查询
      */
     saveQuery() {
-      console.log('getValue', this._editor.getValue())
       this.TIPS = false
       this.$emit('saveQuery', this._editor.getValue())
     },
@@ -542,5 +551,10 @@ export default {
 }
 .tips {
   color: red;
+}
+
+>>> .CodeMirror-lines {
+  padding: 4px 0;
+  line-height: 15px;
 }
 </style>

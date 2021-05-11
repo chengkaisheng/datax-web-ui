@@ -163,7 +163,7 @@ export default {
       readerForm: {
         datasourceId: undefined,
         tableName: '',
-        columns: this.$store.state.taskAdmin.selectReaderColumn,
+        columns: [],
         where: '',
         querySql: '',
         checkAll: false,
@@ -190,6 +190,7 @@ export default {
   },
   computed: {
     dataSourceCompute() {
+      console.log(this.$store.state.taskAdmin.tabType)
       if (this.$store.state.taskAdmin.tabType === 'NORMAL' || this.$store.state.taskAdmin.tabType === '') {
         return this.$store.state.taskAdmin.dataSourceList
       } else if (this.$store.state.taskAdmin.tabType === 'IMPORT') {
@@ -220,6 +221,7 @@ export default {
     }
   },
   created() {
+    this.senddata()
     this.readerForm.tableSchema = this.$store.state.taskAdmin.readerIsEdit ? this.$store.state.taskAdmin.readerSchema : ''
   },
   mounted() {
@@ -230,9 +232,20 @@ export default {
         this.dataSource = item.datasource
       }
     })
+    console.log(this.dataSourceCompute)
   },
 
   methods: {
+    // 赋值
+    senddata() {
+      const data = this.$store.state.taskAdmin.currentTask
+      const data1 = JSON.parse(data.jobParam)
+      this.readerForm.columns = data1.readerColumns
+      console.log(data1.readerColumns)
+      console.log(data.jobJson)
+      console.log(data.jobParam)
+      this.tablexxxx = data.xxx
+    },
     // 获取表名
     getTables(type) {
       if (type === 'rdbmsReader') {
@@ -273,6 +286,7 @@ export default {
     },
     // reader 数据源切换
     rDsChange(e) {
+      console.log(e)
       this.datasourceId = e
       this.$store.commit('SET_READER_DATASOURCE_ID', e)
       // 清空
@@ -296,8 +310,8 @@ export default {
       dsQueryApi.getColumns(obj).then(response => {
         this.rColumnList = response
         // this.readerForm.columns = response
-        this.readerForm.checkAll = true
-        this.readerForm.isIndeterminate = false
+        // this.readerForm.checkAll = false
+        this.readerForm.isIndeterminate = true
 
         this.$store.commit('SET_READER_COLUMNS', response)
       })
@@ -312,8 +326,8 @@ export default {
         console.log(response)
         this.rColumnList = response
         // this.readerForm.columns = response
-        this.readerForm.checkAll = true
-        this.readerForm.isIndeterminate = false
+        // this.readerForm.checkAll = false
+        this.readerForm.isIndeterminate = true
       })
     },
     // 获取表字段
@@ -336,18 +350,23 @@ export default {
     },
 
     rHandleCheckAllChange(val) {
+      console.log('oksks' + val)
       this.readerForm.columns = val ? this.rColumnList : []
+      // this.readerForm.readerColumns = val ? this.rColumnList : []
       this.readerForm.isIndeterminate = false
       this.$store.commit('SET_SELECT_READERCOLUMN', this.readerForm.columns)
       console.log(this.readerForm.columns, 'aaaaaaaaaaaaa')
     },
     rHandleCheckedChange(value) {
+      console.log('<<<<<' + this.rColumnList)
       console.log(value)
       const checkedCount = value.length
       this.readerForm.checkAll = checkedCount === this.rColumnList.length
       this.readerForm.isIndeterminate =
         checkedCount > 0 && checkedCount < this.rColumnList.length
       // this.$store.commit('SET_READER_COLUMNS', value)
+      // this.readerForm.readerColumns = value
+      this.readerForm.columns = value
       this.$store.commit('SET_SELECT_READERCOLUMN', value)
       console.log(value, 'bbbbbbbbbbbbbbb')
     },

@@ -231,8 +231,10 @@ export default {
             this.jobLogQuery.fromLineNum
           )
           .then(response => {
+            console.log(response)
             // 判断是否是 '\n'，如果是表示显示完成，不重新加载
-            if (response.content.logContent === '\n') {
+            // if (response.content.end === '\n') {
+            if (response.content.end === true) {
               // this.jobLogQuery.fromLineNum = response.toLineNum - 20;
               // 重新加载
               setTimeout(() => {
@@ -252,8 +254,10 @@ export default {
             this.jobLogQuery.fromLineNum
           )
           .then(response => {
+            console.log(response, '11111111111')
             // 判断是否是 '\n'，如果是表示显示完成，不重新加载
-            if (response.content.logContent === '\n') {
+            // if (response.content.logContent === '\n') {
+            if (response.content.end === true) {
               // this.jobLogQuery.fromLineNum = response.toLineNum - 20;
               // 重新加载
               setTimeout(() => {
