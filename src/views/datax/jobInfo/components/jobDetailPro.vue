@@ -8,7 +8,7 @@
 -->
 
 <template>
-  <div class="job_detail">
+  <div ref="jobdetail" class="job_detail">
     <!-- action面板 -->
     <div class="header">
       <div
@@ -373,6 +373,7 @@ rkJggg=="
       :show="editPanelShow"
       :title="'编辑任务：' + currentTask.name + ' ( ' + projectName + ' )'"
       :job-id="editPanelId"
+
       @close="closeEdit"
       @fetchData="fetchData"
     />
@@ -937,6 +938,7 @@ export default {
         this.detailActiveName = 'detail'
       } else if (val === 'json') {
         this.jsons = this.jsonString
+        console.log(this.jsons)
       }
     }
 
@@ -973,6 +975,10 @@ export default {
       return this.$refs.reader.getData()
     },
     clickTabs(val) {
+      // 点击查看JSON更新编辑后的jsons数据
+      if (val.label === '查看JSON') {
+        this.currentTask = this.jobInfo
+      }
       if (val.label === '任务日志') {
         // this.newstlogContent = ''
         if (this.showLog === true) {

@@ -54,6 +54,10 @@ export default {
   methods: {
     getValue() {
       return this.jsonEditor.getValue()
+    },
+    setniValue(val) {
+      console.log(val)
+      this.jsonEditor.setValue(JSON.stringify(val, null, 2))
     }
   }
 }
