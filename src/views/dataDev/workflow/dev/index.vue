@@ -484,16 +484,17 @@ export default {
       // }
       // this.$message.success('删除成功')
       workFlowApi.delWorkflow(this.nowObject.id).then((res) => {
+        console.log(res)
         if (res.code === 200) {
-          this.$message.success('删除成功')
-          this.nowObject = {}
-          this.contextMenuVisible = false
+          this.$message.success(res.content)
           for (let i = 0; i < this.editableTabs.length; i++) {
             if (this.editableTabs[i].title === this.nowObject.name) {
               console.log('0000000')
               this.removeTab(this.editableTabs[i].name)
             }
           }
+          this.nowObject = {}
+          this.contextMenuVisible = false
           this.serachWorkFlowList(this.project_id)
         }
       }).catch( err => {
