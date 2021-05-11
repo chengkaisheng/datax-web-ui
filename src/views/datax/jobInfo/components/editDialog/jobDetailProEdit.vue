@@ -42,7 +42,6 @@
       <el-col>
         <quality-reader v-if="$store.state.taskAdmin.jobInfoType === 'DQCJOB'" ref="qualityReader" />
         <reader v-else ref="reader" :from-columns-list1="fromColumnsList" />
-
       </el-col>
       <el-col>
         <h1 class="tab-title">{{ tabTitle(3) }}</h1>
@@ -555,7 +554,25 @@ export default {
   },
   data() {
     return {
+      jsondata: '',
+      readerForm: {
+        datasourceId: undefined,
+        tableName: '',
+        columns: this.$store.state.taskAdmin.selectReaderColumn,
+        where: '',
+        querySql: '',
+        checkAll: false,
+        isIndeterminate: true,
+        splitPk: '',
+        tableSchema: '',
+        syncType: 0, // 同步方式
+        incSetting: 0, // 增量配置模式
+        incExtract: '', // 根据日期字段
+        incExtractText: '' // 增量抽取条件
+      },
+
       currentTask: {},
+      datasourceId: {},
       taskParam: {},
       dataSource: '',
       /** writer table list */
@@ -795,8 +812,8 @@ export default {
       }
     },
     readerColumns() {
-      // return this.$store.state.taskAdmin.selectReaderColumn
-      return this.taskParam.readerColumns
+      return this.$store.state.taskAdmin.selectReaderColumn
+      // return this.taskParam.readerColumns
     },
     writerColumns() {
       return this.taskParam.writerColumns
@@ -838,6 +855,7 @@ export default {
     readerColumns(val) {
       console.log('val', val)
       this.tableForm.lcolumns = JSON.parse(JSON.stringify(val))
+      // console.log();
       this.fromColumnsList = val
       this.mappingTable = []
       val.forEach((row, index) => {
@@ -997,7 +1015,7 @@ export default {
 
         this.$store.commit('SET_WRITER_COLUMNS', response)
 
-        this.tableForm.rcolumns = response
+        // this.tableForm.rcolumns = response
         this.toColumnsList = response
       })
     },
@@ -1056,6 +1074,7 @@ export default {
       this.$store.commit('SET_SELECT_READERCOLUMN', this.tableForm.lcolumns)
       const jobParam = {
         readerDatasourceId: this.$store.state.taskAdmin.readerDataSourceID,
+        // readerDatasourceId: this.taskParam.readerDataSourceID,
         writerDatasourceId: this.taskParam.writerDatasourceId,
         readerTables: [this.$store.state.taskAdmin.readerTableName], // reader表名[Array]
         writerTables: this.taskParam.writerTables, // writer表名[Array]
@@ -1114,9 +1133,9 @@ export default {
         jobParam.rule = tempjobRule
       }
       this.$set(this.currentTask, 'jobParam', JSON.stringify(jobParam))
+      // 编辑提交
       updateJob(this.currentTask).then((res) => {
-        console.log(res)
-        this.$emit('fetchData')
+        this.$emit('fetchData',)
         this.$emit('close')
         this.$notify({
           title: 'Success',
@@ -1176,7 +1195,7 @@ export default {
         // }
         this.$store.commit('changeWatch', 1)
         this.$store.commit('closeTabs', 1)
-        this.$emit('fetchData')
+        this.$emit('fetchData',)
         this.$emit('close')
         this.$notify({
           title: 'Success',
