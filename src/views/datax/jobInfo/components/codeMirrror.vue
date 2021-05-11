@@ -155,12 +155,13 @@ export default {
       this.code = this.$store.state.taskAdmin.setcode
     },
     code(val) {
-      // this.$store.commit('SETREDDOT', true)
-      // if (this.$store.state.taskAdmin.setcode !== val) {
-      //   this.$store.commit('SETREDDOT', true)
-      // } else {
-      //   this.$store.commit('SETREDDOT', false)
-      // }
+      console.log('val----->', val)
+      this.$store.commit('SETREDDOT', true)
+      if (this.$store.state.taskAdmin.setcode !== val) {
+        this.$store.commit('SETREDDOT', true)
+      } else {
+        this.$store.commit('SETREDDOT', false)
+      }
       // this.infoMsg++
     },
     sqlparams(val) {

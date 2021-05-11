@@ -16,7 +16,7 @@
       >
         <div class="parameter">
           <span style="font-size: 14px; color: #ccc"
-            ><i style="color: #000; padding-right: 40px"
+            ><i class="Configurable" style="color: #000; padding-right: 40px"
               >可配置参数：{{ itme.parameter }}</i
             >
             <el-input
@@ -413,6 +413,10 @@ export default {
                   },
                 },
               }
+              if (sqlarr[0] === '') {
+                this.$message('没有要执行的sql...')
+                return
+              }
               console.log('params1------>', params1)
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
@@ -461,12 +465,6 @@ export default {
                   console.log(err)
                 }
               )
-              // if (resInitConnection === undefined) {
-              //   this.desbel = true
-              //   this.getinto = false
-              //   this.$('初始化连接失败')
-              //   console.log('初始化连接失败')
-              // }
               console.log('初始化连接', resInitConnection)
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
@@ -523,7 +521,6 @@ export default {
                   taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
                   removeOnFinish: false,
                 }
-
                 console.log('params5----->', params5)
                 let queryStatus = ''
                 let resGetAsyncTaskInfo
@@ -692,6 +689,10 @@ export default {
                     userPassword: this.password,
                   },
                 },
+              }
+              if (sqlarr[0] === '') {
+                this.$message('没有要执行的sql...')
+                return
               }
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
@@ -930,6 +931,7 @@ export default {
         }
       }
     },
+    async RunSql(params5) {},
     saveQuery(val) {
       this.loading = true
       this.loadingtext = '保存中'
@@ -1074,8 +1076,11 @@ export default {
   /* border: 1px solid #ccc; */
 }
 .parameter {
-  display: flex;
-  flex-direction: row;
+  padding-left: 100px;
+}
+.Configurable {
+  display: inline-block;
+  width: 200px;
 }
 .LOGS div {
   margin: 0;
