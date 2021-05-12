@@ -1196,7 +1196,11 @@ export default {
     getDataTree() {
       console.log(this.$store.state.project.currentItem, 'currentItem')
       if (this.$store.state.project.currentItem) {
-        const projectId = this.$store.state.project.currentItem.split('/')[0]
+        const projectId = {
+          projectId:
+            this.$store.state.project.currentItem.split('/')[0] ||
+            this.$store.state.project.currentItem,
+        }
         job
           .getTreeData({
             projectId: projectId
@@ -1212,7 +1216,7 @@ export default {
             console.log('err----->', err)
           })
       } else {
-        const projectId = this.options[0].id
+        const projectId = { projectId: this.options[0].id }
         job
           .getTreeData(projectId)
           .then((res) => {
@@ -1584,6 +1588,18 @@ export default {
         .then((res) => {
           console.log('pppppp>>>>>>>', res)
           if (res.code === 200) {
+            console.log('lkjkhgfd', params.projectId)
+            this.$store.commit('changeCurrent', params.projectId)
+            this.getDataTree()
+            // let data = {
+            //   jobId: res.content,
+            //   name: this.chineseName,
+            //   projectId: this.selectRow.projectId,
+            //   parentId: this.selectRow.id,
+            //   type: this.currentJob ? 2 : 1,
+            //   jobType: this.currentJob,
+            // }
+            // this.handleNodeClick(data)
             this.getDataTree()
             this.selectRow = {}
             if (res.content !== '请选择父级目录') {
