@@ -1181,7 +1181,9 @@ export default {
       if (this.$store.state.project.currentItem) {
         const projectId = this.$store.state.project.currentItem.split('/')[0]
         job
-          .getTreeData(projectId)
+          .getTreeData({
+            projectId: projectId
+          })
           .then((res) => {
             if (res.code === 200) {
               this.treeList = res.content
