@@ -32,46 +32,6 @@
         @onCursorActivity="SelectSQL"
         @click.native="chooseSql"
       />
-      <!-- <div v-if="lookup" class="lookup">
-        <span class="new_lookup">
-          <span
-            @click="
-              () => {
-                this.ReplaceBox = !ReplaceBox
-              }
-            "
-            class="el-icon-arrow-right"
-          ></span>
-          <input
-            class="inputs"
-            v-model="lookupdata"
-            style="border: none"
-            type="text"
-          />
-          <span @click="LookUp">查找</span>
-          <span v-if="isdata">{{ DataLength }}</span>
-        </span>
-        <i class="el-icon-bottom"></i>
-        <i class="el-icon-top"></i>
-        <span
-          class="el-icon-close"
-          @click="
-            () => {
-              this.lookup = false
-              this.ReplaceBox = false
-            }
-          "
-        ></span>
-        <br />
-        <span
-          style="border-top: 1px solid #ccc"
-          v-show="ReplaceBox"
-          class="ReplaceBox"
-        >
-          <input v-model="replaceData" class="inputs" type="text" />
-          <i @click="ReplaceData" class="el-icon-refresh"></i>
-        </span>
-      </div> -->
     </div>
   </div>
 </template>
@@ -155,12 +115,13 @@ export default {
       this.code = this.$store.state.taskAdmin.setcode
     },
     code(val) {
-      // this.$store.commit('SETREDDOT', true)
-      // if (this.$store.state.taskAdmin.setcode !== val) {
-      //   this.$store.commit('SETREDDOT', true)
-      // } else {
-      //   this.$store.commit('SETREDDOT', false)
-      // }
+      console.log('val----->', val)
+      this.$store.commit('SETREDDOT', true)
+      if (this.$store.state.taskAdmin.setcode !== val) {
+        this.$store.commit('SETREDDOT', true)
+      } else {
+        this.$store.commit('SETREDDOT', false)
+      }
       // this.infoMsg++
     },
     sqlparams(val) {
@@ -457,11 +418,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+element.style {
+  padding-right: 0.1px;
+}
+>>> .CodeMirror pre.CodeMirror-line,
+.CodeMirror pre.CodeMirror-line-like {
+  font-family: Source Code Pro, DejaVu Sans Mono, Ubuntu Mono, Anonymous Pro,
+    Droid Sans Mono, Menlo, Monaco, Consolas, Inconsolata, Courier, monospace,
+    PingFang SC, Microsoft YaHei, sans-serif;
+}
 .codesql {
   font-size: 11pt;
-  /* font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono,
-    DejaVu Sans Mono,
-    Bitstream Vera Sans Mono, Courier New, monospace, serif; */
+  /*font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;*/
 }
 >>> .CodeMirror-dialog.CodeMirror-dialog-top {
   z-index: 999;

@@ -30,7 +30,8 @@
                   v-for="item in options"
                   :key="item.id"
                   :command="item.id + '/' + item.name"
-                >{{ item.name }}</el-dropdown-item>
+                  >{{ item.name }}</el-dropdown-item
+                >
               </el-dropdown-menu>
             </el-dropdown>
             <!-- <el-dropdown-menu slot="dropdown" placeholder="请选择">
@@ -204,10 +205,8 @@ rkJggg=="
               @update:show="(show) => (contextMenuVisible = show)"
             >
               <a href="javascript:" @click="showAllName">新建文件夹</a>
-              <a
-                id="newFile"
-                href="javascript:"
-              >新建任务<i class="el-icon-arrow-right" />
+              <a id="newFile" href="javascript:"
+                >新建任务<i class="el-icon-arrow-right" />
                 <vue-context-menu
                   class="right-menu1"
                   :target="contextMenu1Target"
@@ -296,7 +295,7 @@ rkJggg=="
                   <a href="javascript:" @click="showAllName('DQCJOB')">
                     <svg-icon class="svg_icon" icon-class="DQCJOB" />质量任务
                   </a>
-                  <hr style="padding: 0; margin: 0">
+                  <hr style="padding: 0; margin: 0" />
                   <a href="javascript:" @click="showAllName('METACOLLECT')">
                     <svg-icon
                       class="svg_icon"
@@ -309,7 +308,7 @@ rkJggg=="
                       icon-class="METACOMPARE"
                     />元数据比较任务
                   </a>
-                  <hr style="padding: 0; margin: 0">
+                  <hr style="padding: 0; margin: 0" />
                   <a href="javascript:" @click="showAllName('SHELL')">
                     <svg-icon class="svg_icon" icon-class="SHELL" />SHELL任务
                   </a>
@@ -322,7 +321,7 @@ rkJggg=="
                   <a href="javascript:" @click="showAllName('PYTHON')">
                     <svg-icon class="svg_icon" icon-class="PYTHON" />PYTHON任务
                   </a>
-                  <hr style="padding: 0; margin: 0">
+                  <hr style="padding: 0; margin: 0" />
                   <a href="javascript:" @click="showAllName('VJOB')">
                     <svg-icon class="svg_icon" icon-class="VJOB" />虚任务
                   </a>
@@ -356,21 +355,24 @@ rkJggg=="
                 v-show="selectRow.jobType !== 'wenjianjia'"
                 href="javascript:"
                 @click="ViewFile"
-              >查看文件信息</a>
+                >查看文件信息</a
+              >
               <a
                 v-show="selectRow.jobType !== 'wenjianjia'"
                 href="javascript:"
                 @click="ViewVersion"
-              >查看文件版本</a>
+                >查看文件版本</a
+              >
               <a href="javascript:" @click="resetName">重命名</a>
-              <hr style="padding: 0; margin: 0">
+              <hr style="padding: 0; margin: 0" />
               <a href="javascript:" @click="copyFile">复制(C)</a>
               <a href="javascript:" @click="pasteFile">粘贴(P)</a>
               <a
                 v-show="selectRow.parentId !== 0"
                 href="javascript:"
                 @click="delFolder"
-              >删除(D)</a>
+                >删除(D)</a
+              >
             </vue-context-menu>
           </el-scrollbar>
         </div>
@@ -449,12 +451,21 @@ rkJggg=="
               />
             </svg>
             {{ item.title }}
+            <!-- <span
+              style="
+                display: inline-block;
+                width: 5px;
+                height: 5px;
+                background: blue;
+                border-radius: 50%;
+              "
+            ></span> -->
           </span>
           <JobDetailPro
             v-if="
               item.content.jobType !== 'VJOB' &&
-                item.content.jobType !== 'IMPALA' &&
-                item.content.jobType !== 'HIVE'
+              item.content.jobType !== 'IMPALA' &&
+              item.content.jobType !== 'HIVE'
             "
             :job-info="$store.state.taskAdmin.jobInfo"
             @deleteJob="getItem"
@@ -538,8 +549,8 @@ rkJggg=="
           <div
             v-if="
               jobType === 'NORMAL' ||
-                jobType === 'IMPORT' ||
-                jobType === 'EXPORT'
+              jobType === 'IMPORT' ||
+              jobType === 'EXPORT'
             "
             class="rg"
           >
@@ -608,7 +619,8 @@ rkJggg=="
     </div>
     <!-- 重命名对话框 -->
     <el-dialog :visible.sync="dialogRenameVisible" width="40%" title="重命名">
-      <span style="margin-left: 20px">名称：</span><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
+      <span style="margin-left: 20px">名称：</span
+      ><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelDialog"> 取消 </el-button>
         <el-button type="goon" size="small" @click="sureRe"> 确定 </el-button>
@@ -616,7 +628,8 @@ rkJggg=="
     </el-dialog>
     <!-- 新建文件夹或任务对话框 -->
     <el-dialog width="30%" title="新建" :visible.sync="dialogNameVisible">
-      <span style="margin-left: 50px; font-size: 12px">名称：</span><el-input
+      <span style="margin-left: 50px; font-size: 12px">名称：</span
+      ><el-input
         v-model="allName"
         style="width: 60%; height: 30px; margin-left: 20px"
       />
@@ -637,13 +650,14 @@ rkJggg=="
             display: inline-block;
             width: 100px;
           "
-        >任务中文名：</span><el-input
+          >任务中文名：</span
+        ><el-input
           v-model="chineseName"
           size="mini"
           style="width: 60%; margin-left: 5px"
         />
       </div>
-      <br>
+      <br />
       <div class="boxs">
         <span
           style="
@@ -652,13 +666,14 @@ rkJggg=="
             display: inline-block;
             width: 100px;
           "
-        >任务英文名：</span><el-input
+          >任务英文名：</span
+        ><el-input
           v-model="englishName"
           size="mini"
           style="width: 60%; margin-left: 5px"
         />
       </div>
-      <br>
+      <br />
       <div class="boxs">
         <span
           style="
@@ -667,7 +682,8 @@ rkJggg=="
             display: inline-block;
             width: 100px;
           "
-        >任务说明：</span><el-input
+          >任务说明：</span
+        ><el-input
           v-model="task"
           size="mini"
           style="width: 60%; margin-left: 5px"
@@ -730,13 +746,12 @@ rkJggg=="
                 type="text"
                 size="small"
                 @click="showCode(row)"
-              >代码</el-button>
+                >代码</el-button
+              >
             </el-popover>
-            <el-button
-              type="text"
-              size="small"
-              @click="rollback(row)"
-            >回滚</el-button>
+            <el-button type="text" size="small" @click="rollback(row)"
+              >回滚</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -803,6 +818,7 @@ import _ from 'lodash'
 import { component as VueContextMenu } from '@xunlei/vue-context-menu'
 import { getJobList as jdbcDsList } from '@/api/datax-jdbcDatasource'
 import { objList } from '@/utils/sortArr'
+import { mapState } from 'vuex'
 var time
 export default {
   name: '',
@@ -819,7 +835,7 @@ export default {
     SparkJob,
     SqlJob,
     MetaCompare,
-    'vue-context-menu': VueContextMenu
+    'vue-context-menu': VueContextMenu,
   },
   data() {
     return {
@@ -833,8 +849,8 @@ export default {
       editableTabs: [
         {
           title: 'Untitled',
-          name: '1'
-        }
+          name: '1',
+        },
       ],
       dialogRenameVisible: false,
       dialogNameVisible: false,
@@ -864,7 +880,7 @@ export default {
         pageNo: 1,
         pageSize: 1000,
         searchVal: '',
-        userId: ''
+        userId: '',
       },
       /** 任务类型 */
       jobType: '',
@@ -879,7 +895,7 @@ export default {
       isFolder: true,
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'name',
       },
       selectRow: {},
       detailData: {},
@@ -889,7 +905,8 @@ export default {
       currentJobName: '', // 当前任务名
       targetId: '', // 目标id
       dropId: '', // 被拖拽id
-      delType: '' // 删除的类型
+      delType: '', // 删除的类型
+      conut: '',
     }
   },
   computed: {
@@ -925,7 +942,7 @@ export default {
       } else {
         return '请选择'
       }
-    }
+    },
   },
   watch: {
     chineseName(val) {
@@ -968,7 +985,7 @@ export default {
     },
     '$store.state.project.currentItem': {
       deep: true,
-      handler: function(newValue, oldValue) {
+      handler: function (newValue, oldValue) {
         if (oldValue) {
           const commandId = newValue.split('/')[0]
           const commandName = newValue.split('/')[1]
@@ -982,7 +999,7 @@ export default {
             projectIds: commandId,
             triggerStatus: -1,
             name: '',
-            glueType: ''
+            glueType: '',
           }
           this.projectIds = commandId
           job.getList(listQuery).then((response) => {
@@ -995,7 +1012,7 @@ export default {
             current: 1,
             size: 200,
             ascs: 'datasource_name',
-            projectId: commandId
+            projectId: commandId,
           }
           jdbcDsList(p).then((response) => {
             const { records } = response
@@ -1003,36 +1020,36 @@ export default {
             this.$store.commit('SET_DATASOURCE', records)
           })
         }
-      }
+      },
     },
     '$store.state.taskAdmin.watchStr': {
       deep: true,
-      handler: function(newValue, oldValue) {
+      handler: function (newValue, oldValue) {
         if (newValue !== oldValue) {
           this.getDataTree()
         }
-      }
+      },
     },
     '$store.state.taskAdmin.removeTabs': {
       deep: true,
-      handler: function(newValue, oldValue) {
+      handler: function (newValue, oldValue) {
         if (newValue !== oldValue) {
           this.removeJobTab('clear')
         }
-      }
+      },
     },
     '$store.state.taskAdmin.scheduleId': {
       deep: true,
-      handler: function(newValue, oldValue) {
+      handler: function (newValue, oldValue) {
         if (newValue !== oldValue) {
           console.log(newValue, 'newValue12')
           this.removeJobTab(newValue)
         }
-      }
+      },
     },
-    search: function(val) {
+    search: function (val) {
       this.$refs.tree.filter(val)
-    }
+    },
   },
   mounted() {
     const myChartContainer = document.getElementById('main_span')
@@ -1044,7 +1061,7 @@ export default {
 
     // 关闭浏览器右击默认菜单
     const _this = this
-    myChartContainer.oncontextmenu = function(e) {
+    myChartContainer.oncontextmenu = function (e) {
       console.log(e, '113123')
       if (e.pageY > 400) {
         menu[1].style.top = 100 + 'px'
@@ -1070,32 +1087,32 @@ export default {
     for (var i = 0; i < d.length; i++) {
       d[i].style.display = 'none'
     }
-    a.onmouseover = function() {
+    a.onmouseover = function () {
       for (var i = 0; i < b.length; i++) {
         b[i].style.display = 'block'
       }
     }
-    c.onmouseover = function() {
+    c.onmouseover = function () {
       for (var i = 0; i < d.length; i++) {
         d[i].style.display = 'block'
       }
     }
-    a.onmouseout = function() {
+    a.onmouseout = function () {
       for (var i = 0; i < b.length; i++) {
         b[i].style.display = 'none'
       }
     }
-    c.onmouseout = function() {
+    c.onmouseout = function () {
       for (var i = 0; i < d.length; i++) {
         d[i].style.display = 'none'
       }
     }
-    b.onmouseover = function() {
+    b.onmouseover = function () {
       for (var i = 0; i < b.length; i++) {
         b[i].style.display = 'block'
       }
     }
-    d.onmouseover = function() {
+    d.onmouseover = function () {
       for (var i = 0; i < d.length; i++) {
         d[i].style.display = 'block'
       }
@@ -1119,7 +1136,7 @@ export default {
       ascs: 'datasource_name',
       projectId: this.$store.state.project.currentItem
         ? this.$store.state.project.currentItem.split('/')[0]
-        : ''
+        : '',
     }
     jdbcDsList(p).then((response) => {
       const { records } = response
@@ -1182,9 +1199,15 @@ export default {
     getDataTree() {
       console.log(this.$store.state.project.currentItem, 'currentItem')
       if (this.$store.state.project.currentItem) {
-        const projectId = this.$store.state.project.currentItem.split('/')[0]
+        const projectId = {
+          projectId:
+            this.$store.state.project.currentItem.split('/')[0] ||
+            this.$store.state.project.currentItem,
+        }
         job
-          .getTreeData(projectId)
+          .getTreeData({
+            projectId: projectId
+          })
           .then((res) => {
             if (res.code === 200) {
               this.treeList = res.content
@@ -1196,7 +1219,7 @@ export default {
             console.log('err----->', err)
           })
       } else {
-        const projectId = this.options[0].id
+        const projectId = { projectId: this.options[0].id }
         job
           .getTreeData(projectId)
           .then((res) => {
@@ -1250,7 +1273,7 @@ export default {
         this.editableTabs.push({
           title: 'Untitled',
           name: newTabName,
-          content: 'New Tab content'
+          content: 'New Tab content',
         })
         this.editableTabsValue = newTabName
       }
@@ -1292,7 +1315,7 @@ export default {
       if (this.List.length < 1) {
         this.List.push({
           name: val.name,
-          data: val.data
+          data: val.data,
         })
       } else {
         for (let i = 0; i < this.List.length; i++) {
@@ -1301,7 +1324,7 @@ export default {
           } else {
             this.List.push({
               name: val.name,
-              data: val.data
+              data: val.data,
             })
           }
         }
@@ -1356,12 +1379,12 @@ export default {
         reParams = {
           id: this.selectRow.id,
           jobId: this.selectRow.jobId ? this.selectRow.jobId : '',
-          name: this.Rename
+          name: this.Rename,
         }
       } else {
         reParams = {
           id: this.selectRow.id,
-          name: this.Rename
+          name: this.Rename,
         }
       }
       job
@@ -1389,7 +1412,7 @@ export default {
         this.$notify({
           message: '不能复制整个根目录数据',
           type: 'warning',
-          duration: 1000
+          duration: 1000,
         })
         this.contextMenuVisible = false
       } else {
@@ -1398,7 +1421,7 @@ export default {
         this.$notify({
           message: '复制成功',
           type: 'success',
-          duration: 1000
+          duration: 1000,
         })
       }
     },
@@ -1418,7 +1441,7 @@ export default {
               this.$notify({
                 message: res.msg === '复制成功' ? '粘贴成功' : res.msg,
                 type: 'success',
-                duration: 1000
+                duration: 1000,
               })
               this.copyObj = ''
             } else {
@@ -1434,7 +1457,7 @@ export default {
         this.$notify({
           message: '请选中需要复制的文件夹或任务',
           type: 'warning',
-          duration: 1000
+          duration: 1000,
         })
       }
     },
@@ -1515,7 +1538,7 @@ export default {
         job
           .dragReName({
             id: this.dropId,
-            parentId: this.targetId
+            parentId: this.targetId,
           })
           .then((res) => {
             console.log(res)
@@ -1558,7 +1581,7 @@ export default {
         projectId: this.selectRow.projectId,
         parentId: this.selectRow.id,
         type: this.currentJob ? 2 : 1,
-        jobType: this.currentJob
+        jobType: this.currentJob,
       }
       const ename = this.englishName
       const specification = this.task
@@ -1568,6 +1591,18 @@ export default {
         .then((res) => {
           console.log('pppppp>>>>>>>', res)
           if (res.code === 200) {
+            console.log('lkjkhgfd', params.projectId)
+            this.$store.commit('changeCurrent', params.projectId)
+            this.getDataTree()
+            // let data = {
+            //   jobId: res.content,
+            //   name: this.chineseName,
+            //   projectId: this.selectRow.projectId,
+            //   parentId: this.selectRow.id,
+            //   type: this.currentJob ? 2 : 1,
+            //   jobType: this.currentJob,
+            // }
+            // this.handleNodeClick(data)
             this.getDataTree()
             this.selectRow = {}
             if (res.content !== '请选择父级目录') {
@@ -1618,7 +1653,7 @@ export default {
         parentId: this.selectRow.id,
         name: this.allName,
         type: this.currentJob ? 2 : 1,
-        jobType: this.currentJob ? this.currentJob : 'wenjianjia'
+        jobType: this.currentJob ? this.currentJob : 'wenjianjia',
       }
       job
         .createNewFile(params)
@@ -1662,7 +1697,7 @@ export default {
       this.$confirm('此操作将删除该' + this.delType + ', 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       })
         .then(() => {
           job
@@ -1675,7 +1710,7 @@ export default {
                 this.selectRow = {}
                 this.$message({
                   type: 'success',
-                  message: '删除成功!'
+                  message: '删除成功!',
                 })
               }
             })
@@ -1686,7 +1721,7 @@ export default {
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消删除'
+            message: '已取消删除',
           })
         })
     },
@@ -1710,7 +1745,7 @@ export default {
         if (data.jobId) {
           job
             .ParametersList({
-              jobId: data.jobId
+              jobId: data.jobId,
             })
             .then((res) => {
               console.log('ParametersList===---', res)
@@ -1762,7 +1797,7 @@ export default {
       this.$confirm('此操作将该任务信息回滚到选中版本, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       })
         .then(() => {
           row.id = this.selectRow.jobId
@@ -1786,7 +1821,7 @@ export default {
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消回滚'
+            message: '已取消回滚',
           })
         })
     },
@@ -1838,7 +1873,7 @@ export default {
           } else {
             this.editableTabs.push({
               title: data.name,
-              name: (this.editableTabs.length + 1).toString()
+              name: (this.editableTabs.length + 1).toString(),
             })
             this.editableTabsValue = this.editableTabs[
               this.editableTabs.length - 1
@@ -1848,7 +1883,7 @@ export default {
       } else {
         this.editableTabs.push({
           title: data.name,
-          name: (this.editableTabs.length + 1).toString()
+          name: (this.editableTabs.length + 1).toString(),
         })
       }
     },
@@ -1869,7 +1904,7 @@ export default {
           // projectIds: '',
           triggerStatus: -1,
           name: '',
-          glueType: ''
+          glueType: '',
         }
         listQuery.projectIds = this.projectIds
           ? this.projectIds
@@ -1919,7 +1954,7 @@ export default {
           // projectIds: '',
           triggerStatus: -1,
           name: '',
-          glueType: ''
+          glueType: '',
         }
         listQuery.projectIds = this.projectIds
           ? this.projectIds
@@ -1959,7 +1994,7 @@ export default {
         projectIds: event,
         triggerStatus: -1,
         name: '',
-        glueType: ''
+        glueType: '',
       }
       this.projectIds = event
       job.getList(listQuery).then((response) => {
@@ -1972,7 +2007,7 @@ export default {
         current: 1,
         size: 200,
         ascs: 'datasource_name',
-        projectId: event
+        projectId: event,
       }
       jdbcDsList(p).then((response) => {
         const { records } = response
@@ -2002,7 +2037,7 @@ export default {
         projectIds: commandId,
         triggerStatus: -1,
         name: '',
-        glueType: ''
+        glueType: '',
       }
       this.projectIds = commandId
       job.getList(listQuery).then((response) => {
@@ -2014,7 +2049,7 @@ export default {
         current: 1,
         size: 200,
         ascs: 'datasource_name',
-        projectId: commandId
+        projectId: commandId,
       }
       jdbcDsList(p).then((response) => {
         const { records } = response
@@ -2031,8 +2066,8 @@ export default {
         this.jobDetailIdx =
           this.$store.state.taskAdmin.taskDetailList[0].content.id + ''
       }
-    }
-  }
+    },
+  },
 }
 </script>
 <style lang="scss">
@@ -2343,6 +2378,7 @@ export default {
       }
       .el-tabs__item.is-active {
         background-color: #ffffff;
+
         // border-bottom-color:  #3d5eff;
       }
       // .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active {

@@ -16,7 +16,7 @@
       >
         <div class="parameter">
           <span style="font-size: 14px; color: #ccc"
-            ><i style="color: #000; padding-right: 40px"
+            ><i class="Configurable" style="color: #000; padding-right: 40px"
               >可配置参数：{{ itme.parameter }}</i
             >
             <el-input
@@ -413,6 +413,10 @@ export default {
                   },
                 },
               }
+              if (sqlarr[0] === '') {
+                this.$message('没有要执行的sql...')
+                return
+              }
               console.log('params1------>', params1)
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
@@ -461,12 +465,6 @@ export default {
                   console.log(err)
                 }
               )
-              // if (resInitConnection === undefined) {
-              //   this.desbel = true
-              //   this.getinto = false
-              //   this.$('初始化连接失败')
-              //   console.log('初始化连接失败')
-              // }
               console.log('初始化连接', resInitConnection)
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
@@ -523,13 +521,17 @@ export default {
                   taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
                   removeOnFinish: false,
                 }
-
                 console.log('params5----->', params5)
                 let queryStatus = ''
                 let resGetAsyncTaskInfo
                 while (queryStatus !== 'Finished') {
-                  resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
-                  console.log('while', resGetAsyncTaskInfo)
+                  for (let kk = 0; kk < 500; kk++) {
+                    console.log(queryStatus, 'queryStatus')
+                    if (kk === 499) {
+                      console.log('butinghua')
+                      resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
+                    }
+                  }
                   queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
                   console.log('循环执行语句', queryStatus)
                   if (resGetAsyncTaskInfo.data.taskInfo.error) {
@@ -539,9 +541,6 @@ export default {
                       content: sqlOne,
                       error: resGetAsyncTaskInfo.data.taskInfo.error.message,
                     })
-                    // if (i === sqlarr.length - 2) {
-                    //   this.desbel = true
-                    // }
                     this.desbel = true
                     this.getinto = false
                     this.$message.error('执行错误')
@@ -552,12 +551,10 @@ export default {
                       content: '执行状态: ' + queryStatus,
                       tableData: '...',
                     })
-                    console.log(queryStatus, 'queryStatus')
-                    // query every 2s
-                    // sleep(2000)
-                    // break
+                    console.log('aaasssddd')
                   }
                 }
+                // if (queryStatus === 'Finished') {}
                 const params6 = {
                   taskId: resGetAsyncTaskInfo.data.taskInfo.id,
                 }
@@ -693,6 +690,10 @@ export default {
                   },
                 },
               }
+              if (sqlarr[0] === '') {
+                this.$message('没有要执行的sql...')
+                return
+              }
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                 content: '开始执行sql...',
@@ -801,12 +802,7 @@ export default {
                 const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(
                   params4
                 )
-                this.loglist.push({
-                  logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                  content:
-                    '执行sql>>>' + resAsyncSqlExecuteQuery.data.taskInfo.name,
-                  tableData: '...',
-                })
+
                 console.log('执行sql', resAsyncSqlExecuteQuery)
                 const params5 = {
                   taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
@@ -838,7 +834,9 @@ export default {
                       content: '执行状态:' + queryStatus,
                       tableData: '...',
                     })
-                    console.log(queryStatus, '<<<--------queryStatus')
+                    for (let i = 0; i <= 1000; i++) {
+                      console.log(queryStatus, 'queryStatus')
+                    }
                   }
                 }
                 const params6 = {
@@ -930,6 +928,7 @@ export default {
         }
       }
     },
+    async RunSql(params5) {},
     saveQuery(val) {
       this.loading = true
       this.loadingtext = '保存中'
@@ -1074,8 +1073,11 @@ export default {
   /* border: 1px solid #ccc; */
 }
 .parameter {
-  display: flex;
-  flex-direction: row;
+  padding-left: 100px;
+}
+.Configurable {
+  display: inline-block;
+  width: 200px;
 }
 .LOGS div {
   margin: 0;
