@@ -1202,7 +1202,9 @@ export default {
             this.$store.state.project.currentItem,
         }
         job
-          .getTreeData(projectId)
+          .getTreeData({
+            projectId: projectId
+          })
           .then((res) => {
             if (res.code === 200) {
               this.treeList = res.content

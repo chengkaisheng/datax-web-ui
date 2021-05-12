@@ -420,7 +420,7 @@ export default {
           // 主要对象是一个用矩形形状包围文本块的面板
           $(go.Panel, 'Auto',
             $(go.Shape, 'RoundedRectangle',
-              { desiredSize: new go.Size(90, 30), fill: '#E0F2E0', stroke: '#00B600', strokeWidth: 1.5 },
+              { desiredSize: new go.Size(88, 30), fill: '#E0F2E0', stroke: '#00B600', strokeWidth: 1.5 },
               new go.Binding('figure', 'figure')),
             $(go.TextBlock, textStyle(),
               {
