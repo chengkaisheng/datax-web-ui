@@ -111,7 +111,7 @@
         </div>
       </el-dialog>
       <!-- 工作流重命名 -->
-      <el-dialog :visible.sync="ReETLdialog" width="40%" title="新建工作流">
+      <el-dialog :visible.sync="ReETLdialog" width="40%" title="重命名工作流">
         <span style="margin-left: 20px">名称：</span><el-input v-model="reWorkflowName" style="width: 80%; margin-left: 20px" />
         <div slot="footer" class="dialog-footer">
           <el-button size="small" @click="cancelDialog"> 取消 </el-button>
@@ -288,7 +288,8 @@ export default {
         storage: 0
       },
       navActive: '0',
-      project_id: '' // 当前项目id
+      project_id: '', // 当前项目id
+      allWorkFlowList: [] // 所以工作流数据数组
     }
   },
   watch: {
@@ -311,6 +312,7 @@ export default {
       if (typeof val === 'string') {
         this.project_id = parseInt(val.split('/')[0])
         this.serachWorkFlowList(parseInt(val.split('/')[0]))
+        this.getAllWorkflow(this.project_id, 'workflow')
       }
     },
     // 快速检索工作流
@@ -354,6 +356,7 @@ export default {
       if (typeof this.$store.state.project.currentItem === 'string') {
         this.project_id = parseInt(this.$store.state.project.currentItem.split('/')[0])
         this.serachWorkFlowList(this.$store.state.project.currentItem.split('/')[0])
+        this.getAllWorkflow(this.$store.state.project.currentItem.split('/')[0], 'workflow')
       }
     }
     this.serachWorkFlowList()
@@ -371,10 +374,36 @@ export default {
       if (!value) return true
       return data.name.indexOf(value) !== -1
     },
+    // 获取所有工作流的数组数据
+    getAllWorkflow (id, type) {
+      if (id) {
+        workFlowApi.workflowTree({
+          projectId: id,
+          jobType: type
+        }).then(
+          res => {
+            console.log(res, '所有工作流')
+            if (res.code === 200) {
+              this.allWorkFlowList = res.content
+            } else {
+              if (res.msg) {
+                this.$message.error(res.msg)
+              } else {
+                this.$message.error('所有工作流列表查询报错')
+              }
+            }
+          }
+        ).catch(err => {
+          console.log(err)
+        })
+      }
+    },
     // 查询工作流列表
     serachWorkFlowList (id) {
       if (id) {
-        workFlowApi.workflowTree(id).then(
+        workFlowApi.workflowTree({
+          projectId: id
+        }).then(
           res => {
             console.log(res)
             if (res.code === 200) {
@@ -460,17 +489,24 @@ export default {
     },
     // 确定重命名工作流
     ReNameWorkflow () {
-      this.$message.success('重命名工作流成功')
-      for (let i = 0; i < this.workflowList.length; i++) {
-        if (this.workflowList[i] === this.nowObject) {
-          this.workflowList[i].name = this.reWorkflowName
+      let params = {}
+      params = this.nowObject
+      params.name = this.reWorkflowName
+      workFlowApi.updateWorkflow(
+        params
+      ).then((res) => {
+        console.log(res)
+        if (res.code === 200) {
+          this.$message.success('重命名工作流成功')
+          for (let i = 0; i < this.editableTabs.length; i++) {
+            if (this.editableTabs[i].content === this.nowObject) {
+              this.editableTabs[i].title = this.reWorkflowName
+            }
+          }
         }
-      }
-      for (let i = 0; i < this.editableTabs.length; i++) {
-        if (this.editableTabs[i].content === this.nowObject) {
-          this.editableTabs[i].title = this.reWorkflowName
-        }
-      }
+      }).catch((err) => {
+        console.log(err)
+      })
       console.log(this.editableTabs)
       this.ReETLdialog = false
     },
@@ -506,6 +542,7 @@ export default {
     cancelDialog () {
       this.newETLdialog = false
       this.newFolderDialog = false
+      this.ReETLdialog = false
     },
     // 删除tabs窗口
     removeTab(targetName) {
@@ -541,6 +578,14 @@ export default {
     // 点击当前tabs窗口
     handleTabs(e) {
       console.log(e, '123')
+      let arr = {}
+      arr = this.allWorkFlowList.filter( (item) => {
+        if (item.name === e.label) {
+          return item
+        }
+      })
+      this.nowObject = arr[0]
+      console.log(arr, 'arr')
     },
     // 添加或查找tabs页面
     changeTabs(obj) {
