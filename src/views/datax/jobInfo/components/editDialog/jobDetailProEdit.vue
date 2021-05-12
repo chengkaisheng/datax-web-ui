@@ -214,7 +214,7 @@
             </el-col>
             <el-col :span="24">
               <el-form-item label="分区配置">
-                <el-radio-group v-model="writerColumnsParam.partition" @change="radioSelect">
+                <el-radio-group v-model="writerPartition.partition" @change="radioSelect">
                   <el-radio :label="0">分区</el-radio>
                   <el-radio :label="1">非分区</el-radio>
                 </el-radio-group>
@@ -222,7 +222,7 @@
             </el-col>
             <el-col :span="24">
               <el-form-item label="分区字段">
-                <el-select v-model="writerColumnsParam.partitionText" placeholder="选择分区字段" @change="columnSelect">
+                <el-select v-model="writerPartition.partitionText" placeholder="选择分区字段" @change="columnSelect">
                   <el-option
                     v-for="(item, index) in fromColumnList"
                     :key="index"
@@ -681,7 +681,11 @@ export default {
       writerColumnsParam: {
         checkAll: false,
         isIndeterminate: true,
-        ifCreateTable: false,
+        ifCreateTable: false
+        // partition: 0, // 分区配置
+        // partitionText: '' // 分区字段
+      },
+      writerPartition: {
         partition: 0, // 分区配置
         partitionText: '' // 分区字段
       },
@@ -836,7 +840,13 @@ export default {
         console.log(this.temp.childJobId, 'this.temp.childJobId')
         if (this.currentTask.jobType !== 'SHELL') {
           if (this.currentTask.hasOwnProperty('jobParam')) {
+            // this.writerColumnsParam = JSON.parse(this.currentTask.jobParam.writerColumnsParam)
             this.taskParam = JSON.parse(this.currentTask.jobParam)
+            console.log(this.currentTask)
+            // if (this.taskParam.writerColumnsParam !== '') {
+            this.writerPartition = this.taskParam.writerPartition
+            // }
+
             this.$store.commit('SET_READER_DATASOURCE_ID', this.taskParam.readerDatasourceId)
             this.$store.commit('SET_READER_TABLENAME', this.readerTablesText)
             this.$store.commit('SET_READER_SCHEMA', this.taskParam.readerSchema)
@@ -918,9 +928,9 @@ export default {
     },
     // 分区字段
     columnSelect(val) {
-      this.writerColumnsParam.partitionText = val
+      this.writerPartition.partitionText = val
       this.$store.commit('changePartitionText', val)
-      console.log(this.writerColumnsParam, 'writerForm')
+      console.log(this.writerPartition, 'writerForm')
       this.$store.state.taskAdmin.partitionVal
       console.log(val, '分区字段')
     },
@@ -1072,6 +1082,18 @@ export default {
       console.log(11111111111111111111)
       this.$store.commit('SET_SELECT_WRITERCOLUMN', this.tableForm.rcolumns)
       this.$store.commit('SET_SELECT_READERCOLUMN', this.tableForm.lcolumns)
+      const readerData = this.$refs.reader.getData()
+      this.taskParam.rdbmsReader = {
+        readerSplitPk: readerData.splitPk,
+        whereParams: readerData.where,
+        querySql: readerData.querySql
+      }
+      this.taskParam.readerSync = {
+        syncType: readerData.syncType,
+        incSetting: readerData.incSetting,
+        incExtract: readerData.incExtract,
+        incExtractText: readerData.incExtractText
+      }
       const jobParam = {
         readerDatasourceId: this.$store.state.taskAdmin.readerDataSourceID,
         // readerDatasourceId: this.taskParam.readerDataSourceID,
@@ -1090,7 +1112,9 @@ export default {
         hbaseReader: this.taskParam.hbaseReader,
         hbaseWriter: this.taskParam.hbaseWriter,
         mongoDBReader: this.taskParam.mongoDBReader,
-        mongoDBWriter: this.taskParam.mongoDBWriter
+        mongoDBWriter: this.taskParam.mongoDBWriter,
+        writerPartition: this.writerPartition,
+        readerSync: this.taskParam.readerSync
       }
       // console.log(jobParam)
       if (this.currentTask.glueType === 'BEAN' && !isJSON(this.currentTask.jobJson)) {

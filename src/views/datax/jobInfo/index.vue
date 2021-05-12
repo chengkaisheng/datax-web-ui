@@ -377,10 +377,10 @@ rkJggg=="
       </div>
     </div>
     <!-- {{ jobDetailIdx }} -->
-    <div class="rg rt">
+    <div class="rt">
       <el-tabs
         v-model="jobDetailIdx"
-        type="border-card"
+        type="card"
         closable
         class="el-bar-tab"
         @tab-remove="removeJobTab"
@@ -1102,6 +1102,7 @@ export default {
     }
   },
   created() {
+    // handleNodeClick(this.$store.state.taskAdmin.Singledata)
     console.log('所有列表', this.$store.state.taskAdmin.taskDetailList)
     if (sessionStorage.getItem('level') === '2') {
       this.showAdmin = false
@@ -1125,6 +1126,8 @@ export default {
       console.log(records, 'records________________________')
       this.$store.commit('SET_DATASOURCE', records)
     })
+    console.log(this.$store.state.taskAdmin.Singledata)
+    // this.handleNodeClick(this.$store.state.taskAdmin.Singledata)
   },
   methods: {
     /**
@@ -1874,7 +1877,7 @@ export default {
         job.getList(listQuery).then((response) => {
           const { content } = response
           this.List = content.data
-          console.log(this.List)
+          console.log(this.List, 'this.List')
           const firstElement = content?.data[0] || {}
           const a = {}
           a.title = firstElement.name
@@ -1924,7 +1927,7 @@ export default {
         job.getList(listQuery).then((response) => {
           const { content } = response
           this.List = content.data
-          console.log(this.List)
+          console.log(this.List, 'this.List')
           const a = {}
           const eleIndex = _.findIndex(
             this.List,
@@ -1962,6 +1965,7 @@ export default {
       job.getList(listQuery).then((response) => {
         const { content } = response
         this.List = content.data
+        console.log(this.List, 'this.List')
       })
       // 根据项目id获取数据源
       const p = {
@@ -2307,7 +2311,7 @@ export default {
       .el-tabs__content {
         height: calc(100vh - 80px);
         overflow-y: auto;
-        overflow-x: auto;
+        // overflow-x: auto;
         // background-color: #f7f9fb;
       }
       .el-tabs__header {
@@ -2364,9 +2368,59 @@ export default {
     }
   }
   .rt {
+    width: 100%;
     // overflow-x: scroll;
-    overflow-x: hidden;
+    // overflow-x: hidden;
     overflow-y: hidden;
+     .el-tabs {
+         .el-tabs__header {
+        // height: 32px;
+        // line-height: 32px;
+        .el-tabs__nav {
+          // width: 200px;
+          // border-top: 1px solid #f8f8fa;
+          .el-tabs__item {
+            // width: 100%;
+          //   border: none;
+          //   border-top: 1px solid #f8f8fa;
+          //   border-radius: 6px 6px 0px 0px;
+          //   height: 32px;
+          //   line-height: 32px;
+          //   position: relative;
+          //   overflow: hidden;
+          //   vertical-align: bottom;
+          //   text-overflow: ellipsis;
+          //   white-space: nowrap;
+          //   .el-icon-close {
+          //     position: absolute;
+          //     right: 10px;
+          //     top: 50%;
+          //     transform: translateY(-50%);
+          //   }
+          }
+        }
+      }
+       .el-tabs__item.is-active {
+        background-color: #ffffff;
+        // border-bottom-color:  #3d5eff;
+      }
+       .el-tab-pane {
+        // padding: 10px;
+        height: 100%;
+        position: relative;
+        .job_detail {
+          height: 100%;
+        }
+        .title_h3 {
+          position: absolute;
+          font-size: 24px;
+          font-weight: 700;
+          font-family: '楷体';
+          left: 24px;
+          top: 30px;
+        }
+      }
+     }
   }
   .input_serach > .el-input__prefix > .el-input__icon {
     line-height: 35px !important;
@@ -2403,8 +2457,17 @@ export default {
 }
 </style>
 <style scoped>
+ .el-bar-tab>>>.is-active{
+       background: #fff;
+    }
 .el-bar-tab >>> .el-tabs__nav-scroll {
   background: #f8f8fa;
+}
+.el-bar-tab >>> .el-tabs__nav {
+  background: #f8f8fa;
+}
+.el-bar-tab >>> .is-active {
+   background: #f8f8fa;
 }
 .el-bar-tab >>> .el-tabs__content {
   height: 660px;
