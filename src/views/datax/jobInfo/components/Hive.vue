@@ -525,7 +525,7 @@ export default {
                     return new Promise((resolve, reject) => {
                       setTimeout(() => {
                         resolve()
-                      }, 2000)
+                      }, 3000)
                     })
                   }
                   await fn()
@@ -810,7 +810,7 @@ export default {
                     return new Promise((resolve, reject) => {
                       setTimeout(() => {
                         resolve()
-                      }, 2000)
+                      }, 3000)
                     })
                   }
                   await fn()
