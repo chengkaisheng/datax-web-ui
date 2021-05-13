@@ -1070,10 +1070,10 @@ export default {
 }
 .LOGS {
   background: white;
-  padding-bottom: 20px;
+  padding-bottom: 50px;
   padding-top: 10px;
   width: 100%;
-  height: 300px;
+  height: 280px;
   line-height: 16px;
   overflow-y: scroll;
   /* border: 1px solid #ccc; */
