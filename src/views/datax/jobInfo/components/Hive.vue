@@ -1075,7 +1075,7 @@ export default {
   width: 100%;
   height: 300px;
   line-height: 16px;
-  overflow: scroll;
+  overflow-y: scroll;
   /* border: 1px solid #ccc; */
 }
 .parameter {
