@@ -525,7 +525,7 @@ export default {
                     return new Promise((resolve, reject) => {
                       setTimeout(() => {
                         resolve()
-                      }, 5000)
+                      }, 2000)
                     })
                   }
                   await fn()
@@ -810,7 +810,7 @@ export default {
                     return new Promise((resolve, reject) => {
                       setTimeout(() => {
                         resolve()
-                      }, 5000)
+                      }, 2000)
                     })
                   }
                   await fn()
@@ -836,9 +836,6 @@ export default {
                       content: '执行状态:' + queryStatus,
                       tableData: '...',
                     })
-                    for (let i = 0; i <= 1000; i++) {
-                      console.log(queryStatus, 'queryStatus')
-                    }
                   }
                 }
                 const params6 = {
@@ -930,7 +927,6 @@ export default {
         }
       }
     },
-    async RunSql(params5) {},
     saveQuery(val) {
       this.loading = true
       this.loadingtext = '保存中'
