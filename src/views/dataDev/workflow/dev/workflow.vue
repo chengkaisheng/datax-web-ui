@@ -148,12 +148,96 @@ rkJggg=="
         </span>
       </el-dialog>
     </el-drawer>
+    <!-- 工作流日志列表面板 -->
+    <el-dialog id="taskDialog" title="工作流日志" :visible.sync="dialogLogVisible" width="60%">
+      <el-form :model="form">
+        <el-table
+          :data="tableLog"
+          :header-cell-style="{
+            background: '#F8F8FA',
+            'font-weight': 500,
+            color: '#333333'
+          }"
+          border
+          style="width: 100%">
+          <el-table-column
+            label="工作流名称">
+            <template>
+              {{ $store.state.workflow.currentData.name }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="triggerTime"
+            label="调度时间">
+          </el-table-column>
+          <el-table-column
+            prop="triggerMsg"
+            label="调度备注">
+          </el-table-column>
+          <el-table-column
+            prop="triggerCode"
+            label="调度结果"
+            width="80">
+            <template slot-scope="scope">
+              {{ scope.row.triggerCode === 200 ? '成功' : '失败'}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="handleTime"
+            label="执行时间">
+          </el-table-column>
+          <el-table-column
+            prop="handleMsg"
+            label="执行备注">
+          </el-table-column>
+          <el-table-column
+            prop="handleCode"
+            label="执行结果"
+            width="80">
+            <template slot-scope="scope">
+              {{ scope.row.handleCode === 200 ? '成功' : '失败'}}
+            </template>
+          </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                @click="handleView(scope.row)">查看详情</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="dialogLogVisible = false">取 消</el-button>
+      </div>
+    </el-dialog>
+    <!-- 日志详情对话框 -->
+    <el-dialog
+      class="log_content"
+      append-to-body
+      title="日志查看"
+      :visible.sync="dialogDetails"
+      width="80%"
+    >
+      <div class="log-container">
+        <pre v-text="logContent" />
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogDetails = false">
+          关闭
+        </el-button>
+        <el-button type="primary">
+          刷新日志
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script id="code">
 import go from 'gojs'
 import * as workFlowApi from '@/api/datax-job-info'
+import * as logApi from '@/api/datax-job-log'
 import Cron from '@/components/Cron'
 export default {
   name: 'Flow',
@@ -201,7 +285,16 @@ export default {
       project_id: '', // 当前项目Id
       dataJob: {}, // 当前任务数据
       showCronBox: false, // cron表达式对话框
-      drawerForm: {}
+      drawerForm: {},
+      dialogLogVisible: false,
+      dialogDetails: false,
+      // 日志内容
+      logContent: '',
+      queryLog: {
+        current: 1,
+        size: 10
+      },
+      tableLog: [] // 工作流日志列表数据
     }
   },
   watch: {
@@ -264,15 +357,6 @@ export default {
     // 保存
     DataSave () {
       console.log('保存')
-      // console.log(this.myDiagram.model)
-      // if (this.isSave.title === 'Untitled') {
-      //   this.open()
-      // } else {
-      //   this.save()
-      //   this.toParent()
-      // }
-      // this.showSaveBox = true
-      // this.myDiagram.model = go.Model.fromJson(this.$store.state.workflow.currentData.jobJson)
       let params = {}
       params = this.$store.state.workflow.currentData
       params.jobJson = this.myDiagram.model.toJson()
@@ -356,6 +440,31 @@ export default {
     // 查询日志
     logData () {
       console.log('查询日志')
+      this.getlogList()
+      this.dialogLogVisible = true
+    },
+    // 获取日志列表
+    getlogList () {
+      logApi.getList({
+        jobDesc: 'workflow',
+        current: this.queryLog.current,
+        size: this.queryLog.size,
+        jobId: this.$store.state.workflow.currentData.id,
+        logStatus: -1
+      }).then((res) => {
+        console.log(res, '日志数据')
+        if (res.code === 200) {
+          this.tableLog = res.content.data
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    // 查看日志详情
+    handleView (e) {
+      console.log(e, '日志详情')
+      this.logContent = e.handleMsg
+      this.dialogDetails = true
     },
     // 显示调度配置抽屉
     dispatchData () {

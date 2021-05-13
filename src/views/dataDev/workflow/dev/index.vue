@@ -377,7 +377,7 @@ export default {
     // 获取所有工作流的数组数据
     getAllWorkflow (id, type) {
       if (id) {
-        workFlowApi.workflowTree({
+        workFlowApi.workflowList({
           projectId: id,
           jobType: type
         }).then(
