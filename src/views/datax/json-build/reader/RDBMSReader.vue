@@ -11,7 +11,7 @@
         <el-col :span="12">
           <el-form-item label="数据源" prop="datasourceId">
             <el-select
-              v-model="$store.state.taskAdmin.readerDataSourceID"
+              v-model="readerForm.datasourceId"
               filterable
               @change="rDsChange"
             >
@@ -240,7 +240,14 @@ export default {
     senddata() {
       const data = this.$store.state.taskAdmin.currentTask
       const data1 = JSON.parse(data.jobParam)
+      this.readerForm.datasourceId = data1.readerDatasourceId
       this.readerForm.columns = data1.readerColumns
+      this.readerForm.syncType = data1.readerSync.syncType
+      this.readerForm.incSetting = data1.readerSync.incSetting
+      this.readerForm.incExtract = data1.readerSync.incExtract
+      this.readerForm.incExtractText = data1.readerSync.incExtractText
+      this.readerForm.splitPk = data1.rdbmsReader.readerSplitPk
+      this.readerForm.where = data1.rdbmsReader.whereParams
       console.log(data1.readerColumns)
       console.log(data.jobJson)
       console.log(data.jobParam)
