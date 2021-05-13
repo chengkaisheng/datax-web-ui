@@ -2302,7 +2302,6 @@ export default {
   }
   .rt {
     width: 100%;
-    background: red;
     // overflow-x: scroll;
     // overflow-x: hidden;
     overflow-y: hidden;
@@ -2315,22 +2314,22 @@ export default {
           // border-top: 1px solid #f8f8fa;
           .el-tabs__item {
             // width: 100%;
-            // border: none;
-            // border-top: 1px solid #f8f8fa;
-            // border-radius: 6px 6px 0px 0px;
-            // height: 32px;
-            // line-height: 32px;
-            // position: relative;
-            // overflow: hidden;
-            // vertical-align: bottom;
-            // text-overflow: ellipsis;
-            // white-space: nowrap;
-            .el-icon-close {
-              // position: absolute;
-              // right: 10px;
-              // top: 50%;
-              // transform: translateY(-50%);
-            }
+            //   border: none;
+            //   border-top: 1px solid #f8f8fa;
+            //   border-radius: 6px 6px 0px 0px;
+            //   height: 32px;
+            //   line-height: 32px;
+            //   position: relative;
+            //   overflow: hidden;
+            //   vertical-align: bottom;
+            //   text-overflow: ellipsis;
+            //   white-space: nowrap;
+            //   .el-icon-close {
+            //     position: absolute;
+            //     right: 10px;
+            //     top: 50%;
+            //     transform: translateY(-50%);
+            //   }
           }
         }
       }

@@ -525,7 +525,7 @@ export default {
                     return new Promise((resolve, reject) => {
                       setTimeout(() => {
                         resolve()
-                      }, 3000)
+                      }, 5000)
                     })
                   }
                   await fn()
@@ -810,7 +810,7 @@ export default {
                     return new Promise((resolve, reject) => {
                       setTimeout(() => {
                         resolve()
-                      }, 3000)
+                      }, 5000)
                     })
                   }
                   await fn()
@@ -836,6 +836,9 @@ export default {
                       content: '执行状态:' + queryStatus,
                       tableData: '...',
                     })
+                    for (let i = 0; i <= 1000; i++) {
+                      console.log(queryStatus, 'queryStatus')
+                    }
                   }
                 }
                 const params6 = {
@@ -927,6 +930,7 @@ export default {
         }
       }
     },
+    async RunSql(params5) {},
     saveQuery(val) {
       this.loading = true
       this.loadingtext = '保存中'
@@ -1062,7 +1066,6 @@ export default {
   height: auto;
 }
 .el-bar-tab[data-v-5715563a] {
-  height: 100%;
   background: white;
 }
 .LOGS {
@@ -1072,7 +1075,7 @@ export default {
   width: 100%;
   height: 300px;
   line-height: 16px;
-  overflow-y: scroll;
+  overflow: scroll;
   /* border: 1px solid #ccc; */
 }
 .parameter {
