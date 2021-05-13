@@ -109,14 +109,55 @@ rkJggg=="
         <el-button size="small" type="primary" @click="sure">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 工作流调度抽屉 -->
+    <el-drawer
+      title="任务调度"
+      :visible.sync="dialogDrawer"
+      direction="rtl"
+      custom-class="demo-drawer"
+      ref="drawer"
+      >
+      <div class="demo-drawer__content">
+        <el-form :model="drawerForm">
+          <el-form-item label="工作流名称" label-width="100px">
+            {{ $store.state.workflow.currentData.name }}
+          </el-form-item>
+          <el-form-item label="Cron" prop="jobCron" label-width="100px">
+            <el-input v-model="drawerForm.jobCron" auto-complete="off" placeholder="请输入Cron表达式" style="width: 80%">
+              <el-button v-if="!showCronBox" slot="append" icon="el-icon-turn-off" title="打开图形配置" @click="showCronBox = true" />
+              <el-button v-else slot="append" icon="el-icon-open" title="关闭图形配置" @click="showCronBox = false" />
+            </el-input>
+          </el-form-item>
+        </el-form>
+        <div class="demo-drawer__footer" style="float: right;marginRight: 20px;">
+          <el-button @click="cancelDrawer">取 消</el-button>
+          <el-button type="primary" @click="submitDrawer">提 交</el-button>
+        </div>
+      </div>
+      <!-- cron表达式对话框 -->
+      <el-dialog
+        title="提示"
+        :visible.sync="showCronBox"
+        width="60%"
+        append-to-body
+      >
+        <cron v-model="drawerForm.jobCron" />
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="showCronBox = false">关闭</el-button>
+          <el-button type="primary" @click="showCronBox = false">确 定</el-button>
+        </span>
+      </el-dialog>
+    </el-drawer>
   </div>
 </template>
 
 <script id="code">
 import go from 'gojs'
 import * as workFlowApi from '@/api/datax-job-info'
+import Cron from '@/components/Cron'
 export default {
   name: 'Flow',
+  components: { Cron },
   props: {
     tabsIds: { type: Number, default: () => ({}) }
   },
@@ -132,32 +173,35 @@ export default {
       dialogFormVisible: false,
       taskArr: [
         {
-          name: '1',
+          name: 'a',
           type: 'NORMAL'
         },
         {
-          name: '2',
+          name: 'b',
           type: 'IMPORT'
         },
         {
-          name: '3',
+          name: 'c',
           type: 'EXPORT'
         },
         {
-          name: '4',
+          name: 'd',
           type: 'HIVE'
         },
         {
-          name: '5',
+          name: 'e',
           type: 'IMPALA'
         },
         {
-          name: '6',
+          name: 'f',
           type: 'SHELL'
         },
       ],
+      dialogDrawer: false, // 抽屉
       project_id: '', // 当前项目Id
-      dataJob: {} // 当前任务数据
+      dataJob: {}, // 当前任务数据
+      showCronBox: false, // cron表达式对话框
+      drawerForm: {}
     }
   },
   watch: {
@@ -178,10 +222,11 @@ export default {
   created() {
     this.myId = this.tabsIds
     if (this.$store.state.workflow.currentData) {
+      console.log(this.$store.state.workflow.currentData, 'this.$store.state.workflow.currentData')
       this.project_id = this.$store.state.workflow.currentData.projectId
     }
     console.log(this.myId, 'myId', this.project_id)
-    this.getCurrentProjectList()
+    // this.getCurrentProjectList()
     // this.myDiagram.model = go.Model.fromJson(this.$store.state.workflow.currentData.jobJson)
     // console.log(this.myDiagram.model)
   },
@@ -192,11 +237,16 @@ export default {
   },
   methods: {
     // 获取当前项目下的任务列表
-    getCurrentProjectList () {
+    getCurrentProjectList (val) {
       let myType = ''
-      for (let i = 0; i < this.taskArr.length; i++) {
-        if (this.currentType === this.taskArr[i].name) {
-          myType = this.taskArr[i].type
+      console.log(val, 'val')
+      if (val) {
+        myType = val.type
+      } else {
+        for (let i = 0; i < this.taskArr.length; i++) {
+          if (this.currentType === this.taskArr[i].name) {
+            myType = this.taskArr[i].type
+          }
         }
       }
       workFlowApi.getTreeData({
@@ -250,18 +300,92 @@ export default {
     // 执行
     runData () {
       console.log('执行')
+      let params = {}
+      params = this.$store.state.workflow.currentData
+      params.jobJson = this.myDiagram.model.toJson()
+      // params.jobIds = []
+      console.log(params)
+      workFlowApi.triggerWorkflow(
+        params
+      ).then((res) => {
+        console.log(res)
+        if (res.code === 200) {
+          this.$message.success('工作流执行' + res.msg)
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
     },
     // 提交
     startData () {
       console.log('提交')
+      let params = {}
+      params = this.$store.state.workflow.currentData
+      params.jobJson = this.myDiagram.model.toJson()
+      params.jobCron = this.drawerForm.jobCron
+      if (params.triggerStatus === 0) {
+        params.triggerStatus = 1
+        workFlowApi.updateWorkflow(
+          params
+        ).then((res) => {
+          if (res.code === 200) {
+            this.$message.success('上线' + res.msg)
+            this.dialogDrawer = false
+          }
+        }).catch(
+          err => {
+            console.log(err)
+          }
+        )
+      } else {
+        params.triggerStatus = 0
+        workFlowApi.updateWorkflow(
+          params
+        ).then((res) => {
+          if (res.code === 200) {
+            this.$message.success('下线' + res.msg)
+            this.dialogDrawer = false
+          }
+        }).catch(
+          err => {
+            console.log(err)
+          }
+        )
+      }
     },
     // 查询日志
     logData () {
       console.log('查询日志')
     },
-    // 调度配置
+    // 显示调度配置抽屉
     dispatchData () {
       console.log('调度配置')
+      this.dialogDrawer = true
+    },
+    // 取消抽屉
+    cancelDrawer () {
+      this.dialogDrawer = false
+    },
+    // 任务调度提交
+    submitDrawer () {
+      console.log('工作流调度提交', this.drawerForm)
+      let params = {}
+      params = this.$store.state.workflow.currentData
+      params.jobJson = this.myDiagram.model.toJson()
+      params.jobCron = this.drawerForm.jobCron
+      console.log(params)
+      workFlowApi.updateWorkflow(
+        params
+      ).then((res) => {
+        if (res.code === 200) {
+          this.$message.success('工作流调度' + res.msg)
+          this.dialogDrawer = false
+        }
+      }).catch(
+        err => {
+          console.log(err)
+        }
+      )
     },
     // 选择任务
     sure () {
@@ -271,7 +395,10 @@ export default {
         return e.data.key === key
       })
       console.log(selectNode, 'node')
+      console.log(this.dataJob, 'dataJob')
       selectNode.tb.j[0].data.text = this.dataJob.name
+      selectNode.tb.j[0].data.id = this.dataJob.jobId
+      selectNode.tb.j[0].data.infoId = this.guid()
       this.myDiagram.model.updateTargetBindings(selectNode.tb.j[0].data)
       this.dialogFormVisible = false
     },
@@ -385,7 +512,7 @@ export default {
         // })
         this.currentType = e.subject.part.data.id
         console.log(this.currentType, 'this.currentType')
-        this.getCurrentProjectList()
+        this.getCurrentProjectList(e.subject.part.data)
         if (e.subject.part.data.category === undefined) {
           this.dialogFormVisible = true
           this.selectedNodeKey = e.subject.part.data.key
@@ -420,7 +547,7 @@ export default {
           // 主要对象是一个用矩形形状包围文本块的面板
           $(go.Panel, 'Auto',
             $(go.Shape, 'RoundedRectangle',
-              { desiredSize: new go.Size(88, 30), fill: '#E0F2E0', stroke: '#00B600', strokeWidth: 1.5 },
+              { fill: '#E0F2E0', stroke: '#00B600', strokeWidth: 1.5 },
               new go.Binding('figure', 'figure')),
             $(go.TextBlock, textStyle(),
               {
@@ -576,13 +703,13 @@ export default {
           nodeTemplateMap: this.myDiagram.nodeTemplateMap, // 共享myDiagram使用的模板
           model: new go.GraphLinksModel([ // 指定调色板的内容
             { category: 'Start', text: '开始' },
-            { text: '普通任务', id: '1', type: 'NORMAL' },
-            { text: '引入任务', id: '2', type: 'IMPORT' },
-            { text: '导出任务', id: '3', type: 'EXPORT' },
-            { text: 'Hive任务', id: '4', type: 'HIVE' },
-            { text: 'Impala任务', id: '5', type: 'IMPALA' },
-            { text: 'shell任务', id: '6', type: 'SHELL' },
-            { category: 'Conditional', text: '判断' },
+            { text: '普通任务', id: 'a', type: 'NORMAL' },
+            { text: '引入任务', id: 'b', type: 'IMPORT' },
+            { text: '导出任务', id: 'c', type: 'EXPORT' },
+            { text: 'Hive任务', id: 'd', type: 'HIVE' },
+            { text: 'Impala任务', id: 'e', type: 'IMPALA' },
+            { text: 'shell任务', id: 'f', type: 'SHELL' },
+            // { category: 'Conditional', text: '判断' },
             { category: 'End', text: '结束' }
             // { category: 'Comment', text: '注释' }
           ])

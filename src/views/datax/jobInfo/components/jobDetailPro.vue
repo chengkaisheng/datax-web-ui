@@ -31,10 +31,10 @@
         <i class="el-icon-s-order" />
         <span style="font-size: 13px">日志</span>
       </div>
-      <div class="header_action" @click="handlerViewLog(currentTask)">
+      <!-- <div class="header_action" @click="handlerViewLog(currentTask)">
         <i class="el-icon-s-order" />
         <span style="font-size: 13px">保存</span>
-      </div>
+      </div> -->
       <div class="header_action">
         <el-popover
           placement="bottom"
@@ -1053,11 +1053,17 @@ export default {
         this.newstlogContent = ''
         this.showLog = true
         this.jsonshow = false
-        this.logList()
+        // this.logList()
         // setTimeout(() => {
         //   this.logList()
         // }, 2000)
-        setInterval(() => {
+        var timesRun = 0
+        var interval = setInterval(() => {
+          timesRun += 1
+          console.log(timesRun)
+          if (timesRun === 12) {
+            clearInterval(interval)
+          }
           this.logList()
         }, 3000)
       })
@@ -1673,7 +1679,7 @@ export default {
 }
 
 .log_detail_window >>> .el-dialog {
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
 .log_detail_window >>> .el-dialog__body {

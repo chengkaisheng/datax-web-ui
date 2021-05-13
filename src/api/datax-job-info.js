@@ -288,10 +288,11 @@ export function dataRollBack(data) {
 }
 
 // 查询工作流tree列表接口
-export function workflowTree(query) {
+export function workflowTree(params) {
   return request({
-    url: `api/jobWorkflow/tree?projectId=${query}`,
+    url: 'api/jobWorkflow/tree',
     method: 'get',
+    params
   })
 }
 

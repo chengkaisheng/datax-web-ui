@@ -368,6 +368,7 @@ export default {
     buildJson() {
       console.log(2222222222222222)
       const readerData = this.$refs.reader.getData()
+      console.log(readerData)
       const writeData = this.$refs.writer.getData()
       console.log(writeData, 'writeData')
       const readerColumns = this.$refs.mapper.getLColumns()
