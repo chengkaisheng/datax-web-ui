@@ -115,7 +115,6 @@ export default {
       this.code = this.$store.state.taskAdmin.setcode
     },
     code(val) {
-      console.log('val----->', val)
       this.$store.commit('SETREDDOT', true)
       if (this.$store.state.taskAdmin.setcode !== val) {
         this.$store.commit('SETREDDOT', true)

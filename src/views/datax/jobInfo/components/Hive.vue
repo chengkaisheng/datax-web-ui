@@ -250,10 +250,6 @@ export default {
   },
   created() {
     console.log('时间戳', moment(new Date()).format('YYYY-MM-DD hh:mm:ss'))
-    console.log(
-      'ParametersList=====>>>',
-      this.$store.state.taskAdmin.ParametersList
-    )
     this.parameters = this.$store.state.taskAdmin.ParametersList
     this.ReplaceParameters = this.$store.state.taskAdmin.ParametersList
   },
@@ -525,13 +521,15 @@ export default {
                 let queryStatus = ''
                 let resGetAsyncTaskInfo
                 while (queryStatus !== 'Finished') {
-                  for (let kk = 0; kk < 500; kk++) {
-                    console.log(queryStatus, 'queryStatus')
-                    if (kk === 499) {
-                      console.log('butinghua')
-                      resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
-                    }
+                  async function fn() {
+                    return new Promise((resolve, reject) => {
+                      setTimeout(() => {
+                        resolve()
+                      }, 3000)
+                    })
                   }
+                  await fn()
+                  resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
                   queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
                   console.log('循环执行语句', queryStatus)
                   if (resGetAsyncTaskInfo.data.taskInfo.error) {
@@ -551,7 +549,6 @@ export default {
                       content: '执行状态: ' + queryStatus,
                       tableData: '...',
                     })
-                    console.log('aaasssddd')
                   }
                 }
                 // if (queryStatus === 'Finished') {}
@@ -621,9 +618,6 @@ export default {
                   resGetSqlExecuteTaskResults.data.result.statusMessage !==
                   'Success'
                 ) {
-                  if (i === sqlarr.length - 2) {
-                    this.desbel = true
-                  }
                   this.getinto = false
                   console.log(
                     resGetSqlExecuteTaskResults.data.result.statusMessage
@@ -812,6 +806,14 @@ export default {
                 let queryStatus = ''
                 let resGetAsyncTaskInfo
                 while (queryStatus !== 'Finished') {
+                  async function fn() {
+                    return new Promise((resolve, reject) => {
+                      setTimeout(() => {
+                        resolve()
+                      }, 3000)
+                    })
+                  }
+                  await fn()
                   resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
                   queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
                   console.log('resGetAsyncTaskInfo--->', resGetAsyncTaskInfo)
@@ -834,9 +836,6 @@ export default {
                       content: '执行状态:' + queryStatus,
                       tableData: '...',
                     })
-                    for (let i = 0; i <= 1000; i++) {
-                      console.log(queryStatus, 'queryStatus')
-                    }
                   }
                 }
                 const params6 = {
@@ -928,7 +927,6 @@ export default {
         }
       }
     },
-    async RunSql(params5) {},
     saveQuery(val) {
       this.loading = true
       this.loadingtext = '保存中'
@@ -1058,23 +1056,32 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" >
 .wrap {
   width: 100%;
   height: auto;
 }
+.el-bar-tab[data-v-5715563a] {
+  height: 100%;
+  background: white;
+}
 .LOGS {
+  background: white;
   padding-bottom: 20px;
   padding-top: 10px;
   width: 100%;
   height: 300px;
   line-height: 16px;
-  overflow: scroll;
+  overflow-y: scroll;
   /* border: 1px solid #ccc; */
 }
 .parameter {
   padding-left: 100px;
+  .el-input__inner {
+    height: 27px;
+  }
 }
+
 .Configurable {
   display: inline-block;
   width: 200px;

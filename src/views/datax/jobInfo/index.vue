@@ -1,22 +1,9 @@
 <template>
   <div class="Management">
     <div class="lt">
-      <!-- {{jobDetailIdx}} -->
       <div class="top">
         <el-row>
           <el-col :span="12">
-            <!-- <el-select
-              v-model="selectValue"
-              placeholder="请选择"
-              @change="fetchJobs"
-            >
-              <el-option
-                v-for="item in options"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              />
-            </el-select> -->
             <el-dropdown v-show="showAdmin" @command="handleCommand">
               <span>
                 {{ dropdownText
@@ -34,12 +21,6 @@
                 >
               </el-dropdown-menu>
             </el-dropdown>
-            <!-- <el-dropdown-menu slot="dropdown" placeholder="请选择">
-              <span class="el-dropdown-link">
-                123
-              </span>
-              <el-dropdown-item v-for="item in options" :key="item.id" :command="item.name">{{ item.name }}</el-dropdown-item>
-            </el-dropdown-menu> -->
           </el-col>
           <el-col :span="12">
             <i class="el-icon-location-outline top-icon" />
@@ -58,63 +39,6 @@
             clearable
           />
           <el-scrollbar>
-            <!-- <div v-if="isFolder" class="list">
-              <ul>
-                <li
-                  v-for="(item, index) in filterList"
-                  :key="index"
-                  :class="[jobDetailIdx === (item.id + '') ? 'list-highlight' : '']"
-                  style="padding-right: 12px;"
-                  @click="getJobDetail(item)"
-                >
-                  <svg-icon :icon-class="item.jobType" />
-                  <a style="color: rgba(102, 102, 102, 1)">
-                    {{ item.name }}
-                  </a>
-                  <el-tag
-                    v-if="item.hasOwnProperty('triggerStatus')"
-                    :type="item.triggerStatus === 1 ? 'success' : item.triggerStatus === 0 ? 'warning' : 'info'"
-                    effect="plain"
-                    size="mini"
-                    style="float: right; margin-top: 6px; padding-right: 20px;"
-                  >
-                    {{ item.triggerStatus === 1 ? '运行中' : item.triggerStatus === 0 ? '未运行' : '未知' }}
-                  </el-tag>
-                </li>
-              </ul>
-            </div>
-            <div v-else class="folder">
-              <p>
-                <svg-icon icon-class="wenjianjia" />
-                <a style="color: rgba(102, 102, 102, 1)" @click="singleClick(folderName)" @dblclick="resetName(folderName)">
-                  {{ folderName }}
-                </a>
-                <i class="el-icon-close" @click="delFolder" />
-                <ul v-show="showCurrentFolder">
-                  <li
-                    v-for="(item, index) in filterList"
-                    :key="index"
-                    :class="[jobDetailIdx === (item.id + '') ? 'list-highlight' : '']"
-                    style="padding-right: 12px;"
-                    @click="getJobDetail(item)"
-                  >
-                    <svg-icon :icon-class="item.jobType" />
-                    <a style="color: rgba(102, 102, 102, 1)">
-                      {{ item.name }}
-                    </a>
-                    <el-tag
-                      v-if="item.hasOwnProperty('triggerStatus')"
-                      :type="item.triggerStatus === 1 ? 'success' : item.triggerStatus === 0 ? 'warning' : 'info'"
-                      effect="plain"
-                      size="mini"
-                      style="float: right; margin-top: 6px; padding-right: 20px;"
-                    >
-                      {{ item.triggerStatus === 1 ? '运行中' : item.triggerStatus === 0 ? '未运行' : '未知' }}
-                    </el-tag>
-                  </li>
-                </ul>
-              </p>
-            </div> -->
             <el-tree
               id="main_span"
               ref="tree"
@@ -149,7 +73,6 @@
                   font-size: 14px;
                 "
               >
-                <!-- @dblclick="resetName(folderName)" -->
                 <p style="height: 26px; line-height: 26px">
                   <svg-icon
                     v-if="data.jobType && data.jobType !== 'IMPORT'"
@@ -378,7 +301,6 @@ rkJggg=="
         </div>
       </div>
     </div>
-    <!-- {{ jobDetailIdx }} -->
     <div class="rt">
       <el-tabs
         v-model="jobDetailIdx"
@@ -977,10 +899,8 @@ export default {
     },
     taskList(val) {
       this.List = val
-      console.log(val, 'this.list___________________')
     },
     taskDetailID(val) {
-      console.log(val, 'jobDetailIdx')
       this.jobDetailIdx = val
     },
     '$store.state.project.currentItem': {
@@ -1119,7 +1039,6 @@ export default {
     }
   },
   created() {
-    // handleNodeClick(this.$store.state.taskAdmin.Singledata)
     console.log('所有列表', this.$store.state.taskAdmin.taskDetailList)
     if (sessionStorage.getItem('level') === '2') {
       this.showAdmin = false
@@ -1143,8 +1062,6 @@ export default {
       console.log(records, 'records________________________')
       this.$store.commit('SET_DATASOURCE', records)
     })
-    console.log(this.$store.state.taskAdmin.Singledata)
-    // this.handleNodeClick(this.$store.state.taskAdmin.Singledata)
   },
   methods: {
     /**
@@ -1160,14 +1077,15 @@ export default {
     },
     // 删除任务Tabs窗口
     removeJobTab(targetId) {
+      console.log('关闭tab', targetId)
       let targetIdInt
       if (typeof parseInt(targetId) === 'number') {
         targetIdInt = parseInt(targetId)
       } else {
         targetIdInt = ''
       }
-      console.log(targetId, 'targetId')
-      console.log(this.$store.state.taskAdmin.taskDetailList)
+      console.log(targetId, 'targetId关闭')
+      console.log('关闭', this.$store.state.taskAdmin.taskDetailList)
       if (this.$store.state.taskAdmin.taskDetailList.length === 0) {
         this.jobDetailIdx = '欢迎'
       }
@@ -1175,14 +1093,12 @@ export default {
         (ele) => ele.content.id === targetIdInt
       )
       console.log(removeIndex, 'removeIndex')
-      console.log(this.jobDetailIdx, 'this.jobDetailIdx')
       if (this.jobDetailIdx === targetId) {
         this.jobDetailIdx =
           (this.$store.state.taskAdmin.taskDetailList[removeIndex + 1]?.content
             ?.id ||
             this.$store.state.taskAdmin.taskDetailList[removeIndex - 1]?.content
               ?.id) + ''
-        console.log('jobDetailIdx: ', this.jobDetailIdx)
       }
       // 关闭的是[新增任务tab]，非新增任务tab id = content.id
       if (this.$store.state.taskAdmin.tabTypeArr.indexOf(targetId) !== -1) {
@@ -1202,7 +1118,7 @@ export default {
         const projectId = this.$store.state.project.currentItem.split('/')[0]
         job
           .getTreeData({
-            projectId: projectId
+            projectId: projectId,
           })
           .then((res) => {
             if (res.code === 200) {
@@ -1234,9 +1150,9 @@ export default {
       console.log(this.selectedIndex)
     },
     JobTabClick(ele) {
-      console.log(ele)
-      console.log(this.List, '>>>>>>>>>>>>>>>>>>>>>', this.jobDetailIdx)
+      console.log('ele', ele)
       this.jobType = ele.name
+      console.log(this.jobType, 'tthis ')
       const t = this.List.filter(
         (item) => item.id === parseInt(this.jobDetailIdx)
       )
@@ -1393,7 +1309,6 @@ export default {
             this.Rename = ''
             this.getJobDetail(this.detailData)
             this.removeJobTab(this.selectRow.id)
-            // this.handleNodeClick()
           } else {
             this.$message.err(res.msg)
           }
@@ -1569,9 +1484,8 @@ export default {
     },
     // HIVE任务新建
     HivecreateHandl() {
-      console.log('111')
-      console.log('wert', this.selectRow)
-      console.log('job---->', this.currentJob)
+      console.log('selectRow', this.selectRow)
+      console.log('currentJob', this.currentJob)
       const params = {
         name: this.chineseName,
         projectId: this.selectRow.projectId,
@@ -1579,26 +1493,14 @@ export default {
         type: this.currentJob ? 2 : 1,
         jobType: this.currentJob,
       }
+
       const ename = this.englishName
       const specification = this.task
-      console.log('p------>>>', params)
       job
         .CreateFile(params, ename, specification)
         .then((res) => {
           console.log('pppppp>>>>>>>', res)
           if (res.code === 200) {
-            console.log('lkjkhgfd', params.projectId)
-            this.$store.commit('changeCurrent', params.projectId)
-            this.getDataTree()
-            // let data = {
-            //   jobId: res.content,
-            //   name: this.chineseName,
-            //   projectId: this.selectRow.projectId,
-            //   parentId: this.selectRow.id,
-            //   type: this.currentJob ? 2 : 1,
-            //   jobType: this.currentJob,
-            // }
-            // this.handleNodeClick(data)
             this.getDataTree()
             this.selectRow = {}
             if (res.content !== '请选择父级目录') {
@@ -1614,6 +1516,7 @@ export default {
               this.englishName = ''
               this.task = ''
               if (this.currentJob) {
+                console.log('this.currentJob', this.currentJob)
                 this.createNewJob(this.currentJob)
                 this.currentJob = ''
               }
@@ -1669,7 +1572,6 @@ export default {
               )
               this.dialogNameVisible = false
               if (this.currentJob) {
-                console.log(this.currentJob, 'this.currentJob_____________')
                 this.createNewJob(this.currentJob)
                 this.currentJob = ''
               }
@@ -1744,7 +1646,7 @@ export default {
               jobId: data.jobId,
             })
             .then((res) => {
-              console.log('ParametersList===---', res)
+              console.log('点击tree控件方法', res)
               this.$store.commit('ParametersList', res.content)
               this.parameters = res.content
             })
@@ -1756,10 +1658,9 @@ export default {
           job
             .getTaskInfo(data.jobId)
             .then((res) => {
-              console.log(res, 'content')
+              console.log('点击tree控件方法第二个方法', res)
               if (res.code === 200) {
                 if (res.content) {
-                  console.log('content----->>>>', res.content.jobParam)
                   this.$store.commit('SET_JOB_INFO', res.content)
                   this.$store.commit('SETCODE', res.content.jobParam)
                   this.detailData = res.content
@@ -1835,7 +1736,7 @@ export default {
       }
     },
     getJobDetail(data) {
-      console.log(data, 'data==============')
+      console.log(data, 'data-=-=')
       this.$store.commit('SET_JOB_INFO', data)
       this.$store.commit('getJobDetail', data)
       this.$store.commit('SET_TASKDETAIL_ID', data.id + '')
@@ -1855,7 +1756,6 @@ export default {
       } else {
         this.jobDetailIdx = a.content.id + ''
       }
-      // this.jobType = 'SHOWDETAIL';
     },
     getList(data) {
       console.log(data)
@@ -2020,6 +1920,7 @@ export default {
     },
     // 切换项目
     handleCommand(command) {
+      console.log('command', command)
       const commandId = command.split('/')[0]
       const commandName = command.split('/')[1]
       this.$store.commit('changeCurrent', command)
@@ -2401,11 +2302,12 @@ export default {
   }
   .rt {
     width: 100%;
+    background: red;
     // overflow-x: scroll;
     // overflow-x: hidden;
     overflow-y: hidden;
-     .el-tabs {
-         .el-tabs__header {
+    .el-tabs {
+      .el-tabs__header {
         // height: 32px;
         // line-height: 32px;
         .el-tabs__nav {
@@ -2413,30 +2315,30 @@ export default {
           // border-top: 1px solid #f8f8fa;
           .el-tabs__item {
             // width: 100%;
-          //   border: none;
-          //   border-top: 1px solid #f8f8fa;
-          //   border-radius: 6px 6px 0px 0px;
-          //   height: 32px;
-          //   line-height: 32px;
-          //   position: relative;
-          //   overflow: hidden;
-          //   vertical-align: bottom;
-          //   text-overflow: ellipsis;
-          //   white-space: nowrap;
-          //   .el-icon-close {
-          //     position: absolute;
-          //     right: 10px;
-          //     top: 50%;
-          //     transform: translateY(-50%);
-          //   }
+            // border: none;
+            // border-top: 1px solid #f8f8fa;
+            // border-radius: 6px 6px 0px 0px;
+            // height: 32px;
+            // line-height: 32px;
+            // position: relative;
+            // overflow: hidden;
+            // vertical-align: bottom;
+            // text-overflow: ellipsis;
+            // white-space: nowrap;
+            .el-icon-close {
+              // position: absolute;
+              // right: 10px;
+              // top: 50%;
+              // transform: translateY(-50%);
+            }
           }
         }
       }
-       .el-tabs__item.is-active {
+      .el-tabs__item.is-active {
         background-color: #ffffff;
         // border-bottom-color:  #3d5eff;
       }
-       .el-tab-pane {
+      .el-tab-pane {
         // padding: 10px;
         height: 100%;
         position: relative;
@@ -2452,7 +2354,7 @@ export default {
           top: 30px;
         }
       }
-     }
+    }
   }
   .input_serach > .el-input__prefix > .el-input__icon {
     line-height: 35px !important;
@@ -2489,9 +2391,9 @@ export default {
 }
 </style>
 <style scoped>
- .el-bar-tab>>>.is-active{
-       background: #fff;
-    }
+.el-bar-tab >>> .is-active {
+  background: #fff;
+}
 .el-bar-tab >>> .el-tabs__nav-scroll {
   background: #f8f8fa;
 }
@@ -2499,11 +2401,11 @@ export default {
   background: #f8f8fa;
 }
 .el-bar-tab >>> .is-active {
-   background: #f8f8fa;
+  background: #f8f8fa;
 }
 .el-bar-tab >>> .el-tabs__content {
   height: 660px;
-  overflow: scroll;
+  overflow-y: scroll;
   padding: 0;
 }
 .el-tree >>> .el-tree-node {
