@@ -221,7 +221,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="24">
-              <el-form-item label="分区字段">
+              <el-form-item v-if="writerPartition.partition===0" label="分区字段">
                 <el-select v-model="writerPartition.partitionText" placeholder="选择分区字段" @change="columnSelect">
                   <el-option
                     v-for="(item, index) in fromColumnList"
