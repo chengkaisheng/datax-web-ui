@@ -521,17 +521,15 @@ export default {
                   taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
                   removeOnFinish: false,
                 }
+                for (let j = 0; j < 1000; j++) {
+                  console.log('j')
+                }
+
                 console.log('params5----->', params5)
                 let queryStatus = ''
                 let resGetAsyncTaskInfo
                 while (queryStatus !== 'Finished') {
-                  for (let kk = 0; kk < 500; kk++) {
-                    console.log(queryStatus, 'queryStatus')
-                    if (kk === 499) {
-                      console.log('butinghua')
-                      resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
-                    }
-                  }
+                  resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
                   queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
                   console.log('循环执行语句', queryStatus)
                   if (resGetAsyncTaskInfo.data.taskInfo.error) {
@@ -621,9 +619,6 @@ export default {
                   resGetSqlExecuteTaskResults.data.result.statusMessage !==
                   'Success'
                 ) {
-                  if (i === sqlarr.length - 2) {
-                    this.desbel = true
-                  }
                   this.getinto = false
                   console.log(
                     resGetSqlExecuteTaskResults.data.result.statusMessage
