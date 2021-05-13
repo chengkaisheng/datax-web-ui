@@ -1196,11 +1196,7 @@ export default {
     getDataTree() {
       console.log(this.$store.state.project.currentItem, 'currentItem')
       if (this.$store.state.project.currentItem) {
-        const projectId = {
-          projectId:
-            this.$store.state.project.currentItem.split('/')[0] ||
-            this.$store.state.project.currentItem,
-        }
+        const projectId = this.$store.state.project.currentItem.split('/')[0]
         job
           .getTreeData({
             projectId: projectId
