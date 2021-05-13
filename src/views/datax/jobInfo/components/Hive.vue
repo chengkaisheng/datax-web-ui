@@ -521,10 +521,6 @@ export default {
                   taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
                   removeOnFinish: false,
                 }
-                for (let j = 0; j < 1000; j++) {
-                  console.log('j')
-                }
-
                 console.log('params5----->', params5)
                 let queryStatus = ''
                 let resGetAsyncTaskInfo
@@ -549,7 +545,6 @@ export default {
                       content: '执行状态: ' + queryStatus,
                       tableData: '...',
                     })
-                    console.log('aaasssddd')
                   }
                 }
                 // if (queryStatus === 'Finished') {}
@@ -1053,12 +1048,16 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .wrap {
   width: 100%;
   height: auto;
 }
+.el-bar-tab[data-v-5715563a] {
+  background: white;
+}
 .LOGS {
+  background: white;
   padding-bottom: 20px;
   padding-top: 10px;
   width: 100%;
@@ -1069,7 +1068,11 @@ export default {
 }
 .parameter {
   padding-left: 100px;
+  .el-input__inner {
+    height: 27px;
+  }
 }
+
 .Configurable {
   display: inline-block;
   width: 200px;

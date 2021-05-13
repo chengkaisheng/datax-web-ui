@@ -1587,18 +1587,6 @@ export default {
         .then((res) => {
           console.log('pppppp>>>>>>>', res)
           if (res.code === 200) {
-            console.log('lkjkhgfd', params.projectId)
-            this.$store.commit('changeCurrent', params.projectId)
-            this.getDataTree()
-            // let data = {
-            //   jobId: res.content,
-            //   name: this.chineseName,
-            //   projectId: this.selectRow.projectId,
-            //   parentId: this.selectRow.id,
-            //   type: this.currentJob ? 2 : 1,
-            //   jobType: this.currentJob,
-            // }
-            // this.handleNodeClick(data)
             this.getDataTree()
             this.selectRow = {}
             if (res.content !== '请选择父级目录') {
@@ -2404,8 +2392,8 @@ export default {
     // overflow-x: scroll;
     // overflow-x: hidden;
     overflow-y: hidden;
-     .el-tabs {
-         .el-tabs__header {
+    .el-tabs {
+      .el-tabs__header {
         // height: 32px;
         // line-height: 32px;
         .el-tabs__nav {
@@ -2413,30 +2401,30 @@ export default {
           // border-top: 1px solid #f8f8fa;
           .el-tabs__item {
             // width: 100%;
-          //   border: none;
-          //   border-top: 1px solid #f8f8fa;
-          //   border-radius: 6px 6px 0px 0px;
-          //   height: 32px;
-          //   line-height: 32px;
-          //   position: relative;
-          //   overflow: hidden;
-          //   vertical-align: bottom;
-          //   text-overflow: ellipsis;
-          //   white-space: nowrap;
-          //   .el-icon-close {
-          //     position: absolute;
-          //     right: 10px;
-          //     top: 50%;
-          //     transform: translateY(-50%);
-          //   }
+            //   border: none;
+            //   border-top: 1px solid #f8f8fa;
+            //   border-radius: 6px 6px 0px 0px;
+            //   height: 32px;
+            //   line-height: 32px;
+            //   position: relative;
+            //   overflow: hidden;
+            //   vertical-align: bottom;
+            //   text-overflow: ellipsis;
+            //   white-space: nowrap;
+            //   .el-icon-close {
+            //     position: absolute;
+            //     right: 10px;
+            //     top: 50%;
+            //     transform: translateY(-50%);
+            //   }
           }
         }
       }
-       .el-tabs__item.is-active {
+      .el-tabs__item.is-active {
         background-color: #ffffff;
         // border-bottom-color:  #3d5eff;
       }
-       .el-tab-pane {
+      .el-tab-pane {
         // padding: 10px;
         height: 100%;
         position: relative;
@@ -2452,7 +2440,7 @@ export default {
           top: 30px;
         }
       }
-     }
+    }
   }
   .input_serach > .el-input__prefix > .el-input__icon {
     line-height: 35px !important;
@@ -2489,9 +2477,9 @@ export default {
 }
 </style>
 <style scoped>
- .el-bar-tab>>>.is-active{
-       background: #fff;
-    }
+.el-bar-tab >>> .is-active {
+  background: #fff;
+}
 .el-bar-tab >>> .el-tabs__nav-scroll {
   background: #f8f8fa;
 }
@@ -2499,7 +2487,7 @@ export default {
   background: #f8f8fa;
 }
 .el-bar-tab >>> .is-active {
-   background: #f8f8fa;
+  background: #f8f8fa;
 }
 .el-bar-tab >>> .el-tabs__content {
   height: 660px;
