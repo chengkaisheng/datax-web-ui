@@ -250,10 +250,6 @@ export default {
   },
   created() {
     console.log('时间戳', moment(new Date()).format('YYYY-MM-DD hh:mm:ss'))
-    console.log(
-      'ParametersList=====>>>',
-      this.$store.state.taskAdmin.ParametersList
-    )
     this.parameters = this.$store.state.taskAdmin.ParametersList
     this.ReplaceParameters = this.$store.state.taskAdmin.ParametersList
   },
@@ -525,6 +521,14 @@ export default {
                 let queryStatus = ''
                 let resGetAsyncTaskInfo
                 while (queryStatus !== 'Finished') {
+                  async function fn() {
+                    return new Promise((resolve, reject) => {
+                      setTimeout(() => {
+                        resolve()
+                      }, 5000)
+                    })
+                  }
+                  await fn()
                   resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
                   queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
                   console.log('循环执行语句', queryStatus)
@@ -802,6 +806,14 @@ export default {
                 let queryStatus = ''
                 let resGetAsyncTaskInfo
                 while (queryStatus !== 'Finished') {
+                  async function fn() {
+                    return new Promise((resolve, reject) => {
+                      setTimeout(() => {
+                        resolve()
+                      }, 5000)
+                    })
+                  }
+                  await fn()
                   resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
                   queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
                   console.log('resGetAsyncTaskInfo--->', resGetAsyncTaskInfo)
@@ -1048,12 +1060,13 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" >
 .wrap {
   width: 100%;
   height: auto;
 }
 .el-bar-tab[data-v-5715563a] {
+  height: 100%;
   background: white;
 }
 .LOGS {
@@ -1063,7 +1076,7 @@ export default {
   width: 100%;
   height: 300px;
   line-height: 16px;
-  overflow: scroll;
+  overflow-y: scroll;
   /* border: 1px solid #ccc; */
 }
 .parameter {
