@@ -1112,7 +1112,8 @@ export default {
       }
     },
     // 获取tree数据结构
-    getDataTree() {
+    getDataTree(data) {
+      console.log('有木有', data)
       console.log(this.$store.state.project.currentItem, 'currentItem')
       if (this.$store.state.project.currentItem) {
         const projectId = this.$store.state.project.currentItem.split('/')[0]
@@ -1123,6 +1124,25 @@ export default {
           .then((res) => {
             if (res.code === 200) {
               this.treeList = res.content
+              if (data) {
+                let newarr = []
+                for (var i in res.content[0].children) {
+                  if (res.content[0].children[i].children) {
+                    newarr.push(res.content[0].children[i].children)
+                  } else {
+                    newarr.push(res.content[0].children)
+                  }
+                  if (res.content[0].children[i].children) {
+                    for (var j in res.content[0].children[i].children) {
+                      newarr.push(res.content[0].children[i].children[j])
+                    }
+                  }
+                }
+                let NewTask = newarr.flat(Infinity).filter((itme) => {
+                  return itme.id == data.id
+                })
+                this.handleNodeClick(NewTask[0])
+              }
             } else {
               this.$message.error(res.msg)
             }
@@ -1132,11 +1152,17 @@ export default {
           })
       } else {
         const projectId = { projectId: this.options[0].id }
+        console.log('projectId---=-=', projectId)
         job
           .getTreeData(projectId)
           .then((res) => {
             if (res.code === 200) {
+              const NewTask =
+                res.content[0].children[res.content[0].children.length - 1]
               this.treeList = res.content
+              if (data.data === 'NewTask') {
+                this.handleNodeClick(NewTask)
+              }
             } else {
               this.$message.error(res.msg)
             }
@@ -1501,23 +1527,18 @@ export default {
         .then((res) => {
           console.log('pppppp>>>>>>>', res)
           if (res.code === 200) {
-            this.getDataTree()
+            this.getDataTree({ data: 'NewTask', id: res.content })
             this.selectRow = {}
             if (res.content !== '请选择父级目录') {
               this.$store.commit('changeGroupName', this.chineseName)
               this.$store.commit('changeJobId', parseInt(res.content))
-              console.log(res.content)
-              console.log(
-                this.$store.state.taskAdmin.GroupId,
-                'this.$store.state.taskAdmin.GroupId'
-              )
               this.showHive = false
               this.chineseName = ''
               this.englishName = ''
               this.task = ''
               if (this.currentJob) {
                 console.log('this.currentJob', this.currentJob)
-                this.createNewJob(this.currentJob)
+                // this.createNewJob(this.currentJob)
                 this.currentJob = ''
               }
               this.chineseName = ''
@@ -1968,6 +1989,10 @@ export default {
 }
 </script>
 <style lang="scss">
+.el-tabs__header {
+  margin: 0;
+  padding: 0;
+}
 .Management {
   display: flex;
   // min-height: 660px;
