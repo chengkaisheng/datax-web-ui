@@ -1113,8 +1113,6 @@ export default {
     },
     // 获取tree数据结构
     getDataTree(data) {
-      console.log('有木有', data)
-      console.log(this.$store.state.project.currentItem, 'currentItem')
       if (this.$store.state.project.currentItem) {
         const projectId = this.$store.state.project.currentItem.split('/')[0]
         job
@@ -1138,6 +1136,7 @@ export default {
                     }
                   }
                 }
+                console.log(newarr.flat(Infinity))
                 let NewTask = newarr.flat(Infinity).filter((itme) => {
                   return itme.id == data.id
                 })
@@ -1152,7 +1151,6 @@ export default {
           })
       } else {
         const projectId = { projectId: this.options[0].id }
-        console.log('projectId---=-=', projectId)
         job
           .getTreeData(projectId)
           .then((res) => {
