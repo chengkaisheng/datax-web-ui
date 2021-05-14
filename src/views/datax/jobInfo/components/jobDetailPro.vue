@@ -1495,7 +1495,7 @@ export default {
       console.log(this.jobInfo.jobType, 'this.jobInfo.jobType', currentTask.id)
       this.$store.commit('SET_JOBINFO_TYPE', currentTask.jobType)
       this.editPanelId = currentTask.id
-      console.log(this.editPanelShow)
+      // console.log(this.editPanelShow)
       this.editPanelShow = true
       console.log(this.editPanelId, this.editPanelShow, 'this.editPanelId')
     },

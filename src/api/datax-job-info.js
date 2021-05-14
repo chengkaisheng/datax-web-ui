@@ -296,6 +296,15 @@ export function workflowTree(params) {
   })
 }
 
+// 查询工作流tree列表接口
+export function workflowList(params) {
+  return request({
+    url: 'api/jobWorkflow/workFlowTree',
+    method: 'get',
+    params
+  })
+}
+
 // 新建工作流或文件夹接口
 export function addWorkflow(data) {
   return request({

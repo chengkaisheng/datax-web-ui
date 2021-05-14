@@ -238,7 +238,7 @@ export const asyncRoutes = [
         path: 'jobInfo',
         name: 'JobInfo',
         component: () => import('@/views/datax/jobInfo/index'),
-        meta: { title: '数据研发', icon: 'icon_svg08' }
+        meta: { title: '数据研发', icon: 'icon_svg08', keepAlive: true }
       },
       {
         path: 'jobInfo2',
