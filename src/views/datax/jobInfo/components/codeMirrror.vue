@@ -99,6 +99,7 @@ export default {
       SingleData: {},
       jobtype: '',
       _editor: null,
+      // DataMerging: ''
     }
   },
   computed: {
@@ -108,15 +109,29 @@ export default {
       } else if (this.code) {
         return this.code
       }
-    },
+    }
   },
   watch: {
-    '$store.state.taskAdmin.setcode': function () {
-      this.code = this.$store.state.taskAdmin.setcode
+    // desbel(val){
+    //   console.log(val)
+    // },
+    '$store.state.taskAdmin.setcode':{
+       deep: true,
+      handler: function(newValue) {
+        // if (newValue !== oldValue) {
+        //   console.log(newValue, 'newValue12')
+        //   this.removeJobTab(newValue)
+        // }
+        this.code = newValue
+        console.log(this.code)
+      }
+      // this.code = this.$store.state.taskAdmin.setcode
+      // console.log(this.code)
     },
     code(val) {
       console.log('val----->', val)
-      this.$store.commit('SETREDDOT', true)
+      // this.code = val
+      // this.$store.commit('SETREDDOT', true)
       if (this.$store.state.taskAdmin.setcode !== val) {
         this.$store.commit('SETREDDOT', true)
       } else {
@@ -159,7 +174,7 @@ export default {
       // }
       this.tips = Object.assign(this.tips, tableObj)
       console.log(this.tips, 'tips2')
-    },
+    }
   },
   beforeMount() {
     // const columeObj = {};
@@ -176,6 +191,7 @@ export default {
   created() {
     this.code = this.$store.state.taskAdmin.setcode
     this.jobtype = this.$store.state.taskAdmin.SingleData
+    // this.searchCode()
   },
   mounted() {
     const editor = this.mountCodeMirror()
@@ -521,8 +537,11 @@ element.style {
 .tips {
   color: red;
 }
-
+>>> .CodeMirror-sizer{
+  margin-left: 30px;
+}
 >>> .CodeMirror-lines {
+  // margin-left: 30px;
   padding: 4px 0;
   line-height: 15px;
 }

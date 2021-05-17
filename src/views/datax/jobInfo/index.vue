@@ -323,39 +323,41 @@ rkJggg=="
         </el-tab-pane>
 
         <el-tab-pane
-          v-for="item in $store.state.taskAdmin.taskDetailList"
+          v-for="item in tablist"
           :key="item.content.id"
           :label="item.title"
           :name="item.content.id + ''"
         >
           <span slot="label">
-            <svg-icon
-              v-if="item.content.jobType && item.content.jobType !== 'IMPORT'"
-              :icon-class="item.content.jobType"
-              style="font-size: 15px; margin-right: 3px"
-            />
-            <svg
-              v-else
-              id="Layer_1"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="3px"
-              width="15px"
-              height="15px"
-              style="margin-right: 3px"
-              viewBox="0 3 15 15"
-              enable-background="new 0 3 15 15"
-              xml:space="preserve"
-            >
-              <image
-                id="image0"
-                width="15"
-                height="15"
-                x="0"
-                y="6"
-                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
+            <el-tooltip class="item" effect="dark" placement="top-end">
+              <span>
+                <svg-icon
+                  v-if="item.content.jobType && item.content.jobType !== 'IMPORT'"
+                  :icon-class="item.content.jobType"
+                  style="font-size: 15px; margin-right: 3px"
+                />
+                <svg
+                  v-else
+                  id="Layer_1"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  x="0px"
+                  y="3px"
+                  width="15px"
+                  height="15px"
+                  style="margin-right: 3px"
+                  viewBox="0 3 15 15"
+                  enable-background="new 0 3 15 15"
+                  xml:space="preserve"
+                >
+                  <image
+                    id="image0"
+                    width="15"
+                    height="15"
+                    x="0"
+                    y="6"
+                    href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
 AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAXVBMVEX/////kUj/kkj/kUj/
 lUr/i0b/k0b/kkf/kkf/kEf/k0f/k0b/kkf/kkf/kUj/kkf/kEj/lEf/kUf/kUf/kUj/j0f/kUb/
 k0j/kkf/lkv/kUj/kUf//wD/kUf///+LAJe9AAAAHXRSTlMAw9mjGAtQcP7pYUnnto7pYzLrQaQZ
@@ -370,10 +372,11 @@ eXBlAGltYWdlL3BuZz+yVk4AAAAXdEVYdFRodW1iOjpNVGltZQAxNjEyNDI4OTAz6wc9eAAAABF0
 RVh0VGh1bWI6OlNpemUAMjk4QkK3drNWAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8vYXBwL3Rt
 cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
 rkJggg=="
-              />
-            </svg>
-            {{ item.title }}
-            <!-- <span
+                  />
+                </svg>
+                {{ item.title }}
+              </span>
+              <!-- <span
               style="
                 display: inline-block;
                 width: 5px;
@@ -382,13 +385,17 @@ rkJggg=="
                 border-radius: 50%;
               "
             ></span> -->
-          </span>
+              <div slot="content">
+                <div> {{ item.title }}</div>
+              </div>
+            </el-tooltip></span>
           <JobDetailPro
             v-if="
               item.content.jobType !== 'VJOB' &&
                 item.content.jobType !== 'IMPALA' &&
                 item.content.jobType !== 'HIVE'
             "
+            ref="jobfp"
             :job-info="$store.state.taskAdmin.jobInfo"
             @deleteJob="getItem"
             @deleteDetailTab="clearJobTab"
@@ -826,7 +833,8 @@ export default {
       targetId: '', // 目标id
       dropId: '', // 被拖拽id
       delType: '', // 删除的类型
-      conut: ''
+      conut: '',
+      tablist: []
     }
   },
   computed: {
@@ -904,7 +912,7 @@ export default {
     '$store.state.project.currentItem': {
       deep: true,
       handler: function(newValue, oldValue) {
-        if (oldValue) {
+        if (newValue) {
           const commandId = newValue.split('/')[0]
           const commandName = newValue.split('/')[1]
           this.selectValue = commandName
@@ -963,6 +971,16 @@ export default {
           console.log(newValue, 'newValue12')
           this.removeJobTab(newValue)
         }
+      }
+    },
+    '$store.state.taskAdmin.taskDetailList': {
+      deep: true,
+      handler: function(newValue) {
+        // if (newValue !== oldValue) {
+        //   console.log(newValue, 'newValue12')
+        //   this.removeJobTab(newValue)
+        // }
+        this.tablist = newValue
       }
     },
     search: function(val) {
@@ -1039,9 +1057,39 @@ export default {
   deactivated() {
     alert('触发')
   },
-  activated() {
-    // handleNodeClick(this.$store.state.taskAdmin.Singledata)
-    console.log('所有列表', this.$store.state.taskAdmin.taskDetailList)
+  // activated() {
+  //   // this.tablist = this.$store.state.taskAdmin.taskDetailList
+  //   // handleNodeClick(this.$store.state.taskAdmin.Singledata)
+  //   console.log('所有列表', this.$store.state.taskAdmin.taskDetailList)
+  //   if (sessionStorage.getItem('level') === '2') {
+  //     this.showAdmin = false
+  //   } else {
+  //     this.showAdmin = true
+  //   }
+  //   this.getItem()
+  //   setTimeout(() => {
+  //     this.getDataTree()
+  //   }, 600)
+  //   const p = {
+  //     current: 1,
+  //     size: 200,
+  //     ascs: 'datasource_name',
+  //     projectId: this.$store.state.project.currentItem
+  //       ? this.$store.state.project.currentItem.split('/')[0]
+  //       : ''
+  //   }
+  //   jdbcDsList(p).then((response) => {
+  //     const { records } = response
+  //     console.log(records, 'records________________________')
+  //     this.$store.commit('SET_DATASOURCE', records)
+  //   })
+  //   // console.log(this.$store.state.taskAdmin.Singledata)
+  //   this.handleNodeClick(this.$store.state.taskAdmin.SingleData)
+  // },
+  created() {
+    this.tablist = this.$store.state.taskAdmin.taskDetailList
+    //   // handleNodeClick(this.$store.state.taskAdmin.Singledata)
+    // console.log('所有列表', this.$store.state.taskAdmin.taskDetailList)
     if (sessionStorage.getItem('level') === '2') {
       this.showAdmin = false
     } else {
@@ -1064,35 +1112,7 @@ export default {
       console.log(records, 'records________________________')
       this.$store.commit('SET_DATASOURCE', records)
     })
-    // console.log(this.$store.state.taskAdmin.Singledata)
-    this.handleNodeClick(this.$store.state.taskAdmin.SingleData)
-  },
-  created() {
-  //   // handleNodeClick(this.$store.state.taskAdmin.Singledata)
-  //   console.log('所有列表', this.$store.state.taskAdmin.taskDetailList)
-    if (sessionStorage.getItem('level') === '2') {
-      this.showAdmin = false
-    } else {
-      this.showAdmin = true
-    }
-    this.getItem()
-    setTimeout(() => {
-      this.getDataTree()
-    }, 600)
-    //   const p = {
-    //     current: 1,
-    //     size: 200,
-    //     ascs: 'datasource_name',
-    //     projectId: this.$store.state.project.currentItem
-    //       ? this.$store.state.project.currentItem.split('/')[0]
-    //       : ''
-    //   }
-    //   jdbcDsList(p).then((response) => {
-    //     const { records } = response
-    //     console.log(records, 'records________________________')
-    //     this.$store.commit('SET_DATASOURCE', records)
-    //   })
-    //   console.log(this.$store.state.taskAdmin.SingleData)
+    // console.log(this.$store.state.taskAdmin.SingleData)
     //   // this.handleNodeClick(this.$store.state.taskAdmin.Singledata)
     this.handleNodeClick(this.$store.state.taskAdmin.SingleData)
   },
@@ -1186,6 +1206,7 @@ export default {
       console.log('ele', ele)
       this.jobType = ele.name
       console.log(this.jobType, 'tthis ')
+
       const t = this.List.filter(
         (item) => item.id === parseInt(this.jobDetailIdx)
       )
@@ -1196,36 +1217,41 @@ export default {
           this.$store.commit('changeTreeId', t[0].projectGroupId)
         }
       }
-      job.getTaskInfo(ele.name).then((res) => {
-        console.log(res, 'content')
-        if (res.code === 200) {
-          if (res.content) {
-            console.log('content----->>>>', res.content.jobParam)
-            this.$store.commit('SET_JOB_INFO', res.content)
-            this.$store.commit('SETCODE', res.content.jobParam)
-            this.detailData = res.content
-            this.getJobDetail(res.content)
+      this.$store.commit('SETCODE', '')
+      this.$nextTick(() => {
+        job.getTaskInfo(ele.name).then((res) => {
+          console.log(res, 'content')
+          if (res.code === 200) {
+            if (res.content) {
+              console.log('content----->>>>', res.content.jobParam)
+              this.$store.commit('SET_JOB_INFO', res.content)
+              this.$store.commit('SETCODE', res.content.jobParam)
+              this.detailData = res.content
+              this.getJobDetail(res.content)
+            } else {
+              this.createNewJob(res.content.jobType)
+            }
           } else {
-            // this.createNewJob(data.jobType)
+            this.createNewJob(res.content.jobType)
           }
-        } else {
-          // this.createNewJob(data.jobType)
-        }
+        })
+          .catch((err) => {
+            console.log(err)
+          })
+        job.ParametersList({
+          jobId: ele.name
+        })
+          .then((res) => {
+            console.log('ParametersList===---', res)
+            this.$store.commit('ParametersList', res.content)
+            this.parameters = res.content
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+        this.$store.commit('changeJobId', ele.name)
       })
-        .catch((err) => {
-          console.log(err)
-        })
-      job.ParametersList({
-        jobId: ele.name
-      })
-        .then((res) => {}).then((res) => {
-          console.log('ParametersList===---', res)
-          this.$store.commit('ParametersList', res.content)
-          this.parameters = res.content
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+      this.$forceUpdate()
     },
     clearJobTab(name) {
       console.log(name, 'clearJobTab')
@@ -2036,7 +2062,7 @@ export default {
 .Management {
   display: flex;
   // min-height: 660px;
-  height: calc(100vh - 50px);
+  // height: calc(100vh - 50px);
   // margin: 24px;
   // box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.1);
   // border-radius: 8px;
@@ -2306,8 +2332,8 @@ export default {
     // min-height: 630px;
     .el-tabs {
       .el-tabs__content {
-        height: calc(100vh - 80px);
-        overflow-y: auto;
+        // height: calc(100vh - 80px);
+        // overflow-y: auto;
         // overflow-x: auto;
         // background-color: #f7f9fb;
       }
@@ -2390,7 +2416,7 @@ export default {
           border-top: 1px solid #f8f8fa;
           .el-tabs__item {
             // width: 100%;
-             width: 150px;
+             width: 200px;
             border: none;
             border-top: 1px solid #f8f8fa;
             border-radius: 6px 6px 0px 0px;

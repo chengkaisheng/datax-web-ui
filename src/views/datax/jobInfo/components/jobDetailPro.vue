@@ -1224,6 +1224,7 @@ export default {
         this.list = content.data
         this.listLoading = false
         this.$store.commit('SET_TASKLIST', this.list)
+        console.log(this.list)
         const t = this.list.filter(
           (item) => item.id === this.$store.state.taskAdmin.jobInfo.id
         )
@@ -1232,7 +1233,11 @@ export default {
     },
     incStartTimeFormat(vData) {},
 
-    updateData() {},
+    // updateData() {
+    //   this.currentTask = this.jobInfo
+    //   this.myId = this.guid
+    //   this.temp = this.$store.state.taskAdmin.jobDataDetail
+    // },
 
     viewJson() {
       this.jsonshow = !this.jsonshow
@@ -1560,7 +1565,9 @@ export default {
 
 <style lang="scss" scoped>
 .header {
-  overflow: hidden;
+  height: 42px;
+  line-height: 42px;
+  // overflow: hidden;
   padding: 10px 0;
   border-bottom: 1px solid rgba(215, 215, 215, 1);
 }

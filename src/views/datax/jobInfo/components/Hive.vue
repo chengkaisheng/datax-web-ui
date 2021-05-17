@@ -15,10 +15,12 @@
         class="DraWer"
       >
         <div class="parameter">
-          <span style="font-size: 14px; color: #ccc"
-            ><i class="Configurable" style="color: #000; padding-right: 40px"
-              >可配置参数：{{ itme.parameter }}</i
-            >
+          <span
+            style="font-size: 14px; color: #ccc"
+          ><i
+             class="Configurable"
+             style="color: #000; padding-right: 40px"
+           >可配置参数：{{ itme.parameter }}</i>
             <el-input
               v-show="isshow"
               v-model="itme.parameters"
@@ -36,8 +38,8 @@
     </el-dialog>
     <div class="elid">
       <CodeMirror
-        :desbel="desbel"
         ref="codemirror"
+        :desbel="desbel"
         @interrupt="interrupt"
         @querysql="runQuery"
         @saveQuery="saveQuery"
@@ -95,8 +97,7 @@
               style="margin-bottom: 20px"
               type="success"
               @click="Addhandel"
-              >添加</el-button
-            >
+            >添加</el-button>
             <el-button
               size="small"
               style="margin-bottom: 20px"
@@ -106,15 +107,13 @@
                   drawer = false
                 }
               "
-              >取消</el-button
-            >
+            >取消</el-button>
             <el-button
               size="small"
               style="margin-bottom: 20px"
               type="success"
               @click="SaveParameter"
-              >保存</el-button
-            >
+            >保存</el-button>
           </div>
         </div>
       </el-drawer>
@@ -129,8 +128,7 @@
               this.color = 1
             }
           "
-          >任务日志</span
-        >
+        >任务日志</span>
       </div>
       <div class="LOGS">
         <div v-for="item in loglist" :key="item.id">
@@ -142,15 +140,16 @@
               >> {{ item.logtime }}
             </p>
             <span
-              style="display: inline-block; width: 100%"
               v-if="item.content !== ''"
+              style="display: inline-block; width: 100%"
             >
               >> {{ item.logtime }} {{ item.content }}
             </span>
-            <br />
-            <span v-if="item.tableData !== '...'" class="line1"
-              >>> {{ item.logtime }} [执行结果]: Success</span
-            >
+            <br>
+            <span
+              v-if="item.tableData !== '...'"
+              class="line1"
+            >>> {{ item.logtime }} [执行结果]: Success</span>
           </div>
           <div
             v-if="item.error"
@@ -158,15 +157,11 @@
           >
             <span style="display: inline-block; width: 100%" class="err1">
               >> {{ item.logtime }}
-              <span style="display: inline-block; width: 6px"></span
-              >{{ item.content }}</span
-            >
-            <br />
+              <span style="display: inline-block; width: 6px" />{{ item.content }}</span>
+            <br>
             <span class="line1">
               >> {{ item.logtime }}
-              <span style="display: inline-block; width: 10px"></span
-              >[EXCEPTION]: <span class="err1">{{ item.error }}</span></span
-            >
+              <span style="display: inline-block; width: 10px" />[EXCEPTION]: <span class="err1">{{ item.error }}</span></span>
           </div>
         </div>
       </div>
@@ -187,7 +182,7 @@ import {
   sqlContextCreate,
   asyncSqlExecuteQuery,
   getAsyncTaskInfo,
-  getSqlExecuteTaskResults,
+  getSqlExecuteTaskResults
 } from '@/graphQL/graphQL'
 import jsonFormatVue from '../../../tool/jsonFormat.vue'
 export default {
@@ -195,7 +190,7 @@ export default {
   components: {
     JsonEditor,
     MarddownEditor,
-    CodeMirror,
+    CodeMirror
   },
   data() {
     return {
@@ -203,9 +198,9 @@ export default {
       moment: moment,
       loadingtext: '',
       loading: false,
-      //替换参数
+      // 替换参数
       ReplaceParameters: [],
-      //配置参数
+      // 配置参数
       parameters: [
         // {
         //   id: '',
@@ -217,14 +212,14 @@ export default {
       color: 1,
       logs: false,
       numberValidateForm: {
-        age: '',
+        age: ''
       },
       first: 'first',
       DialogVisiBle: false,
       dialogVisible: false,
       activeName: 'second',
       temp: {
-        triggerStatus: '1',
+        triggerStatus: '1'
       },
       drawer: false,
       isshow: true,
@@ -237,7 +232,7 @@ export default {
         current: 1,
         size: 10000,
         projectId: '',
-        datasourceName: '',
+        datasourceName: ''
       },
       userName: '',
       password: '',
@@ -245,7 +240,23 @@ export default {
       tableData: [],
       code: '',
       getinto: false,
-      status: 'executing',
+      status: 'executing'
+    }
+  },
+  watch: {
+    parameters: {
+      //       handler((val)=>{
+      // this.parameters=val
+      //     })
+      deep: true,
+      handler(newValue) {
+        // if (newValue !== oldValue) {
+        //   console.log(newValue, 'newValue12')
+        //   this.removeJobTab(newValue)
+        // }
+        // console.log(newValue)
+        this.parameters = newValue
+      }
     }
   },
   created() {
@@ -253,9 +264,8 @@ export default {
     this.parameters = this.$store.state.taskAdmin.ParametersList
     this.ReplaceParameters = this.$store.state.taskAdmin.ParametersList
   },
-  watch: {},
   methods: {
-    //中断运行
+    // 中断运行
     interrupt() {
       this.desbel = true
       this.status = 'stop'
@@ -269,7 +279,7 @@ export default {
           param: this.parameters[i].parameter,
           value:
             this.ReplaceParameters[i].parameters ||
-            this.parameters[i].parameter,
+            this.parameters[i].parameter
         })
       }
       for (let i = 0; i < replacedata.length; i++) {
@@ -329,7 +339,7 @@ export default {
       this.parameters.push({
         id: '',
         jobId: this.$store.state.taskAdmin.SingleData.jobId,
-        parameter: '',
+        parameter: ''
       })
     },
     handleClose() {},
@@ -405,9 +415,9 @@ export default {
                   authModelId: 'native',
                   credentials: {
                     username: this.userName,
-                    userPassword: this.password,
-                  },
-                },
+                    userPassword: this.password
+                  }
+                }
               }
               if (sqlarr[0] === '') {
                 this.$message('没有要执行的sql...')
@@ -417,13 +427,13 @@ export default {
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                 content: '开始执行sql...',
-                tableData: '...',
+                tableData: '...'
               })
               // 1. 创建连接
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                 content: '创建连接...',
-                tableData: '...',
+                tableData: '...'
               })
               const Createconnection = await createConnection(params1).catch(
                 (err) => {
@@ -436,7 +446,7 @@ export default {
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                 content: '连接id: ' + Createconnection.data.createConnection.id,
-                tableData: '...',
+                tableData: '...'
               })
               console.log('创建连接', Createconnection)
 
@@ -444,14 +454,14 @@ export default {
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                 content: '初始化连接...',
-                tableData: '...',
+                tableData: '...'
               })
               const params2 = {
                 id: Createconnection.data.createConnection.id,
                 credentials: {
                   userName: this.userName,
-                  userPassword: this.password,
-                },
+                  userPassword: this.password
+                }
               }
               console.log('params2------->', params2)
               const resInitConnection = await initConnection(params2).catch(
@@ -466,7 +476,7 @@ export default {
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                 content:
                   '初始化连接完成: ' + resInitConnection.data.connection.id,
-                tableData: '...',
+                tableData: '...'
               })
               if (sqlarr[0] === '') {
                 this.$message('没有要执行的sql...')
@@ -478,10 +488,10 @@ export default {
                 this.loglist.push({
                   logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                   content: '开始执行sql: [' + sqlOne + ']',
-                  tableData: '...',
+                  tableData: '...'
                 })
                 const params3 = {
-                  connectionId: resInitConnection.data.connection.id,
+                  connectionId: resInitConnection.data.connection.id
                 }
                 console.log('params3------->', params3)
                 const Createcontext = await sqlContextCreate(params3).catch(
@@ -495,7 +505,7 @@ export default {
                   logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                   content:
                     '创建上下文, 上下文id: ' + Createcontext.data.context.id,
-                  tableData: '...',
+                  tableData: '...'
                 })
                 console.log('创建上下文', Createcontext.data.context)
                 const params4 = {
@@ -505,8 +515,8 @@ export default {
                   filter: {
                     offset: 0,
                     limit: 200,
-                    constraints: [],
-                  },
+                    constraints: []
+                  }
                 }
                 console.log('params4------>', params4)
                 const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(
@@ -515,7 +525,7 @@ export default {
                 console.log('执行sql', resAsyncSqlExecuteQuery)
                 const params5 = {
                   taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
-                  removeOnFinish: false,
+                  removeOnFinish: false
                 }
                 console.log('params5----->', params5)
                 let queryStatus = ''
@@ -537,7 +547,7 @@ export default {
                       title: '错误sql返回',
                       logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                       content: sqlOne,
-                      error: resGetAsyncTaskInfo.data.taskInfo.error.message,
+                      error: resGetAsyncTaskInfo.data.taskInfo.error.message
                     })
                     this.desbel = true
                     this.getinto = false
@@ -547,13 +557,13 @@ export default {
                     this.loglist.push({
                       logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                       content: '执行状态: ' + queryStatus,
-                      tableData: '...',
+                      tableData: '...'
                     })
                   }
                 }
                 // if (queryStatus === 'Finished') {}
                 const params6 = {
-                  taskId: resGetAsyncTaskInfo.data.taskInfo.id,
+                  taskId: resGetAsyncTaskInfo.data.taskInfo.id
                 }
                 const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
                   params6
@@ -571,7 +581,7 @@ export default {
                   this.loglist.push({
                     logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                     content: sqlOne,
-                    tableData: this.tableData,
+                    tableData: this.tableData
                   })
                   this.getinto = false
                   console.log('this.loglist====---->', this.loglist)
@@ -603,14 +613,14 @@ export default {
                   this.loglist.push({
                     logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                     content: sqlOne,
-                    tableData: this.tableData,
+                    tableData: this.tableData
                   })
                   this.getinto = false
                   this.$message.success('执行成功')
                   this.loglist.push({
                     logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                     content: '执行完成',
-                    tableData: '...',
+                    tableData: '...'
                   })
                   console.log('成功了', resGetSqlExecuteTaskResults)
                 }
@@ -680,9 +690,9 @@ export default {
                   authModelId: 'native',
                   credentials: {
                     username: this.userName,
-                    userPassword: this.password,
-                  },
-                },
+                    userPassword: this.password
+                  }
+                }
               }
               if (sqlarr[0] === '') {
                 this.$message('没有要执行的sql...')
@@ -691,13 +701,13 @@ export default {
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                 content: '开始执行sql...',
-                tableData: '...',
+                tableData: '...'
               })
               // 1. 创建连接
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                 content: '创建连接...',
-                tableData: '...',
+                tableData: '...'
               })
               console.log('params1------>', params1)
               // 创建连接
@@ -711,7 +721,7 @@ export default {
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                 content: '连接id: ' + Createconnection.data.createConnection.id,
-                tableData: '...',
+                tableData: '...'
               })
               console.log('创建连接', Createconnection)
 
@@ -719,15 +729,15 @@ export default {
               this.loglist.push({
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                 content: '初始化连接...',
-                tableData: '...',
+                tableData: '...'
               })
               console.log('创建连接', Createconnection.data)
               const params2 = {
                 id: Createconnection.data.createConnection.id,
                 credentials: {
                   userName: this.userName,
-                  userPassword: this.password,
-                },
+                  userPassword: this.password
+                }
               }
               console.log('params2------>', params2)
               // 初始化连接
@@ -748,7 +758,7 @@ export default {
                 logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                 content:
                   '初始化连接完成: ' + resInitConnection.data.connection.id,
-                tableData: '...',
+                tableData: '...'
               })
               console.log('sqlarr', sqlarr)
               if (sqlarr[0] === '') {
@@ -761,11 +771,11 @@ export default {
                 this.loglist.push({
                   logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                   content: '开始执行sql: [' + sqlOne + ']',
-                  tableData: '...',
+                  tableData: '...'
                 })
                 console.log('初始化连接', resInitConnection)
                 const params3 = {
-                  connectionId: resInitConnection.data.connection.id,
+                  connectionId: resInitConnection.data.connection.id
                 }
                 console.log('params3----->', params3)
                 const Createcontext = await sqlContextCreate(params3).catch(
@@ -779,7 +789,7 @@ export default {
                   logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                   content:
                     '创建上下文, 上下文id: ' + Createcontext.data.context.id,
-                  tableData: '...',
+                  tableData: '...'
                 })
                 console.log('创建上下文', Createcontext)
                 const params4 = {
@@ -789,8 +799,8 @@ export default {
                   filter: {
                     offset: 0,
                     limit: 200,
-                    constraints: [],
-                  },
+                    constraints: []
+                  }
                 }
                 console.log('params4------>', params4)
                 const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(
@@ -800,7 +810,7 @@ export default {
                 console.log('执行sql', resAsyncSqlExecuteQuery)
                 const params5 = {
                   taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
-                  removeOnFinish: false,
+                  removeOnFinish: false
                 }
                 console.log('params5----->', params5)
                 let queryStatus = ''
@@ -822,7 +832,7 @@ export default {
                       title: '错误sql返回',
                       logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                       content: sqlOne,
-                      error: resGetAsyncTaskInfo.data.taskInfo.error.message,
+                      error: resGetAsyncTaskInfo.data.taskInfo.error.message
                     })
                     if (i === sqlarr.length - 2) {
                       this.desbel = true
@@ -834,7 +844,7 @@ export default {
                     this.loglist.push({
                       logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                       content: '执行状态:' + queryStatus,
-                      tableData: '...',
+                      tableData: '...'
                     })
                     for (let i = 0; i <= 1000; i++) {
                       console.log(queryStatus, 'queryStatus')
@@ -842,7 +852,7 @@ export default {
                   }
                 }
                 const params6 = {
-                  taskId: resGetAsyncTaskInfo.data.taskInfo.id,
+                  taskId: resGetAsyncTaskInfo.data.taskInfo.id
                 }
                 const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
                   params6
@@ -876,7 +886,7 @@ export default {
                   this.loglist.push({
                     logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                     content: sqlOne,
-                    tableData: this.tableData,
+                    tableData: this.tableData
                   })
                   if (i === sqlarr.length - 2) {
                     this.desbel = true
@@ -886,7 +896,7 @@ export default {
                   this.loglist.push({
                     logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                     content: '执行完成',
-                    tableData: '...',
+                    tableData: '...'
                   })
                   console.log('成功了', resGetSqlExecuteTaskResults)
                 }
@@ -912,7 +922,7 @@ export default {
                   this.loglist.push({
                     logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                     content: sqlOne,
-                    tableData: this.tableData,
+                    tableData: this.tableData
                   })
                   this.getinto = false
                   this.$message.success('执行成功')
@@ -972,7 +982,7 @@ export default {
           replaceParam: '',
           replaceParamType: 'Timestamp',
           userId: 0,
-          id: this.$store.state.taskAdmin.GroupId,
+          id: this.$store.state.taskAdmin.GroupId
         }
         this.code = val
         job
@@ -980,7 +990,7 @@ export default {
           .then((res) => {
             this.$message({
               message: '保存成功',
-              type: 'success',
+              type: 'success'
             })
             this.loading = false
             console.log(res)
@@ -1026,7 +1036,7 @@ export default {
           readerTable: '',
           replaceParam: '',
           replaceParamType: 'Timestamp',
-          userId: 0,
+          userId: 0
         }
         console.log('this.store', this.SingleData)
         console.log('------->', val)
@@ -1055,8 +1065,8 @@ export default {
     },
     handleClick(tab, event) {
       console.log(tab, event)
-    },
-  },
+    }
+  }
 }
 </script>
 

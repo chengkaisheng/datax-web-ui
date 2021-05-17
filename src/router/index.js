@@ -231,7 +231,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/datax/job',
     name: 'job',
-    meta: { title: '数据开发', icon: 'icon_svg08' },
+    meta: { title: '数据开发', icon: 'icon_svg08', keepAlive: true },
     children: [
 
       {
