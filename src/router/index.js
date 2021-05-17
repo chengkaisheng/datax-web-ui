@@ -233,7 +233,6 @@ export const asyncRoutes = [
     name: 'job',
     meta: { title: '数据开发', icon: 'icon_svg08' },
     children: [
-
       {
         path: 'jobInfo',
         name: 'JobInfo',
@@ -296,13 +295,18 @@ export const asyncRoutes = [
       // }
     ]
   },
-
   {
     path: '/dataDev',
     component: Layout,
     name: 'dataDev',
     meta: { title: '数据开发', icon: 'icon_svg07', keepAlive: true },
     children: [
+      {
+        path: 'ModelingDefinition',
+        component: () => import('@/views/datax/ModelingDefinition/dev'),
+        name: 'ModelingDefinition',
+        meta: { title: '建模定义', icon: 'icon_svg10', keepAlive: true }
+      },
       {
         path: 'dataDev',
         component: () => import('@/views/dataDev/dataDev'),
