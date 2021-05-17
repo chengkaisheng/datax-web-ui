@@ -1,7 +1,5 @@
 <template>
-
   <div class="Management">
-
     <div class="lt">
       <div class="top">
         <el-row>
@@ -722,7 +720,6 @@ rkJggg=="
         <el-button size="small" @click="cancelDialog"> 取消 </el-button>
       </div>
     </el-dialog>
-
   </div>
 </template>
 
@@ -1165,8 +1162,7 @@ export default {
       }
     },
     // 获取tree数据结构
-    getDataTree() {
-      console.log(this.$store.state.project.currentItem, 'currentItem')
+    getDataTree(data) {
       if (this.$store.state.project.currentItem) {
         const projectId = this.$store.state.project.currentItem.split('/')[0]
         job
@@ -1176,6 +1172,26 @@ export default {
           .then((res) => {
             if (res.code === 200) {
               this.treeList = res.content
+              if (data) {
+                const newarr = []
+                for (var i in res.content[0].children) {
+                  if (res.content[0].children[i].children) {
+                    newarr.push(res.content[0].children[i].children)
+                  } else {
+                    newarr.push(res.content[0].children)
+                  }
+                  if (res.content[0].children[i].children) {
+                    for (var j in res.content[0].children[i].children) {
+                      newarr.push(res.content[0].children[i].children[j])
+                    }
+                  }
+                }
+                console.log(newarr.flat(Infinity))
+                const NewTask = newarr.flat(Infinity).filter((itme) => {
+                  return itme.id == data.id
+                })
+                this.handleNodeClick(NewTask[0])
+              }
             } else {
               this.$message.error(res.msg)
             }
@@ -1189,7 +1205,12 @@ export default {
           .getTreeData(projectId)
           .then((res) => {
             if (res.code === 200) {
+              const NewTask =
+                res.content[0].children[res.content[0].children.length - 1]
               this.treeList = res.content
+              if (data.data === 'NewTask') {
+                this.handleNodeClick(NewTask)
+              }
             } else {
               this.$message.error(res.msg)
             }
@@ -1536,6 +1557,7 @@ export default {
       console.log('拖拽成功完成时触发的事件')
     },
     handleDrop(draggingNode, dropNode, dropType, ev) {
+      console.log('qqq')
       if (dropNode.data.type === 1) {
         job
           .dragReName({
@@ -1592,23 +1614,18 @@ export default {
         .then((res) => {
           console.log('pppppp>>>>>>>', res)
           if (res.code === 200) {
-            this.getDataTree()
+            this.getDataTree({ data: 'NewTask', id: res.content })
             this.selectRow = {}
             if (res.content !== '请选择父级目录') {
               this.$store.commit('changeGroupName', this.chineseName)
               this.$store.commit('changeJobId', parseInt(res.content))
-              console.log(res.content)
-              console.log(
-                this.$store.state.taskAdmin.GroupId,
-                'this.$store.state.taskAdmin.GroupId'
-              )
               this.showHive = false
               this.chineseName = ''
               this.englishName = ''
               this.task = ''
               if (this.currentJob) {
                 console.log('this.currentJob', this.currentJob)
-                this.createNewJob(this.currentJob)
+                // this.createNewJob(this.currentJob)
                 this.currentJob = ''
               }
               this.chineseName = ''
@@ -2059,6 +2076,10 @@ export default {
 }
 </script>
 <style lang="scss">
+.el-tabs__header {
+  margin: 0;
+  padding: 0;
+}
 .Management {
   display: flex;
   // min-height: 660px;
@@ -2397,19 +2418,20 @@ export default {
     // overflow-x: scroll;
     // overflow-x: hidden;
     overflow-y: hidden;
-     .el-tabs {
-         .el-tabs__header {
-            width: 100%;
+    .el-tabs {
+      .el-tabs__header {
+        width: 100%;
+        height: 32px;
+        line-height: 32px;
+        margin: 0;
+        .el-tabs__nav-wrap {
+          background-color: #ccc;
+          .el-tabs__nav-next,
+          .el-tabs__nav-prev {
             height: 32px;
             line-height: 32px;
-            margin: 0;
-          .el-tabs__nav-wrap {
-            background-color:#ccc;
-            .el-tabs__nav-next,.el-tabs__nav-prev {
-               height: 32px;
-              line-height: 32px;
-            }
-         }
+          }
+        }
 
         .el-tabs__nav {
           // width: 200px;

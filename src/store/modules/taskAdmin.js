@@ -128,6 +128,7 @@ const state = {
     datasourceId: '', // 数据源ID
     schema: '' // 数据库名
   },
+  lastone: '',
   setcode: '',
   currentTask: '', // 当前编辑任务的信息
   setRedDot: ''// 设置红点提示
@@ -135,6 +136,9 @@ const state = {
 }
 
 const mutations = {
+  LastOne: (state, data) => {
+    state.lastone = data
+  },
   //更改treeId
   changeTreeId: (state, payload) => {
     state.TreeId = payload

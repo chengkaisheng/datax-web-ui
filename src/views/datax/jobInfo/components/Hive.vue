@@ -362,7 +362,8 @@ export default {
       }
       const sqlarr = processedSql.split(';')
       console.log('sqlarr:', sqlarr)
-      if (sqlarr.length == 0) {
+      if (sqlarr.length <= 1) {
+        this.desbel = true
         this.$message('没有要执行的sql...')
         return
       }
@@ -420,6 +421,7 @@ export default {
                 }
               }
               if (sqlarr[0] === '') {
+                this.desbel = true
                 this.$message('没有要执行的sql...')
                 return
               }
@@ -479,6 +481,7 @@ export default {
                 tableData: '...'
               })
               if (sqlarr[0] === '') {
+                this.desbel = true
                 this.$message('没有要执行的sql...')
                 return
               }
@@ -535,7 +538,7 @@ export default {
                     return new Promise((resolve, reject) => {
                       setTimeout(() => {
                         resolve()
-                      }, 5000)
+                      }, 2000)
                     })
                   }
                   await fn()
@@ -695,6 +698,7 @@ export default {
                 }
               }
               if (sqlarr[0] === '') {
+                this.desbel = true
                 this.$message('没有要执行的sql...')
                 return
               }
@@ -762,6 +766,7 @@ export default {
               })
               console.log('sqlarr', sqlarr)
               if (sqlarr[0] === '') {
+                this.desbel = true
                 this.$message('没有要执行的sql...')
                 return
               }
@@ -820,7 +825,7 @@ export default {
                     return new Promise((resolve, reject) => {
                       setTimeout(() => {
                         resolve()
-                      }, 5000)
+                      }, 2000)
                     })
                   }
                   await fn()
@@ -940,7 +945,6 @@ export default {
         }
       }
     },
-    async RunSql(params5) {},
     saveQuery(val) {
       this.loading = true
       this.loadingtext = '保存中'
@@ -1079,6 +1083,8 @@ export default {
   background: white;
 }
 .LOGS {
+  margin: 0;
+  padding: 0;
   background: white;
   padding-bottom: 50px;
   padding-top: 10px;
