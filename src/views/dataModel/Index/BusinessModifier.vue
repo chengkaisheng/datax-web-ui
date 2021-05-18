@@ -26,8 +26,8 @@
           <el-option value="上线中">上线中</el-option>
           <el-option value="上线失败">上线失败</el-option>
         </el-select>
-        <el-button type="primary" style="margin-left: 10px;">搜索</el-button>
-        <el-button>重置</el-button>
+        <el-button size="small" type="primary" style="margin-left: 10px;">搜索</el-button>
+        <el-button size="small">重置</el-button>
         <span class="more" v-show="moreStatus=='down'" @click="changeMoreStatus('up')">
           <a>更多</a>
           <i class="el-icon-arrow-down"></i>
@@ -96,7 +96,7 @@
     </el-dialog>
     <div>
       <div class="table-button">
-        <el-button type="primary" @click="newBusinessModifier= true">+ 新建业务修饰词</el-button>
+        <el-button size="small" type="primary" @click="newBusinessModifier= true">+ 新建业务修饰词</el-button>
       </div>
 
       <el-row class="el-row-style">
@@ -179,10 +179,10 @@
             <i class="atomicword-i">0</i>个
           </span>
         </span>
-        <el-button type="info" plain>批量上线</el-button>
-        <el-button type="info" plain>批量下线</el-button>
+        <el-button size="small" type="info" plain>批量上线</el-button>
+        <el-button size="small" type="info" plain>批量下线</el-button>
         <el-dropdown trigger="click">
-          <el-button type="info" trigger="click" class="more-button">
+          <el-button size="small" type="info" trigger="click" class="more-button">
             更多批量操作
             <i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>

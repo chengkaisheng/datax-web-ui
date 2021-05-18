@@ -7,13 +7,13 @@
             搜索主题域：
             <el-input style="width: 15%;" placeholder="请输入主题域名搜索" v-model="processName"></el-input>
           </span>
-          <el-button type="primary" style="margin-left: 10px;">搜索</el-button>
-          <el-button>重置</el-button>
+          <el-button type="primary" size="small" style="margin-left: 10px;">搜索</el-button>
+          <el-button size="small">重置</el-button>
         </div>
 
         <div>
           <div class="table-button">
-            <el-button type="primary" @click="information = true">+新建一级主题域</el-button>
+            <el-button size="small" type="primary" @click="information = true">+新建一级主题域</el-button>
           </div>
           <!-- 新建一级主题域弹窗 -->
 
@@ -128,8 +128,8 @@
             规范类型：
             <el-input style="width: 15%;" placeholder v-model="processName"></el-input>
           </span>
-          <el-button type="primary" style="margin-left: 10px;">搜索</el-button>
-          <el-button>重置</el-button>
+          <el-button size="small" type="primary" style="margin-left: 10px;">搜索</el-button>
+          <el-button size="small">重置</el-button>
         </div>
 
         <div>

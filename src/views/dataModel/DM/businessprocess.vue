@@ -21,8 +21,8 @@
           <el-option value="上线中">上线中</el-option>
           <el-option value="上线失败">上线失败</el-option>
         </el-select>
-        <el-button type="primary" style="margin-left: 10px;">搜索</el-button>
-        <el-button>重置</el-button>
+        <el-button size="small" type="primary" style="margin-left: 10px;">搜索</el-button>
+        <el-button size="small">重置</el-button>
         <span class="more" v-show="moreStatus=='down'" @click="changeMoreStatus('up')">
           <a>更多</a>
           <i class="el-icon-arrow-down"></i>
@@ -42,7 +42,7 @@
 
     <div>
       <div class="table-button">
-        <el-button type="primary" @click="information = true">+ 新建业务过程</el-button>
+        <el-button size="small" type="primary" @click="information = true">+ 新建业务过程</el-button>
       </div>
       <!-- 新建业务过程弹窗 -->
       <el-dialog title="新建业务过程" :visible.sync="information" width="35%">

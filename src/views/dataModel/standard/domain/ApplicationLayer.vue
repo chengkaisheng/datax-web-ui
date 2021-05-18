@@ -7,13 +7,13 @@
             搜索主题域：
             <el-input style="width: 15%;" placeholder="请输入主题域名搜索" v-model="processName"></el-input>
           </span>
-          <el-button type="primary" style="margin-left: 10px;">搜索</el-button>
-          <el-button>重置</el-button>
+          <el-button type="primary" size="small" style="margin-left: 10px;">搜索</el-button>
+          <el-button size="small">重置</el-button>
         </div>
 
         <div>
           <div class="table-button">
-            <el-button type="primary" @click="information = true">+新建一级主题域</el-button>
+            <el-button type="primary" size="small" @click="information = true">+新建一级主题域</el-button>
           </div>
           <!-- 新建一级主题域弹窗 -->
 
@@ -142,8 +142,8 @@
             搜索主题域：
             <el-input style="width: 15%;" placeholder="请输入主题域名搜索" v-model="processName"></el-input>
           </span>
-          <el-button type="primary" style="margin-left: 10px;">搜索</el-button>
-          <el-button>重置</el-button>
+          <el-button size="small" type="primary" style="margin-left: 10px;">搜索</el-button>
+          <el-button size="small">重置</el-button>
         </div>
 
         <div>
@@ -267,7 +267,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .interlayer-content {
   width: 100%;
   margin-left: 20px;
@@ -287,5 +287,13 @@ export default {
   margin: 0 7px;
   border: 0.5px solid #ccc;
   /* color: #ccc; */
+}
+.el-input .el-input__inner {
+  height:32px;
+  line-height:32px;
+}
+.el-tabs .el-tabs__header .el-tabs__nav .el-tabs__item {
+  height:32px;
+  line-height:32px;
 }
 </style>

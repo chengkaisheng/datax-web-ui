@@ -42,8 +42,8 @@
         <span style="color: #1890FF; margin-left: 15px;">只看自己</span>
       </el-col>
       <el-col :span="4">
-        <el-button type="primary" style="margin-left: 10px;">搜索</el-button>
-        <el-button>重置</el-button>
+        <el-button size="small" type="primary" style="margin-left: 10px;">搜索</el-button>
+        <el-button size="small">重置</el-button>
       </el-col>
     </el-row>
     <!-- 新建时间修饰词弹窗 -->
@@ -72,7 +72,7 @@
     </el-dialog>
     <div>
       <div class="table-button">
-        <el-button type="primary" @click="NewTimeModifier= true">+ 新建时间修饰词</el-button>
+        <el-button size="small" type="primary" @click="NewTimeModifier= true">+ 新建时间修饰词</el-button>
       </div>
       <el-row class="el-row-style">
         <el-table :data="tableData" :header-cell-style="{background:'#fafafa'}">
@@ -155,10 +155,10 @@
             <i class="atomicword-i">0</i>个
           </span>
         </span>
-        <el-button type="info" plain>批量上线</el-button>
-        <el-button type="info" plain>批量下线</el-button>
+        <el-button size="small" type="info" plain>批量上线</el-button>
+        <el-button size="small" type="info" plain>批量下线</el-button>
         <el-dropdown trigger="click">
-          <el-button type="info" trigger="click" class="more-button">
+          <el-button size="small" type="info" trigger="click" class="more-button">
             更多批量操作
             <i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>

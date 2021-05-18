@@ -24,8 +24,8 @@
               <label>统计维度：</label>
               <el-input style="width: 40%;" placeholder v-model="processName"></el-input>
 
-              <el-button type="primary" style="margin-left: 10px;">搜索</el-button>
-              <el-button>重置</el-button>
+              <el-button size="small" type="primary" style="margin-left: 10px;">搜索</el-button>
+              <el-button size="small">重置</el-button>
               <span class="more" v-show="moreStatus=='down'" @click="changeMoreStatus('up')">
                 <a>更多</a>
                 <i class="el-icon-arrow-down"></i>
@@ -150,10 +150,10 @@
                   <i class="atomicword-i">0</i>个
                 </span>
               </span>
-              <el-button type="info" plain>批量修改负责人</el-button>
-              <el-button type="info" plain>批量上线</el-button>
-              <el-button type="info" plain>批量下线</el-button>
-              <el-button type="info" plain>批量删除</el-button>
+              <el-button size="small" type="info" plain>批量修改负责人</el-button>
+              <el-button size="small" type="info" plain>批量上线</el-button>
+              <el-button size="small" type="info" plain>批量下线</el-button>
+              <el-button size="small" type="info" plain>批量删除</el-button>
               <!-- <el-dropdown trigger="click">
                 <el-button type="info" trigger="click" class="more-button">
                   更多批量操作
@@ -314,10 +314,10 @@
                   <i class="atomicword-i">0</i>个
                 </span>
               </span>
-              <el-button type="info" plain>批量修改负责人</el-button>
-              <el-button type="info" plain>批量上线</el-button>
-              <el-button type="info" plain>批量下线</el-button>
-              <el-button type="info" plain>批量删除</el-button>
+              <el-button size="small" type="info" plain>批量修改负责人</el-button>
+              <el-button size="small" type="info" plain>批量上线</el-button>
+              <el-button size="small" type="info" plain>批量下线</el-button>
+              <el-button size="small" type="info" plain>批量删除</el-button>
               <!-- <el-dropdown trigger="click">
                 <el-button type="info" trigger="click" class="more-button">
                   更多批量操作
