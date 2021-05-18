@@ -319,23 +319,20 @@ export default {
     },
     // 编辑菜单
     async editMenu() {
-      menu
-        .editMenu({
-          title: this.editForm.name,
-          name: this.editForm.code,
-          path: this.editForm.url,
-          menuId: this.selectObj.menuId,
-        })
-        .then((res) => {
-          console.log(res)
-          this.$message.success(res)
-          this.editForm = {}
-          this.getMenuList()
-        })
-        .catch((err) => {
-          console.log(err)
-          this.$message.err(err)
-        })
+      menu.editMenu({
+        title: this.editForm.name,
+        name: this.editForm.code,
+        path: this.editForm.url,
+        menuId: this.selectObj.menuId
+      }).then((res) => {
+        console.log(res)
+        this.$message.success(res)
+        this.editForm = {}
+        this.getMenuList()
+      }).catch((err) => {
+        console.log(err);
+        this.$message.err(err)
+      })
     },
     // 重置
     reset(formName) {

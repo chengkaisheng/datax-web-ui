@@ -11,7 +11,7 @@
       </div>
       <div class="header_action" style="margin-left:27px;" @click="startData">
         <i class="el-icon-success" />
-        <span>提交</span>
+        <span>上/下线</span>
       </div>
       <div class="header_action" style="margin-left:27px;" @click="logData">
         <i class="el-icon-s-order" />
@@ -40,7 +40,7 @@
             node-key="id"
             :expand-on-click-node="false"
             @node-click="handleWorkFlow"
-            >
+          >
             <span
               slot-scope="{ node, data }"
               class="custom-tree-node"
@@ -111,12 +111,12 @@ rkJggg=="
     </el-dialog>
     <!-- 工作流调度抽屉 -->
     <el-drawer
+      ref="drawer"
       title="任务调度"
       :visible.sync="dialogDrawer"
       direction="rtl"
       custom-class="demo-drawer"
-      ref="drawer"
-      >
+    >
       <div class="demo-drawer__content">
         <el-form :model="drawerForm">
           <el-form-item label="工作流名称" label-width="100px">
@@ -159,50 +159,55 @@ rkJggg=="
             color: '#333333'
           }"
           border
-          style="width: 100%">
+          style="width: 100%"
+        >
           <el-table-column
-            label="工作流名称">
+            label="工作流名称"
+          >
             <template>
               {{ $store.state.workflow.currentData.name }}
             </template>
           </el-table-column>
           <el-table-column
             prop="triggerTime"
-            label="调度时间">
-          </el-table-column>
+            label="调度时间"
+          />
           <el-table-column
             prop="triggerMsg"
-            label="调度备注">
-          </el-table-column>
+            label="调度备注"
+          />
           <el-table-column
             prop="triggerCode"
             label="调度结果"
-            width="80">
+            width="80"
+          >
             <template slot-scope="scope">
-              {{ scope.row.triggerCode === 200 ? '成功' : '失败'}}
+              {{ scope.row.triggerCode === 200 ? '成功' : '失败' }}
             </template>
           </el-table-column>
           <el-table-column
             prop="handleTime"
-            label="执行时间">
-          </el-table-column>
+            label="执行时间"
+          />
           <el-table-column
             prop="handleMsg"
-            label="执行备注">
-          </el-table-column>
+            label="执行备注"
+          />
           <el-table-column
             prop="handleCode"
             label="执行结果"
-            width="80">
+            width="80"
+          >
             <template slot-scope="scope">
-              {{ scope.row.handleCode === 200 ? '成功' : '失败'}}
+              {{ scope.row.handleCode === 200 ? '成功' : '失败' }}
             </template>
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button
                 size="mini"
-                @click="handleView(scope.row)">查看详情</el-button>
+                @click="handleView(scope.row)"
+              >查看详情</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -213,14 +218,20 @@ rkJggg=="
     </el-dialog>
     <!-- 日志详情对话框 -->
     <el-dialog
+      ref="pre"
       class="log_content"
       append-to-body
       title="日志查看"
       :visible.sync="dialogDetails"
       width="80%"
     >
-      <div class="log-container">
-        <pre v-text="logContent" />
+      <div id="pre" ref="pre" class="log-container">
+        <!-- <pre v-text="logContent" /> -->
+        <!-- <div v-for="item in logContent">
+          <div>
+            <span />{{ item }}
+          </div>
+        </div> -->
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogDetails = false">
@@ -234,8 +245,8 @@ rkJggg=="
   </div>
 </template>
 
-<script id="code">
-import go from 'gojs'
+<script id="code" text='text/javasript' >
+import go, { List } from 'gojs'
 import * as workFlowApi from '@/api/datax-job-info'
 import * as logApi from '@/api/datax-job-log'
 import Cron from '@/components/Cron'
@@ -279,7 +290,7 @@ export default {
         {
           name: 'f',
           type: 'SHELL'
-        },
+        }
       ],
       dialogDrawer: false, // 抽屉
       project_id: '', // 当前项目Id
@@ -289,16 +300,17 @@ export default {
       dialogLogVisible: false,
       dialogDetails: false,
       // 日志内容
-      logContent: '',
+      logContent: {},
       queryLog: {
         current: 1,
         size: 10
       },
-      tableLog: [] // 工作流日志列表数据
+      tableLog: [], // 工作流日志列表数据
+      list: ''
     }
   },
   watch: {
-    'tabsIds' (val) {
+    'tabsIds'(val) {
       this.myId = val
     },
     'form.taskName'(val) {
@@ -310,7 +322,7 @@ export default {
     '$store.state.workflow.currentData'(val) {
       this.project_id = val.projectId
       console.log(this.project_id, '12356')
-    },
+    }
   },
   created() {
     this.myId = this.tabsIds
@@ -327,10 +339,13 @@ export default {
     this.init()
     this.myDiagram.model = go.Model.fromJson(this.$store.state.workflow.currentData.jobJson)
     console.log(this.tabsIds, 'tabsId')
+    // this.$refs.pre.innerHTML = this.list
+    // document.getElementById('#pre')
+    // console.log(this.$refs.pre)
   },
   methods: {
     // 获取当前项目下的任务列表
-    getCurrentProjectList (val) {
+    getCurrentProjectList(val) {
       let myType = ''
       console.log(val, 'val')
       if (val) {
@@ -355,7 +370,7 @@ export default {
       })
     },
     // 保存
-    DataSave () {
+    DataSave() {
       console.log('保存')
       let params = {}
       params = this.$store.state.workflow.currentData
@@ -374,15 +389,14 @@ export default {
       )
       console.log(JSON.parse(this.myDiagram.model.toJson()))
       console.log(this.myDiagram.model.toJson())
-
     },
     // 点击选中任务
-    handleWorkFlow (e) {
+    handleWorkFlow(e) {
       console.log(e)
       this.dataJob = e
     },
     // 执行
-    runData () {
+    runData() {
       console.log('执行')
       let params = {}
       params = this.$store.state.workflow.currentData
@@ -401,7 +415,7 @@ export default {
       })
     },
     // 提交
-    startData () {
+    startData() {
       console.log('提交')
       let params = {}
       params = this.$store.state.workflow.currentData
@@ -438,19 +452,20 @@ export default {
       }
     },
     // 查询日志
-    logData () {
+    logData() {
       console.log('查询日志')
       this.getlogList()
       this.dialogLogVisible = true
     },
     // 获取日志列表
-    getlogList () {
-      logApi.getList({
+    getlogList() {
+      logApi.workFlowPageList({
         jobDesc: 'workflow',
         current: this.queryLog.current,
         size: this.queryLog.size,
         jobId: this.$store.state.workflow.currentData.id,
-        logStatus: -1
+        // logStatus: -1
+        userId: null
       }).then((res) => {
         console.log(res, '日志数据')
         if (res.code === 200) {
@@ -461,22 +476,54 @@ export default {
       })
     },
     // 查看日志详情
-    handleView (e) {
-      console.log(e, '日志详情')
-      this.logContent = e.handleMsg
+
+    handleView(row) {
+      // alert(this.$refs.pre.div)
+      // var logContent = docment
+      document.getElementById('#pre')
+
+      console.log(row, '日志详情')
+      const childrenlist = row.children
+      var list = ''
+      childrenlist.forEach(item => {
+        for (const i in item) {
+          console.log(i)
+          this.list += `<p>${i}:${item[i]}</p>`
+        }
+      })
+      // console.log(list)
+      this.$refs.pre.innerHTML = this.list
+      // DIV.innerHTML = list
+      // this.logContent.innerHTML = list
+      // for (var i = 0;i < childrenlist.length;i++) {
+      //   console.log(childrenlist[i].key)
+      //   this.logContent = { ...childrenlist[i] }
+      //   // const lis = []
+      //   // lis.push(childrenlist[i])
+      //   for (var j in childrenlist[i]) {
+      //     console.log(j)
+      //     // this.logContent.push({ j: childrenlist[i][j] })
+      //     // console.log(j, ':', childrenlist[i][j])
+      //     // const list = {}
+      //     // list = { j= childrenlist[i][j] }
+      //     // list.push(item)
+      //     // this.logContent = childrenlist[i][j]
+      //   }
+      // }
+      // this.logContent = row.children
       this.dialogDetails = true
     },
     // 显示调度配置抽屉
-    dispatchData () {
+    dispatchData() {
       console.log('调度配置')
       this.dialogDrawer = true
     },
     // 取消抽屉
-    cancelDrawer () {
+    cancelDrawer() {
       this.dialogDrawer = false
     },
     // 任务调度提交
-    submitDrawer () {
+    submitDrawer() {
       console.log('工作流调度提交', this.drawerForm)
       let params = {}
       params = this.$store.state.workflow.currentData
@@ -497,7 +544,7 @@ export default {
       )
     },
     // 选择任务
-    sure () {
+    sure() {
       console.log('选择任务')
       const key = this.selectedNodeKey
       var selectNode = this.myDiagram.nodes.filter(function(e) {
@@ -889,7 +936,7 @@ export default {
   //     border: solid 1px lightgray;
   //   .myPalette {
   //     width: 100px;
-  //     margin-right: 2px; 
+  //     margin-right: 2px;
   //   }
   //   .myDiagram {
   //     flex-grow: 1;

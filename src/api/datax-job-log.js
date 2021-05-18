@@ -8,7 +8,13 @@ export function getList(params) {
     params
   })
 }
-
+export function workFlowPageList(params) {
+  return request({
+    url: '/api/log/workFlowPageList',
+    method: 'get',
+    params
+  })
+}
 export function clearLog(jobGroup, jobId, type) {
   return request({
     url: '/api/log/clearLog?jobGroup=' + jobGroup + '&jobId=' + jobId + '&type=' + type,
