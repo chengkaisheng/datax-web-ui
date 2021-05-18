@@ -12,10 +12,10 @@
           </a>
           <a
             v-else
-            @click="interrupt"
             :loading="$store.state.graphQL.sqlBtnLoading"
+            @click="interrupt"
           >
-            <i class="el-icon-video-pause"></i> 停止
+            <i class="el-icon-video-pause" /> 停止
           </a>
         </li>
         <li>
@@ -100,6 +100,7 @@ export default {
       jobtype: '',
       _editor: null,
       // DataMerging: ''
+      // code:''
     }
   },
   computed: {
@@ -109,21 +110,40 @@ export default {
       } else if (this.code) {
         return this.code
       }
+      // if (this.code !== '') {
+      //   return this.$store.state.taskAdmin.setcode
+      // } else {
+      //   return this.notes
+      // }
     }
   },
   watch: {
     // desbel(val){
     //   console.log(val)
     // },
-    '$store.state.taskAdmin.setcode':{
-       deep: true,
+    // DataMerging: {
+    //   handler(val) {
+    //     if (val) {
+    //       this.DataMerging = val
+    //       console.log(val, 'DataMerging')
+    //     }
+    //   }
+    // },
+    '$store.state.taskAdmin.setcode': {
+      deep: true,
       handler: function(newValue) {
         // if (newValue !== oldValue) {
         //   console.log(newValue, 'newValue12')
         //   this.removeJobTab(newValue)
         // }
-        this.code = newValue
-        console.log(this.code)
+        if (newValue) {
+          this.editor.setValue(newValue)
+        }else (
+          this.editor.setValue(this.notes)
+        )
+        // this.editor.setValue(this.notes)
+        // this.code = newValue
+        console.log(newValue)
       }
       // this.code = this.$store.state.taskAdmin.setcode
       // console.log(this.code)
@@ -189,9 +209,11 @@ export default {
     // console.log(this.tips, 'tips');
   },
   created() {
+    // console.log(this.code)
     this.code = this.$store.state.taskAdmin.setcode
     this.jobtype = this.$store.state.taskAdmin.SingleData
     // this.searchCode()
+    console.log(this.code)
   },
   mounted() {
     const editor = this.mountCodeMirror()
@@ -206,9 +228,9 @@ export default {
       this.$emit('interrupt', '')
     },
     searchCode(e) {
-      this.codemirror.execCommand('find') //触发
+      this.codemirror.execCommand('find') // 触发
     },
-    //替换
+    // 替换
     // ReplaceData() {
     //   const reg = new RegExp(this.lookupdata, 'g')
     //   console.log('1', this.code)
@@ -217,11 +239,11 @@ export default {
     //   this.$store.commit('SETCODE', Code)
     //   console.log('2', this.code)
     // },
-    //节流函数
+    // 节流函数
     throttle(fn, delay = 2000) {
       let timer = null
       let firstTime = true
-      return function (...args) {
+      return function(...args) {
         if (firstTime) {
           // 第一次加载
           fn.apply(this, args)
@@ -238,14 +260,14 @@ export default {
         }, delay)
       }
     },
-    //防抖
+    // 防抖
     debounce(fn, delay) {
       let timerId = null
-      return function () {
-        let self = this
-        let args = arguments
+      return function() {
+        const self = this
+        const args = arguments
         timerId && clearTimeout(timerId)
-        timerId = setTimeout(function () {
+        timerId = setTimeout(function() {
           fn.apply(self, args)
         }, delay || 1000)
       }
@@ -265,7 +287,7 @@ export default {
       this.$emit('querysql', {
         msg: this.infoMsg,
         code: this.editor.getSelection() || this._editor.getValue(),
-        jobtype: this.jobtype.jobType,
+        jobtype: this.jobtype.jobType
       })
     },
     /**
@@ -278,7 +300,7 @@ export default {
     sqlJobBuild() {
       // this.$route.push('/datax/job/JobInfo')
       this.$router.push({
-        path: '/datax/job/JobInfo',
+        path: '/datax/job/JobInfo'
       })
       console.log('=================')
       // window.location.href = '/datax/job/JobInfo'
@@ -286,7 +308,7 @@ export default {
 
     mountCodeMirror(code) {
       const mime = 'text/x-sql'
-      //const theme = 'ambiance' // 设置主题，不设置的会使用默认主题
+      // const theme = 'ambiance' // 设置主题，不设置的会使用默认主题
       const _this = this
       const editor = CodeMirror.fromTextArea(this.$refs.mycode, {
         mode: mime, // 选择对应代码编辑器的语言，我这边选的是数据库，根据个人情况自行设置即可
@@ -300,16 +322,16 @@ export default {
         hintOptions: {
           // 自定义提示选项,
           completeSingle: false,
-          tables: _this.tips,
+          tables: _this.tips
         },
         extraKeys: {
-          'Ctrl-P': function (editor) {
+          'Ctrl-P': function(editor) {
             let sqlContent = ''
             sqlContent = editor.getValue()
             /* 将sql内容进行格式后放入编辑器中*/
             editor.setValue(sqlFormatter.format(sqlContent))
-          },
-        },
+          }
+        }
         // configureMouse() {
         //     console.log(window.getSelection());
         //     return {
@@ -321,8 +343,8 @@ export default {
       _this.editor = editor
       editor.setSize('auto', '400px')
 
-      //代码自动提示功能，记住使用cursorActivity事件不要使用change事件，这是一个坑，那样页面直接会卡死
-      editor.on('cursorActivity', function (ins) {
+      // 代码自动提示功能，记住使用cursorActivity事件不要使用change事件，这是一个坑，那样页面直接会卡死
+      editor.on('cursorActivity', function(ins) {
         _this.code = editor.getSelection()
         if (_this.code.trim() !== '') {
           return
@@ -407,7 +429,7 @@ export default {
         _this.code = editor.getRange(startPos, endPos)
       })
 
-      editor.on('change', function (editor, change) {
+      editor.on('change', function(editor, change) {
         // 触发autocomplete
         if (change.origin === '+input') {
           var text = change.text[0]
@@ -425,11 +447,11 @@ export default {
         // _this.code = editor.getValue();
       })
       return editor
-    },
+    }
     /**
      * @description: 回显sql
      */
-  },
+  }
 }
 </script>
 
@@ -484,6 +506,23 @@ element.style {
   overflow-x: hidden;
   font-size: 13px;
   z-index: 1;
+  >>> .CodeMirror{
+    .CodeMirror-scroll{
+      .CodeMirror-sizer{
+        .CodeMirror-lines{
+          .CodeMirror-code{
+             .CodeMirror-line{
+               .cm-comment{
+                //  padding: 0 22px;
+               }
+            }
+          }
+          
+        }
+       
+      }
+    }
+  }
   .lookup {
     position: absolute;
     top: 40px;
@@ -537,12 +576,15 @@ element.style {
 .tips {
   color: red;
 }
->>> .CodeMirror-sizer{
-  margin-left: 30px;
+>>>.CodeMirror-sizer{
+  margin-left: 0px;
 }
 >>> .CodeMirror-lines {
   // margin-left: 30px;
-  padding: 4px 0;
+  // padding: 0 29px;
   line-height: 15px;
+}
+>>>.CodeMirror pre.CodeMirror-line{
+  padding:0 29px
 }
 </style>
