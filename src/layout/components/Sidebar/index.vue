@@ -7,12 +7,19 @@
         :collapse="isCollapse"
         :background-color="variables.menuBg"
         :text-color="variables.menuText"
-        :unique-opened="false"
         :active-text-color="variables.menuActiveText"
         :collapse-transition="false"
+        :unique-opened="false"
         mode="vertical"
-      >
+      > 
         <el-menu-item style="text-align: center;">
+          <template slot="title">
+            <img v-show="!isCollapse" slot="title" src="@/assets/LogoTit.png" alt="">
+          </template>
+          <svg-icon v-show="isCollapse" style="fontSize: 20px;text-align: center;" icon-class="logo1" />
+        </el-menu-item>
+        <mySide :list="userRouter"></mySide>
+        <!-- <el-menu-item style="text-align: center;">
           <template slot="title">
             <img v-show="!isCollapse" slot="title" src="@/assets/LogoTit.png" alt="">
           </template>
@@ -44,7 +51,7 @@
             </el-menu-item>
           </router-link>
         </div>
-        <!-- <sidebar-item v-for="route in beforeRouter" :key="route.path" :item="route" :base-path="route.path" /> -->
+        <sidebar-item v-for="route in beforeRouter" :key="route.path" :item="route" :base-path="route.path" /> -->
       </el-menu>
     </el-scrollbar>
 
@@ -55,11 +62,12 @@
 import { mapGetters } from 'vuex'
 import Logo from './Logo'
 import SidebarItem from './SidebarItem'
+import mySide from './myNav.vue'
 import variables from '@/styles/variables.scss'
 import * as permission from '@/api/datax-user.js'
 
 export default {
-  components: { SidebarItem, Logo },
+  components: { SidebarItem, Logo, mySide },
   computed: {
     ...mapGetters([
       'permission_routes',
@@ -93,7 +101,8 @@ export default {
       userRouter: [],
       beforeRouter: [],
       arr: [],
-      children: []
+      children: [],
+      openeds: ['0','1','2','0','3','4']
     }
   },
   created() {

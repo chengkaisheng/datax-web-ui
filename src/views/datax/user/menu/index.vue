@@ -278,7 +278,7 @@ export default {
     },
     // 编辑菜单
     async editMenu() {
-      menu.addMenu({
+      menu.editMenu({
         title: this.editForm.name,
         name: this.editForm.code,
         path: this.editForm.url,
