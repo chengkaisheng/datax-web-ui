@@ -4,19 +4,40 @@
       <el-card class="box-card">
         <div class="text item">
           <div class="left">菜单管理</div>
-          <el-col class="left-description">
-            管理权限路由。
-          </el-col>
+          <el-col class="left-description"> 管理权限路由。 </el-col>
         </div>
       </el-card>
     </div>
     <div class="main">
-      <el-form class="action-bar" label-position="right" label-width="auto" :inline="true">
+      <el-form
+        class="action-bar"
+        label-position="right"
+        label-width="auto"
+        :inline="true"
+      >
         <el-form-item>
           <el-button-group>
-            <el-button type="primary" size="small" icon="el-icon-plus" @click="showForm">添加</el-button>
-            <el-button type="primary" size="small" icon="el-icon-edit" @click="showEdit">编辑</el-button>
-            <el-button type="primary" size="small" icon="el-icon-delete" @click="confirm">删除</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              icon="el-icon-plus"
+              @click="showForm"
+              >添加</el-button
+            >
+            <el-button
+              type="primary"
+              size="small"
+              icon="el-icon-edit"
+              @click="showEdit"
+              >编辑</el-button
+            >
+            <el-button
+              type="primary"
+              size="small"
+              icon="el-icon-delete"
+              @click="confirm"
+              >删除</el-button
+            >
           </el-button-group>
         </el-form-item>
       </el-form>
@@ -59,7 +80,14 @@
           </div>
           <div class="right">
             <!-- 查看表单 -->
-            <el-col style="text-align: center;font-size: 20px; font-weight: 700; margin: 20px 0;">
+            <el-col
+              style="
+                text-align: center;
+                font-size: 20px;
+                font-weight: 700;
+                margin: 20px 0;
+              "
+            >
               <span v-if="isView">查看</span>
               <span v-if="isAdd">添加</span>
               <span v-if="isEdit">编辑</span>
@@ -122,14 +150,25 @@
                   <el-input v-model="editForm.url" />
                 </el-form-item>
               </el-form>
-              <el-col style="text-align: center;">
+              <el-col style="text-align: center">
                 <template v-if="isAdd">
-                  <el-button type="primary" size="small" @click="addMenu">保存</el-button>
-                  <el-button type="primary" size="small" @click="reset('form')">重置</el-button>
+                  <el-button type="primary" size="small" @click="addMenu"
+                    >保存</el-button
+                  >
+                  <el-button type="primary" size="small" @click="reset('form')"
+                    >重置</el-button
+                  >
                 </template>
                 <template v-if="isEdit">
-                  <el-button type="primary" size="small" @click="editMenu">保存</el-button>
-                  <el-button type="primary" size="small" @click="reset('editForm')">重置</el-button>
+                  <el-button type="primary" size="small" @click="editMenu"
+                    >保存</el-button
+                  >
+                  <el-button
+                    type="primary"
+                    size="small"
+                    @click="reset('editForm')"
+                    >重置</el-button
+                  >
                 </template>
               </el-col>
             </el-col>
@@ -141,11 +180,11 @@
 </template>
 
 <script>
-import * as user from '@/api/datax-user';
-import * as role from '@/api/datax-role';
-import * as menu from '@/api/datax-menu';
-import waves from '@/directive/waves'; // waves directive
-import { translaterMaster } from '@/utils/dictionary';
+import * as user from '@/api/datax-user'
+import * as role from '@/api/datax-role'
+import * as menu from '@/api/datax-menu'
+import waves from '@/directive/waves' // waves directive
+import { translaterMaster } from '@/utils/dictionary'
 
 export default {
   name: 'Menu',
@@ -155,53 +194,49 @@ export default {
       const statusMap = {
         published: 'success',
         draft: 'gray',
-        deleted: 'danger'
-      };
-      return statusMap[status];
-    }
+        deleted: 'danger',
+      }
+      return statusMap[status]
+    },
   },
   data() {
     return {
       tree: [],
       defaultProps: {
         children: 'children',
-        label: 'title'
+        label: 'title',
       },
       form: {
         name: '',
         code: '',
         remark: '',
-        url: ''
+        url: '',
       },
       viewForm: {
         name: '',
         code: '',
         remark: '',
-        url: ''
+        url: '',
       },
       rules: {
-        name: [
-          { required: true, message: '请输入菜单名称', trigger: 'blur' }
-        ],
-        code: [
-          { required: true, message: '请输入菜单标识', trigger: 'blur' }
-        ],
+        name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
+        code: [{ required: true, message: '请输入菜单标识', trigger: 'blur' }],
         remark: [
-          { required: true, message: '请输入菜单描述', trigger: 'blur' }
-        ]
+          { required: true, message: '请输入菜单描述', trigger: 'blur' },
+        ],
       },
       editForm: {
         name: '',
         code: '',
         remark: '',
-        url: ''
+        url: '',
       },
       isView: true,
       isAdd: false,
       isEdit: false,
       selectMid: '',
       mids: [],
-      selectObj: {}
+      selectObj: {},
     }
   },
   created() {
@@ -237,12 +272,15 @@ export default {
     },
     // 获取菜单管理列表
     getMenuList() {
-      role.menuList().then(res => {
-        console.log(res, '权限列表')
-        this.tree = res
-      }).catch(err => {
-        console.log(err)
-      })
+      role
+        .menuList()
+        .then((res) => {
+          console.log(res, '权限列表')
+          this.tree = res
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     },
     // 显示添加表单
     showForm() {
@@ -262,19 +300,22 @@ export default {
         this.selectMid = '0'
       }
       console.log(this.selectObj, 'mid')
-      menu.addMenu({
-        title: this.form.name,
-        name: this.form.code,
-        path: this.form.url,
-        parentId: this.selectMid
-      }).then((res) => {
-        console.log(res)
-        this.$message.success(res)
-        this.form = {}
-        this.getMenuList()
-      }).catch((err) => {
-        console.log(err);
-      })
+      menu
+        .addMenu({
+          title: this.form.name,
+          name: this.form.code,
+          path: this.form.url,
+          parentId: this.selectMid,
+        })
+        .then((res) => {
+          console.log(res)
+          this.$message.success(res)
+          this.form = {}
+          this.getMenuList()
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     },
     // 编辑菜单
     async editMenu() {
@@ -301,14 +342,17 @@ export default {
     },
     // 删除菜单
     async deleteMenu() {
-      menu.delMenu(this.selectObj.menuId).then((res) => {
-        console.log(res)
-        this.$message.success('删除成功')
-        this.getMenuList()
-        this.selectObj = ''
-      }).catch((err) => {
-        console.log(err)
-      })
+      menu
+        .delMenu(this.selectObj.menuId)
+        .then((res) => {
+          console.log(res)
+          this.$message.success('删除成功')
+          this.getMenuList()
+          this.selectObj = ''
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     },
     // 删除确认框
     confirm() {
@@ -316,25 +360,27 @@ export default {
       if (this.mids.length > 0) {
         this.$alert('确定要删除吗？', {
           confirmButtonText: '确定',
-          cancelButtonText: '取消'
-        }).then(() => {
-          this.deleteMenu()
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
+          cancelButtonText: '取消',
         })
+          .then(() => {
+            this.deleteMenu()
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除',
+            })
+          })
       } else {
         this.$notify({
           title: '警告',
           message: '请选中需要删除的菜单',
-          type: 'warning'
+          type: 'warning',
         })
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>
 
 <style lang="scss" scoped>
@@ -382,7 +428,7 @@ export default {
           width: 25%;
           float: left;
           padding: 10px;
-          border-right: 1px solid #DCDFE6;
+          border-right: 1px solid #dcdfe6;
           overflow-x: hidden;
           .el-scrollbar {
             height: calc(100vh - 310px);
