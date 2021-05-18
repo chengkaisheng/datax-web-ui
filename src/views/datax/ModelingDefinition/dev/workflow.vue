@@ -21,8 +21,11 @@
       >
         <i class="el-icon-mobile" />
       </div>
-      <div class="header_action" style="margin-left: 27px">
+      <div v-if="locking === 1" class="header_action" style="margin-left: 27px">
         <i class="el-icon-unlock" />
+      </div>
+      <div v-if="locking === 0" class="header_action" style="margin-left: 27px">
+        <i class="el-icon-lock" />
       </div>
       <div
         @click="submitForm('ruleForm', 'data')"
@@ -250,6 +253,7 @@ export default {
   name: 'Flow',
   data() {
     return {
+      locking: 1,
       desc: '',
       radio: '',
       ruleForm: {
