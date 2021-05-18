@@ -450,13 +450,139 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/asset',
     name: 'asset',
-    meta: { title: '数据资产', icon: 'excel' },
+    meta: { title: '资产管理', icon: 'excel' },
     children: [
+      // {
+      //   path: 'design',
+      //   name: 'design',
+      //   component: () => import('@/views/dataModel/dataModel.vue'),
+      //   meta: { title: '数据资产', icon: 'education' }
+      // },
       {
-        path: 'design',
-        name: 'design',
-        component: () => import('@/views/dataModel/dataModel.vue'),
-        meta: { title: '数据资产', icon: 'education' }
+        path: 'standard',
+        name: 'standard',
+        component: {render: (e) => e('router-view')},
+        meta: { title: '资产规范', icon: 'education' },
+        children: [
+          {
+            path: 'domain',
+            name: 'domain',
+            component: {render: (e) => e('router-view')},
+            meta: { title: '域管理', icon: 'education' },
+            children: [
+              {
+                path: 'MiddleLayer',
+                name: 'MiddleLayer',
+                component: () => import('@/views/dataModel/standard/domain/MiddleLayer.vue'),
+                meta: { title: '中间层', icon: 'education' },
+              },
+              {
+                path: 'ApplicationLayer',
+                name: 'ApplicationLayer',
+                component: () => import('@/views/dataModel/standard/domain/ApplicationLayer.vue'),
+                meta: { title: '应用层', icon: 'education' },
+              },
+              {
+                path: 'IndexDomain',
+                name: 'IndexDomain',
+                component: () => import('@/views/dataModel/standard/domain/IndexDomain.vue'),
+                meta: { title: '指标域', icon: 'education' },
+              }
+            ]
+          }
+        ]
+      },
+      {
+        path: 'dm',
+        name: 'dm',
+        component: {render: (e) => e('router-view')},
+        meta: { title: '维度建模', icon: 'education' },
+        children: [
+          {
+            path: 'businessprocess',
+            name: 'businessprocess',
+            component: () => import('@/views/dataModel/DM/businessprocess.vue'),
+            meta: { title: '业务过程', icon: 'education' }
+          },
+          {
+            path: 'dimensionality',
+            name: 'dimensionality',
+            component: () => import('@/views/dataModel/DM/dimensionality.vue'),
+            meta: { title: '维度', icon: 'education' }
+          },
+          {
+            path: 'domainManagement',
+            name: 'domainManagement',
+            component: () => import('@/views/dataModel/DM/domainManagement.vue'),
+            meta: { title: '资产定义', icon: 'education' },
+          }
+        ]
+      },
+      {
+        path: 'index',
+        name: 'index',
+        component: {render: (e) => e('router-view')},
+        meta: { title: '指标管理', icon: 'education' },
+        children: [
+          {
+            path: 'definition',
+            name: 'definition',
+            component: () => import('@/views/dataModel/Index/IndexDefinition.vue'),
+            meta: { title: '指标定义', icon: 'education' }
+          },
+          {
+            path: 'research',
+            name: 'research',
+            component: {render: (e) => e('router-view')},
+            meta: { title: '指标研发', icon: 'education' },
+            children: [
+              {
+                path: 'IndexConfiguration',
+                name: 'IndexConfiguration',
+                component: () => import('@/views/dataModel/Index/IndexConfiguration.vue'),
+                meta: { title: '指标配置', icon: 'education' }
+              }
+            ]
+          },
+          {
+            path: 'lexicon',
+            name: 'lexicon',
+            component: {render: (e) => e('router-view')},
+            meta: { title: '词库管理', icon: 'education' },
+            children: [
+              {
+                path: 'AtomicWord',
+                name: 'AtomicWord',
+                component: () => import('@/views/dataModel/Index/AtomicWord.vue'),
+                meta: { title: '原子词', icon: 'education' }
+              },
+              {
+                path: 'BusinessModifier',
+                name: 'BusinessModifier',
+                component: () => import('@/views/dataModel/Index/BusinessModifier.vue'),
+                meta: { title: '业务修饰词', icon: 'education' }
+              },
+              {
+                path: 'TimeModifier',
+                name: 'TimeModifier',
+                component: () => import('@/views/dataModel/Index/TimeModifier.vue'),
+                meta: { title: '时间修饰词', icon: 'education' }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        path: 'portrait',
+        name: 'portrait',
+        component: () => import('@/views/dataModel/PortraitManagement.vue'),
+        meta: { title: '画像管理', icon: 'education' }
+      },
+      {
+        path: 'ConsumerLoanCustomer',
+        name: 'ConsumerLoanCustomer',
+        component: () => import('@/views/dataModel/ConsumerLoanCustomer.vue'),
+        meta: { title: '客户画像', icon: 'education' }
       }
     ]
   },

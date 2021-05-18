@@ -460,6 +460,7 @@ export default {
       const params = {
         projectId: this.project_id,
         parentId: this.nowObject.id,
+        jobCron: '00 * * ? * * *',
         type: 2,
         name: this.workflowName
       }

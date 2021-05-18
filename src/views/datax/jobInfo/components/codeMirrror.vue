@@ -139,6 +139,7 @@ export default {
         if (newValue) {
           this.editor.setValue(newValue)
         }else (
+          
           this.editor.setValue(this.notes)
         )
         // this.editor.setValue(this.notes)

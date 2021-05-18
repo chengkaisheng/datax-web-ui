@@ -11,7 +11,7 @@
       </div>
       <div class="header_action" style="margin-left:27px;" @click="startData">
         <i class="el-icon-success" />
-        <span>提交</span>
+        <span>上/下线</span>
       </div>
       <div class="header_action" style="margin-left:27px;" @click="logData">
         <i class="el-icon-s-order" />
