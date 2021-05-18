@@ -4,7 +4,7 @@
       <el-tab-pane label="画像" name="first">
         <div class="portrayal-content">
           <router-link
-            to="/di/property/pm/ConsumerLoanCustomer"
+            to="/asset/ConsumerLoanCustomer"
             style="text-decoration: none;color: #000;"
           >
             <div class="portrayal-box">
