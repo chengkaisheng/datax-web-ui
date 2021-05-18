@@ -61,7 +61,7 @@
         >
           <a href="javascript:0" @click="newFolder">新建文件夹</a>
           <a id="newFile" href="javascript:"
-            >新建任务<i class="el-icon-arrow-right" />
+            >新建模型<i class="el-icon-arrow-right" />
             <vue-context-menu
               class="right-menu1"
               :target="contextMenu1Target"
@@ -69,10 +69,10 @@
               style="display: none"
             >
               <a href="javascript:" @click="newWorkFlow('HIVE')">
-                <svg-icon class="svg_icon" icon-class="HIVE" /> Hive任务
+                <svg-icon class="svg_icon" icon-class="HIVE" /> Hive表
               </a>
               <a href="javascript:" @click="newWorkFlow('IMPALA')">
-                <svg-icon class="svg_icon" icon-class="IMPALA" /> Impala任务
+                <svg-icon class="svg_icon" icon-class="IMPALA" /> Impala表
               </a>
             </vue-context-menu>
           </a>
@@ -110,7 +110,7 @@
       </div>
       <!-- 新建文件夹对话框 -->
       <el-dialog :visible.sync="newFolderDialog" width="40%" title="新建文件夹">
-        <span style="margin-left: 20px">名称：</span
+        <span style="margin-left: 20px">文件夹名称：</span
         ><el-input v-model="folderName" style="width: 80%; margin-left: 20px" />
         <div slot="footer" class="dialog-footer">
           <el-button size="small" @click="cancelDialog"> 取消 </el-button>
@@ -120,8 +120,8 @@
         </div>
       </el-dialog>
       <!-- 新建工作流对话框 -->
-      <el-dialog :visible.sync="newETLdialog" width="40%" title="新建工作流">
-        <span style="margin-left: 20px">名称：</span
+      <el-dialog :visible.sync="newETLdialog" width="40%" title="新建表">
+        <span style="margin-left: 20px">表名称：</span
         ><el-input
           v-model="workflowName"
           style="width: 80%; margin-left: 20px"
@@ -515,14 +515,13 @@ export default {
     // 确定新建工作流
     createWorkflow() {
       console.log('新建工作流')
-      const params = {
-        projectId: this.project_id,
-        parentId: this.nowObject.id,
-        type: 2,
+      this.workflowList.push({
+        id: new Date().getTime(),
         name: this.workflowName,
-      }
-      this.saveWorkflow(params)
-      this.contextMenuVisible = false
+        workFlowData: {},
+        title: this.workflowName,
+        content: { id: 3 },
+      })
       this.newETLdialog = false
     },
     // 新增工作流或文件夹通用方法
@@ -571,32 +570,14 @@ export default {
     // 删除工作流
     delWorkFlow() {
       console.log('删除')
-      // for (let i = 0; i < this.workflowList.length; i++) {
-      //   if (this.workflowList[i] === this.$store.state.workflow.currentData) {
-      //     this.workflowList.splice(i, 1)
-      //   }
-      // }
-      // this.$message.success('删除成功')
-      workFlowApi
-        .delWorkflow(this.nowObject.id)
-        .then((res) => {
-          console.log(res)
-          if (res.code === 200) {
-            this.$message.success(res.content)
-            for (let i = 0; i < this.editableTabs.length; i++) {
-              if (this.editableTabs[i].title === this.nowObject.name) {
-                console.log('0000000')
-                this.removeTab(this.editableTabs[i].name)
-              }
-            }
-            this.nowObject = {}
-            this.contextMenuVisible = false
-            this.serachWorkFlowList(this.project_id)
-          }
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+      for (let i = 0; i < this.workflowList.length; i++) {
+        if (this.workflowList[i] === this.$store.state.workflow.currentData) {
+          this.workflowList.splice(i, 1)
+        }
+      }
+      this.$message.success('删除成功')
+
+      this.contextMenuVisible = false
     },
     // 取消对话框
     cancelDialog() {
