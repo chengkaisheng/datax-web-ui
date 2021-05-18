@@ -509,6 +509,12 @@ export const asyncRoutes = [
             name: 'dimensionality',
             component: () => import('@/views/dataModel/DM/dimensionality.vue'),
             meta: { title: '维度', icon: 'education' }
+          },
+          {
+            path: 'domainManagement',
+            name: 'domainManagement',
+            component: () => import('@/views/dataModel/DM/domainManagement.vue'),
+            meta: { title: '资产定义', icon: 'education' },
           }
         ]
       },
@@ -571,6 +577,12 @@ export const asyncRoutes = [
         name: 'portrait',
         component: () => import('@/views/dataModel/PortraitManagement.vue'),
         meta: { title: '画像管理', icon: 'education' }
+      },
+      {
+        path: 'ConsumerLoanCustomer',
+        name: 'ConsumerLoanCustomer',
+        component: () => import('@/views/dataModel/ConsumerLoanCustomer.vue'),
+        meta: { title: '客户画像', icon: 'education' }
       }
     ]
   },

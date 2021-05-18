@@ -42,11 +42,7 @@ module.exports = {
         ws: false,
         // target: `http://localhost:${apiPort}/api`,
         // target: 'http://47.103.79.104:9090',
-<<<<<<< HEAD
         // target: 'http://183.194.64.166:9527',
-=======
-        //target: 'http://183.194.64.166:9527',
->>>>>>> 18e0aed4fbb24e6bac5d4a51a3813ec4fb73583f
         // target: 'http://192.168.3.70:8083', // 刘向前
         // target: 'http://192.168.3.39:8080', // 侯峰
         target: 'http://192.168.3.108:8080', // 卢兰杰

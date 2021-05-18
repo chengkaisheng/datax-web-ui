@@ -96,7 +96,7 @@
                 <template slot-scope="scope">
                   <el-button
                     type="text"
-                    @click="$router.push('/di/property/ad/MarketingScenario')"
+                    @click="$router.push('/asset/dm/domainManagement')"
                   >管理</el-button>
                   <i class="wire"></i>
                   <el-button type="text" @click="$router.push('')">新增子域</el-button>
