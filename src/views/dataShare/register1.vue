@@ -763,6 +763,7 @@ export default {
     padding: 24px;
     background-color: #fff;
     overflow: hidden;
+    display: block;
     width: 100%;
     margin: 20px 20px 0 20px;
   }

@@ -544,6 +544,7 @@ export default {
     background-color: transparent;
     overflow: hidden;
     margin: 20px 20px 0 20px;
+    display: block;
     .el-row {
       display: flex;
       flex-wrap: wrap;
