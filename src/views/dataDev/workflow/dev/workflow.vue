@@ -459,21 +459,38 @@ export default {
     },
     // 获取日志列表
     getlogList() {
-      logApi.workFlowPageList({
-        jobDesc: 'workflow',
-        current: this.queryLog.current,
-        size: this.queryLog.size,
-        jobId: this.$store.state.workflow.currentData.id,
-        // logStatus: -1
-        userId: null
-      }).then((res) => {
-        console.log(res, '日志数据')
-        if (res.code === 200) {
-          this.tableLog = res.content.data
-        }
-      }).catch((err) => {
-        console.log(err)
-      })
+      setTimeout(() => {
+        logApi.workFlowPageList({
+          jobDesc: 'workflow',
+          current: this.queryLog.current,
+          size: this.queryLog.size,
+          jobId: this.$store.state.workflow.currentData.id,
+          // logStatus: -1
+          userId: null
+        }).then((res) => {
+          console.log(res, '日志数据')
+          if (res.code === 200) {
+            this.tableLog = res.content.data
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+      }, 3000)
+      // logApi.workFlowPageList({
+      //   jobDesc: 'workflow',
+      //   current: this.queryLog.current,
+      //   size: this.queryLog.size,
+      //   jobId: this.$store.state.workflow.currentData.id,
+      //   // logStatus: -1
+      //   userId: null
+      // }).then((res) => {
+      //   console.log(res, '日志数据')
+      //   if (res.code === 200) {
+      //     this.tableLog = res.content.data
+      //   }
+      // }).catch((err) => {
+      //   console.log(err)
+      // })
     },
     // 查看日志详情
 

@@ -263,6 +263,9 @@ export default {
     console.log('时间戳', moment(new Date()).format('YYYY-MM-DD hh:mm:ss'))
     this.parameters = this.$store.state.taskAdmin.ParametersList
     this.ReplaceParameters = this.$store.state.taskAdmin.ParametersList
+    // this.$refs.codemirror.setCode(this.$store.state.taskAdmin.setcode)
+
+    // this.$refs.codemirror.code = this.$store.state.taskAdmin.setcode
   },
   methods: {
     // 中断运行

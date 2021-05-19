@@ -1790,6 +1790,7 @@ export default {
       } else {
         this.currentJobName = ''
       }
+      // console.log(this.$store.state.taskAdmin.setcode)
       console.log(this.currentJobName, '当前任务的名称')
     },
     // 显示代码
@@ -2353,10 +2354,10 @@ export default {
     // min-height: 630px;
     .el-tabs {
       .el-tabs__content {
-        // height: calc(100vh - 80px);
-        // overflow-y: auto;
-        // overflow-x: auto;
-        // background-color: #f7f9fb;
+        height: calc(100vh - 80px);
+        overflow-y: auto;
+        overflow-x: auto;
+        background-color: #f7f9fb;
       }
       .el-tabs__header {
         height: 32px;
@@ -2415,6 +2416,8 @@ export default {
   }
   .rt {
     width: 100%;
+    flex: 1;
+
     // overflow-x: scroll;
     // overflow-x: hidden;
     overflow-y: hidden;
