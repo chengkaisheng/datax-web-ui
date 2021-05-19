@@ -461,38 +461,21 @@ export default {
     },
     // 获取日志列表
     getlogList() {
-      setTimeout(() => {
-        logApi.workFlowPageList({
-          jobDesc: 'workflow',
-          current: this.queryLog.current,
-          size: this.queryLog.size,
-          jobId: this.$store.state.workflow.currentData.id,
-          // logStatus: -1
-          userId: null
-        }).then((res) => {
-          console.log(res, '日志数据')
-          if (res.code === 200) {
-            this.tableLog = res.content.data
-          }
-        }).catch((err) => {
-          console.log(err)
-        })
-      }, 3000)
-      // logApi.workFlowPageList({
-      //   jobDesc: 'workflow',
-      //   current: this.queryLog.current,
-      //   size: this.queryLog.size,
-      //   jobId: this.$store.state.workflow.currentData.id,
-      //   // logStatus: -1
-      //   userId: null
-      // }).then((res) => {
-      //   console.log(res, '日志数据')
-      //   if (res.code === 200) {
-      //     this.tableLog = res.content.data
-      //   }
-      // }).catch((err) => {
-      //   console.log(err)
-      // })
+      logApi.workFlowPageList({
+        jobDesc: 'workflow',
+        current: this.queryLog.current,
+        size: this.queryLog.size,
+        jobId: this.$store.state.workflow.currentData.id,
+        // logStatus: -1
+        userId: null
+      }).then((res) => {
+        console.log(res, '日志数据')
+        if (res.code === 200) {
+          this.tableLog = res.content.data
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
     },
     // 查看日志详情
 
@@ -535,6 +518,11 @@ export default {
     // 显示调度配置抽屉
     dispatchData() {
       console.log('调度配置')
+      if (this.$store.state.workflow.currentData.jobCron) {
+        this.drawerForm.jobCron = this.$store.state.workflow.currentData.jobCron
+      } else {
+        this.drawerForm.jobCron = '00 * * ? * * *'
+      }
       this.dialogDrawer = true
     },
     // 取消抽屉
