@@ -54,7 +54,7 @@
               prop="date"
               label="key"
             >
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-input v-model="scope.row.key" size="mini" />
               </template>
             </el-table-column>
@@ -62,7 +62,7 @@
               prop="name"
               label="value"
             >
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-input v-model="scope.row.value" size="mini" />
               </template>
             </el-table-column>
@@ -99,7 +99,7 @@
           prop="date"
           label="key(参数名)"
         >
-          <template scope="scope">
+          <template slot-scope="scope">
             <el-input v-model="scope.row.key" size="mini" />
           </template>
         </el-table-column>
@@ -107,7 +107,7 @@
           prop="name"
           label="value(参数值)"
         >
-          <template scope="scope">
+          <template slot-scope="scope">
             <el-input v-model="scope.row.value" size="mini" />
           </template>
         </el-table-column>
