@@ -322,6 +322,7 @@ export default {
     }
   }
   .filter {
+    width: 100%;
     margin-bottom: 10px;
     .el-form {
       overflow: hidden;
