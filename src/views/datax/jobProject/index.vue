@@ -544,6 +544,10 @@ export default {
     background-color: transparent;
     overflow: hidden;
     margin: 20px 20px 0 20px;
+    .el-row {
+      display: flex;
+      flex-wrap: wrap;
+    }
     .search-bar {
       width: 100%;
       display: block;
