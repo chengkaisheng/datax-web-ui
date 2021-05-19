@@ -544,6 +544,8 @@ export default {
     padding: 24px;
     background-color: #fff;
     overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
     margin: 20px 20px 0 20px;
     .el-form {
       width: 100%;
