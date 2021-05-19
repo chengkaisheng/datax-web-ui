@@ -6,30 +6,75 @@
         style="margin-left: 17px"
         @click="drawer = true"
       >
-        <i class="el-icon-picture-outline" />
+        <el-tooltip
+          class="item"
+          effect="dark"
+          content="脚本模式"
+          placement="top-start"
+        >
+          <i class="el-icon-picture-outline" />
+        </el-tooltip>
       </div>
       <div class="header_action" style="margin-left: 27px">
-        <i class="el-icon-upload" />
+        <el-tooltip
+          class="item"
+          effect="dark"
+          content="导入已有表"
+          placement="top-start"
+        >
+          <i class="el-icon-upload" />
+        </el-tooltip>
       </div>
       <div class="header_action" style="margin-left: 27px">
-        <i class="el-icon-view" />
+        <el-tooltip
+          class="item"
+          effect="dark"
+          content="查看"
+          placement="top-start"
+        >
+          <i class="el-icon-view" />
+        </el-tooltip>
       </div>
       <div
         @click="submitForm('ruleForm', 'DATA')"
         class="header_action"
         style="margin-left: 27px"
       >
-        <i class="el-icon-mobile" />
+        <el-tooltip
+          class="item"
+          effect="dark"
+          content="保存"
+          placement="top-start"
+        >
+          <i class="el-icon-mobile" />
+        </el-tooltip>
       </div>
-      <div class="header_action" style="margin-left: 27px">
-        <i class="el-icon-unlock" />
+      <div v-if="locking === 1" class="header_action" style="margin-left: 27px">
+        <el-tooltip
+          class="item"
+          effect="dark"
+          content="锁定表"
+          placement="top-start"
+        >
+          <i class="el-icon-unlock" />
+        </el-tooltip>
+      </div>
+      <div v-if="locking === 0" class="header_action" style="margin-left: 27px">
+        <i class="el-icon-lock" />
       </div>
       <div
         @click="submitForm('ruleForm', 'data')"
         class="header_action"
         style="margin-left: 27px"
       >
-        <i class="el-icon-wind-power" />
+        <el-tooltip
+          class="item"
+          effect="dark"
+          content="提交"
+          placement="top-start"
+        >
+          <i class="el-icon-wind-power" />
+        </el-tooltip>
       </div>
     </div>
     <el-drawer
@@ -250,6 +295,7 @@ export default {
   name: 'Flow',
   data() {
     return {
+      locking: 1,
       desc: '',
       radio: '',
       ruleForm: {
