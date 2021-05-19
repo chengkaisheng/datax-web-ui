@@ -171,6 +171,7 @@ rkJggg=="
           <el-table-column
             prop="triggerTime"
             label="调度时间"
+            width="160"
           />
           <el-table-column
             prop="triggerMsg"
@@ -188,6 +189,7 @@ rkJggg=="
           <el-table-column
             prop="handleTime"
             label="执行时间"
+            width="160"
           />
           <el-table-column
             prop="handleMsg"
@@ -202,7 +204,7 @@ rkJggg=="
               {{ scope.row.handleCode === 200 ? '成功' : '失败' }}
             </template>
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作" width="108">
             <template slot-scope="scope">
               <el-button
                 size="mini"
