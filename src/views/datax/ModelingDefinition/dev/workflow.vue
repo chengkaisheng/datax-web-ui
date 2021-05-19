@@ -22,7 +22,19 @@
           content="导入已有表"
           placement="top-start"
         >
-          <i class="el-icon-upload" />
+          <el-upload
+            class="upload-demo"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :before-remove="beforeRemove"
+            multiple
+            :limit="3"
+            :on-exceed="handleExceed"
+            :file-list="fileList"
+          >
+            <i class="el-icon-upload" />
+          </el-upload>
         </el-tooltip>
       </div>
       <div class="header_action" style="margin-left: 27px">
@@ -49,7 +61,12 @@
           <i class="el-icon-mobile" />
         </el-tooltip>
       </div>
-      <div v-if="locking === 1" class="header_action" style="margin-left: 27px">
+      <div
+        v-if="locking === 1"
+        @click="LocKing"
+        class="header_action"
+        style="margin-left: 27px"
+      >
         <el-tooltip
           class="item"
           effect="dark"
@@ -59,8 +76,20 @@
           <i class="el-icon-unlock" />
         </el-tooltip>
       </div>
-      <div v-if="locking === 0" class="header_action" style="margin-left: 27px">
-        <i class="el-icon-lock" />
+      <div
+        v-if="locking === 0"
+        @click="Unlocking"
+        class="header_action"
+        style="margin-left: 27px"
+      >
+        <el-tooltip
+          class="item"
+          effect="dark"
+          content="解锁表"
+          placement="top-start"
+        >
+          <i class="el-icon-lock" />
+        </el-tooltip>
       </div>
       <div
         @click="submitForm('ruleForm', 'data')"
@@ -86,10 +115,12 @@
     >
       <div style="padding-left: 30px; padding-right: 30px">
         <div style="margin-bottom: 30px; font-size: 14px">
-          表明中包含的主题域层级:
-          <el-radio v-model="radio" label="1">二级主题域</el-radio>
-          <el-radio v-model="radio" label="2">三级主题域</el-radio>
-          <el-radio v-model="radio" label="3">四级主题域</el-radio>
+          <span style="margin-right: 20px">表明中包含的主题域层级:</span>
+          <span>
+            <el-radio v-model="radio" label="1">二级主题域</el-radio>
+            <el-radio v-model="radio" label="2">三级主题域</el-radio>
+            <el-radio v-model="radio" label="3">四级主题域</el-radio>
+          </span>
         </div>
         <el-input
           style="margin-bottom: 20px"
@@ -179,10 +210,21 @@
         </el-form-item>
         <el-form-item label="模型名称:">
           <el-col :span="11">
-            <el-form-item prop="date1">
-              <el-input style="width: 30%"></el-input>_
-              <el-input style="width: 30%"></el-input>_
-              <el-input style="width: 30%"></el-input>
+            <el-form-item>
+              <el-input
+                v-model="ruleForm.Modelname1"
+                style="width: 30%"
+              ></el-input
+              >_
+              <el-input
+                v-model="ruleForm.Modelname2"
+                style="width: 30%"
+              ></el-input
+              >_
+              <el-input
+                v-model="ruleForm.Modelname3"
+                style="width: 30%"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -241,10 +283,19 @@
         </p>
         <div class="title1">字段信息</div>
         <template style="margin-bottom: 30px">
-          <el-table :data="ruleForm.tableData" style="width: 100%">
-            <el-table-column prop="Field" label="字段名" width="100">
+          <el-table
+            :data="ruleForm.tableData"
+            style="width: 100%; overflow: scroll"
+          >
+            <el-table-column
+              v-for="(itme, index) in Tabletop"
+              :key="index"
+              :prop="itme.prop"
+              :label="itme.label"
+              width="auto"
+            >
             </el-table-column>
-            <el-table-column prop="FieldDesc" label="字段描述" width="100">
+            <!-- <el-table-column prop="FieldDesc" label="字段描述" width="100">
             </el-table-column>
             <el-table-column prop="BusinessCaliber" label="业务口径">
             </el-table-column>
@@ -253,7 +304,7 @@
             <el-table-column prop="PrimaryKey" label="主键"> </el-table-column>
             <el-table-column prop="BindingIndex" label="绑定指标">
             </el-table-column>
-            <el-table-column prop="NotEmpty" label="非空"> </el-table-column>
+            <el-table-column prop="NotEmpty" label="非空"> </el-table-column> -->
             <el-table-column label="操作" width="100">
               <template slot-scope="scope">
                 <el-button
@@ -273,7 +324,7 @@
           </el-table>
         </template>
         <div style="margin-top: 30px">
-          <el-button icon="el-icon-plus">添加字段</el-button>
+          <el-button @click="Addfield" icon="el-icon-plus">添加字段</el-button>
           <el-button>从需求导入</el-button>
         </div>
         <!-- <el-form-item style="margin-top: 30px">
@@ -283,6 +334,19 @@
           <el-button @click="resetForm('ruleForm')">重置</el-button>
         </el-form-item> -->
       </el-form>
+      <el-dialog title="添加字段" :visible.sync="dialogVisible" width="35%">
+        <el-input placeholder="请输入字段名称" v-model="newlabel">
+          <template slot="prepend">字段名称</template>
+        </el-input>
+        <div style="height: 10px"></div>
+        <el-input placeholder="请输入字段信息" v-model="newprop">
+          <template slot="prepend">字段信息</template>
+        </el-input>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="Addfields">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -295,6 +359,18 @@ export default {
   name: 'Flow',
   data() {
     return {
+      dialogVisible: false,
+      newlabel: '',
+      newprop: '',
+      Tabletop: [
+        { label: '字段名', prop: 'Field' },
+        { label: '字段描述', prop: 'FieldDesc' },
+        { label: '业务口径', prop: 'BusinessCaliber' },
+        { label: '数据类型', prop: 'datatype' },
+        { label: '主键', prop: 'PrimaryKey' },
+        { label: '绑定指标', prop: 'BindingIndex' },
+        { label: '非空', prop: 'NotEmpty' },
+      ],
       locking: 1,
       desc: '',
       radio: '',
@@ -328,6 +404,9 @@ export default {
         //     NotEmpty: 'true',
         //   },
         // ],
+        Modelname1: '',
+        Modelname2: '',
+        Modelname3: '',
         theme: [
           { id: 1, value: '主题域1', name: '主题域1' },
           { id: 2, value: '主题域2', name: '主题域2' },
@@ -338,7 +417,7 @@ export default {
         ],
         Busines: [
           { id: 1, value: '业务过程1', name: '业务过程1' },
-          { id: 2, value: '模型名称1', name: '模型名称1' },
+          { id: 2, value: '业务过程2', name: '业务过程2' },
         ],
         Security: [
           { id: 1, value: 'A', name: 'A' },
@@ -399,6 +478,7 @@ export default {
       drawerForm: {},
       dialogLogVisible: false,
       dialogDetails: false,
+      fileList: [],
     }
   },
   watch: {},
@@ -431,12 +511,14 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields()
     },
-    handleClick() {
-      console.log('111')
+    handleClick(scope) {
+      console.log('111', scope)
     },
+    //脚本模式同步
     synchronization() {
       console.log('label', this.radio, this.desc)
     },
+    //运行表
     Submit() {
       this.$message({
         message: '执行成功',
@@ -444,21 +526,49 @@ export default {
       })
       console.log('www', this.ruleForm)
     },
-    fetchTables(e) {
-      console.log(e, '111111111')
-      const param = {}
-      param.datasourceId = e
-      dsQueryApi.getTables(param).then((res) => {
-        this.tableList = res
+    LocKing() {
+      this.locking = 0
+      this.$message({
+        message: '表已锁定',
+        type: 'success',
       })
     },
-    //脚本模式弹框
-    ScriptMode() {},
-    // 点击选中任务
-    handleWorkFlow(e) {
-      console.log(e)
-      this.dataJob = e
+    Unlocking() {
+      this.locking = 1
+      this.$message({
+        message: '表已解锁',
+        type: 'success',
+      })
     },
+    //添加字段
+    Addfield() {
+      this.dialogVisible = true
+    },
+    //添加字段
+    Addfields() {
+      this.dialogVisible = false
+      const data = { label: this.newlabel, prop: this.newprop }
+      this.Tabletop.push(data)
+      console.log(data)
+    },
+    //上传文件
+    handleRemove(file, fileList) {
+      console.log(file, fileList)
+    },
+    handlePreview(file) {
+      console.log(file)
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(
+        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+          files.length + fileList.length
+        } 个文件`
+      )
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`)
+    },
+    //上传文件
   },
 }
 </script>
@@ -502,6 +612,7 @@ export default {
   line-height: 40px;
   background: #f5f5f5;
   color: #000;
+
   /* background: #00ffff; */
 }
 .top {
@@ -516,13 +627,14 @@ export default {
   height: 40px;
   width: 100%;
   padding-left: 20px;
+
   font-size: 14px;
   line-height: 40px;
   background: #f8f8ff;
   border: 1px solid #ccc;
 }
 .header {
-  overflow: hidden;
+  overflow-y: hidden;
   padding: 8px 0;
   border-bottom: 1px solid rgba(235, 235, 235, 1);
 }
