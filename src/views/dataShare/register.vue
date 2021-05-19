@@ -595,6 +595,8 @@ export default {
   }
   .el-tabs {
     background-color: #fff;
+    display:block;
+    width: 100%;
     .el-tab-pane {
       width: 100%;
       .el-tabs__nav-wrap::after {

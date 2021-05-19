@@ -260,10 +260,9 @@ export default {
     background-color: #fff;
     overflow: hidden;
     margin: 20px 20px 0 20px;
-    display: flex;
-    flex-wrap: wrap;
     .el-form {
       width: 100%;
+      display: block;
     }
     .search-bar {
       background: #ffffff;

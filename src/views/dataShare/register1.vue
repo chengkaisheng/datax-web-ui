@@ -764,8 +764,6 @@ export default {
     background-color: #fff;
     overflow: hidden;
     width: 100%;
-    display: flex;
-    flex-wrap: wrap;
     margin: 20px 20px 0 20px;
   }
 
