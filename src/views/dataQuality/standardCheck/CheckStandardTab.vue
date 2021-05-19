@@ -314,6 +314,10 @@ export default {
     .check-standard-tab-section {
         .search_list {
             margin-top: 10px;
+            .el-row {
+              display: flex;
+              flex-wrap: wrap;
+            }
             .search_title {
                 display: inline-block;
                 width: 60px;
