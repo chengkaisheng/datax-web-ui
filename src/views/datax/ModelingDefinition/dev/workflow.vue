@@ -174,7 +174,11 @@
         <el-row>
           <el-col :xs="24" :sm="24" :md="12" :lg="10" :xl="8">
             <el-form-item label="主题域:" prop="themes">
-              <el-select v-model="ruleForm.themes" style="width: 234px">
+              <el-select
+                :disabled="Lock"
+                v-model="ruleForm.themes"
+                style="width: 234px"
+              >
                 <el-option
                   v-for="item in ruleForm.theme"
                   :key="item.id"
@@ -186,7 +190,11 @@
           </el-col>
           <el-col :xs="24" :sm="24" :md="12" :lg="10" :xl="8">
             <el-form-item label="表类型:" prop="TableTypes">
-              <el-select v-model="ruleForm.TableTypes" style="width: 234px">
+              <el-select
+                :disabled="Lock"
+                v-model="ruleForm.TableTypes"
+                style="width: 234px"
+              >
                 <el-option
                   v-for="item in ruleForm.TableType"
                   :key="item.id"
@@ -199,7 +207,11 @@
           <!-- <el-col :span="7" /> -->
         </el-row>
         <el-form-item label="业务过程:" prop="Business">
-          <el-select v-model="ruleForm.Business" placeholder="请选择业务过程">
+          <el-select
+            :disabled="Lock"
+            v-model="ruleForm.Business"
+            placeholder="请选择业务过程"
+          >
             <el-option
               v-for="item in ruleForm.Busines"
               :key="item.id"
@@ -212,16 +224,19 @@
           <el-col :span="11">
             <el-form-item>
               <el-input
+                :disabled="Lock"
                 v-model="ruleForm.Modelname1"
                 style="width: 30%"
               ></el-input
               >_
               <el-input
+                :disabled="Lock"
                 v-model="ruleForm.Modelname2"
                 style="width: 30%"
               ></el-input
               >_
               <el-input
+                :disabled="Lock"
                 v-model="ruleForm.Modelname3"
                 style="width: 30%"
               ></el-input>
@@ -230,6 +245,7 @@
           <el-col :span="11">
             <el-form-item>
               <el-select
+                :disabled="Lock"
                 v-model="ruleForm.ModelNames"
                 placeholder="请选择模型名称"
               >
@@ -244,7 +260,11 @@
           </el-col>
         </el-form-item>
         <el-form-item label="保障等级:" prop="Securitys">
-          <el-select v-model="ruleForm.Securitys" placeholder="请选择保障等级">
+          <el-select
+            :disabled="Lock"
+            v-model="ruleForm.Securitys"
+            placeholder="请选择保障等级"
+          >
             <el-option
               v-for="item in ruleForm.Security"
               :key="item.id"
@@ -255,6 +275,7 @@
         </el-form-item>
         <el-form-item label="表描述:">
           <el-input
+            :disabled="Lock"
             rows="5"
             type="textarea"
             placeholder="请输入表描述"
@@ -263,19 +284,27 @@
         </el-form-item>
         <div class="title1">物理信息</div>
         <el-form-item label="project :" prop="delivery">
-          <el-input v-model="ruleForm.project" style="width: 30%">
+          <el-input
+            :disabled="Lock"
+            v-model="ruleForm.project"
+            style="width: 30%"
+          >
             <template slot="append">天</template>
           </el-input>
         </el-form-item>
         <el-form-item label="生命周期:" prop="delivery">
-          <el-input v-model="ruleForm.lifecycle" style="width: 30%">
+          <el-input
+            :disabled="Lock"
+            v-model="ruleForm.lifecycle"
+            style="width: 30%"
+          >
             <template slot="append">天</template>
           </el-input>
         </el-form-item>
         <el-form-item label="是否分区表:" prop="resource">
           <el-radio-group v-model="ruleForm.resource">
-            <el-radio label="true"></el-radio>
-            <el-radio label="false"></el-radio>
+            <el-radio :disabled="Lock" label="true"></el-radio>
+            <el-radio :disabled="Lock" label="false"></el-radio>
           </el-radio-group>
         </el-form-item>
         <p style="margin-bottom: 30px; color: red">
@@ -313,7 +342,9 @@
                   size="small"
                   >查看</el-button
                 >
-                <el-button type="text" size="small">编辑</el-button>
+                <el-button @click="Editdata(scope.row)" type="text" size="small"
+                  >编辑</el-button
+                >
               </template>
             </el-table-column>
             <div slot="empty">
@@ -323,9 +354,22 @@
             </div>
           </el-table>
         </template>
-        <div style="margin-top: 30px">
+        <div class="foot" style="margin-top: 30px">
           <el-button @click="Addfield" icon="el-icon-plus">添加字段</el-button>
-          <el-button>从需求导入</el-button>
+
+          <el-upload
+            class="upload-demo"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :before-remove="beforeRemove"
+            multiple
+            :limit="3"
+            :on-exceed="handleExceed"
+            :file-list="fileList"
+          >
+            <el-button>从需求导入</el-button>
+          </el-upload>
         </div>
         <!-- <el-form-item style="margin-top: 30px">
           <el-button type="primary" @click="submitForm('ruleForm')"
@@ -335,17 +379,59 @@
         </el-form-item> -->
       </el-form>
       <el-dialog title="添加字段" :visible.sync="dialogVisible" width="35%">
-        <el-input placeholder="请输入字段名称" v-model="newlabel">
+        <el-input placeholder="请输入字段名称" v-model="TableData.Field">
           <template slot="prepend">字段名称</template>
         </el-input>
         <div style="height: 10px"></div>
-        <el-input placeholder="请输入字段信息" v-model="newprop">
-          <template slot="prepend">字段信息</template>
+        <el-input placeholder="请输入字段描述" v-model="TableData.FieldDesc">
+          <template slot="prepend">字段描述</template>
+        </el-input>
+        <div style="height: 10px"></div>
+        <el-input
+          placeholder="请输入业务口径"
+          v-model="TableData.BusinessCaliber"
+        >
+          <template slot="prepend">业务口径</template>
+        </el-input>
+        <div style="height: 10px"></div>
+        <el-input placeholder="请输入数据类型" v-model="TableData.datatype">
+          <template slot="prepend">数据类型</template>
+        </el-input>
+        <div style="height: 10px"></div>
+        <el-input placeholder="请输入字段主键" v-model="TableData.PrimaryKey">
+          <template slot="prepend">字段主键</template>
+        </el-input>
+        <div style="height: 10px"></div>
+        <el-input placeholder="请输入绑定指标" v-model="TableData.BindingIndex">
+          <template slot="prepend">绑定指标</template>
+        </el-input>
+        <div style="height: 10px"></div>
+        <el-input placeholder="请输入非空字段" v-model="TableData.NotEmpty">
+          <template slot="prepend">非空字段</template>
         </el-input>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="Addfields">确 定</el-button>
+          <el-button :disabled="isbtn" type="primary" @click="Addfields"
+            >确 定</el-button
+          >
         </span>
+      </el-dialog>
+      <el-dialog
+        title="字段信息查看"
+        :visible.sync="DialogVisible"
+        @close="closeDialog"
+        width="70%"
+      >
+        <el-table :data="Table" style="width: 100%">
+          <el-table-column
+            v-for="(itme, index) in Tabletop"
+            :key="index"
+            :prop="itme.prop"
+            :label="itme.label"
+            width="auto"
+          >
+          </el-table-column>
+        </el-table>
       </el-dialog>
     </div>
   </div>
@@ -359,6 +445,8 @@ export default {
   name: 'Flow',
   data() {
     return {
+      Lock: false,
+      DialogVisible: false,
       dialogVisible: false,
       newlabel: '',
       newprop: '',
@@ -374,36 +462,46 @@ export default {
       locking: 1,
       desc: '',
       radio: '',
+      Table: [],
+      TableData: {
+        Field: '',
+        FieldDesc: '',
+        BusinessCaliber: '',
+        datatype: '',
+        PrimaryKey: '',
+        BindingIndex: '',
+        NotEmpty: '',
+      },
       ruleForm: {
-        // tableData: [
-        //   {
-        //     Field: 'Field',
-        //     FieldDesc: 'FieldDesc',
-        //     BusinessCaliber: '888',
-        //     datatype: 'string',
-        //     PrimaryKey: 's',
-        //     BindingIndex: '666',
-        //     NotEmpty: 'true',
-        //   },
-        //   {
-        //     Field: 'Field',
-        //     FieldDesc: 'FieldDesc',
-        //     BusinessCaliber: '888',
-        //     datatype: 'string',
-        //     PrimaryKey: 's',
-        //     BindingIndex: '666',
-        //     NotEmpty: 'false',
-        //   },
-        //   {
-        //     Field: 'Field',
-        //     FieldDesc: 'FieldDesc',
-        //     BusinessCaliber: '888',
-        //     datatype: 'string',
-        //     PrimaryKey: 's',
-        //     BindingIndex: '666',
-        //     NotEmpty: 'true',
-        //   },
-        // ],
+        tableData: [
+          // {
+          //   Field: 'Field',
+          //   FieldDesc: 'FieldDesc',
+          //   BusinessCaliber: '888',
+          //   datatype: 'string',
+          //   PrimaryKey: 's',
+          //   BindingIndex: '666',
+          //   NotEmpty: 'true',
+          // },
+          // {
+          //   Field: 'Field',
+          //   FieldDesc: 'FieldDesc',
+          //   BusinessCaliber: '888',
+          //   datatype: 'string',
+          //   PrimaryKey: 's',
+          //   BindingIndex: '666',
+          //   NotEmpty: 'false',
+          // },
+          // {
+          //   Field: 'Field',
+          //   FieldDesc: 'FieldDesc',
+          //   BusinessCaliber: '888',
+          //   datatype: 'string',
+          //   PrimaryKey: 's',
+          //   BindingIndex: '666',
+          //   NotEmpty: 'true',
+          // },
+        ],
         Modelname1: '',
         Modelname2: '',
         Modelname3: '',
@@ -479,12 +577,23 @@ export default {
       dialogLogVisible: false,
       dialogDetails: false,
       fileList: [],
+      isbtn: true,
     }
   },
-  watch: {},
-  created() {
-    console.log('qqq', this.ruleForm.theme)
+  watch: {
+    TableData: {
+      handler(val) {
+        console.log('sss---->', val)
+        if (val.NotEmpty === '') {
+          this.isbtn = true
+        } else {
+          this.isbtn = false
+        }
+      },
+      deep: true,
+    },
   },
+  created() {},
   mounted() {},
   methods: {
     submitForm(formName, data) {
@@ -511,8 +620,21 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields()
     },
-    handleClick(scope) {
-      console.log('111', scope)
+    //查看表
+    handleClick(data) {
+      this.DialogVisible = true
+      this.Table.push(data)
+      console.log('查看表', data)
+    },
+    //编辑表
+    Editdata(data) {
+      this.TableData = data
+      this.dialogVisible = true
+      console.log('编辑表', data)
+    },
+    closeDialog() {
+      this.Table = []
+      console.log('111')
     },
     //脚本模式同步
     synchronization() {
@@ -528,6 +650,7 @@ export default {
     },
     LocKing() {
       this.locking = 0
+      this.Lock = true
       this.$message({
         message: '表已锁定',
         type: 'success',
@@ -535,6 +658,7 @@ export default {
     },
     Unlocking() {
       this.locking = 1
+      this.Lock = false
       this.$message({
         message: '表已解锁',
         type: 'success',
@@ -543,14 +667,16 @@ export default {
     //添加字段
     Addfield() {
       this.dialogVisible = true
+      this.isbtn = true
     },
     //添加字段
     Addfields() {
+      console.log('this.TableData---->', this.TableData)
+      this.ruleForm.tableData.push(this.TableData)
+      this.TableData = ''
       this.dialogVisible = false
-      const data = { label: this.newlabel, prop: this.newprop }
-      this.Tabletop.push(data)
-      console.log(data)
     },
+
     //上传文件
     handleRemove(file, fileList) {
       console.log(file, fileList)
@@ -603,6 +729,11 @@ export default {
 <style scoped>
 .drawer {
   overflow: scroll;
+}
+.foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: left;
 }
 .title1 {
   height: 40px;
