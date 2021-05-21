@@ -21,11 +21,27 @@
         <i class="el-icon-s-marketing" />
         <span>调度配置</span>
       </div>
+
+    </div>
+    <!-- <el-button
+      size="small"
+      class="but"
+      type="primary"
+      style="margin-left: 16px"
+      @click="changes"
+    >
+      参数配置
+    </el-button> -->
+    <div class="header_action1 but" @click="changes">
+      <i class="el-icon-rank" />
+      <span>自动布局</span>
     </div>
     <div id="parentDiv" style="width: 100%; display: flex; border: solid 1px lightgray;">
       <div :id="'myPaletteDiv' + myId" style="width: 100px; margin-right: 2px; " />
       <div :id="'myDiagramDiv' + myId" style="flex-grow: 1; height: 589px;" />
+
     </div>
+    <!-- <button :id="myButDiv" style="height:20px" @click="changes"> 格式发</button> -->
     <!-- 选择任务面板 -->
     <el-dialog id="taskDialog" title="选择任务" :visible.sync="dialogFormVisible" width="30%">
       <el-form :model="form">
@@ -116,17 +132,85 @@ rkJggg=="
       :visible.sync="dialogDrawer"
       direction="rtl"
       custom-class="demo-drawer"
+      size="35%"
     >
-      <div class="demo-drawer__content">
+      <div
+        class="demo-drawer__content"
+        style="
+          padding: 15px 15px 0 15px;
+          height: calc(100vh - 180px);
+          overflow-y: auto;
+        "
+      >
         <el-form :model="drawerForm">
           <el-form-item label="工作流名称" label-width="100px">
             {{ $store.state.workflow.currentData.name }}
           </el-form-item>
-          <el-form-item label="Cron" prop="jobCron" label-width="100px">
-            <el-input v-model="drawerForm.jobCron" auto-complete="off" placeholder="请输入Cron表达式" style="width: 80%">
+          <el-form-item label="jobCron" prop="jobCron" label-width="100px">
+            <el-input v-model="drawerForm.jobCron" auto-complete="off" placeholder="请输入Cron表达式" style="width: 90%">
               <el-button v-if="!showCronBox" slot="append" icon="el-icon-turn-off" title="打开图形配置" @click="showCronBox = true" />
               <el-button v-else slot="append" icon="el-icon-open" title="关闭图形配置" @click="showCronBox = false" />
             </el-input>
+          </el-form-item>
+          <div>参数配置</div>
+          <el-form-item label="" prop="subTask" label-width="100px">
+            <div style="padding-left: 26px">
+              <div
+                v-for="(itme, index) in parameters"
+                v-show="isshow"
+                :key="index"
+                style="margin-top: 20px"
+                class="DraWer"
+              >
+                <span style="font-size: 14px; color: #ccc">
+                  参数
+                  <el-input
+                    v-show="isshow"
+                    v-model="itme.parameter"
+                    style="width: 260px"
+                    size="mini"
+                    placeholder="请输入参数"
+                  />
+                  <el-popconfirm
+                    title="确定删除此参数吗？"
+                    @confirm="Delete(itme, index)"
+                  >
+                    <el-button
+                      slot="reference"
+                      size="small"
+                      style="margin-left: 10px"
+                      type="danger"
+                      icon="el-icon-delete"
+                      circle
+                    />
+                  </el-popconfirm>
+                </span>
+              </div>
+              <div v-show="isshow" style="margin-top: 20px">
+                <el-button
+                  size="small"
+                  style="margin-bottom: 20px"
+                  type="success"
+                  @click="Addhandel"
+                >添加</el-button>
+                <el-button
+                  size="small"
+                  style="margin-bottom: 20px"
+                  type="danger"
+                  @click="
+                    () => {
+                      drawer = false
+                    }
+                  "
+                >取消</el-button>
+                <el-button
+                  size="small"
+                  style="margin-bottom: 20px"
+                  type="success"
+                  @click="SaveParameter"
+                >保存</el-button>
+              </div>
+            </div>
           </el-form-item>
         </el-form>
         <div class="demo-drawer__footer" style="float: right;marginRight: 20px;">
@@ -244,6 +328,41 @@ rkJggg=="
         </el-button>
       </div>
     </el-dialog>
+    <el-dialog
+      :show-close="true"
+      title="参数配置"
+      :visible.sync="DialogVisiBle"
+      width="50%"
+    >
+      <div
+        v-for="(itme, index) in ReplaceParameters"
+        v-show="isshow"
+        :key="index"
+        style="margin-top: 20px"
+        class="DraWer"
+      >
+        <div class="parameter">
+          <span
+            style="font-size: 14px; color: #ccc"
+          ><i
+             class="Configurable"
+             style="color: #000; padding-right: 40px"
+           >可配置参数：{{ itme.parameter }}</i>
+            <el-input
+              v-show="isshow"
+              v-model="itme.parameters"
+              style="width: 260px"
+              size="mini"
+              placeholder="请输入参数"
+            />
+          </span>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="DialogVisiBle=false">取 消</el-button>
+        <el-button type="primary" @click="ReplaceParameter">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -252,6 +371,7 @@ import go, { List } from 'gojs'
 import * as workFlowApi from '@/api/datax-job-info'
 import * as logApi from '@/api/datax-job-log'
 import Cron from '@/components/Cron'
+import { countColumn } from 'codemirror'
 export default {
   name: 'Flow',
   components: { Cron },
@@ -268,6 +388,7 @@ export default {
       },
       currentType: '', // 当前选中节点的任务类型
       dialogFormVisible: false,
+      doparams: null,
       taskArr: [
         {
           name: 'a',
@@ -308,7 +429,21 @@ export default {
         size: 10
       },
       tableLog: [], // 工作流日志列表数据
-      list: ''
+      list: '',
+      isshow: true,
+      // 配置参数
+      parameters: [
+        // {
+        //   id: '',
+        //   jobId:this.$store.state.taskAdmin.SingleData.jobId,
+        //   parameter: '',
+        // },
+      ],
+      DialogVisiBle: false,
+      // 配置替换参数
+      ReplaceParameters: [
+        {}
+      ]
     }
   },
   watch: {
@@ -329,10 +464,10 @@ export default {
   created() {
     this.myId = this.tabsIds
     if (this.$store.state.workflow.currentData) {
-      console.log(this.$store.state.workflow.currentData, 'this.$store.state.workflow.currentData')
+      // console.log(this.$store.state.workflow.currentData, 'this.$store.state.workflow.currentData')
       this.project_id = this.$store.state.workflow.currentData.projectId
     }
-    console.log(this.myId, 'myId', this.project_id)
+    // console.log(this.myId, 'myId', this.project_id)
     // this.getCurrentProjectList()
     // this.myDiagram.model = go.Model.fromJson(this.$store.state.workflow.currentData.jobJson)
     // console.log(this.myDiagram.model)
@@ -346,6 +481,58 @@ export default {
     // console.log(this.$refs.pre)
   },
   methods: {
+    // 删除配置参数
+    Delete(itme, index) {
+      console.log('index---->>>', index, itme)
+      // if (this.parameters.length <= 1) {
+      //   // 如果只有一个输入框则不可以删除
+      //   return false
+      // }
+      job.DeleteParameters({ id: itme.id }).then((res) => {
+        if (res.code === 200) {
+          this.$message.success(res.content)
+          this.GetParameters()
+        } else {
+          this.$message.success(res.content)
+        }
+        console.log('delete----->', res)
+      })
+      // this.parameters.splice(index, 1) // 删除了数组中对应的数据也就将这个位置的输入框删除
+    },
+    // 保存配置参数
+    SaveParameter() {
+      const arr = []
+      this.parameters.forEach((itme) => {
+        arr.push(itme.parameter)
+      })
+      if (arr.includes('')) {
+        this.$message('参数不能为空')
+      } else {
+        // job.SaveParameters(this.parameters).then((res) => {
+        //   if (res.content) {
+        //     this.$message.success(res.content)
+        //     this.$forceUpdate()
+        //     this.GetParameters()
+        //     this.drawer = false
+        //   }
+        // })
+      }
+    },
+    // 添加配置参数
+    Addhandel() {
+      this.parameters.push({
+        id: '',
+        jobId: this.$store.state.taskAdmin.SingleData.jobId,
+        parameter: ''
+      })
+    },
+    // 自动布局
+    changes() {
+      // this.init()
+      console.log(11111111111)
+      this.myDiagram.model = go.Model.fromJson(this.$store.state.workflow.currentData.jobJson)
+      // this.load()
+    },
     // 获取当前项目下的任务列表
     getCurrentProjectList(val) {
       let myType = ''
@@ -398,15 +585,73 @@ export default {
       this.dataJob = e
     },
     // 执行
+    runData1() {
+      this.DialogVisiBle = true
+    },
+
+    ReplaceParameter() {
+      const replacedata = []
+      for (let i = 0; i < this.parameters.length; i++) {
+        replacedata.push({
+          param: this.parameters[i].parameter,
+          value:
+            this.ReplaceParameters[i].parameters ||
+            this.parameters[i].parameter
+        })
+      }
+      for (let i = 0; i < replacedata.length; i++) {
+        this.CODE.code = this.CODE.code
+          .split(replacedata[i].param)
+          .join(replacedata[i].value)
+      }
+      this.getinto = true
+      this.dosomthing()
+    },
+
     runData() {
       console.log('执行')
       let params = {}
       params = this.$store.state.workflow.currentData
       params.jobJson = this.myDiagram.model.toJson()
       // params.jobIds = []
-      console.log(params)
+      const typelist = JSON.parse(params.jobJson)
+      this.doparams = params
+      console.log(params.jobJson)
+      console.log(typelist.nodeDataArray)
+      const arr1 = ['IMPORT', 'HIVE']
+      typelist.nodeDataArray.forEach(item => {
+        if (arr1.includes(item.type)) {
+          // 如果是这个'IMPORT', 'HIVE' 弹窗
+          console.log('1111111111')
+          this.DialogVisiBle = true
+          return
+        }
+        console.log(item.type)
+      })
+      // 掉函数
+      this.dosomthing(params)
+      // const arr = []
+      // for (var i = 0;i < typelist.nodeDataArray.length;i++) {
+      //   // if (i.type === 'IMPORT' || 'HIVE') {
+      //   arr.push(typelist.nodeDataArray[i].type)
+      //   // console.log(i.type)
+      //   // }
+      // }
+      // if (arr.includes('IMPORT')) {
+      //   console.log('ok')
+      // }
+      // console.log(arr)
+    },
+
+    // 执行
+    dosomthing() {
+      // let params = {}
+      // params = this.$store.state.workflow.currentData
+      // params.jobJson = this.myDiagram.model.toJson()
+      console.log(this.doparams)
+
       workFlowApi.triggerWorkflow(
-        params
+        this.doparams
       ).then((res) => {
         console.log(res)
         if (res.code === 200) {
@@ -927,6 +1172,7 @@ export default {
 
 <style lang="scss">
 .workflowCanves {
+  position: relative;
   .tit {
     height: 30px;
     line-height: 30px;
@@ -966,6 +1212,14 @@ export default {
     float: left;
     cursor: pointer;
 }
+.header_action1 {
+    font-size: 14px;
+    font-family: PingFangHK-Regular, PingFangHK;
+    font-weight: 400;
+    line-height: 20px;
+    float: right;
+    cursor: pointer;
+}
 .svgIcon {
   font-size: 18px;
 }
@@ -984,5 +1238,18 @@ export default {
   border-bottom: 1px solid rgba(235, 235, 235, 1);
   background: #f8f8fa;
 }
-
+#myButDiv{
+  position: relative;
+  top:0;
+  right: 0;
+}
+.but{
+  /* width: 60px;
+  height: 20px; */
+  border: 1px solid #ccc;
+  position: absolute;
+  top:36px;
+  right: 0;
+  z-index:999;
+}
 </style>

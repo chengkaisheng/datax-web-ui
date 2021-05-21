@@ -122,7 +122,7 @@ const state = {
   scheduleId: '', // 调度任务修改id
 
   SingleData: '', // 单条数据信息
-  ParametersList: [],//配置参数
+  ParametersList: [], // 配置参数
   sqlParams: {
     projectId: '', // 项目ID
     datasourceId: '', // 数据源ID
@@ -131,8 +131,9 @@ const state = {
   lastone: '',
   setcode: '',
   currentTask: '', // 当前编辑任务的信息
-  setRedDot: '',// 设置红点提示
-  tabledata: ''
+  setRedDot: '', // 设置红点提示
+  // projectId: ''
+  wfdevTabs: [] // 工作流开发tab列表数据
 }
 
 const mutations = {
@@ -142,7 +143,7 @@ const mutations = {
   LastOne: (state, data) => {
     state.lastone = data
   },
-  //更改treeId
+  // 更改treeId
   changeTreeId: (state, payload) => {
     state.TreeId = payload
   },
@@ -330,6 +331,9 @@ const mutations = {
   },
   SET_SQLP_SCHEMA: (state, val) => {
     state.sqlParams.schema = val
+  },
+  SET_WFDEV_TABS: (state, val) => {
+    state.wfdevTabs = val
   }
 }
 
