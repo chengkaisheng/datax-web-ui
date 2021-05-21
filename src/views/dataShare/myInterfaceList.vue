@@ -322,7 +322,10 @@ export default {
     }
   }
   .filter {
+    width: 100%;
     margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
     .el-form {
       overflow: hidden;
       margin-top: 10px;

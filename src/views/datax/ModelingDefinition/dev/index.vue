@@ -44,8 +44,13 @@
                 style="font-size: 15px; margin-right: 3px"
               />
               <svg-icon
-                v-else
-                icon-class="workflow_dev"
+                v-if="data.jobType === 'HIVE'"
+                :icon-class="data.jobType"
+                style="font-size: 15px; margin-right: 3px"
+              />
+              <svg-icon
+                v-if="data.jobType === 'IMPALA'"
+                :icon-class="data.jobType"
                 style="font-size: 15px; margin-right: 3px"
               />
               {{ data.name }}
@@ -91,8 +96,8 @@
         >
           <el-tab-pane
             v-for="(item, index) in editableTabs"
-            :key="item.name"
-            :label="item.title"
+            :key="item.id"
+            :label="item.name"
             :name="item.name"
             closable
           >
@@ -104,7 +109,11 @@
               style="width: 100%; height: 600px; margin-top: 25px"
               icon-class="fengdie"
             />
-            <Flow :tabsIds="item.content.id" v-if="item.name !== '首页'" />
+
+            <Flow
+              :tabsIds="item.id"
+              v-if="item.name !== '首页' && item.jobType !== 'wenjianjia'"
+            />
           </el-tab-pane>
         </el-tabs>
       </div>
@@ -152,7 +161,7 @@
 </template>
 
 <script>
-import * as jobProjectApi from '@/api/datax-job-project'
+import * as modeling from '@/api/datax-job-modeling'
 import * as workFlowApi from '@/api/datax-job-info'
 import * as datasourceApi from '@/api/datax-jdbcDatasource'
 import Flow from './workflow.vue'
@@ -186,27 +195,44 @@ export default {
         },
       ],
       workflowList: [
-        {
-          id: new Date().getTime(),
-          name: 't_test_model',
-          workFlowData: {},
-          title: 't_test_model',
-          content: { id: 1 },
-        },
-        {
-          id: new Date().getTime(),
-          name: 't_rtl_user_info',
-          workFlowData: {},
-          title: 't_rtl_user_info',
-          content: { id: 2 },
-        },
-        {
-          id: new Date().getTime(),
-          name: 't_rtl_order_info',
-          workFlowData: {},
-          title: 't_rtl_order_info',
-          content: { id: 3 },
-        },
+        // {
+        //   id: 1,
+        //   type: 1,
+        //   jobType: 'wenjianjia',
+        //   name: 'test',
+        //   workFlowData: {},
+        //   title: 't_test_model',
+        //   content: { id: 1 },
+        //   children: [
+        //     {
+        //       id: 2,
+        //       type: 2,
+        //       jobType: 'HIVE',
+        //       name: 't_test_model',
+        //       workFlowData: {},
+        //       title: 't_test_model',
+        //       content: { id: 1 },
+        //     },
+        //     {
+        //       id: 3,
+        //       type: 2,
+        //       jobType: 'IMPALA',
+        //       name: 't_rtl_user_info',
+        //       workFlowData: {},
+        //       title: 't_rtl_user_info',
+        //       content: { id: 2 },
+        //     },
+        //     {
+        //       id: 4,
+        //       type: 2,
+        //       jobType: 'HIVE',
+        //       name: 't_rtl_order_info',
+        //       workFlowData: {},
+        //       title: 't_rtl_order_info',
+        //       content: { id: 3 },
+        //     },
+        //   ],
+        // },
       ],
       workflowName: '', // 新建工作流名称
       reWorkflowName: '', // 重命名工作流名称
@@ -334,6 +360,8 @@ export default {
       navActive: '0',
       project_id: '', // 当前项目id
       allWorkFlowList: [], // 所以工作流数据数组
+      jobType: '',
+      projectid: '45/123',
     }
   },
   watch: {
@@ -351,12 +379,14 @@ export default {
       }
     },
     '$store.state.project.currentItem'(val) {
-      // this.loadProject(val)
-      console.log(val, '当前项目')
+      localStorage.setItem('project_id', JSON.stringify(val))
+      let project_id = JSON.parse(localStorage.getItem('project_id'))
+        ? JSON.parse(localStorage.getItem('project_id'))
+        : JSON.parse(localStorage.getItem('projectid'))
+      console.log('project_id', project_id)
       if (typeof val === 'string') {
         this.project_id = parseInt(val.split('/')[0])
-        this.serachWorkFlowList(parseInt(val.split('/')[0]))
-        this.getAllWorkflow(this.project_id, 'workflow')
+        this.getlist(this.project_id)
       }
     },
     // 快速检索工作流
@@ -382,6 +412,11 @@ export default {
         b[i].style.display = 'block'
       }
     }
+    a.onmouseout = function () {
+      for (var i = 0; i < b.length; i++) {
+        b[i].style.display = 'none'
+      }
+    }
     const menu = document.getElementsByClassName('right-menu')
 
     // 关闭浏览器右击默认菜单
@@ -393,7 +428,7 @@ export default {
         _this.Ycoords = e.pageY
         console.log(_this.Ycoords, 'this')
       }
-      console.log(menu)
+      console.log('menu', menu)
       return false
     }
     // myChartContainer.onmousedown = function(e) {
@@ -402,29 +437,25 @@ export default {
     // }
   },
   created() {
-    if (this.$store.state.project.currentItem) {
-      if (typeof this.$store.state.project.currentItem === 'string') {
-        this.project_id = parseInt(
-          this.$store.state.project.currentItem.split('/')[0]
-        )
-        this.serachWorkFlowList(
-          this.$store.state.project.currentItem.split('/')[0]
-        )
-        this.getAllWorkflow(
-          this.$store.state.project.currentItem.split('/')[0],
-          'workflow'
-        )
-      }
-    }
-    this.serachWorkFlowList()
+    localStorage.setItem('projectid', JSON.stringify(this.projectid))
+    let project_id = ''
+    project_id = JSON.parse(localStorage.getItem('projectid')).split('/')[0]
+    this.getlist(project_id)
     this.formCopy = JSON.parse(JSON.stringify(this.form))
-    this.getProjectList()
-    // this.loadProject(this.$store.state.project.currentItem)
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.getPos)
   },
   methods: {
+    getlist(val) {
+      let projectId = { projectId: val }
+      modeling.Getlist(projectId).then((res) => {
+        this.workflowList = res.content
+        this.lastdata =
+          res.content[0].children[res.content[0].children.length - 1]
+        console.log('初始化----》', this.lastdata)
+      })
+    },
     // 快速检索关键字
     filterNode(value, data) {
       console.log(value, data)
@@ -434,27 +465,39 @@ export default {
     // ———————————— 右键菜单方法 ————————————start
     // 展示新建文件夹对话框
     newFolder() {
-      if (this.nowObject.type === 2) {
-        this.$message.info('请选择文件夹')
-      } else {
-        this.newFolderDialog = true
-      }
+      this.newFolderDialog = true
     },
     // 确定新建文件夹
     createFolder() {
       console.log(this.nowObject, '当前选择目标节点')
       const params = {
-        projectId: this.project_id,
+        projectId: this.nowObject.projectId,
         parentId: this.nowObject.id,
         type: 1,
+        jobType: 'wenjianjia',
         name: this.folderName,
       }
-      this.saveWorkflow(params)
+      console.log('======', params)
+      modeling
+        .Newtable(params)
+        .then((res) => {
+          if (res.code === 200 && res.content !== '请选择父级目录') {
+            this.getlist(params.projectId)
+          }
+          if (res.content === '请选择父级目录') {
+            this.$message(res.content)
+          }
+        })
+        .catch((err) => {
+          this.$message(err)
+          console.log('新建', err)
+        })
       this.contextMenuVisible = false
       this.newFolderDialog = false
     },
     // 新建工作流
     newWorkFlow(val) {
+      this.jobType = val
       if (this.nowObject.type === 2) {
         this.$message.info('请选择文件夹')
       } else {
@@ -462,15 +505,31 @@ export default {
       }
     },
     // 确定新建工作流
-    createWorkflow() {
-      console.log('新建工作流')
-      this.workflowList.push({
-        id: new Date().getTime(),
+    async createWorkflow() {
+      console.log('任务类型', this.jobType)
+      const params = {
         name: this.workflowName,
-        workFlowData: {},
-        title: this.workflowName,
-        content: { id: 3 },
-      })
+        projectId: this.nowObject.projectId,
+        parentId: this.nowObject.id,
+        type: 2,
+        jobType: this.jobType,
+      }
+      console.log('params------>', params)
+      modeling
+        .Newtable(params)
+        .then((res) => {
+          if (res.code === 200) {
+            this.workflowName = ''
+            this.getlist(params.projectId)
+            this.handleWorkFlow(params)
+          }
+          console.log('新建', res)
+        })
+        .catch((err) => {
+          this.workflowName = ''
+          console.log('新建', err)
+        })
+
       this.newETLdialog = false
     },
     // 新增工作流或文件夹通用方法
@@ -490,42 +549,45 @@ export default {
     // 显示重命名工作流对话框
     reName(val) {
       console.log('重命名')
+      console.log('重命名', this.nowObject)
       this.ReETLdialog = true
     },
     // 确定重命名工作流
     ReNameWorkflow() {
-      let params = {}
-      params = this.nowObject
-      params.name = this.reWorkflowName
-      // workFlowApi
-      //   .updateWorkflow(params)
-      //   .then((res) => {
-      //     console.log(res)
-      //     if (res.code === 200) {
-      //       this.$message.success('重命名工作流成功')
-      //       for (let i = 0; i < this.editableTabs.length; i++) {
-      //         if (this.editableTabs[i].content === this.nowObject) {
-      //           this.editableTabs[i].title = this.reWorkflowName
-      //         }
-      //       }
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     console.log(err)
-      //   })
-      console.log(this.editableTabs)
+      if (!this.nowObject.id || this.nowObject === undefined) {
+        this.$message('选择需要修改的表')
+      }
+      if (this.nowObject.id) {
+        let params = {}
+        params = this.nowObject
+        params.name = this.reWorkflowName
+        console.log('params--->', params)
+        modeling
+          .Update(params)
+          .then((res) => {
+            console.log('重命名----》', res)
+            if (res.code === 200) {
+              this.$message.success('重命名成功')
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+        console.log(this.editableTabs)
+        this.ReETLdialog = false
+      }
       this.ReETLdialog = false
     },
     // 删除工作流
     delWorkFlow() {
+      console.log('删除====', this.nowObject)
       console.log('删除')
-      for (let i = 0; i < this.workflowList.length; i++) {
-        if (this.workflowList[i] === this.$store.state.workflow.currentData) {
-          this.workflowList.splice(i, 1)
+      modeling.DeleteTable({ id: this.nowObject.id }).then((res) => {
+        if (res.code === 200) {
+          this.getlist(this.nowObject.projectId)
+          this.$message.success('删除成功')
         }
-      }
-      this.$message.success('删除成功')
-
+      })
       this.contextMenuVisible = false
     },
     // 取消对话框
@@ -556,22 +618,23 @@ export default {
     // ———————————— 右键菜单方法 ————————————end
 
     // 点击左侧工作流列表
-    handleWorkFlow(e) {
+    handleWorkFlow(data) {
+      console.log('任务数据', data)
+      this.nowObject = data
+      if (data.jobType === 'wenjianjia') {
+        return
+      }
       let arr = []
       this.editableTabs.forEach((itme) => {
         arr.push(itme.name)
       })
-      if (arr.includes(e.name)) {
-        this.editableTabsValue = e.name
+      if (arr.includes(data.name)) {
+        this.editableTabsValue = data.name
       }
-      if (!arr.includes(e.name)) {
-        this.editableTabsValue = e.name
-        this.editableTabs.push(e)
-        this.nowObject = e
-      }
-      console.log('qqq', arr)
-      if (e.type === 2) {
-        this.changeTabs(e)
+      if (!arr.includes(data.name)) {
+        this.editableTabsValue = data.name
+        this.editableTabs.push(data)
+        this.nowObject = data
       }
     },
     // 点击当前tabs窗口
@@ -1090,9 +1153,9 @@ export default {
       }
     }
     .lt {
-      width: 360px;
+      width: 20%;
       padding: 10px;
-      height: calc(100vh - 181px);
+      // height: calc(100vh - 181px);
       background: #f8f8fa;
       .el-input {
         margin-bottom: 20px;
@@ -1153,7 +1216,8 @@ export default {
       }
     }
     .rg {
-      flex: 1;
+      // flex: 1;
+      width: 80%;
       .el-tabs__nav .el-tabs__item:nth-child(1) span {
         display: none;
       }

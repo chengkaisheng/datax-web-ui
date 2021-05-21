@@ -826,6 +826,7 @@ export default {
     padding: 24px 24px 24px 0;
     background-color: #fff;
     overflow: hidden;
+    display: block;
     margin: 20px 20px 0 20px;
     .el-form {
       margin: 15px 0;

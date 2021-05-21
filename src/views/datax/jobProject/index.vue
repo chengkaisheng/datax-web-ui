@@ -12,34 +12,36 @@
     </div>
 
     <div class="main">
-      <el-form
-        class="search-bar"
-        label-position="right"
-        label-width="auto"
-        :inline="true"
-      >
-        <el-form-item label="项目名称：">
-          <el-input
-            v-model="listQuery.searchVal"
-            clearable
-            size="small"
-            placeholder="项目名称"
-          />
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            size="small"
-            type="primary"
-            icon="el-icon-search"
-            @click="fetchData"
-          >搜 索</el-button>
-          <el-button
-            size="small"
-            icon="el-icon-refresh"
-            @click="reSet"
-          >重 置</el-button>
-        </el-form-item>
-      </el-form>
+      <div style="width: 100%;height: 88px;">
+        <el-form
+          class="search-bar"
+          label-position="right"
+          label-width="auto"
+          :inline="true"
+        >
+          <el-form-item label="项目名称：">
+            <el-input
+              v-model="listQuery.searchVal"
+              clearable
+              size="small"
+              placeholder="项目名称"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              size="small"
+              type="primary"
+              icon="el-icon-search"
+              @click="fetchData"
+            >搜 索</el-button>
+            <el-button
+              size="small"
+              icon="el-icon-refresh"
+              @click="reSet"
+            >重 置</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
       <el-row v-loading="listLoading" :gutter="20" style="margin-top: 20px">
         <el-col
           :xs="12"
@@ -542,8 +544,14 @@ export default {
     background-color: transparent;
     overflow: hidden;
     margin: 20px 20px 0 20px;
-
+    display: block;
+    .el-row {
+      display: flex;
+      flex-wrap: wrap;
+    }
     .search-bar {
+      width: 100%;
+      display: block;
       padding: 24px 24px 0;
       background: #ffffff;
 

@@ -255,6 +255,7 @@ rkJggg=="
           <el-table-column
             prop="triggerTime"
             label="调度时间"
+            width="160"
           />
           <el-table-column
             prop="triggerMsg"
@@ -272,6 +273,7 @@ rkJggg=="
           <el-table-column
             prop="handleTime"
             label="执行时间"
+            width="160"
           />
           <el-table-column
             prop="handleMsg"
@@ -286,7 +288,7 @@ rkJggg=="
               {{ scope.row.handleCode === 200 ? '成功' : '失败' }}
             </template>
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作" width="108">
             <template slot-scope="scope">
               <el-button
                 size="mini"
@@ -704,38 +706,21 @@ export default {
     },
     // 获取日志列表
     getlogList() {
-      setTimeout(() => {
-        logApi.workFlowPageList({
-          jobDesc: 'workflow',
-          current: this.queryLog.current,
-          size: this.queryLog.size,
-          jobId: this.$store.state.workflow.currentData.id,
-          // logStatus: -1
-          userId: null
-        }).then((res) => {
-          console.log(res, '日志数据')
-          if (res.code === 200) {
-            this.tableLog = res.content.data
-          }
-        }).catch((err) => {
-          console.log(err)
-        })
-      }, 3000)
-      // logApi.workFlowPageList({
-      //   jobDesc: 'workflow',
-      //   current: this.queryLog.current,
-      //   size: this.queryLog.size,
-      //   jobId: this.$store.state.workflow.currentData.id,
-      //   // logStatus: -1
-      //   userId: null
-      // }).then((res) => {
-      //   console.log(res, '日志数据')
-      //   if (res.code === 200) {
-      //     this.tableLog = res.content.data
-      //   }
-      // }).catch((err) => {
-      //   console.log(err)
-      // })
+      logApi.workFlowPageList({
+        jobDesc: 'workflow',
+        current: this.queryLog.current,
+        size: this.queryLog.size,
+        jobId: this.$store.state.workflow.currentData.id,
+        // logStatus: -1
+        userId: null
+      }).then((res) => {
+        console.log(res, '日志数据')
+        if (res.code === 200) {
+          this.tableLog = res.content.data
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
     },
     // 查看日志详情
 
@@ -778,6 +763,11 @@ export default {
     // 显示调度配置抽屉
     dispatchData() {
       console.log('调度配置')
+      if (this.$store.state.workflow.currentData.jobCron) {
+        this.drawerForm.jobCron = this.$store.state.workflow.currentData.jobCron
+      } else {
+        this.drawerForm.jobCron = '00 * * ? * * *'
+      }
       this.dialogDrawer = true
     },
     // 取消抽屉

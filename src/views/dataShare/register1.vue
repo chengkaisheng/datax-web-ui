@@ -763,6 +763,8 @@ export default {
     padding: 24px;
     background-color: #fff;
     overflow: hidden;
+    display: block;
+    width: 100%;
     margin: 20px 20px 0 20px;
   }
 
@@ -875,6 +877,8 @@ export default {
   .el-row {
     width: 80%;
     margin: 10px auto;
+    display: flex;
+    flex-wrap: wrap;
   }
   .el-table {
     .el-tag {

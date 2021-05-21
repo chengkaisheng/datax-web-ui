@@ -34,19 +34,21 @@
           >重 置</el-button>
         </el-form-item>
       </el-form>
-      <el-form class="action-bar" label-position="right" label-width="auto" :inline="true">
-        <el-form-item>
-          <el-button
-            size="small"
-            type="primary"
-            icon="el-icon-plus"
-            @click="showAdd"
-          >新建通用规则</el-button>
-        </el-form-item>
-        <!-- <el-form-item>
-          <el-button type="primary" size="small" icon="el-icon-link">关联个性化规则</el-button>
-        </el-form-item> -->
-      </el-form>
+      <div>
+        <el-form class="action-bar" label-position="right" label-width="auto" :inline="true">
+          <el-form-item>
+            <el-button
+              size="small"
+              type="primary"
+              icon="el-icon-plus"
+              @click="showAdd"
+            >新建通用规则</el-button>
+          </el-form-item>
+          <!-- <el-form-item>
+            <el-button type="primary" size="small" icon="el-icon-link">关联个性化规则</el-button>
+          </el-form-item> -->
+        </el-form>
+      </div>
       <!-- 表格 -->
       <el-table
         :data="tableData"
@@ -686,6 +688,11 @@ export default {
     background-color: #fff;
     overflow: hidden;
     margin: 20px 20px 0 20px;
+    display: block;
+    .el-form {
+      width: 100%;
+      display: block;
+    }
     .search-bar {
       background: #ffffff;
 

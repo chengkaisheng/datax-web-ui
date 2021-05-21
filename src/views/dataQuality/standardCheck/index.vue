@@ -54,6 +54,10 @@ export default {
 
 <style lang="scss">
     .standard-check-section {
+       .el-row {
+          display: flex;
+          flex-wrap: wrap;
+        }
         .el-tabs__item {
             height: 42px;
         }
