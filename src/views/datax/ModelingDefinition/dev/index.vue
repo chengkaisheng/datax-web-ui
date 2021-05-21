@@ -112,6 +112,7 @@
 
             <Flow
               :tabsIds="item.id"
+              :tabledata="nowObject"
               v-if="item.name !== '首页' && item.jobType !== 'wenjianjia'"
             />
           </el-tab-pane>
@@ -176,6 +177,7 @@ export default {
   },
   data() {
     return {
+      tabledata: '',
       contextMenu1Visible: false,
       contextMenu1Target: '',
       fieldTermChecked: false,
@@ -620,6 +622,7 @@ export default {
     // 点击左侧工作流列表
     handleWorkFlow(data) {
       console.log('任务数据', data)
+      this.$store.commit('TABLEDATA', data)
       this.nowObject = data
       if (data.jobType === 'wenjianjia') {
         return

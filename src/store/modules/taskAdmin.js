@@ -131,11 +131,14 @@ const state = {
   lastone: '',
   setcode: '',
   currentTask: '', // 当前编辑任务的信息
-  setRedDot: ''// 设置红点提示
-  // projectId: ''
+  setRedDot: '',// 设置红点提示
+  tabledata: ''
 }
 
 const mutations = {
+  TABLEDATA: (state, data) => {
+    state.tabledata = data
+  },
   LastOne: (state, data) => {
     state.lastone = data
   },
