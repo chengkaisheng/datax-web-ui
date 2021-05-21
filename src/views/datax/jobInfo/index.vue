@@ -41,6 +41,7 @@
             <el-tree
               id="main_span"
               ref="tree"
+              v-loading="loading"
               :data="treeList"
               highlight-current
               :filter-node-method="filterNode"
@@ -831,7 +832,8 @@ export default {
       dropId: '', // 被拖拽id
       delType: '', // 删除的类型
       conut: '',
-      tablist: []
+      tablist: [],
+      loading: true
     }
   },
   computed: {
@@ -1172,6 +1174,7 @@ export default {
           .then((res) => {
             if (res.code === 200) {
               this.treeList = res.content
+              this.loading = false
               if (data) {
                 const newarr = []
                 for (var i in res.content[0].children) {

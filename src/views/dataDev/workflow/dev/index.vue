@@ -25,6 +25,7 @@
         <el-tree
           id="main_span"
           ref="tree"
+          v-loading="loading"
           :data="workflowList"
           highlight-current
           accordion
@@ -32,8 +33,8 @@
           draggable
           node-key="id"
           :expand-on-click-node="false"
-          @node-click="handleWorkFlow"
           :filter-node-method="filterNode"
+          @node-click="handleWorkFlow"
         >
           <span
             slot-scope="{ node, data }"
@@ -54,7 +55,7 @@
                 style="font-size: 15px; margin-right: 3px"
               />
               <svg-icon
-              v-else
+                v-else
                 icon-class="workflow_dev"
                 style="font-size: 15px; margin-right: 3px"
               />
@@ -75,8 +76,19 @@
           <a href="javascript:0" @click="delWorkFlow">删除</a>
         </vue-context-menu>
       </div>
-      <div class="rg">
+      <div class="rt">
         <el-tabs v-model="editableTabsValue" type="card" closable close @tab-remove="removeTab" @tab-click="handleTabs">
+          <el-tab-pane
+            v-if="!$store.state.taskAdmin.wfdevTabs.length"
+            label="首页"
+            name="首页"
+          >
+            <div class="title_h3">一站式数据开发解决方案</div>
+            <svg-icon
+              style="width: 100%; height: 600px; margin-top: 25px"
+              icon-class="fengdie"
+            />
+          </el-tab-pane>
           <el-tab-pane
             v-for="(item, index) in editableTabs"
             :key="item.name"
@@ -84,13 +96,13 @@
             :name="item.name"
             closable
           >
-            <div v-if="item.name === '首页'" class="title_h3">一站式数据开发解决方案</div>
+            <!-- <div v-if="item.name === '首页'" class="title_h3">一站式数据开发解决方案</div>
             <svg-icon
               v-if="item.name === '首页'"
               style="width: 100%; height: 600px; margin-top: 25px"
               icon-class="fengdie"
-            /> 
-            <Workflow :tabsIds="item.content.id" v-if="item.name !== '首页'" />
+            /> -->
+            <Workflow v-if="item.name !== '首页'" :tabs-ids="item.content.id" />
           </el-tab-pane>
         </el-tabs>
       </div>
@@ -131,7 +143,7 @@ import Workflow from './workflow.vue'
 import { component as VueContextMenu } from '@xunlei/vue-context-menu'
 import {
   getTableSchema,
-  getTableListWithComment,
+  getTableListWithComment
   // getTableList,
   // getTableColumns,
   // db2hive
@@ -145,6 +157,7 @@ export default {
   },
   data() {
     return {
+      loading: true,
       fieldTermChecked: false,
       collectionTermChecked: false,
       mapKeyTermChecked: false,
@@ -153,13 +166,14 @@ export default {
       contextMenuVisible: false,
       contextMenuTarget: '',
       editableTabsValue: '首页',
+      editableTabsName: '首页',
       tabIndex: 0,
       editableTabs: [
-        {
-          title: '首页',
-          name: '首页',
-          content: ''
-        }
+        // {
+        //   title: '首页',
+        //   name: '首页',
+        //   content: ''
+        // }
       ],
       workflowList: [
         {
@@ -306,6 +320,9 @@ export default {
         this.form.dbNamePattern = '%s'
       }
     },
+    // ' $store.stare.taskAdmin.wfdevTabs'(val) {
+    //   this.editableTabs = val
+    // },
     '$store.state.project.currentItem'(val) {
       // this.loadProject(val)
       console.log(val, '当前项目')
@@ -321,7 +338,8 @@ export default {
     },
     // 当前选择的工作流节点数据
     nowObject: function(val) {
-      this.$store.commit('changeCurrent', val)
+      console.log(val, '工作流节点数据')
+      this.$store.commit('currentData', val)
     }
   },
   mounted() {
@@ -352,17 +370,21 @@ export default {
     // }
   },
   created() {
+    console.log(this.$store.state.project.currentItem)
     if (this.$store.state.project.currentItem) {
       if (typeof this.$store.state.project.currentItem === 'string') {
         this.project_id = parseInt(this.$store.state.project.currentItem.split('/')[0])
         this.serachWorkFlowList(this.$store.state.project.currentItem.split('/')[0])
+        // this.serachWorkFlowList(this.$store.state.project.currentItem.split('/')[0])
         this.getAllWorkflow(this.$store.state.project.currentItem.split('/')[0], 'workflow')
       }
     }
-    this.serachWorkFlowList()
+    // this.serachWorkFlowList(this.project_id)
     this.formCopy = JSON.parse(JSON.stringify(this.form))
     this.getProjectList()
     // this.loadProject(this.$store.state.project.currentItem)
+    this.editableTabs = this.$store.state.taskAdmin.wfdevTabs
+    this.handleWorkFlow(this.$store.state.workflow.currentData)
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.getPos)
@@ -375,7 +397,7 @@ export default {
       return data.name.indexOf(value) !== -1
     },
     // 获取所有工作流的数组数据
-    getAllWorkflow (id, type) {
+    getAllWorkflow(id, type) {
       if (id) {
         workFlowApi.workflowList({
           projectId: id,
@@ -385,6 +407,7 @@ export default {
             console.log(res, '所有工作流')
             if (res.code === 200) {
               this.allWorkFlowList = res.content
+              this.loading = false
             } else {
               if (res.msg) {
                 this.$message.error(res.msg)
@@ -399,7 +422,7 @@ export default {
       }
     },
     // 查询工作流列表
-    serachWorkFlowList (id) {
+    serachWorkFlowList(id) {
       if (id) {
         workFlowApi.workflowTree({
           projectId: id
@@ -408,6 +431,7 @@ export default {
             console.log(res)
             if (res.code === 200) {
               this.workflowList = res.content
+              this.loading = false
             } else {
               if (res.msg) {
                 this.$message.error(res.msg)
@@ -422,11 +446,10 @@ export default {
       }
     },
 
-
     // ———————————— 右键菜单方法 ————————————start
 
     // 展示新建文件夹对话框
-    newFolder () {
+    newFolder() {
       if (this.nowObject.type === 2) {
         this.$message.info('请选择文件夹')
       } else {
@@ -434,7 +457,7 @@ export default {
       }
     },
     // 确定新建文件夹
-    createFolder () {
+    createFolder() {
       console.log(this.nowObject, '当前选择目标节点')
       const params = {
         projectId: this.project_id,
@@ -447,7 +470,7 @@ export default {
       this.newFolderDialog = false
     },
     // 新建工作流
-    newWorkFlow (val) {
+    newWorkFlow(val) {
       if (this.nowObject.type === 2) {
         this.$message.info('请选择文件夹')
       } else {
@@ -455,7 +478,7 @@ export default {
       }
     },
     // 确定新建工作流
-    createWorkflow () {
+    createWorkflow() {
       console.log('新建工作流')
       const params = {
         projectId: this.project_id,
@@ -469,10 +492,10 @@ export default {
       this.newETLdialog = false
     },
     // 新增工作流或文件夹通用方法
-    saveWorkflow (params) {
+    saveWorkflow(params) {
       workFlowApi.addWorkflow(params).then(
         (res) => {
-          if (res.code === 200){
+          if (res.code === 200) {
             console.log(res, '新增工作流或文件夹')
             this.serachWorkFlowList(this.project_id)
           }
@@ -484,12 +507,12 @@ export default {
       )
     },
     // 显示重命名工作流对话框
-    reName (val) {
+    reName(val) {
       console.log('重命名')
       this.ReETLdialog = true
     },
     // 确定重命名工作流
-    ReNameWorkflow () {
+    ReNameWorkflow() {
       let params = {}
       params = this.nowObject
       params.name = this.reWorkflowName
@@ -512,7 +535,7 @@ export default {
       this.ReETLdialog = false
     },
     // 删除工作流
-    delWorkFlow () {
+    delWorkFlow() {
       console.log('删除')
       // for (let i = 0; i < this.workflowList.length; i++) {
       //   if (this.workflowList[i] === this.$store.state.workflow.currentData) {
@@ -534,13 +557,12 @@ export default {
           this.contextMenuVisible = false
           this.serachWorkFlowList(this.project_id)
         }
-      }).catch( err => {
+      }).catch(err => {
         console.log(err)
       })
-
     },
     // 取消对话框
-    cancelDialog () {
+    cancelDialog() {
       this.newETLdialog = false
       this.newFolderDialog = false
       this.ReETLdialog = false
@@ -554,23 +576,40 @@ export default {
         tabs.forEach((tab, index) => {
           if (tab.name === targetName) {
             const nextTab = tabs[index + 1] || tabs[index - 1]
+
             if (nextTab) {
               activeName = nextTab.name
             }
           }
         })
       }
-      this.tabIndex -= 1
-      this.editableTabsValue = activeName
+      // this.tabIndex -= 1
+      console.log(activeName)
+      this.$nextTick(() => {
+        this.editableTabsValue = activeName
+      })
+      // this.editableTabsValue = activeName
+      console.log(this.editableTabsValue)
       this.editableTabs = tabs.filter(tab => tab.name !== targetName)
+      this.$store.commit('SET_WFDEV_TABS', this.editableTabs)
+      if (this.editableTabs.length === 0) {
+        // this.editableTabsValue = '首页'
+        this.$nextTick(() => {
+          this.editableTabsValue = '首页'
+        })
+      }
+      // if (this.$store.state.taskAdmin.wfdevTabs.length === 0) {
+      //   this.$nextTick(() => {
+      //     this.editableTabsValue = '首页'
+      //   })
+      // }
     },
     // ———————————— 右键菜单方法 ————————————end
-
 
     // 点击左侧工作流列表
     handleWorkFlow(e) {
       console.log(e, e.name)
-      this.$store.commit('changeCurrent', e)
+      this.$store.commit('currentData', e)
       this.nowObject = e
       if (e.type === 2) {
         this.changeTabs(e)
@@ -580,7 +619,7 @@ export default {
     handleTabs(e) {
       console.log(e, '123')
       let arr = {}
-      arr = this.allWorkFlowList.filter( (item) => {
+      arr = this.allWorkFlowList.filter((item) => {
         if (item.name === e.label) {
           return item
         }
@@ -590,38 +629,38 @@ export default {
     },
     // 添加或查找tabs页面
     changeTabs(obj) {
+      console.log(this.editableTabs)
       if (this.editableTabs.length > 0) {
-        let indexTabs = this.editableTabs.map(item => item.title).indexOf(obj.name)
+        const indexTabs = this.editableTabs.map(item => item.title).indexOf(obj.name)
         console.log(indexTabs)
         if (indexTabs !== -1) {
           this.editableTabsValue = indexTabs + ''
           console.log('this.editableTabsValue', this.editableTabsValue)
         } else {
-          const newTabName = ++this.tabIndex + ''
+          const newTabName = this.tabIndex++ + ''
           this.editableTabs.push({
             title: obj.name,
             name: newTabName,
             content: obj
           })
           this.editableTabsValue = newTabName
+          this.$store.commit('SET_WFDEV_TABS', this.editableTabs)
           console.log('add', this.editableTabs, newTabName)
         }
       } else {
         console.log('只有首页时，添加tabs')
-        const newTabName = ++this.tabIndex + ''
+        const newTabName = this.tabIndex++ + ''
         this.editableTabs.push({
           title: obj.name,
           name: newTabName,
           content: obj
         })
         this.editableTabsValue = newTabName
+        this.$store.commit('SET_WFDEV_TABS', this.editableTabs)
+        // this.$store.stare.taskAdmin.wfdevtabs
         return
       }
     },
-
-
-
-
 
     // _______________________________________
     /**
@@ -918,6 +957,7 @@ export default {
   }
 
   .main {
+    height: 100%;
     padding: 0px 24px 0px 0;
     background-color: #fff;
     overflow: hidden;
@@ -1012,26 +1052,102 @@ export default {
         }
       }
     }
+    .rt {
+    width: 100%;
+    flex: 1;
+    // overflow-x: scroll;
+    // overflow-x: hidden;
+    overflow-y: hidden;
+    .el-tabs {
+      .el-tabs__header {
+        width: 100%;
+        height: 32px;
+        line-height: 32px;
+        margin: 0;
+        .el-tabs__nav-wrap {
+          // padding: 0 10px;
+          // .is-scrollable{
+          //   padding:0 10px;
+          // }
+          // background-color: #f8f8fa;
+          .el-tabs__nav-next,
+          .el-tabs__nav-prev {
+            height: 32px;
+            line-height: 32px;
+             background-color: #ccc;
+          }
+        }
+
+        .el-tabs__nav {
+          // border: 1px solid #dfe4ed;
+          // width: 200px;
+          border-top: 1px solid #f8f8fa;
+          .el-tabs__item {
+            // width: 100%;
+             width: 200px;
+            border: none;
+            border-top: 1px solid #f8f8fa;
+            border-radius: 6px 6px 0px 0px;
+            height: 32px;
+            line-height: 32px;
+            position: relative;
+            overflow: hidden;
+            vertical-align: bottom;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            .el-icon-close {
+              position: absolute;
+              right: 10px;
+              top: 50%;
+              transform: translateY(-50%);
+            }
+          }
+        }
+      }
+      .el-tabs__item.is-active {
+        background-color: #ffffff;
+        // border-bottom-color:  #3d5eff;
+      }
+      .el-tab-pane {
+        // padding: 10px;
+        height: 100%;
+        position: relative;
+        .job_detail {
+          height: 100%;
+        }
+        .title_h3 {
+          position: absolute;
+          font-size: 24px;
+          font-weight: 700;
+          font-family: '楷体';
+          left: 24px;
+          top: 30px;
+        }
+      }
+    }
+  }
     .rg {
+      // width: 100px;
       flex: 1;
       .el-tabs__nav .el-tabs__item:nth-child(1) span{
         display: none;
       }
       .el-tabs {
         .el-tabs__content {
-          // height: calc(100vh - 80px);
+          height: calc(100vh - 80px);
           overflow-y: auto;
-          overflow-x: auto;
+          // overflow-x: auto;
         }
         .el-tabs__header {
           height: 32px;
           line-height: 32px;
           margin: 0;
           .el-tabs__nav {
-            width: 200px;
+            // width: 200px;
             border-top: 1px solid #f8f8fa;
             .el-tabs__item {
               width: 100%;
+              width: 200px;
               border: none;
               border-top: 1px solid #f8f8fa;
               border-radius: 6px 6px 0px 0px;
