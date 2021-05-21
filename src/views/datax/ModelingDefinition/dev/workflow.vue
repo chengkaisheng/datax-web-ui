@@ -146,7 +146,7 @@
         label-width="100px"
         class="demo-ruleForm"
       >
-        <el-form-item label="数据层级:" prop="tabPosition">
+        <el-form-item label="数据层级:">
           <el-radio-group
             v-model="ruleForm.tabPosition"
             style="margin-bottom: 30px"
@@ -157,7 +157,7 @@
                   ruleForm.tabPosition = '1'
                 }
               "
-              label="1"
+              label="MiddleLayer"
               >中间层</el-radio-button
             >
             <el-radio-button
@@ -166,7 +166,7 @@
                   ruleForm.tabPosition = '2'
                 }
               "
-              label="2"
+              label="applicationLayer"
               >应用层</el-radio-button
             >
           </el-radio-group>
@@ -224,7 +224,7 @@
           <el-col :span="11">
             <el-form-item>
               <el-input
-                :disabled="Lock"
+                :disabled="isbtn"
                 v-model="ruleForm.Modelname1"
                 style="width: 30%"
               ></el-input
@@ -337,12 +337,15 @@
             <el-table-column label="操作" width="100">
               <template slot-scope="scope">
                 <el-button
-                  @click="handleClick(scope.row)"
+                  @click="handleClick(scope.row, index)"
                   type="text"
                   size="small"
                   >查看</el-button
                 >
-                <el-button @click="Editdata(scope.row)" type="text" size="small"
+                <el-button
+                  @click.native.prevent="Editdata(scope.row, scope.$index)"
+                  type="text"
+                  size="small"
                   >编辑</el-button
                 >
               </template>
@@ -408,17 +411,20 @@
         </div>
         <div style="height: 10px"></div>
         <div class="table_top">
-          <span style="margin-right: 20px">字段主键:</span
-          ><span>
-            <el-input placeholder="请输入字段主键" v-model="isKey"> </el-input>
-          </span>
-        </div>
-        <div style="height: 10px"></div>
-        <div class="table_top">
           <span style="margin-right: 20px">绑定指标:</span
           ><span>
             <el-input placeholder="请输入绑定指标" v-model="BindingIndex">
             </el-input>
+          </span>
+        </div>
+        <div style="height: 10px"></div>
+        <div class="table_top">
+          <span style="margin-right: 20px">字段主键:</span
+          ><span>
+            <el-select v-model="isKey" placeholder="请选择">
+              <el-option label="是" value="true"></el-option>
+              <el-option label="否" value="false"></el-option>
+            </el-select>
           </span>
         </div>
         <div style="height: 10px"></div>
@@ -483,6 +489,7 @@ export default {
   props: ['tabledata'],
   data() {
     return {
+      isbtn: true,
       Lock: false,
       DialogVisible: false,
       dialogVisible: false,
@@ -544,8 +551,8 @@ export default {
         Modelname2: '',
         Modelname3: '',
         theme: [
-          { id: 1, value: '主题域1', name: '主题域1' },
-          { id: 2, value: '主题域2', name: '主题域2' },
+          { id: 1, value: '主题域1', name: '主题域11' },
+          { id: 2, value: '主题域2', name: '主题域22' },
         ],
         TableType: [
           { id: 1, value: '类型1', name: '类型1' },
@@ -581,23 +588,20 @@ export default {
         desc: '',
         tabPosition: '',
       },
-      // rules: {
-      //   Securitys: [
-      //     { required: true, message: '请选择保障等级', trigger: 'change' },
-      //   ],
-      //   TableTypes: [
-      //     { required: true, message: '请选择表类型', trigger: 'change' },
-      //   ],
-      //   themes: [
-      //     { required: true, message: '请选择主图域', trigger: 'change' },
-      //   ],
-      //   tabPosition: [
-      //     { required: true, message: '请选择数据层级', trigger: 'change' },
-      //   ],
-      //   Business: [
-      //     { required: true, message: '请选择业务过程', trigger: 'change' },
-      //   ],
-      // },
+      rules: {
+        Securitys: [
+          { required: true, message: '请选择保障等级', trigger: 'change' },
+        ],
+        TableTypes: [
+          { required: true, message: '请选择表类型', trigger: 'change' },
+        ],
+        themes: [
+          { required: true, message: '请选择主图域', trigger: 'change' },
+        ],
+        Business: [
+          { required: true, message: '请选择业务过程', trigger: 'change' },
+        ],
+      },
       drawer: false,
       /** 工作流Id */
       myId: '',
@@ -615,10 +619,14 @@ export default {
       dialogLogVisible: false,
       dialogDetails: false,
       fileList: [],
+      btn: '',
+      index: '',
     }
   },
   watch: {},
-  created() {},
+  created() {
+    this.ruleForm.Modelname1 = this.$store.state.taskAdmin.tabledata.name
+  },
   mounted() {},
   methods: {
     submitForm(formName, data) {
@@ -647,6 +655,12 @@ export default {
           modeling
             .Update(params)
             .then((res) => {
+              if (res.code === 200) {
+                this.$message({
+                  message: '建表成功',
+                  type: 'success',
+                })
+              }
               console.log(res)
             })
             .catch((err) => {
@@ -674,18 +688,6 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields()
-    },
-    //查看表
-    handleClick(data) {
-      this.DialogVisible = true
-      this.Table.push(data)
-      console.log('查看表', data)
-    },
-    //编辑表
-    Editdata(data) {
-      this.TableData = data
-      this.dialogVisible = true
-      console.log('编辑表', data)
     },
     closeDialog() {
       this.Table = []
@@ -719,26 +721,69 @@ export default {
         type: 'success',
       })
     },
+    //查看表
+    handleClick(data) {
+      this.DialogVisible = true
+      this.Table.push(data)
+      console.log('查看表', data)
+    },
+    //编辑表
+    Editdata(data, index) {
+      this.name = data.name
+      this.comment = data.comment
+      this.BusinessCaliber = data.BusinessCaliber
+      this.type = data.type
+      this.isKey = data.isKey
+      this.BindingIndex = data.BindingIndex
+      this.notNull = data.notNull
+      this.dialogVisible = true
+      this.btn = 'edit'
+      this.index = index
+      console.log(this.notNull)
+      console.log('编辑数组', this.ruleForm.tableData)
+      console.log('编辑表', data, index)
+    },
     //添加字段
     Addfield() {
       this.dialogVisible = true
-      this.isbtn = true
     },
     //添加字段
     Addfields() {
-      let data = {
-        name: this.name,
-        comment: this.comment,
-        BusinessCaliber: this.BusinessCaliber,
-        type: this.type,
-        isKey: this.isKey,
-        BindingIndex: this.BindingIndex,
-        notNull: this.notNull,
+      if (this.btn === '') {
+        let data = {
+          name: this.name,
+          comment: this.comment,
+          BusinessCaliber: this.BusinessCaliber,
+          type: this.type,
+          isKey: this.isKey,
+          BindingIndex: this.BindingIndex,
+          notNull: this.notNull,
+        }
+        console.log('添加字段数据', data)
+        this.ruleForm.tableData.push(data)
+        this.dialogVisible = false
+        this.name = ''
+        this.comment = ''
+        this.BusinessCaliber = ''
+        this.type = ''
+        this.isKey = ''
+        this.BindingIndex = ''
+        this.notNull = ''
       }
-      console.log('this.TableData---->', data)
-      this.ruleForm.tableData.push(data)
-      this.TableData = ''
-      this.dialogVisible = false
+      if (this.btn === 'edit') {
+        let data = {
+          name: this.name,
+          comment: this.comment,
+          BusinessCaliber: this.BusinessCaliber,
+          type: this.type,
+          isKey: this.isKey,
+          BindingIndex: this.BindingIndex,
+          notNull: this.notNull,
+        }
+        console.log('edit', this.index, data)
+        this.ruleForm.tableData.splice(this.index, 1, data)
+        this.dialogVisible = false
+      }
     },
 
     //上传文件

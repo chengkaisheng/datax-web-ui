@@ -455,7 +455,7 @@ export default {
         this.workflowList = res.content
         this.lastdata =
           res.content[0].children[res.content[0].children.length - 1]
-        console.log('初始化----》', this.lastdata)
+        console.log('初始化----》', res, this.lastdata)
       })
     },
     // 快速检索关键字
@@ -627,6 +627,7 @@ export default {
       if (data.jobType === 'wenjianjia') {
         return
       }
+
       let arr = []
       this.editableTabs.forEach((itme) => {
         arr.push(itme.name)
