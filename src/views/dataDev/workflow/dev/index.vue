@@ -364,6 +364,10 @@ export default {
       console.log(menu)
       return false
     }
+    if (this.editableTabs.length) {
+      this.handleWorkFlow(this.$store.state.workflow.currentData)
+    }
+
     // myChartContainer.onmousedown = function(e) {
 
     //   return false
@@ -384,7 +388,7 @@ export default {
     this.getProjectList()
     // this.loadProject(this.$store.state.project.currentItem)
     this.editableTabs = this.$store.state.taskAdmin.wfdevTabs
-    this.handleWorkFlow(this.$store.state.workflow.currentData)
+    // this.handleWorkFlow(this.$store.state.workflow.currentData)
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.getPos)
@@ -591,12 +595,14 @@ export default {
       // this.editableTabsValue = activeName
       console.log(this.editableTabsValue)
       this.editableTabs = tabs.filter(tab => tab.name !== targetName)
+      console.log(this.editableTabs)
       this.$store.commit('SET_WFDEV_TABS', this.editableTabs)
       if (this.editableTabs.length === 0) {
         // this.editableTabsValue = '首页'
         this.$nextTick(() => {
           this.editableTabsValue = '首页'
         })
+        this.$store.commit('currentData', '')
       }
       // if (this.$store.state.taskAdmin.wfdevTabs.length === 0) {
       //   this.$nextTick(() => {
@@ -634,7 +640,10 @@ export default {
         const indexTabs = this.editableTabs.map(item => item.title).indexOf(obj.name)
         console.log(indexTabs)
         if (indexTabs !== -1) {
+          // this.$nextTick(() => {
           this.editableTabsValue = indexTabs + ''
+          // })
+
           console.log('this.editableTabsValue', this.editableTabsValue)
         } else {
           const newTabName = this.tabIndex++ + ''

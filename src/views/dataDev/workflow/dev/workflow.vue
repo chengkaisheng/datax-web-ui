@@ -369,6 +369,7 @@ rkJggg=="
 <script id="code" text='text/javasript' >
 import go, { List } from 'gojs'
 import * as workFlowApi from '@/api/datax-job-info'
+import * as job from '@/api/datax-job-info'
 import * as logApi from '@/api/datax-job-log'
 import Cron from '@/components/Cron'
 import { countColumn } from 'codemirror'
@@ -443,7 +444,8 @@ export default {
       // 配置替换参数
       ReplaceParameters: [
         {}
-      ]
+      ],
+      replaceParam: ''// 获取的任务配置参数
     }
   },
   watch: {
@@ -606,8 +608,9 @@ export default {
       }
       this.getinto = true
       this.dosomthing()
+      this.DialogVisiBle = false
     },
-
+    // 执行按钮
     runData() {
       console.log('执行')
       let params = {}
@@ -620,16 +623,69 @@ export default {
       console.log(typelist.nodeDataArray)
       const arr1 = ['IMPORT', 'HIVE']
       typelist.nodeDataArray.forEach(item => {
-        if (arr1.includes(item.type)) {
+        if (item.type === 'IMPORT') {
           // 如果是这个'IMPORT', 'HIVE' 弹窗
           console.log('1111111111')
-          this.DialogVisiBle = true
-          return
+
+          console.log(item.type)
+          console.log(item.id)
+          this.importid = item.id
+          // if (item.id) {
+          //   console.log(item.id)
+          //   // 获取配置参数
+          //   job.getTaskInfo(item.id).then((res) => {
+          //     console.log(res.content)
+          //     this.replaceParam = res.content.replaceParam
+          //     console.log(this.replaceParam)
+          //     if (this.replaceParam !== '') {
+          //       this.DialogVisiBle = true
+          //       return
+          //     }
+          //   })
+          // }
+          // return
+          // this.dosomthing(params)
         }
-        console.log(item.type)
+        if (item.type === 'HIVE') {
+          this.hiveid = item.id
+        }
+        // return
+        // if (item.type === 'HIVE') {
+        //   if (item.id) {
+        //     console.log(item.id)
+        //   }
+        // }
+        // console.log(item.type)
+        // this.dosomthing(params)
       })
+      if (this.importid) {
+        console.log(this.importid)
+        // 获取配置参数
+        job.getTaskInfo(this.importid).then((res) => {
+          console.log(res.content)
+          this.replaceParam = res.content.replaceParam
+          console.log(this.replaceParam)
+          if (this.replaceParam !== '') {
+            this.DialogVisiBle = true
+            return
+          }
+        })
+      } else if (this.hiveid) {
+        job.getTaskInfo(this.hiveid).then((res) => {
+          console.log(res.content)
+          this.replaceParam = res.content.replaceParam
+          console.log(this.replaceParam)
+          if (this.replaceParam !== '') {
+            this.DialogVisiBle = true
+            return
+          }
+        })
+      } else {
+        // 掉函数
+        this.dosomthing(params)
+      }
       // 掉函数
-      this.dosomthing(params)
+      // this.dosomthing(params)
       // const arr = []
       // for (var i = 0;i < typelist.nodeDataArray.length;i++) {
       //   // if (i.type === 'IMPORT' || 'HIVE') {
@@ -639,11 +695,14 @@ export default {
       // }
       // if (arr.includes('IMPORT')) {
       //   console.log('ok')
+      //   this.DialogVisiBle = true
+      // } else {
+      //   this.dosomthing(params)
       // }
       // console.log(arr)
     },
 
-    // 执行
+    // 执行函数
     dosomthing() {
       // let params = {}
       // params = this.$store.state.workflow.currentData
@@ -810,10 +869,20 @@ export default {
       this.myDiagram.model.updateTargetBindings(selectNode.tb.j[0].data)
       this.dialogFormVisible = false
     },
+
     init() {
       // if (window.goSamples) goSamples();  // init for these samples -- you don't need to call this
       var $ = go.GraphObject.make // 为在定义模板的简洁
-
+      //     this.myDiagram =
+      // $(go.Diagram, 'myDiagramDiv',
+      //   {
+      //     'undoManager.isEnabled': true, // enable Ctrl-Z to undo and Ctrl-Y to redo
+      //     layout: $(go.TreeLayout, // specify a Diagram.layout that arranges trees
+      //       { angle: 90, layerSpacing: 35 })
+      //   })
+      // this.myDiagram.layout =
+      //       $(go.TreeLayout,
+      //         { angle: 90, layerSpacing: 35 })
       this.myDiagram =
         $(go.Diagram, 'myDiagramDiv' + this.myId, // 必须命名或引用DIV HTML元素
           {
@@ -821,6 +890,21 @@ export default {
             grid: $(go.Panel, 'Grid', // a simple 10x10 grid
               $(go.Shape, 'LineH', { stroke: 'lightgray', strokeWidth: 0.5 }),
               $(go.Shape, 'LineV', { stroke: 'lightgray', strokeWidth: 0.5 })
+            ),
+            layout: $(go.TreeLayout, // specify a Diagram.layout that arranges trees
+              { angle: 90, layerSpacing: 35 },
+              {
+                sorting: go.TreeLayout.SortingAscending,
+                comparer: function(a, b) {
+                  // A and B are TreeVertexes
+                  var av = a.node.data.index
+                  var bv = b.node.data.index
+                  if (av < bv) return -1
+                  if (av > bv) return 1
+                  return 0
+                }
+
+              }
             ),
             'draggingTool.isGridSnapEnabled': true,
             handlesDragDropForTopLevelParts: true,
@@ -1139,6 +1223,11 @@ export default {
     // 可以通过流程图数据刷新页面显示效果
     load() {
       this.myDiagram.model = go.Model.fromJson(this.myDiagram.model.toJson())
+      // this.diagram = $（go.Diagram，“ myDiagramDiv”，
+      //           {
+      //             布局：$ {go.TreeLayout，
+      //                       {角度：90，nodeSpacing：10，layerSpacing：30 }）
+      //           }）
     },
     // 通过打开一个新窗口来打印图表，其中包含每个页面的图表内容的SVG图像
     printDiagram() {
