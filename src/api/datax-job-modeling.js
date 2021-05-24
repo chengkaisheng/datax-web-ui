@@ -32,3 +32,11 @@ export function Update(data) {
     data: data
   })
 }
+
+export function RunTask(data) {
+  return request({
+    url: '/api/jobModel/execute',
+    method: 'post',
+    data: data
+  })
+}

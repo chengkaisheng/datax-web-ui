@@ -3,8 +3,28 @@
     <div class="main">
       <div id="menu_lt" class="lt">
         <!-- <ul>
-          <li v-for="item in workflowList" :key="item.id" @click="handleWorkFlow(item)">{{ item.name }}</li>
+          <li
+            v-for="item in workflowList"
+            :key="item.id"
+            @click="handleWorkFlow(item)"
+          >
+            {{ item.name }}
+          </li>
         </ul> -->
+        <el-dropdown @command="handleCommand">
+          <span>
+            {{ dropdownText }}<i class="el-icon-arrow-down el-icon--right" />
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item
+              v-for="item in options"
+              :key="item.id"
+              :command="item.id + '/' + item.name"
+              >{{ item.name }}</el-dropdown-item
+            >
+          </el-dropdown-menu>
+        </el-dropdown>
+        <div style="height: 20px"></div>
         <el-input
           v-model="search"
           class="input_serach"
@@ -111,7 +131,9 @@
             />
 
             <Flow
+              @getTree="gettree"
               :tabsIds="item.id"
+              :tableType="item.jobType"
               :tabledata="nowObject"
               v-if="item.name !== '首页' && item.jobType !== 'wenjianjia'"
             />
@@ -165,6 +187,7 @@
 import * as modeling from '@/api/datax-job-modeling'
 import * as workFlowApi from '@/api/datax-job-info'
 import * as datasourceApi from '@/api/datax-jdbcDatasource'
+import * as jobProjectApi from '@/api/datax-job-project'
 import Flow from './workflow.vue'
 import { component as VueContextMenu } from '@xunlei/vue-context-menu'
 import { getTableSchema, getTableListWithComment } from '@/api/metadata-query'
@@ -364,6 +387,8 @@ export default {
       allWorkFlowList: [], // 所以工作流数据数组
       jobType: '',
       projectid: '45/123',
+      options: [],
+      dropdownText: '123',
     }
   },
   watch: {
@@ -439,6 +464,7 @@ export default {
     // }
   },
   created() {
+    this.getItem()
     localStorage.setItem('projectid', JSON.stringify(this.projectid))
     let project_id = ''
     project_id = JSON.parse(localStorage.getItem('projectid')).split('/')[0]
@@ -449,13 +475,30 @@ export default {
     window.removeEventListener('scroll', this.getPos)
   },
   methods: {
-    getlist(val) {
+    gettree(data) {
+      this.getlist(data)
+    },
+    handleCommand(data) {
+      this.dropdownText = data.split('/')[1]
+      let project_id = data.split('/')[0]
+      this.getlist(project_id)
+    },
+    getItem() {
+      this.listQuery.userId = JSON.parse(localStorage.getItem('userId'))
+      jobProjectApi.list(this.listQuery).then((res) => {
+        this.options = res.records
+      })
+    },
+    getlist(val, newtask) {
       let projectId = { projectId: val }
       modeling.Getlist(projectId).then((res) => {
         this.workflowList = res.content
         this.lastdata =
           res.content[0].children[res.content[0].children.length - 1]
-        console.log('初始化----》', res, this.lastdata)
+        if (newtask.name === 'newtask') {
+          this.handleWorkFlow(this.lastdata)
+          console.log('qwe----->')
+        }
       })
     },
     // 快速检索关键字
@@ -522,8 +565,8 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             this.workflowName = ''
-            this.getlist(params.projectId)
-            this.handleWorkFlow(params)
+            let newtask = { name: 'newtask' }
+            this.getlist(params.projectId, newtask)
           }
           console.log('新建', res)
         })
@@ -581,12 +624,19 @@ export default {
       this.ReETLdialog = false
     },
     // 删除工作流
-    delWorkFlow() {
-      console.log('删除====', this.nowObject)
-      console.log('删除')
+    delWorkFlow(data) {
+      console.log('删除', this.nowObject)
       modeling.DeleteTable({ id: this.nowObject.id }).then((res) => {
         if (res.code === 200) {
           this.getlist(this.nowObject.projectId)
+          for (let i = 0; i < this.editableTabs.length; i++) {
+            if (this.editableTabs[i].name == this.nowObject.name) {
+              this.editableTabs.splice(i, 1)
+            }
+          }
+          let lastdata = this.editableTabs[this.editableTabs.length - 1]
+          console.log('lastdata--->', lastdata)
+          this.handleWorkFlow(lastdata)
           this.$message.success('删除成功')
         }
       })
@@ -622,18 +672,19 @@ export default {
     // 点击左侧工作流列表
     handleWorkFlow(data) {
       console.log('任务数据', data)
+      this.$bus.$emit('SingleData', data)
       this.$store.commit('TABLEDATA', data)
       this.nowObject = data
       if (data.jobType === 'wenjianjia') {
         return
       }
-
       let arr = []
       this.editableTabs.forEach((itme) => {
         arr.push(itme.name)
       })
       if (arr.includes(data.name)) {
         this.editableTabsValue = data.name
+        this.nowObject = data
       }
       if (!arr.includes(data.name)) {
         this.editableTabsValue = data.name

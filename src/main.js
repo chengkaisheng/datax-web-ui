@@ -63,6 +63,7 @@ Object.defineProperties(Vue.prototype, {
     }
   }
 })
+
 Vue.prototype.$axios = axios
 axios.defaults.baseURL = process.env.VUE_APP_BASE_API
 

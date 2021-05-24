@@ -48,7 +48,7 @@
         </el-tooltip>
       </div>
       <div
-        @click="submitForm('ruleForm', 'DATA')"
+        @click="submitForm('ruleForm', 'data')"
         class="header_action"
         style="margin-left: 27px"
       >
@@ -92,7 +92,7 @@
         </el-tooltip>
       </div>
       <div
-        @click="submitForm('ruleForm', 'data')"
+        @click="submitForm('ruleForm', 'DATA')"
         class="header_action"
         style="margin-left: 27px"
       >
@@ -154,19 +154,19 @@
             <el-radio-button
               @click="
                 () => {
-                  ruleForm.tabPosition = '1'
+                  ruleForm.tabPosition = 'MiddleLayer'
                 }
               "
-              label="MiddleLayer"
+              label="mid"
               >中间层</el-radio-button
             >
             <el-radio-button
               @click="
                 () => {
-                  ruleForm.tabPosition = '2'
+                  ruleForm.tabPosition = 'applicationLayer'
                 }
               "
-              label="applicationLayer"
+              label="app"
               >应用层</el-radio-button
             >
           </el-radio-group>
@@ -189,9 +189,9 @@
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="24" :md="12" :lg="10" :xl="8">
-            <el-form-item label="表类型:" prop="TableTypes">
+            <el-form-item label="表类型:">
               <el-select
-                :disabled="Lock"
+                :disabled="isbtn"
                 v-model="ruleForm.TableTypes"
                 style="width: 234px"
               >
@@ -227,9 +227,8 @@
                 :disabled="isbtn"
                 v-model="ruleForm.Modelname1"
                 style="width: 30%"
-              ></el-input
-              >_
-              <el-input
+              ></el-input>
+              <!-- _<el-input
                 :disabled="Lock"
                 v-model="ruleForm.Modelname2"
                 style="width: 30%"
@@ -239,10 +238,10 @@
                 :disabled="Lock"
                 v-model="ruleForm.Modelname3"
                 style="width: 30%"
-              ></el-input>
+              ></el-input> -->
             </el-form-item>
           </el-col>
-          <el-col :span="11">
+          <!-- <el-col :span="11">
             <el-form-item>
               <el-select
                 :disabled="Lock"
@@ -257,7 +256,7 @@
                 />
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-form-item>
         <el-form-item label="保障等级:" prop="Securitys">
           <el-select
@@ -324,23 +323,19 @@
               width="auto"
             >
             </el-table-column>
-            <!-- <el-table-column prop="FieldDesc" label="字段描述" width="100">
-            </el-table-column>
-            <el-table-column prop="BusinessCaliber" label="业务口径">
-            </el-table-column>
-            <el-table-column prop="datatype" label="数据类型">
-            </el-table-column>
-            <el-table-column prop="PrimaryKey" label="主键"> </el-table-column>
-            <el-table-column prop="BindingIndex" label="绑定指标">
-            </el-table-column>
-            <el-table-column prop="NotEmpty" label="非空"> </el-table-column> -->
-            <el-table-column label="操作" width="100">
+            <el-table-column label="操作" width="120%">
               <template slot-scope="scope">
                 <el-button
                   @click="handleClick(scope.row, index)"
                   type="text"
                   size="small"
                   >查看</el-button
+                >
+                <el-button
+                  @click.native.prevent="DeleteData(scope.row, scope.$index)"
+                  type="text"
+                  size="small"
+                  >删除</el-button
                 >
                 <el-button
                   @click.native.prevent="Editdata(scope.row, scope.$index)"
@@ -486,7 +481,7 @@ import * as workFlowApi from '@/api/datax-job-info'
 import * as logApi from '@/api/datax-job-log'
 export default {
   name: 'Flow',
-  props: ['tabledata'],
+  props: ['tabledata', 'tableType'],
   data() {
     return {
       isbtn: true,
@@ -555,8 +550,8 @@ export default {
           { id: 2, value: '主题域2', name: '主题域22' },
         ],
         TableType: [
-          { id: 1, value: '类型1', name: '类型1' },
-          { id: 2, value: '类型2', name: '类型2' },
+          { id: 1, value: 'hive', name: 'hive' },
+          { id: 2, value: 'impala', name: 'impala' },
         ],
         Busines: [
           { id: 1, value: '业务过程1', name: '业务过程1' },
@@ -592,9 +587,9 @@ export default {
         Securitys: [
           { required: true, message: '请选择保障等级', trigger: 'change' },
         ],
-        TableTypes: [
-          { required: true, message: '请选择表类型', trigger: 'change' },
-        ],
+        // TableTypes: [
+        //   { required: true, message: '请选择表类型', trigger: 'change' },
+        // ],
         themes: [
           { required: true, message: '请选择主图域', trigger: 'change' },
         ],
@@ -623,61 +618,122 @@ export default {
       index: '',
     }
   },
-  watch: {},
+  watch: {
+    // tabledata(data) {
+    //   console.log('sss', data)
+    //   this.ruleForm.tabPosition = data.dataLayer
+    //   this.ruleForm.themes = data.subjectField
+    //   this.ruleForm.TableTypes = data.tableType
+    //   this.ruleForm.Business = data.busProcess
+    //   this.ruleForm.Securitys = data.securityLevel
+    //   this.ruleForm.desc = data.description
+    //   this.ruleForm.project = data.projectDays
+    //   this.ruleForm.lifecycle = data.lifeCycle
+    //   this.ruleForm.resource = data.pritition + ''
+    //   this.ruleForm.tableData = JSON.parse(data.modelJson)
+    // },
+  },
   created() {
-    this.ruleForm.Modelname1 = this.$store.state.taskAdmin.tabledata.name
+    this.ruleForm.Modelname1 = this.$store.state.taskAdmin.tabledata.name || ''
+    this.ruleForm.tabPosition =
+      this.$store.state.taskAdmin.tabledata.dataLayer || ''
+    this.ruleForm.themes =
+      this.$store.state.taskAdmin.tabledata.subjectField || ''
+    this.ruleForm.TableTypes =
+      this.tableType.toLowerCase() ||
+      this.$store.state.taskAdmin.tabledata.tableType ||
+      ''
+    this.ruleForm.Business =
+      this.$store.state.taskAdmin.tabledata.busProcess || ''
+    this.ruleForm.Securitys =
+      this.$store.state.taskAdmin.tabledata.securityLevel || ''
+    this.ruleForm.desc = this.$store.state.taskAdmin.tabledata.description || ''
+    this.ruleForm.project =
+      this.$store.state.taskAdmin.tabledata.projectDays || ''
+    this.ruleForm.lifecycle =
+      this.$store.state.taskAdmin.tabledata.lifeCycle || ''
+    this.ruleForm.resource =
+      this.$store.state.taskAdmin.tabledata.pritition + '' || ''
+    this.ruleForm.tableData =
+      JSON.parse(this.$store.state.taskAdmin.tabledata.modelJson) || []
   },
   mounted() {},
   methods: {
     submitForm(formName, data) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          let params = {
-            name: this.$store.state.taskAdmin.tabledata.name,
-            id: this.$store.state.taskAdmin.tabledata.id,
-            modelJson: JSON.stringify(this.ruleForm.tableData),
-            dataLayer: this.ruleForm.tabPosition,
-            subjectField: this.ruleForm.themes,
-            tableType: this.ruleForm.TableTypes,
-            busProcess: this.ruleForm.Business,
-            modelName:
-              this.ruleForm.Modelname1 +
-              this.ruleForm.Modelname2 +
-              this.ruleForm.Modelname3 +
-              this.ruleForm.ModelNames,
-            securityLevel: this.ruleForm.Securitys,
-            description: this.ruleForm.desc,
-            projectDays: this.ruleForm.project,
-            lifeCycle: this.ruleForm.lifecycle,
-            pritition: this.ruleForm.resource,
-          }
-          console.log('------->')
-          modeling
-            .Update(params)
-            .then((res) => {
-              if (res.code === 200) {
-                this.$message({
-                  message: '建表成功',
-                  type: 'success',
-                })
-              }
-              console.log(res)
-            })
-            .catch((err) => {
-              console.log('ERR------>', err)
-            })
-          console.log('ruleForm--->', this.TableData)
           if (data === 'data') {
-            this.$message({
-              message: '执行成功',
-              type: 'success',
-            })
+            let params = {
+              name: this.$store.state.taskAdmin.tabledata.name,
+              id: this.$store.state.taskAdmin.tabledata.id,
+              modelJson: JSON.stringify(this.ruleForm.tableData),
+              dataLayer: this.ruleForm.tabPosition,
+              subjectField: this.ruleForm.themes,
+              tableType: this.ruleForm.TableTypes,
+              busProcess: this.ruleForm.Business,
+              modelName: this.ruleForm.Modelname1,
+              securityLevel: this.ruleForm.Securitys,
+              description: this.ruleForm.desc,
+              projectDays: this.ruleForm.project,
+              lifeCycle: this.ruleForm.lifecycle,
+              pritition: this.ruleForm.resource,
+            }
+            console.log('------->')
+            modeling
+              .Update(params)
+              .then((res) => {
+                if (res.code === 200) {
+                  let projectId = this.$store.state.taskAdmin.tabledata
+                    .projectId
+                  this.$emit('getTree', projectId)
+                  this.$message({
+                    message: '保存成功',
+                    type: 'success',
+                  })
+                }
+                console.log(res)
+              })
+              .catch((err) => {
+                console.log('ERR------>', err)
+              })
           }
           if (data === 'DATA') {
-            this.$message({
-              message: '保存成功',
-              type: 'success',
-            })
+            let params = {
+              name: this.$store.state.taskAdmin.tabledata.name,
+              id: this.$store.state.taskAdmin.tabledata.id,
+              projectId: this.$store.state.taskAdmin.tabledata.projectId,
+              parentId: this.$store.state.taskAdmin.tabledata.parentId,
+              modelJson: JSON.stringify(this.ruleForm.tableData),
+              dataLayer: this.ruleForm.tabPosition,
+              subjectField: this.ruleForm.themes,
+              tableType: this.ruleForm.TableTypes,
+              busProcess: this.ruleForm.Business,
+              modelName:
+                this.ruleForm.Modelname1 +
+                this.ruleForm.Modelname2 +
+                this.ruleForm.Modelname3 +
+                this.ruleForm.ModelNames,
+              securityLevel: this.ruleForm.Securitys,
+              description: this.ruleForm.desc,
+              projectDays: this.ruleForm.project,
+              lifeCycle: this.ruleForm.lifecycle,
+              pritition: this.ruleForm.resource,
+            }
+            modeling
+              .RunTask(params)
+              .then((res) => {
+                if (res.code === 200) {
+                  this.$message({
+                    message: res.msg,
+                    type: 'success',
+                  })
+                }
+                console.log('执行结果', res)
+              })
+              .catch((err) => {
+                console.log('执行错误', err)
+              })
+
             console.log('www', this.ruleForm)
           }
         } else {
@@ -727,6 +783,9 @@ export default {
       this.Table.push(data)
       console.log('查看表', data)
     },
+    DeleteData(data, index) {
+      this.ruleForm.tableData.splice(index, 1)
+    },
     //编辑表
     Editdata(data, index) {
       this.name = data.name
@@ -746,6 +805,13 @@ export default {
     //添加字段
     Addfield() {
       this.dialogVisible = true
+      this.name = ''
+      this.comment = ''
+      this.BusinessCaliber = ''
+      this.type = ''
+      this.isKey = ''
+      this.BindingIndex = ''
+      this.notNull = ''
     },
     //添加字段
     Addfields() {
@@ -783,6 +849,7 @@ export default {
         console.log('edit', this.index, data)
         this.ruleForm.tableData.splice(this.index, 1, data)
         this.dialogVisible = false
+        this.btn = ''
       }
     },
 
