@@ -138,7 +138,7 @@ rkJggg=="
         class="demo-drawer__content"
         style="
           padding: 15px 15px 0 15px;
-          height: calc(100vh - 180px);
+          height: 100%;
           overflow-y: auto;
         "
       >
@@ -152,8 +152,8 @@ rkJggg=="
               <el-button v-else slot="append" icon="el-icon-open" title="关闭图形配置" @click="showCronBox = false" />
             </el-input>
           </el-form-item>
-          <div>参数配置</div>
-          <el-form-item label="" prop="subTask" label-width="100px">
+          <div>IMPORT配置参数：</div>
+          <el-form-item label="" prop="subTask"  >
             <div style="padding-left: 26px">
               <div
                 v-for="(itme, index) in parameters"
@@ -162,7 +162,7 @@ rkJggg=="
                 style="margin-top: 20px"
                 class="DraWer"
               >
-                <span style="font-size: 14px; color: #ccc">
+                <span style="font-size: 14px; color: #ccc;width: 100%">
                   参数
                   <el-input
                     v-show="isshow"
@@ -193,7 +193,7 @@ rkJggg=="
                   type="success"
                   @click="Addhandel"
                 >添加</el-button>
-                <el-button
+                <!-- <el-button
                   size="small"
                   style="margin-bottom: 20px"
                   type="danger"
@@ -202,7 +202,7 @@ rkJggg=="
                       drawer = false
                     }
                   "
-                >取消</el-button>
+                >取消</el-button> -->
                 <el-button
                   size="small"
                   style="margin-bottom: 20px"
@@ -212,9 +212,69 @@ rkJggg=="
               </div>
             </div>
           </el-form-item>
+          <div>HIVE配置参数：</div>
+            <el-form-item label="" prop="subTask" >
+            <div style="padding-left: 26px">
+              <div
+                v-for="(itme, index) in parameters1"
+                v-show="isshow"
+                :key="index"
+                style="margin-top: 20px"
+                class="DraWer"
+              >
+                <span style="font-size: 14px; color: #ccc">
+                  参数
+                  <el-input
+                    v-show="isshow"
+                    v-model="itme.parameter"
+                    style="width: 260px"
+                    size="mini"
+                    placeholder="请输入参数"
+                  />
+                  <el-popconfirm
+                    title="确定删除此参数吗？"
+                    @confirm="Delete1(itme, index)"
+                  >
+                    <el-button
+                      slot="reference"
+                      size="small"
+                      style="margin-left: 10px"
+                      type="danger"
+                      icon="el-icon-delete"
+                      circle
+                    />
+                  </el-popconfirm>
+                </span>
+              </div>
+              <div v-show="isshow" style="margin-top: 20px">
+                <el-button
+                  size="small"
+                  style="margin-bottom: 20px"
+                  type="success"
+                  @click="Addhandel1"
+                >添加</el-button>
+                <!-- <el-button
+                  size="small"
+                  style="margin-bottom: 20px"
+                  type="danger"
+                  @click="
+                    () => {
+                      drawer = false
+                    }
+                  "
+                >取消</el-button> -->
+                <el-button
+                  size="small"
+                  style="margin-bottom: 20px"
+                  type="success"
+                  @click="SaveParameter1"
+                >保存</el-button>
+              </div>
+            </div>
+          </el-form-item>
         </el-form>
         <div class="demo-drawer__footer" style="float: right;marginRight: 20px;">
-          <el-button @click="cancelDrawer">取 消</el-button>
+          <el-button @click="dialogDrawer = false">取 消</el-button>
           <el-button type="primary" @click="submitDrawer">提 交</el-button>
         </div>
       </div>
@@ -332,7 +392,7 @@ rkJggg=="
       :show-close="true"
       title="参数配置"
       :visible.sync="DialogVisiBle"
-      width="50%"
+      width="40%"
     >
       <div
         v-for="(itme, index) in ReplaceParameters"
@@ -346,8 +406,32 @@ rkJggg=="
             style="font-size: 14px; color: #ccc"
           ><i
              class="Configurable"
-             style="color: #000; padding-right: 40px"
-           >可配置参数：{{ itme.parameter }}</i>
+             style="color: #000;padding-right: 40px"
+           >IMPORT可配置参数：{{ itme.parameter }}</i>
+            <el-input
+              v-show="isshow"
+              v-model="itme.parameters"
+              style="width: 260px"
+              size="mini"
+              placeholder="请输入参数"
+            />
+          </span>
+        </div>
+      </div>
+       <div
+        v-for="(itme, index) in ReplaceParameters1"
+        v-show="isshow"
+        :key="index"
+        style="margin-top: 20px"
+        class="DraWer"
+      >
+        <div class="parameter">
+          <span
+            style="font-size: 14px; color: #ccc"
+          ><i
+             class="Configurable"
+             style="color: #000; padding-right: 60px"
+           >HIVE可配置参数：{{ itme.parameter }}</i>
             <el-input
               v-show="isshow"
               v-model="itme.parameters"
@@ -440,12 +524,23 @@ export default {
         //   parameter: '',
         // },
       ],
+       parameters1: [
+        // {
+        //   id: '',
+        //   jobId:this.$store.state.taskAdmin.SingleData.jobId,
+        //   parameter: '',
+        // },
+      ],
       DialogVisiBle: false,
       // 配置替换参数
       ReplaceParameters: [
         {}
       ],
-      replaceParam: ''// 获取的任务配置参数
+      ReplaceParameters1: [
+        {}
+      ],
+      replaceParam: '',// 获取的任务配置参数
+      replaceParam1: ''// 获取的任务配置参数
     }
   },
   watch: {
@@ -473,6 +568,7 @@ export default {
     // this.getCurrentProjectList()
     // this.myDiagram.model = go.Model.fromJson(this.$store.state.workflow.currentData.jobJson)
     // console.log(this.myDiagram.model)
+    // this.GetParameters()
   },
   mounted() {
     this.init()
@@ -501,30 +597,76 @@ export default {
       })
       // this.parameters.splice(index, 1) // 删除了数组中对应的数据也就将这个位置的输入框删除
     },
+    // 删除配置参数
+    Delete1(itme, index) {
+      console.log('index---->>>', index, itme)
+      // if (this.parameters.length <= 1) {
+      //   // 如果只有一个输入框则不可以删除
+      //   return false
+      // }
+      job.DeleteParameters({ id: itme.id }).then((res) => {
+        if (res.code === 200) {
+          this.$message.success(res.content)
+          this.GetParameters()
+        } else {
+          this.$message.success(res.content)
+        }
+        console.log('delete----->', res)
+      })
+      // this.parameters.splice(index, 1) // 删除了数组中对应的数据也就将这个位置的输入框删除
+    },
     // 保存配置参数
     SaveParameter() {
-      const arr = []
+      const arr3 = []
       this.parameters.forEach((itme) => {
-        arr.push(itme.parameter)
+        arr3.push(itme.parameter)
       })
-      if (arr.includes('')) {
+      console.log()
+      if (arr3.includes('')) {
         this.$message('参数不能为空')
       } else {
-        // job.SaveParameters(this.parameters).then((res) => {
-        //   if (res.content) {
-        //     this.$message.success(res.content)
-        //     this.$forceUpdate()
-        //     this.GetParameters()
-        //     this.drawer = false
-        //   }
-        // })
+        job.SaveParameters(this.parameters).then((res) => {
+          if (res.content) {
+            this.$message.success(res.content)
+            // this.$forceUpdate()
+            this.GetParameters()
+            // this.drawer = false
+          }
+        })
+      }
+    },
+    // hive保存配置参数
+     SaveParameter1() {
+      const arr1 = []
+      this.parameters1.forEach((itme) => {
+        arr1.push(itme.parameter)
+      })
+      if (arr1.includes('')) {
+        this.$message('参数不能为空')
+      } else {
+        job.SaveParameters(this.parameters1).then((res) => {
+          if (res.content) {
+            this.$message.success(res.content)
+            // this.$forceUpdate()
+            this.GetParameters()
+            // this.drawer = false
+          }
+        })
       }
     },
     // 添加配置参数
     Addhandel() {
       this.parameters.push({
         id: '',
-        jobId: this.$store.state.taskAdmin.SingleData.jobId,
+        jobId: this.importId,
+        parameter: ''
+      })
+    },
+    // hive添加配置参数
+    Addhandel1() {
+      this.parameters1.push({
+        id: '',
+        jobId: this.hiveId,
         parameter: ''
       })
     },
@@ -532,8 +674,9 @@ export default {
     changes() {
       // this.init()
       console.log(11111111111)
+      console.log(this.$store.state.workflow.currentData.jobJson)
       this.myDiagram.model = go.Model.fromJson(this.$store.state.workflow.currentData.jobJson)
-      // this.load()
+      this.load()
     },
     // 获取当前项目下的任务列表
     getCurrentProjectList(val) {
@@ -585,6 +728,7 @@ export default {
     handleWorkFlow(e) {
       console.log(e)
       this.dataJob = e
+      // this.GetParameters()
     },
     // 执行
     runData1() {
@@ -593,6 +737,7 @@ export default {
 
     ReplaceParameter() {
       const replacedata = []
+      const replacedata1 = []
       for (let i = 0; i < this.parameters.length; i++) {
         replacedata.push({
           param: this.parameters[i].parameter,
@@ -605,6 +750,19 @@ export default {
         this.CODE.code = this.CODE.code
           .split(replacedata[i].param)
           .join(replacedata[i].value)
+      }
+       for (let i = 0; i < this.parameters1.length; i++) {
+        replacedata1.push({
+          param: this.parameters1[i].parameter,
+          value:
+            this.ReplaceParameters1[i].parameters ||
+            this.parameters1[i].parameter
+        })
+      }
+      for (let i = 0; i < replacedata1.length; i++) {
+        this.CODE.code = this.CODE.code
+          .split(replacedata1[i].param)
+          .join(replacedata1[i].value)
       }
       this.getinto = true
       this.dosomthing()
@@ -619,87 +777,173 @@ export default {
       // params.jobIds = []
       const typelist = JSON.parse(params.jobJson)
       this.doparams = params
-      console.log(params.jobJson)
+      console.log(params)
       console.log(typelist.nodeDataArray)
       const arr1 = ['IMPORT', 'HIVE']
-      typelist.nodeDataArray.forEach(item => {
-        if (item.type === 'IMPORT') {
-          // 如果是这个'IMPORT', 'HIVE' 弹窗
-          console.log('1111111111')
+      // typelist.nodeDataArray.forEach(item => {
+      //   if (item.type === 'IMPORT') {
+      //     // 如果是这个'IMPORT', 'HIVE' 弹窗
+      //     console.log('1111111111')
 
-          console.log(item.type)
-          console.log(item.id)
-          this.importid = item.id
-          // if (item.id) {
-          //   console.log(item.id)
-          //   // 获取配置参数
-          //   job.getTaskInfo(item.id).then((res) => {
-          //     console.log(res.content)
-          //     this.replaceParam = res.content.replaceParam
-          //     console.log(this.replaceParam)
-          //     if (this.replaceParam !== '') {
-          //       this.DialogVisiBle = true
-          //       return
-          //     }
-          //   })
-          // }
-          // return
-          // this.dosomthing(params)
-        }
-        if (item.type === 'HIVE') {
-          this.hiveid = item.id
-        }
-        // return
-        // if (item.type === 'HIVE') {
-        //   if (item.id) {
-        //     console.log(item.id)
-        //   }
-        // }
-        // console.log(item.type)
-        // this.dosomthing(params)
-      })
-      if (this.importid) {
-        console.log(this.importid)
-        // 获取配置参数
-        job.getTaskInfo(this.importid).then((res) => {
-          console.log(res.content)
-          this.replaceParam = res.content.replaceParam
-          console.log(this.replaceParam)
-          if (this.replaceParam !== '') {
-            this.DialogVisiBle = true
-            return
-          }
-        })
-      } else if (this.hiveid) {
-        job.getTaskInfo(this.hiveid).then((res) => {
-          console.log(res.content)
-          this.replaceParam = res.content.replaceParam
-          console.log(this.replaceParam)
-          if (this.replaceParam !== '') {
-            this.DialogVisiBle = true
-            return
-          }
-        })
-      } else {
-        // 掉函数
-        this.dosomthing(params)
-      }
-      // 掉函数
-      // this.dosomthing(params)
-      // const arr = []
-      // for (var i = 0;i < typelist.nodeDataArray.length;i++) {
-      //   // if (i.type === 'IMPORT' || 'HIVE') {
-      //   arr.push(typelist.nodeDataArray[i].type)
-      //   // console.log(i.type)
+      //     console.log(item.type)
+      //     console.log(item.id)
+      //     this.importid = item.id
+      //     // if (item.id) {
+      //     //   console.log(item.id)
+      //     //   // 获取配置参数
+      //     //   job.getTaskInfo(item.id).then((res) => {
+      //     //     console.log(res.content)
+      //     //     this.replaceParam = res.content.replaceParam
+      //     //     console.log(this.replaceParam)
+      //     //     if (this.replaceParam !== '') {
+      //     //       this.DialogVisiBle = true
+      //     //       return
+      //     //     }
+      //     //   })
+      //     // }
+      //     // return
+      //     // this.dosomthing(params)
+      //   }
+      //   if (item.type === 'HIVE') {
+      //     this.hiveid = item.id
+      //   }
+      //   // return
+      //   // if (item.type === 'HIVE') {
+      //   //   if (item.id) {
+      //   //     console.log(item.id)
+      //   //   }
       //   // }
-      // }
-      // if (arr.includes('IMPORT')) {
-      //   console.log('ok')
-      //   this.DialogVisiBle = true
+      //   // console.log(item.type)
+      //   // this.dosomthing(params)
+      // })
+      // if (this.importid) {
+      //   console.log(this.importid)
+      //   // 获取配置参数
+      //   job.getTaskInfo(this.importid).then((res) => {
+      //     console.log(res.content)
+      //     this.replaceParam = res.content.replaceParam
+      //     console.log(this.replaceParam)
+      //     if (this.replaceParam !== '') {
+      //       this.DialogVisiBle = true
+      //       // return
+      //     }
+      //   })
+      // } else if (this.hiveid) {
+      //   job.getTaskInfo(this.hiveid).then((res) => {
+      //     console.log(res.content)
+      //     this.replaceParam = res.content.replaceParam
+      //     console.log(this.replaceParam)
+      //     if (this.replaceParam !== '') {
+      //       this.DialogVisiBle = true
+      //       // return
+      //     }
+      //   })
       // } else {
+      //   // 掉函数
       //   this.dosomthing(params)
       // }
-      // console.log(arr)
+      // 掉函数
+      // this.dosomthing(params)
+      const arr = []
+      for (var i = 0;i < typelist.nodeDataArray.length;i++) {
+        // if (i.type === 'IMPORT' || 'HIVE') {
+        arr.push(typelist.nodeDataArray[i].type)
+        // console.log(i.type)
+        // }
+      }
+      if (arr.includes('IMPORT')||arr.includes('HIVE')) {
+        console.log('IMPORT')
+        typelist.nodeDataArray.forEach(item => {
+          if (item.type === 'IMPORT') {
+            job
+            .ParametersList({ jobId:item.id })
+            .then((res) => {
+              console.log('ParametersList', res.content)
+              this.parameters = res.content
+              this.ReplaceParameters = res.content
+            })
+        //     job.getTaskInfo(item.id).then((res) => {
+        //   console.log(res.content)
+        //   this.replaceParam = res.content.replaceParam
+        //   console.log(this.replaceParam)
+        //   if (this.replaceParam !== '') {
+        //     console.log(111111)
+        //     this.DialogVisiBle = true
+        //     return
+        //   }
+        // })
+          }
+          if (item.type === 'HIVE') {
+            job
+            .ParametersList({ jobId:item.id })
+            .then((res) => {
+              console.log('ParametersList', res.content)
+              this.parameters1 = res.content
+              this.ReplaceParameters1 = res.content
+            })
+        //     job.getTaskInfo(item.id).then((res) => {
+        //   console.log(res.content)
+        //   this.replaceParam1 = res.content.replaceParam
+        //   console.log(this.replaceParam)
+        //   if (this.replaceParam1 !== '') {
+        //     console.log(2222222222)
+        //     this.DialogVisiBle = true
+        //     return
+        //   }
+        // })
+          }
+        })
+        // this.DialogVisiBle = true
+      } 
+      // if(this.parameters.length!==0||this.parameters1.length!==0){
+
+      // }
+      if(this.parameters.length!==0||this.parameters1.length!==0){
+        this.DialogVisiBle = true
+      } else {
+        this.dosomthing(params)
+      }
+    },
+    // 获取参数列表
+     GetParameters() {
+       const arr = []
+        const typelist = JSON.parse(this.myDiagram.model.toJson())
+        for (var i = 0;i < typelist.nodeDataArray.length;i++) {
+        arr.push(typelist.nodeDataArray[i].type)
+      }
+      if (arr.includes('IMPORT')||arr.includes('HIVE')) {
+        console.log('IMPORT')
+        typelist.nodeDataArray.forEach(item => {
+          if (item.type === 'IMPORT') {
+            this.importId=item.id
+            job
+            .ParametersList({ jobId:item.id })
+            .then((res) => {
+              console.log('ParametersList', res.content)
+              this.parameters = res.content
+              this.ReplaceParameters = res.content
+            })
+          }
+          if (item.type === 'HIVE') {
+            this.hiveId= item.id
+            job
+            .ParametersList({ jobId:item.id })
+            .then((res) => {
+              console.log('ParametersList', res.content)
+              this.parameters1 = res.content
+              this.ReplaceParameters1 = res.content
+            })
+          }
+        })
+      } 
+
+    //   job
+    //     .ParametersList({ jobId: this.$store.state.taskAdmin.SingleData.jobId })
+    //     .then((res) => {
+    //       console.log('ParametersList', res.content)
+    //       this.parameters = res.content
+    //       this.ReplaceParameters = res.content
+    //     })
     },
 
     // 执行函数
@@ -906,6 +1150,7 @@ export default {
 
               }
             ),
+            // 'isValidLayout': false,
             'draggingTool.isGridSnapEnabled': true,
             handlesDragDropForTopLevelParts: true,
             'clickCreatingTool.archetypeNodeData': { text: 'NEW NODE' }, // create a new node by double-clicking in background
@@ -1078,6 +1323,7 @@ export default {
           makePort('L', go.Spot.Left, go.Spot.Left, true, true),
           makePort('R', go.Spot.Right, go.Spot.Right, true, true),
           makePort('B', go.Spot.Bottom, go.Spot.Bottom, true, false)
+          // myDiagram.layout.O
         ))
 
       // 结束节点图表
@@ -1287,7 +1533,7 @@ export default {
   // }
 }
 </style>
-<style scoped>
+<style lang="scss" scoped>
 .header {
   overflow: hidden;
   padding: 8px 0;
@@ -1340,5 +1586,11 @@ export default {
   top:36px;
   right: 0;
   z-index:999;
+}
+.parameter {
+  padding-left: 30px;
+  >>>.el-input__inner {
+    height: 27px;
+  }
 }
 </style>
