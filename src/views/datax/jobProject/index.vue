@@ -12,7 +12,7 @@
     </div>
 
     <div class="main">
-      <div style="width: 100%;height: 88px;">
+      <div style="width: 100%; height: 88px">
         <el-form
           class="search-bar"
           label-position="right"
@@ -33,12 +33,11 @@
               type="primary"
               icon="el-icon-search"
               @click="fetchData"
-            >搜 索</el-button>
-            <el-button
-              size="small"
-              icon="el-icon-refresh"
-              @click="reSet"
-            >重 置</el-button>
+              >搜 索</el-button
+            >
+            <el-button size="small" icon="el-icon-refresh" @click="reSet"
+              >重 置</el-button
+            >
           </el-form-item>
         </el-form>
       </div>
@@ -213,10 +212,9 @@
         <el-table-column prop="pv" label="Pv" />
       </el-table>
       <span slot="footer" class="dialog-footer">
-        <el-button
-          type="primary"
-          @click="dialogPvVisible = false"
-        >Confirm</el-button>
+        <el-button type="primary" @click="dialogPvVisible = false"
+          >Confirm</el-button
+        >
       </span>
     </el-dialog>
     <!-- 数据源管理对话框 -->
@@ -238,15 +236,12 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button
-          size="small"
-          @click="dialogDataSource = false"
-        >取 消</el-button>
-        <el-button
-          type="goon"
-          size="small"
-          @click="dialogDataSource = false"
-        >完 成</el-button>
+        <el-button size="small" @click="dialogDataSource = false"
+          >取 消</el-button
+        >
+        <el-button type="goon" size="small" @click="dialogDataSource = false"
+          >完 成</el-button
+        >
       </span>
     </el-dialog>
     <!-- 成员 -->
@@ -274,20 +269,20 @@ export default {
   components: {
     Pagination,
     ProjectCard,
-    Member
+    Member,
   },
   directives: {
-    waves
+    waves,
   },
   filters: {
     statusFilter(status) {
       const statusMap = {
         published: 'success',
         draft: 'gray',
-        deleted: 'danger'
+        deleted: 'danger',
       }
       return statusMap[status]
-    }
+    },
   },
   data() {
     return {
@@ -298,7 +293,7 @@ export default {
         pageNo: 1,
         pageSize: 10,
         searchVal: '',
-        userId: ''
+        userId: '',
       },
       pluginTypeOptions: ['reader', 'writer'],
       dialogPluginVisible: false,
@@ -309,33 +304,33 @@ export default {
       dialogStatus: '',
       textMap: {
         update: '编辑',
-        create: '添加'
+        create: '添加',
       },
       rules: {
         name: [
           {
             required: true,
             message: translaterMaster('this is require'),
-            trigger: 'blur'
-          }
+            trigger: 'blur',
+          },
         ],
         description: [
           {
             required: true,
             message: translaterMaster('this is require'),
-            trigger: 'blur'
-          }
-        ]
+            trigger: 'blur',
+          },
+        ],
       },
       temp: {
         id: undefined,
         name: '',
         description: '',
-        userIds: []
+        userIds: [],
       },
       visible: true,
       users: [], // 用户列表
-      memberShow: false
+      memberShow: false,
     }
   },
   computed: {
@@ -346,7 +341,7 @@ export default {
         console.log(temp)
         return temp[0]?.username
       }
-    }
+    },
   },
   created() {
     getAllUser().then((response) => {
@@ -372,7 +367,7 @@ export default {
         id: undefined,
         name: '',
         description: '',
-        userIds: []
+        userIds: [],
       }
     },
     handleCreate() {
@@ -393,14 +388,14 @@ export default {
               title: '成功',
               message: '添加成功',
               type: 'success',
-              duration: 2000
+              duration: 2000,
             })
           })
         }
       })
     },
     handleLink(item) {
-      console.log(item)
+      console.log('项目管理---》', item)
       console.log(JSON.parse(localStorage.getItem('permission')))
       const myLeft = JSON.parse(localStorage.getItem('permission'))
       const strParam = item.id + '/' + item.name
@@ -457,7 +452,7 @@ export default {
               title: '成功',
               message: '编辑成功',
               type: 'success',
-              duration: 2000
+              duration: 2000,
             })
           })
         }
@@ -467,13 +462,13 @@ export default {
       this.$confirm('确定删除吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       }).then(() => {
         const idList = []
         idList.push(row.id)
         jobProjectApi
           .deleted({
-            idList: row.id
+            idList: row.id,
           })
           .then((response) => {
             this.fetchData()
@@ -481,13 +476,13 @@ export default {
               title: '成功',
               message: '删除成功',
               type: 'success',
-              duration: 2000
+              duration: 2000,
             })
           })
           .catch(() => {
             this.$message({
               type: 'info',
-              message: '已取消删除'
+              message: '已取消删除',
             })
           })
       })
@@ -502,8 +497,8 @@ export default {
     reSet() {
       this.listQuery.searchVal = ''
       this.fetchData()
-    }
-  }
+    },
+  },
 }
 </script>
 

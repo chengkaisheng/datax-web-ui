@@ -1,11 +1,16 @@
 <template>
   <div class="navbar">
-    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+    <hamburger
+      id="hamburger-container"
+      :is-active="sidebar.opened"
+      class="hamburger-container"
+      @toggleClick="toggleSideBar"
+    />
 
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
 
     <div class="right-menu">
-      <template v-if="device!=='mobile'">
+      <template v-if="device !== 'mobile'">
         <!--        <search id="header-search" class="right-menu-item" />-->
 
         <error-log class="errLog-container right-menu-item hover-effect" />
@@ -15,19 +20,34 @@
         <!--        <el-tooltip content="Global Size" effect="dark" placement="bottom">-->
         <!--          <size-select id="size-select" class="right-menu-item hover-effect" />-->
         <!--        </el-tooltip>-->
-
       </template>
-      <el-dropdown v-if="showCurrent" class="right-menu-item" trigger="click" @command="handleCommand">
-        <span style="font-size: 14px;cursor: pointer;">
+      <el-dropdown
+        v-if="showCurrent"
+        class="right-menu-item"
+        trigger="click"
+        @command="handleCommand"
+      >
+        <span style="font-size: 14px; cursor: pointer">
           {{ dropdownText }}<i class="el-icon-arrow-down el-icon--right" />
         </span>
-        <el-dropdown-menu slot="dropdown" style="max-height: calc(100vh - 200px); overflow: auto;">
-          <el-dropdown-item v-for="item in options" :key="item.id" :command="item.id + '/' + item.name">{{ item.name }}</el-dropdown-item>
+        <el-dropdown-menu
+          slot="dropdown"
+          style="max-height: calc(100vh - 200px); overflow: auto"
+        >
+          <el-dropdown-item
+            v-for="item in options"
+            :key="item.id"
+            :command="item.id + '/' + item.name"
+            >{{ item.name }}</el-dropdown-item
+          >
         </el-dropdown-menu>
       </el-dropdown>
-      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
+      <el-dropdown
+        class="avatar-container right-menu-item hover-effect"
+        trigger="click"
+      >
         <div class="avatar-wrapper">
-          <img src="../../../public/avatar.jpg" class="user-avatar">
+          <img src="../../../public/avatar.jpg" class="user-avatar" />
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -38,10 +58,10 @@
             <el-dropdown-item>首页</el-dropdown-item>
           </router-link> -->
           <el-dropdown-item>
-            <span style="display:block;" @click="showPsw">修改密码</span>
+            <span style="display: block" @click="showPsw">修改密码</span>
           </el-dropdown-item>
           <el-dropdown-item divided>
-            <span style="display:block;" @click="logout">退出登录</span>
+            <span style="display: block" @click="logout">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -58,13 +78,27 @@
             label-width="120px"
           >
             <el-form-item label="原密码:" prop="oldPsw">
-              <el-input v-model="pswForm.oldPsw" autocomplete="off" placeholder="原密码" />
+              <el-input
+                v-model="pswForm.oldPsw"
+                autocomplete="off"
+                placeholder="原密码"
+              />
             </el-form-item>
             <el-form-item label="新密码:" prop="newPsw">
-              <el-input v-model="pswForm.newPsw" type="password" autocomplete="off" placeholder="新密码" />
+              <el-input
+                v-model="pswForm.newPsw"
+                type="password"
+                autocomplete="off"
+                placeholder="新密码"
+              />
             </el-form-item>
             <el-form-item label="确认新密码:" prop="VerifyPsw">
-              <el-input v-model="pswForm.VerifyPsw" type="password" autocomplete="off" placeholder="确认密码" />
+              <el-input
+                v-model="pswForm.VerifyPsw"
+                type="password"
+                autocomplete="off"
+                placeholder="确认密码"
+              />
             </el-form-item>
           </el-form>
         </el-col>
@@ -73,9 +107,7 @@
         <el-button size="small" @click="dialogPSWVisible = false">
           取消
         </el-button>
-        <el-button type="goon" size="small" @click="editPsw">
-          确定
-        </el-button>
+        <el-button type="goon" size="small" @click="editPsw"> 确定 </el-button>
       </div>
     </el-dialog>
   </div>
@@ -87,62 +119,80 @@ import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import ErrorLog from '@/components/ErrorLog'
 import { updatePsw } from '@/api/user'
-import * as jobProjectApi from '@/api/datax-job-project';
+import * as jobProjectApi from '@/api/datax-job-project'
 
 export default {
   components: {
     Breadcrumb,
     Hamburger,
-    ErrorLog
+    ErrorLog,
   },
   data() {
     var validatePass = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请再次输入密码'));
+        callback(new Error('请再次输入密码'))
       } else if (value !== this.pswForm.newPsw) {
-        callback(new Error('两次输入密码不一致!'));
+        callback(new Error('两次输入密码不一致!'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
       dialogPSWVisible: false,
       pswForm: {
         oldPsw: '',
         newPsw: '',
-        VerifyPsw: ''
+        VerifyPsw: '',
       },
       options: [], // 项目数组
       listQuery: {
         pageNo: 1,
         pageSize: 99999,
-        userId: ''
+        userId: '',
       },
       dropdownText: '请选择',
       showCurrent: false,
       rules: {
         oldPsw: [
-          { required: true, message: '密码不能为空', trigger: ['blur', 'change'] },
-          { min: 6, max: 16, message: '密码必须是6-20位', trigger: ['blur', 'change'] }
+          {
+            required: true,
+            message: '密码不能为空',
+            trigger: ['blur', 'change'],
+          },
+          {
+            min: 6,
+            max: 16,
+            message: '密码必须是6-20位',
+            trigger: ['blur', 'change'],
+          },
           // { pattern: /(?!.*\s)(?!^[\u4e00-\u9fa5]+$)(?!^[0-9]+$)(?!^[A-z]+$)(?!^[^A-z0-9]+$)^.{6,16}$/, message: '请输入至少有数组、字母、字符两种组合的6-16位的密码' }
         ],
         newPsw: [
-          { required: true, message: '密码不能为空', trigger: ['blur', 'change'] },
-          { min: 6, max: 16, message: '密码必须是6-20位', trigger: ['blur', 'change'] }
+          {
+            required: true,
+            message: '密码不能为空',
+            trigger: ['blur', 'change'],
+          },
+          {
+            min: 6,
+            max: 16,
+            message: '密码必须是6-20位',
+            trigger: ['blur', 'change'],
+          },
         ],
         VerifyPsw: [
-          { required: true, message: '密码不能为空', trigger: ['blur', 'change'] },
-          { validator: validatePass, trigger: 'blur' }
-        ]
-      }
+          {
+            required: true,
+            message: '密码不能为空',
+            trigger: ['blur', 'change'],
+          },
+          { validator: validatePass, trigger: 'blur' },
+        ],
+      },
     }
   },
   computed: {
-    ...mapGetters([
-      'sidebar',
-      'avatar',
-      'device'
-    ])
+    ...mapGetters(['sidebar', 'avatar', 'device']),
   },
   created() {
     this.getProjectList()
@@ -175,12 +225,14 @@ export default {
     // 获取项目列表
     getProjectList() {
       this.listQuery.userId = parseInt(localStorage.getItem('userId'))
-      jobProjectApi.list(this.listQuery).then((res) => {
-        console.log(res, 'zzzzzzzzzzc')
-        this.options = res.records
-      }).catch(error => {
-        console.log(error)
-      })
+      jobProjectApi
+        .list(this.listQuery)
+        .then((res) => {
+          this.options = res.records
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     },
     showPsw() {
       this.dialogPSWVisible = true
@@ -192,25 +244,27 @@ export default {
           const params = {
             userId: parseInt(localStorage.getItem('userId')),
             passWorld: this.pswForm.oldPsw,
-            newPassWorld: this.pswForm.newPsw
+            newPassWorld: this.pswForm.newPsw,
           }
-          updatePsw(params).then((res) => {
-            console.log(res)
-            if (res.code === '200') {
-              this.$message.success(res.message)
-              this.dialogPSWVisible = false
-            } else {
-              this.$message.error(res.message)
-            }
-          }).catch((err) => {
-            console.error(err)
-          })
+          updatePsw(params)
+            .then((res) => {
+              console.log(res)
+              if (res.code === '200') {
+                this.$message.success(res.message)
+                this.dialogPSWVisible = false
+              } else {
+                this.$message.error(res.message)
+              }
+            })
+            .catch((err) => {
+              console.error(err)
+            })
         } else {
           this.$message.error('验证未通过')
         }
       })
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -220,18 +274,18 @@ export default {
   overflow: hidden;
   position: relative;
   background: #fff;
-  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 
   .hamburger-container {
     line-height: 46px;
     height: 100%;
     float: left;
     cursor: pointer;
-    transition: background .3s;
-    -webkit-tap-highlight-color:transparent;
+    transition: background 0.3s;
+    -webkit-tap-highlight-color: transparent;
 
     &:hover {
-      background: rgba(0, 0, 0, .025)
+      background: rgba(0, 0, 0, 0.025);
     }
   }
 
@@ -263,10 +317,10 @@ export default {
 
       &.hover-effect {
         cursor: pointer;
-        transition: background .3s;
+        transition: background 0.3s;
 
         &:hover {
-          background: rgba(0, 0, 0, .025)
+          background: rgba(0, 0, 0, 0.025);
         }
       }
     }
