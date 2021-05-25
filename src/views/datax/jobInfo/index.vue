@@ -950,7 +950,6 @@ export default {
           }
           jdbcDsList(p).then((response) => {
             const { records } = response
-            console.log(records, 'records01', commandId)
             this.$store.commit('SET_DATASOURCE', records)
           })
         }
@@ -1006,7 +1005,6 @@ export default {
     // 关闭浏览器右击默认菜单
     const _this = this
     myChartContainer.oncontextmenu = function (e) {
-      console.log(e, '113123')
       if (e.pageY > 400) {
         menu[1].style.top = 100 + 'px'
         _this.Ycoords = e.pageY
@@ -1117,11 +1115,8 @@ export default {
     }
     jdbcDsList(p).then((response) => {
       const { records } = response
-      console.log(records, 'records________________________')
       this.$store.commit('SET_DATASOURCE', records)
     })
-    // console.log(this.$store.state.taskAdmin.SingleData)
-    //   // this.handleNodeClick(this.$store.state.taskAdmin.Singledata)
     this.handleNodeClick(this.$store.state.taskAdmin.SingleData)
   },
   methods: {
@@ -1174,6 +1169,7 @@ export default {
     },
     // 获取tree数据结构
     getDataTree(data) {
+      this.loading = true
       if (this.$store.state.project.currentItem) {
         const projectId = this.$store.state.project.currentItem.split('/')[0]
         job
@@ -1227,9 +1223,7 @@ export default {
               this.$message.error(res.msg)
             }
           })
-          .catch((err) => {
-            console.log(err)
-          })
+          .catch((err) => {})
       }
     },
     showScene() {
@@ -1750,38 +1744,32 @@ export default {
     handleNodeClick(data) {
       console.log('任务数据', data)
       this.selectRow = data
-      // this.currentJobName = data.name
       this.delType = data.type === 1 ? '文件夹' : '任务'
       this.$store.commit('Singledata', data)
       this.$store.commit('SETPJTID', data.projectId)
       this.$store.commit('SETCODE', '')
-      console.log(this.$store.state.taskAdmin.SingleData)
       if (data.type === 2) {
         this.jobType = data.jobType
         this.$store.commit('changeGroupData', data)
         this.$store.commit('changeGroupName', data.name)
         this.$store.commit('changeTreeId', data.id)
         this.currentJobName = data.name
-        console.log('123')
         if (data.jobId) {
           job
             .ParametersList({
               jobId: data.jobId,
             })
             .then((res) => {
-              console.log('点击tree控件方法', res)
               this.$store.commit('ParametersList', res.content)
               this.parameters = res.content
             })
             .catch((err) => {
               console.log(err)
             })
-          console.log('123', data.jobId)
           this.$store.commit('changeJobId', data.jobId)
           job
             .getTaskInfo(data.jobId)
             .then((res) => {
-              console.log('点击tree控件方法第二个方法', res)
               if (res.code === 200) {
                 if (res.content) {
                   this.$store.commit('SET_JOB_INFO', res.content)
@@ -1860,7 +1848,6 @@ export default {
       }
     },
     getJobDetail(data) {
-      console.log(data, 'data-=-=')
       this.$store.commit('SET_JOB_INFO', data)
       this.$store.commit('getJobDetail', data)
       this.$store.commit('SET_TASKDETAIL_ID', data.id + '')
@@ -1875,7 +1862,6 @@ export default {
         ) === -1
       ) {
         this.$store.state.taskAdmin.taskDetailList.push(a)
-        console.log(a, '切换a')
         this.jobDetailIdx = a.content.id + ''
       } else {
         this.jobDetailIdx = a.content.id + ''
@@ -1908,13 +1894,14 @@ export default {
       }
     },
     getItem(del) {
+      this.loading = true
       this.listQuery.userId = JSON.parse(localStorage.getItem('userId'))
       jobProjectApi.list(this.listQuery).then((response) => {
+        this.loading = false
         const { records } = response
         const { total } = response
         this.total = total
         this.options = records
-        console.log('this.options--->', this.options)
         this.options = objList(this.options, 'name')
         this.selectValue = this.options[0].id
         this.fetchJobs(this.selectValue)
@@ -1933,7 +1920,6 @@ export default {
         job.getList(listQuery).then((response) => {
           const { content } = response
           this.List = content.data
-          console.log(this.List, 'this.List')
           const firstElement = content?.data[0] || {}
           const a = {}
           a.title = firstElement.name
@@ -1983,7 +1969,6 @@ export default {
         job.getList(listQuery).then((response) => {
           const { content } = response
           this.List = content.data
-          console.log(this.List, 'this.List')
           const a = {}
           const eleIndex = _.findIndex(
             this.List,
@@ -2021,7 +2006,6 @@ export default {
       job.getList(listQuery).then((response) => {
         const { content } = response
         this.List = content.data
-        console.log(this.List, 'this.List')
       })
       // 根据项目id获取数据源
       const p = {
@@ -2075,7 +2059,6 @@ export default {
       }
       jdbcDsList(p).then((response) => {
         const { records } = response
-        console.log(records, 'records03', commandId)
         this.$store.commit('SET_DATASOURCE', records)
       })
     },

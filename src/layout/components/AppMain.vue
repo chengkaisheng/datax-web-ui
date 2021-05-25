@@ -16,29 +16,21 @@ export default {
       return this.$store.state.tagsView.cachedViews
     },
     key() {
-      console.log(this.$route)
-      // if (this.$route.name === 'JdbcDatasource') {
-      //   let i = 0
-      //   if (i === 0) {
-      //     location.reload();
-      //     i++
-      //     console.log(i, 'i')
-      //   }
-      // }
       if (this.$route.name === 'analysis') {
         this.getAnalysis()
       }
       return this.$route.path
-    }
+    },
   },
   methods: {
     getAnalysis() {
-      window.location = 'http://192.168.3.60:9000/login?username=admin&password=123'
+      window.location =
+        'http://192.168.3.60:9000/login?username=admin&password=123'
       setTimeout(() => {
         window.location = 'http://192.168.3.60:9000/superset/welcome'
       }, 10)
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -52,7 +44,7 @@ export default {
   overflow: hidden;
 }
 
-.fixed-header+.app-main {
+.fixed-header + .app-main {
   padding-top: 50px;
 }
 
@@ -62,7 +54,7 @@ export default {
     // min-height: calc(100vh - 84px);
   }
 
-  .fixed-header+.app-main {
+  .fixed-header + .app-main {
     padding-top: 84px;
   }
 }

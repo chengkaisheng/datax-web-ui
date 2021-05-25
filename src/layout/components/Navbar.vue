@@ -228,7 +228,6 @@ export default {
       jobProjectApi
         .list(this.listQuery)
         .then((res) => {
-          console.log(res, 'zzzzzzzzzzc')
           this.options = res.records
         })
         .catch((error) => {
