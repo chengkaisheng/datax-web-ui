@@ -24,7 +24,8 @@ import App from './App'
 import store from './store'
 import router from './router'
 import axios from 'axios'
-Vue.use(axios)
+Vue.prototype.axios = axios
+// Vue.use(axios)
 import gojs from 'gojs'
 import JsonViewer from 'vue-json-viewer'
 Vue.use(JsonViewer)

@@ -266,12 +266,9 @@ export default {
     },
   },
   created() {
-    console.log('时间戳', moment(new Date()).format('YYYY-MM-DD hh:mm:ss'))
+    // console.log('时间戳', moment(new Date()).format('YYYY-MM-DD hh:mm:ss'))
     this.parameters = this.$store.state.taskAdmin.ParametersList
     this.ReplaceParameters = this.$store.state.taskAdmin.ParametersList
-    // this.$refs.codemirror.setCode(this.$store.state.taskAdmin.setcode)
-
-    // this.$refs.codemirror.code = this.$store.state.taskAdmin.setcode
   },
   methods: {
     // 中断运行
@@ -461,6 +458,7 @@ export default {
                   return
                 }
               )
+              console.log('Createconnection--->', Createconnection)
               if (Createconnection) {
                 this.loglist.push({
                   logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
@@ -484,179 +482,183 @@ export default {
                   },
                 }
                 console.log('params2------->', params2)
-              } else {
-                this.runQuery = null
-              }
-              const resInitConnection = await initConnection(params2).catch(
-                (err) => {
-                  this.desbel = true
-                  this.getinto = false
-                  console.log(err)
-                }
-              )
-              console.log('初始化连接', resInitConnection)
-              this.loglist.push({
-                logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                content:
-                  '初始化连接完成: ' + resInitConnection.data.connection.id,
-                tableData: '...',
-              })
-              if (sqlarr[0] === '') {
-                this.desbel = true
-                this.$message('没有要执行的sql...')
-                return
-              }
-              for (let i = 0; i < sqlarr.length - 1; i++) {
-                if (this.status !== 'executing') break
-                const sqlOne = sqlarr[i]
-                this.loglist.push({
-                  logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                  content: '开始执行sql: [' + sqlOne + ']',
-                  tableData: '...',
-                })
-                const params3 = {
-                  connectionId: resInitConnection.data.connection.id,
-                }
-                console.log('params3------->', params3)
-                const Createcontext = await sqlContextCreate(params3).catch(
+                const resInitConnection = await initConnection(params2).catch(
                   (err) => {
                     this.desbel = true
                     this.getinto = false
                     console.log(err)
                   }
                 )
+                console.log('初始化连接', resInitConnection)
                 this.loglist.push({
                   logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                   content:
-                    '创建上下文, 上下文id: ' + Createcontext.data.context.id,
+                    '初始化连接完成: ' + resInitConnection.data.connection.id,
                   tableData: '...',
                 })
-                console.log('创建上下文', Createcontext.data.context)
-                const params4 = {
-                  connectionId: params3.connectionId,
-                  contextId: Createcontext.data.context.id,
-                  query: sqlOne, // sql语句
-                  filter: {
-                    offset: 0,
-                    limit: 200,
-                    constraints: [],
-                  },
+                if (sqlarr[0] === '') {
+                  this.desbel = true
+                  this.$message('没有要执行的sql...')
+                  return
                 }
-                console.log('params4------>', params4)
-                const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(
-                  params4
-                )
-                console.log('执行sql', resAsyncSqlExecuteQuery)
-                const params5 = {
-                  taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
-                  removeOnFinish: false,
-                }
-                console.log('params5----->', params5)
-                let queryStatus = ''
-                let resGetAsyncTaskInfo
-                while (queryStatus !== 'Finished') {
-                  async function fn() {
-                    return new Promise((resolve, reject) => {
-                      setTimeout(() => {
-                        resolve()
-                      }, 2000)
-                    })
-                  }
-                  await fn()
-                  resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
-                  queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
-                  console.log('循环执行语句', queryStatus)
-                  if (resGetAsyncTaskInfo.data.taskInfo.error) {
-                    this.loglist.push({
-                      title: '错误sql返回',
-                      logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                      content: sqlOne,
-                      error: resGetAsyncTaskInfo.data.taskInfo.error.message,
-                    })
-                    this.desbel = true
-                    this.getinto = false
-                    this.$message.error('执行错误')
-                    break
-                  } else {
-                    this.loglist.push({
-                      logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                      content: '执行状态: ' + queryStatus,
-                      tableData: '...',
-                    })
-                  }
-                }
-                // if (queryStatus === 'Finished') {}
-                const params6 = {
-                  taskId: resGetAsyncTaskInfo.data.taskInfo.id,
-                }
-                const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
-                  params6
-                ).catch((error) => {
-                  this.loading = false
-                  this.$message(error)
-                })
-                if (
-                  resGetSqlExecuteTaskResults.data.result.statusMessage ===
-                  'No Data'
-                ) {
-                  if (i === sqlarr.length - 2) {
-                    this.desbel = true
-                  }
+                for (let i = 0; i < sqlarr.length - 1; i++) {
+                  if (this.status !== 'executing') break
+                  const sqlOne = sqlarr[i]
                   this.loglist.push({
                     logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                    content: sqlOne,
-                    tableData: this.tableData,
-                  })
-                  this.getinto = false
-                  console.log('this.loglist====---->', this.loglist)
-                  this.$message.success('执行成功')
-                  console.log('成功了', resGetSqlExecuteTaskResults)
-                }
-                if (
-                  resGetSqlExecuteTaskResults.data.result.statusMessage ===
-                  'Success'
-                ) {
-                  if (i === sqlarr.length - 2) {
-                    this.desbel = true
-                  }
-                  const columns =
-                    resGetSqlExecuteTaskResults.data.result.results[0].resultSet
-                      .columns
-                  const rows =
-                    resGetSqlExecuteTaskResults.data.result.results[0].resultSet
-                      .rows
-                  this.columns = columns
-
-                  this.tableData = rows.map((ele) => {
-                    const obj = {}
-                    ele.forEach((fieldVal, index) => {
-                      obj[columns[index].name] = fieldVal
-                    })
-                    return obj
-                  })
-                  this.loglist.push({
-                    logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                    content: sqlOne,
-                    tableData: this.tableData,
-                  })
-                  this.getinto = false
-                  this.$message.success('执行成功')
-                  this.loglist.push({
-                    logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                    content: '执行完成',
+                    content: '开始执行sql: [' + sqlOne + ']',
                     tableData: '...',
                   })
-                  console.log('成功了', resGetSqlExecuteTaskResults)
-                }
-                if (
-                  resGetSqlExecuteTaskResults.data.result.statusMessage !==
-                  'Success'
-                ) {
-                  this.getinto = false
-                  console.log(
-                    resGetSqlExecuteTaskResults.data.result.statusMessage
+                  const params3 = {
+                    connectionId: resInitConnection.data.connection.id,
+                  }
+                  console.log('params3------->', params3)
+                  const Createcontext = await sqlContextCreate(params3).catch(
+                    (err) => {
+                      this.desbel = true
+                      this.getinto = false
+                      console.log(err)
+                    }
                   )
+                  this.loglist.push({
+                    logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                    content:
+                      '创建上下文, 上下文id: ' + Createcontext.data.context.id,
+                    tableData: '...',
+                  })
+                  console.log('创建上下文', Createcontext.data.context)
+                  const params4 = {
+                    connectionId: params3.connectionId,
+                    contextId: Createcontext.data.context.id,
+                    query: sqlOne, // sql语句
+                    filter: {
+                      offset: 0,
+                      limit: 200,
+                      constraints: [],
+                    },
+                  }
+                  console.log('params4------>', params4)
+                  const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(
+                    params4
+                  )
+                  console.log('执行sql', resAsyncSqlExecuteQuery)
+                  const params5 = {
+                    taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
+                    removeOnFinish: false,
+                  }
+                  console.log('params5----->', params5)
+                  let queryStatus = ''
+                  let resGetAsyncTaskInfo
+                  while (queryStatus !== 'Finished') {
+                    async function fn() {
+                      return new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                          resolve()
+                        }, 2000)
+                      })
+                    }
+                    await fn()
+                    resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
+                    queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
+                    console.log('循环执行语句', queryStatus)
+                    if (resGetAsyncTaskInfo.data.taskInfo.error) {
+                      this.loglist.push({
+                        title: '错误sql返回',
+                        logtime: moment(new Date()).format(
+                          'YYYY-MM-DD hh:mm:ss'
+                        ),
+                        content: sqlOne,
+                        error: resGetAsyncTaskInfo.data.taskInfo.error.message,
+                      })
+                      this.desbel = true
+                      this.getinto = false
+                      this.$message.error('执行错误')
+                      break
+                    } else {
+                      this.loglist.push({
+                        logtime: moment(new Date()).format(
+                          'YYYY-MM-DD hh:mm:ss'
+                        ),
+                        content: '执行状态: ' + queryStatus,
+                        tableData: '...',
+                      })
+                    }
+                  }
+                  // if (queryStatus === 'Finished') {}
+                  const params6 = {
+                    taskId: resGetAsyncTaskInfo.data.taskInfo.id,
+                  }
+                  const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
+                    params6
+                  ).catch((error) => {
+                    this.loading = false
+                    this.$message(error)
+                  })
+                  if (
+                    resGetSqlExecuteTaskResults.data.result.statusMessage ===
+                    'No Data'
+                  ) {
+                    if (i === sqlarr.length - 2) {
+                      this.desbel = true
+                    }
+                    this.loglist.push({
+                      logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                      content: sqlOne,
+                      tableData: this.tableData,
+                    })
+                    this.getinto = false
+                    console.log('this.loglist====---->', this.loglist)
+                    this.$message.success('执行成功')
+                    console.log('成功了', resGetSqlExecuteTaskResults)
+                  }
+                  if (
+                    resGetSqlExecuteTaskResults.data.result.statusMessage ===
+                    'Success'
+                  ) {
+                    if (i === sqlarr.length - 2) {
+                      this.desbel = true
+                    }
+                    const columns =
+                      resGetSqlExecuteTaskResults.data.result.results[0]
+                        .resultSet.columns
+                    const rows =
+                      resGetSqlExecuteTaskResults.data.result.results[0]
+                        .resultSet.rows
+                    this.columns = columns
+
+                    this.tableData = rows.map((ele) => {
+                      const obj = {}
+                      ele.forEach((fieldVal, index) => {
+                        obj[columns[index].name] = fieldVal
+                      })
+                      return obj
+                    })
+                    this.loglist.push({
+                      logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                      content: sqlOne,
+                      tableData: this.tableData,
+                    })
+                    this.getinto = false
+                    this.$message.success('执行成功')
+                    this.loglist.push({
+                      logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                      content: '执行完成',
+                      tableData: '...',
+                    })
+                    console.log('成功了', resGetSqlExecuteTaskResults)
+                  }
+                  if (
+                    resGetSqlExecuteTaskResults.data.result.statusMessage !==
+                    'Success'
+                  ) {
+                    this.getinto = false
+                    console.log(
+                      resGetSqlExecuteTaskResults.data.result.statusMessage
+                    )
+                  }
                 }
+              } else {
+                console.log('创建连接失败！')
               }
             } else if (datasource.length === 0) {
               this.desbel = true
@@ -750,217 +752,227 @@ export default {
                   return
                 }
               )
-              this.loglist.push({
-                logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                content: '连接id: ' + Createconnection.data.createConnection.id,
-                tableData: '...',
-              })
-              console.log('创建连接', Createconnection)
-
-              // 2. 初始化连接
-              this.loglist.push({
-                logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                content: '初始化连接...',
-                tableData: '...',
-              })
-              console.log('创建连接', Createconnection.data)
-              const params2 = {
-                id: Createconnection.data.createConnection.id,
-                credentials: {
-                  userName: this.userName,
-                  userPassword: this.password,
-                },
-              }
-              console.log('params2------>', params2)
-              // 初始化连接
-              const resInitConnection = await initConnection(params2).catch(
-                (err) => {
-                  this.desbel = true
-                  this.getinto = false
-                  console.log(err)
-                }
-              )
-              if (resInitConnection === undefined) {
-                this.desbel = true
-                this.getinto = false
-                this.$('初始化连接失败')
-                console.log('初始化连接失败')
-              }
-              this.loglist.push({
-                logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                content:
-                  '初始化连接完成: ' + resInitConnection.data.connection.id,
-                tableData: '...',
-              })
-              console.log('sqlarr', sqlarr)
-              if (sqlarr[0] === '') {
-                this.desbel = true
-                this.$message('没有要执行的sql...')
-                return
-              }
-              for (var i = 0; i < sqlarr.length - 1; i++) {
-                if (this.status !== 'executing') break
-                const sqlOne = sqlarr[i]
+              console.log('Createconnection---->', Createconnection)
+              if (Createconnection) {
                 this.loglist.push({
                   logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                  content: '开始执行sql: [' + sqlOne + ']',
+                  content:
+                    '连接id: ' + Createconnection.data.createConnection.id,
                   tableData: '...',
                 })
-                console.log('初始化连接', resInitConnection)
-                const params3 = {
-                  connectionId: resInitConnection.data.connection.id,
+                console.log('创建连接', Createconnection)
+
+                // 2. 初始化连接
+                this.loglist.push({
+                  logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                  content: '初始化连接...',
+                  tableData: '...',
+                })
+                console.log('创建连接', Createconnection.data)
+                const params2 = {
+                  id: Createconnection.data.createConnection.id,
+                  credentials: {
+                    userName: this.userName,
+                    userPassword: this.password,
+                  },
                 }
-                console.log('params3----->', params3)
-                const Createcontext = await sqlContextCreate(params3).catch(
+                console.log('params2------>', params2)
+                // 初始化连接
+                const resInitConnection = await initConnection(params2).catch(
                   (err) => {
                     this.desbel = true
                     this.getinto = false
                     console.log(err)
                   }
                 )
+                if (resInitConnection === undefined) {
+                  this.desbel = true
+                  this.getinto = false
+                  this.$('初始化连接失败')
+                  console.log('初始化连接失败')
+                }
                 this.loglist.push({
                   logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                   content:
-                    '创建上下文, 上下文id: ' + Createcontext.data.context.id,
+                    '初始化连接完成: ' + resInitConnection.data.connection.id,
                   tableData: '...',
                 })
-                console.log('创建上下文', Createcontext)
-                const params4 = {
-                  connectionId: params3.connectionId,
-                  contextId: Createcontext.data.context.id,
-                  query: sqlOne, // sql语句
-                  filter: {
-                    offset: 0,
-                    limit: 200,
-                    constraints: [],
-                  },
+                console.log('sqlarr', sqlarr)
+                if (sqlarr[0] === '') {
+                  this.desbel = true
+                  this.$message('没有要执行的sql...')
+                  return
                 }
-                console.log('params4------>', params4)
-                const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(
-                  params4
-                )
-
-                console.log('执行sql', resAsyncSqlExecuteQuery)
-                const params5 = {
-                  taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
-                  removeOnFinish: false,
-                }
-                console.log('params5----->', params5)
-                let queryStatus = ''
-                let resGetAsyncTaskInfo
-                while (queryStatus !== 'Finished') {
-                  async function fn() {
-                    return new Promise((resolve, reject) => {
-                      setTimeout(() => {
-                        resolve()
-                      }, 2000)
-                    })
+                for (var i = 0; i < sqlarr.length - 1; i++) {
+                  if (this.status !== 'executing') break
+                  const sqlOne = sqlarr[i]
+                  this.loglist.push({
+                    logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                    content: '开始执行sql: [' + sqlOne + ']',
+                    tableData: '...',
+                  })
+                  console.log('初始化连接', resInitConnection)
+                  const params3 = {
+                    connectionId: resInitConnection.data.connection.id,
                   }
-                  await fn()
-                  resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
-                  queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
-                  console.log('resGetAsyncTaskInfo--->', resGetAsyncTaskInfo)
-                  if (resGetAsyncTaskInfo.data.taskInfo.error) {
+                  console.log('params3----->', params3)
+                  const Createcontext = await sqlContextCreate(params3).catch(
+                    (err) => {
+                      this.desbel = true
+                      this.getinto = false
+                      console.log(err)
+                    }
+                  )
+                  this.loglist.push({
+                    logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                    content:
+                      '创建上下文, 上下文id: ' + Createcontext.data.context.id,
+                    tableData: '...',
+                  })
+                  console.log('创建上下文', Createcontext)
+                  const params4 = {
+                    connectionId: params3.connectionId,
+                    contextId: Createcontext.data.context.id,
+                    query: sqlOne, // sql语句
+                    filter: {
+                      offset: 0,
+                      limit: 200,
+                      constraints: [],
+                    },
+                  }
+                  console.log('params4------>', params4)
+                  const resAsyncSqlExecuteQuery = await asyncSqlExecuteQuery(
+                    params4
+                  )
+
+                  console.log('执行sql', resAsyncSqlExecuteQuery)
+                  const params5 = {
+                    taskId: resAsyncSqlExecuteQuery.data.taskInfo.id,
+                    removeOnFinish: false,
+                  }
+                  console.log('params5----->', params5)
+                  let queryStatus = ''
+                  let resGetAsyncTaskInfo
+                  while (queryStatus !== 'Finished') {
+                    async function fn() {
+                      return new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                          resolve()
+                        }, 2000)
+                      })
+                    }
+                    await fn()
+                    resGetAsyncTaskInfo = await getAsyncTaskInfo(params5)
+                    queryStatus = resGetAsyncTaskInfo.data.taskInfo.status
+                    console.log('resGetAsyncTaskInfo--->', resGetAsyncTaskInfo)
+                    if (resGetAsyncTaskInfo.data.taskInfo.error) {
+                      this.loglist.push({
+                        title: '错误sql返回',
+                        logtime: moment(new Date()).format(
+                          'YYYY-MM-DD hh:mm:ss'
+                        ),
+                        content: sqlOne,
+                        error: resGetAsyncTaskInfo.data.taskInfo.error.message,
+                      })
+                      if (i === sqlarr.length - 2) {
+                        this.desbel = true
+                      }
+                      this.getinto = false
+                      this.$message.error('执行错误')
+                      break
+                    } else {
+                      this.loglist.push({
+                        logtime: moment(new Date()).format(
+                          'YYYY-MM-DD hh:mm:ss'
+                        ),
+                        content: '执行状态:' + queryStatus,
+                        tableData: '...',
+                      })
+                      for (let i = 0; i <= 1000; i++) {
+                        console.log(queryStatus, 'queryStatus')
+                      }
+                    }
+                  }
+                  const params6 = {
+                    taskId: resGetAsyncTaskInfo.data.taskInfo.id,
+                  }
+                  const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
+                    params6
+                  ).catch((error) => {
+                    this.desbel = true
+                    this.getinto = false
+                    console.log(error)
+                  })
+                  if (
+                    resGetSqlExecuteTaskResults.data.result.statusMessage ===
+                    'Success'
+                  ) {
+                    if (i === sqlarr.length - 2) {
+                      this.desbel = true
+                    }
+                    const columns =
+                      resGetSqlExecuteTaskResults.data.result.results[0]
+                        .resultSet.columns
+                    const rows =
+                      resGetSqlExecuteTaskResults.data.result.results[0]
+                        .resultSet.rows
+                    this.columns = columns
+
+                    this.tableData = rows.map((ele) => {
+                      const obj = {}
+                      ele.forEach((fieldVal, index) => {
+                        obj[columns[index].name] = fieldVal
+                      })
+                      return obj
+                    })
                     this.loglist.push({
-                      title: '错误sql返回',
                       logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
                       content: sqlOne,
-                      error: resGetAsyncTaskInfo.data.taskInfo.error.message,
+                      tableData: this.tableData,
                     })
                     if (i === sqlarr.length - 2) {
                       this.desbel = true
                     }
                     this.getinto = false
-                    this.$message.error('执行错误')
-                    break
-                  } else {
+                    this.$message.success('执行成功')
                     this.loglist.push({
                       logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                      content: '执行状态:' + queryStatus,
+                      content: '执行完成',
                       tableData: '...',
                     })
-                    for (let i = 0; i <= 1000; i++) {
-                      console.log(queryStatus, 'queryStatus')
+                    console.log('成功了', resGetSqlExecuteTaskResults)
+                  }
+                  if (
+                    resGetSqlExecuteTaskResults.data.result.statusMessage !==
+                    'Success'
+                  ) {
+                    if (i === sqlarr.length - 2) {
+                      this.desbel = true
                     }
+                    this.getinto = false
+                    console.log(
+                      resGetSqlExecuteTaskResults.data.result.statusMessage
+                    )
                   }
-                }
-                const params6 = {
-                  taskId: resGetAsyncTaskInfo.data.taskInfo.id,
-                }
-                const resGetSqlExecuteTaskResults = await getSqlExecuteTaskResults(
-                  params6
-                ).catch((error) => {
-                  this.desbel = true
-                  this.getinto = false
-                  console.log(error)
-                })
-                if (
-                  resGetSqlExecuteTaskResults.data.result.statusMessage ===
-                  'Success'
-                ) {
-                  if (i === sqlarr.length - 2) {
-                    this.desbel = true
-                  }
-                  const columns =
-                    resGetSqlExecuteTaskResults.data.result.results[0].resultSet
-                      .columns
-                  const rows =
-                    resGetSqlExecuteTaskResults.data.result.results[0].resultSet
-                      .rows
-                  this.columns = columns
-
-                  this.tableData = rows.map((ele) => {
-                    const obj = {}
-                    ele.forEach((fieldVal, index) => {
-                      obj[columns[index].name] = fieldVal
+                  if (
+                    resGetSqlExecuteTaskResults.data.result.statusMessage ===
+                    'No Data'
+                  ) {
+                    if (i === sqlarr.length - 2) {
+                      this.desbel = true
+                    }
+                    this.loglist.push({
+                      logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                      content: sqlOne,
+                      tableData: this.tableData,
                     })
-                    return obj
-                  })
-                  this.loglist.push({
-                    logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                    content: sqlOne,
-                    tableData: this.tableData,
-                  })
-                  if (i === sqlarr.length - 2) {
-                    this.desbel = true
+                    this.getinto = false
+                    this.$message.success('执行成功')
+                    console.log('成功了', resGetSqlExecuteTaskResults)
                   }
-                  this.getinto = false
-                  this.$message.success('执行成功')
-                  this.loglist.push({
-                    logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                    content: '执行完成',
-                    tableData: '...',
-                  })
-                  console.log('成功了', resGetSqlExecuteTaskResults)
                 }
-                if (
-                  resGetSqlExecuteTaskResults.data.result.statusMessage !==
-                  'Success'
-                ) {
-                  if (i === sqlarr.length - 2) {
-                    this.desbel = true
-                  }
-                  this.getinto = false
-                  console.log(
-                    resGetSqlExecuteTaskResults.data.result.statusMessage
-                  )
-                }
-                if (
-                  resGetSqlExecuteTaskResults.data.result.statusMessage ===
-                  'No Data'
-                ) {
-                  if (i === sqlarr.length - 2) {
-                    this.desbel = true
-                  }
-                  this.loglist.push({
-                    logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                    content: sqlOne,
-                    tableData: this.tableData,
-                  })
-                  this.getinto = false
-                  this.$message.success('执行成功')
-                  console.log('成功了', resGetSqlExecuteTaskResults)
-                }
+              } else {
+                console.log('创建连接失败！')
               }
             } else if (datasource.length === 0) {
               this.desbel = true

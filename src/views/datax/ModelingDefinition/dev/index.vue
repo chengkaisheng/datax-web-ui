@@ -33,6 +33,7 @@
           clearable
         />
         <el-tree
+          v-loading="loading"
           id="main_span"
           ref="tree"
           :data="workflowList"
@@ -390,6 +391,7 @@ export default {
       options: [],
       dropdownText: '123',
       showCurrent: true,
+      loading: true,
     }
   },
   watch: {
@@ -411,7 +413,6 @@ export default {
       let project_id = JSON.parse(localStorage.getItem('project_id'))
         ? JSON.parse(localStorage.getItem('project_id'))
         : JSON.parse(localStorage.getItem('projectid'))
-      console.log('project_id', project_id)
       if (typeof val === 'string') {
         this.project_id = parseInt(val.split('/')[0])
         this.getlist(this.project_id)
@@ -467,10 +468,10 @@ export default {
   created() {
     this.getItem()
     this.formCopy = JSON.parse(JSON.stringify(this.form))
-    console.log('strParam---->', sessionStorage.getItem('strParam').split('/'))
-    let project_id = sessionStorage.getItem('strParam').split('/')[0]
-    this.dropdownText = sessionStorage.getItem('strParam').split('/')[1]
-    this.getlist(project_id)
+    // if(localStorage.getItem('project_id')|| sessionStorage.getItem('strParam')){
+    //   let id =JSON.parse(localStorage.getItem('project_id')).split('/')[0]||sessionStorage.getItem('strParam').split('/')[0]
+    //   this.dropdownText=JSON.parse(localStorage.getItem('project_id')).split('/')[1]||sessionStorage.getItem('strParam').split('/')[1]
+    // }
     const str = sessionStorage.getItem('strParam')
     if (sessionStorage.getItem('level') === '2') {
       if (str) {
@@ -479,6 +480,19 @@ export default {
       }
       this.showCurrent = false
     }
+    setTimeout(() => {
+      console.log('res.records--->', this.options)
+      if (sessionStorage.getItem('strParam')) {
+        let project_id = sessionStorage.getItem('strParam').split('/')[0] || 45
+        this.dropdownText =
+          sessionStorage.getItem('strParam').split('/')[1] || 123
+        this.getlist(project_id)
+      } else {
+        let project_id = this.options[0].id + ''
+        this.dropdownText = this.options[0].name
+        this.getlist(project_id)
+      }
+    }, 1000)
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.getPos)
@@ -492,23 +506,39 @@ export default {
       let project_id = data.split('/')[0]
       this.getlist(project_id)
     },
+    //获取下拉选择列表
     getItem() {
+      this.loading = true
       this.listQuery.userId = JSON.parse(localStorage.getItem('userId'))
-      jobProjectApi.list(this.listQuery).then((res) => {
-        this.options = res.records
-      })
+      jobProjectApi
+        .list(this.listQuery)
+        .then((res) => {
+          this.options = res.records
+          this.loading = false
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     },
+    //获取tree列表
     getlist(val, newtask) {
+      this.loading = true
       let projectId = { projectId: val }
-      modeling.Getlist(projectId).then((res) => {
-        this.workflowList = res.content
-        this.lastdata =
-          res.content[0].children[res.content[0].children.length - 1]
-        if (newtask.name === 'newtask') {
-          this.handleWorkFlow(this.lastdata)
-          console.log('qwe----->')
-        }
-      })
+      modeling
+        .Getlist(projectId)
+        .then((res) => {
+          this.workflowList = res.content
+          this.loading = false
+          this.lastdata =
+            res.content[0].children[res.content[0].children.length - 1]
+          if (newtask && newtask.name === 'newtask') {
+            this.handleWorkFlow(this.lastdata)
+            console.log('qwe----->')
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     },
     // 快速检索关键字
     filterNode(value, data) {
