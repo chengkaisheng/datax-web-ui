@@ -134,7 +134,7 @@
         </div>
       </div>
     </el-drawer>
-    <div class="top">
+    <div class="top" v-loading="loading" :element-loading-text="loadingtext">
       <div class="title1">基本信息</div>
       <span class="tips">
         模型发布后不可修改数据层级，表类型，主题域和模型名，请确定信息无误后再操作！
@@ -313,7 +313,7 @@
         <template style="margin-bottom: 30px">
           <el-table
             :data="ruleForm.tableData"
-            style="width: 100%; overflow: scroll"
+            style="width: 100%; overflow: scroll; text-align: center"
           >
             <el-table-column
               v-for="(itme, index) in Tabletop"
@@ -321,9 +321,14 @@
               :prop="itme.prop"
               :label="itme.label"
               width="auto"
+              style="text-align: center"
             >
             </el-table-column>
-            <el-table-column label="操作" width="120%">
+            <el-table-column
+              label="操作"
+              width="120%"
+              style="text-align: center"
+            >
               <template slot-scope="scope">
                 <el-button
                   @click="handleClick(scope.row, index)"
@@ -484,6 +489,8 @@ export default {
   props: ['tabledata', 'tableType'],
   data() {
     return {
+      loadingtext: '',
+      loading: false,
       isbtn: true,
       Lock: false,
       DialogVisible: false,
@@ -663,6 +670,8 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (data === 'data') {
+            this.loading = true
+            this.loadingtext = '保存中'
             let params = {
               name: this.$store.state.taskAdmin.tabledata.name,
               id: this.$store.state.taskAdmin.tabledata.id,
@@ -690,14 +699,18 @@ export default {
                     message: '保存成功',
                     type: 'success',
                   })
+                  this.loading = false
                 }
                 console.log(res)
               })
               .catch((err) => {
+                this.loading = false
                 console.log('ERR------>', err)
               })
           }
           if (data === 'DATA') {
+            this.loading = true
+            this.loadingtext = '执行中'
             let params = {
               name: this.$store.state.taskAdmin.tabledata.name,
               id: this.$store.state.taskAdmin.tabledata.id,
@@ -728,9 +741,11 @@ export default {
                     type: 'success',
                   })
                 }
+                this.loading = false
                 console.log('执行结果', res)
               })
               .catch((err) => {
+                this.loading = false
                 console.log('执行错误', err)
               })
 
@@ -903,6 +918,12 @@ export default {
 }
 </style>
 <style scoped>
+.el-table th > .cell {
+  text-align: center;
+}
+.el-table .cell {
+  text-align: center;
+}
 .table_top {
   display: flex;
   justify-content: center;

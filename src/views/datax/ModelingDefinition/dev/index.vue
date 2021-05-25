@@ -11,7 +11,7 @@
             {{ item.name }}
           </li>
         </ul> -->
-        <el-dropdown @command="handleCommand">
+        <el-dropdown v-if="showCurrent" @command="handleCommand">
           <span>
             {{ dropdownText }}<i class="el-icon-arrow-down el-icon--right" />
           </span>
@@ -389,6 +389,7 @@ export default {
       projectid: '45/123',
       options: [],
       dropdownText: '123',
+      showCurrent: true,
     }
   },
   watch: {
@@ -465,11 +466,19 @@ export default {
   },
   created() {
     this.getItem()
-    localStorage.setItem('projectid', JSON.stringify(this.projectid))
-    let project_id = ''
-    project_id = JSON.parse(localStorage.getItem('projectid')).split('/')[0]
-    this.getlist(project_id)
     this.formCopy = JSON.parse(JSON.stringify(this.form))
+    console.log('strParam---->', sessionStorage.getItem('strParam').split('/'))
+    let project_id = sessionStorage.getItem('strParam').split('/')[0]
+    this.dropdownText = sessionStorage.getItem('strParam').split('/')[1]
+    this.getlist(project_id)
+    const str = sessionStorage.getItem('strParam')
+    if (sessionStorage.getItem('level') === '2') {
+      if (str) {
+        this.dropdownText = str.split('/')[1]
+        this.$store.commit('changeCurrent', str)
+      }
+      this.showCurrent = false
+    }
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.getPos)

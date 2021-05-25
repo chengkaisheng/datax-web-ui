@@ -397,6 +397,7 @@ export default {
           ).catch((err) => {
             console.log(err)
           })
+          console.log('Hivesource---->', Hivesource)
           if (Hivesource) {
             const datasource = Hivesource.records.filter((itme) => {
               return itme.datasource === 'hive'
@@ -457,30 +458,35 @@ export default {
                     content: '创建连接失败>>>' + err,
                     tableData: '...',
                   })
-                  console.log('ERR', err)
+                  return
                 }
               )
-              this.loglist.push({
-                logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                content: '连接id: ' + Createconnection.data.createConnection.id,
-                tableData: '...',
-              })
-              console.log('创建连接', Createconnection)
+              if (Createconnection) {
+                this.loglist.push({
+                  logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                  content:
+                    '连接id: ' + Createconnection.data.createConnection.id,
+                  tableData: '...',
+                })
+                console.log('创建连接', Createconnection)
 
-              // 2. 初始化连接
-              this.loglist.push({
-                logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-                content: '初始化连接...',
-                tableData: '...',
-              })
-              const params2 = {
-                id: Createconnection.data.createConnection.id,
-                credentials: {
-                  userName: this.userName,
-                  userPassword: this.password,
-                },
+                // 2. 初始化连接
+                this.loglist.push({
+                  logtime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
+                  content: '初始化连接...',
+                  tableData: '...',
+                })
+                const params2 = {
+                  id: Createconnection.data.createConnection.id,
+                  credentials: {
+                    userName: this.userName,
+                    userPassword: this.password,
+                  },
+                }
+                console.log('params2------->', params2)
+              } else {
+                this.runQuery = null
               }
-              console.log('params2------->', params2)
               const resInitConnection = await initConnection(params2).catch(
                 (err) => {
                   this.desbel = true
@@ -680,6 +686,7 @@ export default {
               console.log(err)
             }
           )
+          console.log('source---->', source)
           if (source) {
             const datasource = source.records.filter((itme) => {
               return itme.datasource === 'impala'
@@ -740,7 +747,7 @@ export default {
                     content: '创建连接失败>>>' + err,
                     tableData: '...',
                   })
-                  console.log(err)
+                  return
                 }
               )
               this.loglist.push({
