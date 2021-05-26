@@ -302,10 +302,14 @@
         </el-form-item>
         <el-form-item label="是否分区表:" prop="resource">
           <el-radio-group v-model="ruleForm.resource">
-            <span @click="showtable">
+            <span @click="showtable" :class="Resource ? Resource : ''">
               <el-radio :disabled="Subtable" label="true"></el-radio>
             </span>
-            <span style="margin-left: 20px" @click="hidetable">
+            <span
+              style="margin-left: 20px"
+              @click="hidetable"
+              :class="Resource ? Resource : ''"
+            >
               <el-radio :disabled="Subtable" label="false"></el-radio>
             </span>
           </el-radio-group>
@@ -796,35 +800,29 @@ export default {
       fileList: [],
       btn: '',
       index: '',
+      Resource: '',
     }
   },
+  computed: {},
   watch: {
     'ruleForm.resource': {
       handler: function () {
         if (this.ruleForm.resource === 'true') {
-          this.Subtable = true
           this.show = true
-          if (this.ruleForm.tableDatas.length == 0) {
-            this.Donotadd = false
-          }
-          if (this.ruleForm.tableDatas.length !== 0) {
-            this.Donotadd = true
-          }
-          console.log('监听----》', this.ruleForm.tableDatas)
         } else {
           this.show = false
           this.Donotadd = false
-          this.ruleForm.tableDatas = []
         }
-        console.log('resource', this.ruleForm.resource)
       },
+    },
+    Resource(val) {
+      if (val === 'true') {
+        this.Donotadd = true
+        this.Subtable = true
+      }
     },
   },
   created() {
-    console.log(
-      'taskAdmin.tabledata---->',
-      this.$store.state.taskAdmin.tabledata
-    )
     this.ruleForm.Modelname1 = this.$store.state.taskAdmin.tabledata.name || ''
     this.ruleForm.tabPosition =
       this.$store.state.taskAdmin.tabledata.dataLayer || ''
@@ -847,8 +845,11 @@ export default {
       this.$store.state.taskAdmin.tabledata.pritition + '' || ''
     this.ruleForm.tableData =
       JSON.parse(this.$store.state.taskAdmin.tabledata.modelJson) || []
-    // this.ruleForm.tableDatas =
-    //   JSON.parse(this.$store.state.taskAdmin.tabledata.prititionJson) || []
+    this.Resource = this.$store.state.taskAdmin.tabledata.pritition + ''
+    this.ruleForm.tableDatas = this.$store.state.taskAdmin.tabledata
+      .prititionJson
+      ? JSON.parse(this.$store.state.taskAdmin.tabledata.prititionJson)
+      : []
   },
   mounted() {},
   methods: {
@@ -885,12 +886,10 @@ export default {
               .Update(params)
               .then((res) => {
                 if (res.code === 200) {
+                  this.Resource = params.pritition + ''
                   let projectId = this.$store.state.taskAdmin.tabledata
                     .projectId
-                  let id = { id: params.id }
-                  console.log('id--->', id)
-                  console.log(params.id)
-                  this.$emit('getTree', projectId, id)
+                  this.$emit('getTree', projectId)
                   this.$message({
                     message: '保存成功',
                     type: 'success',
@@ -1176,6 +1175,9 @@ export default {
 }
 </style>
 <style scoped>
+.true {
+  pointer-events: none;
+}
 .el-table th > .cell {
   text-align: center;
 }

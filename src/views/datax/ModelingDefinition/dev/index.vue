@@ -201,6 +201,7 @@ export default {
   },
   data() {
     return {
+      aaa: '',
       tabledata: '',
       contextMenu1Visible: false,
       contextMenu1Target: '',
@@ -496,8 +497,8 @@ export default {
     window.removeEventListener('scroll', this.getPos)
   },
   methods: {
-    gettree(data, newtask) {
-      this.getlist(data, newtask)
+    gettree(data) {
+      this.getlist(data)
     },
     handleCommand(data) {
       this.dropdownText = data.split('/')[1]
@@ -526,30 +527,8 @@ export default {
       modeling
         .Getlist(projectId)
         .then((res) => {
-          console.log('当前任务', val, res.content)
           this.workflowList = res.content
           this.loading = false
-          // if (newtask.id) {
-          //   let newarr = []
-          //   if (res.content[0].children) {
-          //     for (var i in res.content[0].children) {
-          //       if (res.content[0].children[i].children) {
-          //         newarr.push(res.content[0].children[i].children)
-          //       } else {
-          //         newarr.push(res.content[0].children)
-          //       }
-          //       if (res.content[0].children[i].children) {
-          //         for (var j in res.content[0].children[i].children) {
-          //           newarr.push(res.content[0].children[i].children[j])
-          //         }
-          //       }
-          //     }
-          //   }
-          //   const NewTask = newarr.flat(Infinity).filter((itme) => {
-          //     return itme.id == newtask.id
-          //   })
-          //   this.handleWorkFlow(NewTask[0])
-          // }
           this.lastdata =
             res.content[0].children[res.content[0].children.length - 1]
           if (newtask && newtask.name === 'newtask') {
@@ -686,20 +665,25 @@ export default {
     // 删除工作流
     delWorkFlow(data) {
       console.log('删除', this.nowObject)
-      modeling.DeleteTable({ id: this.nowObject.id }).then((res) => {
-        if (res.code === 200) {
-          this.getlist(this.nowObject.projectId)
-          for (let i = 0; i < this.editableTabs.length; i++) {
-            if (this.editableTabs[i].name == this.nowObject.name) {
-              this.editableTabs.splice(i, 1)
+      modeling
+        .DeleteTable({ id: this.nowObject.id })
+        .then((res) => {
+          if (res.code === 200) {
+            this.getlist(this.nowObject.projectId)
+            for (let i = 0; i < this.editableTabs.length; i++) {
+              if (this.editableTabs[i].name == this.nowObject.name) {
+                this.editableTabs.splice(i, 1)
+              }
             }
+            let lastdata = this.editableTabs[this.editableTabs.length - 1]
+            console.log('lastdata--->', lastdata)
+            this.handleWorkFlow(lastdata)
+            this.$message.success('删除成功')
           }
-          let lastdata = this.editableTabs[this.editableTabs.length - 1]
-          console.log('lastdata--->', lastdata)
-          this.handleWorkFlow(lastdata)
-          this.$message.success('删除成功')
-        }
-      })
+        })
+        .catch((err) => {
+          console.log(err)
+        })
       this.contextMenuVisible = false
     },
     // 取消对话框
