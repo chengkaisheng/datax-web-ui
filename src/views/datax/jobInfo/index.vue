@@ -1169,7 +1169,7 @@ export default {
     },
     // 获取tree数据结构
     getDataTree(data) {
-      this.loading = true
+      this.loading = false
       if (this.$store.state.project.currentItem) {
         const projectId = this.$store.state.project.currentItem.split('/')[0]
         job

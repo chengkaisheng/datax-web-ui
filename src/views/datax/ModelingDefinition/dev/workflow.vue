@@ -303,13 +303,14 @@
         <el-form-item label="是否分区表:" prop="resource">
           <el-radio-group v-model="ruleForm.resource">
             <span @click="showtable">
-              <el-radio :disabled="Lock" label="true"></el-radio>
+              <el-radio :disabled="Subtable" label="true"></el-radio>
             </span>
             <span style="margin-left: 20px" @click="hidetable">
-              <el-radio :disabled="Lock" label="false"></el-radio>
+              <el-radio :disabled="Subtable" label="false"></el-radio>
             </span>
           </el-radio-group>
         </el-form-item>
+        <!--分表table-->
         <template v-if="show" style="margin-bottom: 30px">
           <el-table
             :data="ruleForm.tableDatas"
@@ -358,7 +359,10 @@
           </el-table>
         </template>
         <div class="foot" v-if="show" style="margin-top: 30px">
-          <el-button @click="addfield('top')" icon="el-icon-plus"
+          <el-button
+            @click="addfield('top')"
+            icon="el-icon-plus"
+            :disabled="Donotadd"
             >添加字段</el-button
           >
 
@@ -369,11 +373,12 @@
             :on-remove="handleRemove"
             :before-remove="beforeRemove"
             multiple
+            :disabled="Donotadd"
             :limit="3"
             :on-exceed="handleExceed"
             :file-list="fileList"
           >
-            <el-button>从需求导入</el-button>
+            <el-button :disabled="Donotadd">从需求导入</el-button>
           </el-upload>
         </div>
         <el-dialog title="添加字段" :visible.sync="dialogVisibles" width="35%">
@@ -634,6 +639,8 @@ export default {
   props: ['tabledata', 'tableType'],
   data() {
     return {
+      Subtable: false,
+      Donotadd: false,
       show: false,
       loadingtext: '',
       loading: false,
@@ -675,7 +682,7 @@ export default {
       BindingIndex: '',
       notNull: '',
       //table
-      //table
+      //分表table
       names: '',
       comments: '',
       BusinessCalibers: '',
@@ -683,7 +690,7 @@ export default {
       isKeys: '',
       BindingIndexs: '',
       notNulls: '',
-      //table
+      //分表table
       ruleForm: {
         tableData: [
           // {
@@ -792,31 +799,32 @@ export default {
     }
   },
   watch: {
-    // tabledata(data) {
-    //   console.log('sss', data)
-    //   this.ruleForm.tabPosition = data.dataLayer
-    //   this.ruleForm.themes = data.subjectField
-    //   this.ruleForm.TableTypes = data.tableType
-    //   this.ruleForm.Business = data.busProcess
-    //   this.ruleForm.Securitys = data.securityLevel
-    //   this.ruleForm.desc = data.description
-    //   this.ruleForm.project = data.projectDays
-    //   this.ruleForm.lifecycle = data.lifeCycle
-    //   this.ruleForm.resource = data.pritition + ''
-    //   this.ruleForm.tableData = JSON.parse(data.modelJson)
-    // },
     'ruleForm.resource': {
       handler: function () {
         if (this.ruleForm.resource === 'true') {
+          this.Subtable = true
           this.show = true
+          if (this.ruleForm.tableDatas.length == 0) {
+            this.Donotadd = false
+          }
+          if (this.ruleForm.tableDatas.length !== 0) {
+            this.Donotadd = true
+          }
+          console.log('监听----》', this.ruleForm.tableDatas)
         } else {
           this.show = false
+          this.Donotadd = false
+          this.ruleForm.tableDatas = []
         }
         console.log('resource', this.ruleForm.resource)
       },
     },
   },
   created() {
+    console.log(
+      'taskAdmin.tabledata---->',
+      this.$store.state.taskAdmin.tabledata
+    )
     this.ruleForm.Modelname1 = this.$store.state.taskAdmin.tabledata.name || ''
     this.ruleForm.tabPosition =
       this.$store.state.taskAdmin.tabledata.dataLayer || ''
@@ -839,8 +847,8 @@ export default {
       this.$store.state.taskAdmin.tabledata.pritition + '' || ''
     this.ruleForm.tableData =
       JSON.parse(this.$store.state.taskAdmin.tabledata.modelJson) || []
-    this.ruleForm.tableDatas =
-      JSON.parse(this.$store.state.taskAdmin.tabledata.prititionJson) || []
+    // this.ruleForm.tableDatas =
+    //   JSON.parse(this.$store.state.taskAdmin.tabledata.prititionJson) || []
   },
   mounted() {},
   methods: {
@@ -879,7 +887,10 @@ export default {
                 if (res.code === 200) {
                   let projectId = this.$store.state.taskAdmin.tabledata
                     .projectId
-                  this.$emit('getTree', projectId)
+                  let id = { id: params.id }
+                  console.log('id--->', id)
+                  console.log(params.id)
+                  this.$emit('getTree', projectId, id)
                   this.$message({
                     message: '保存成功',
                     type: 'success',
@@ -979,6 +990,7 @@ export default {
     LocKing() {
       this.locking = 0
       this.Lock = true
+      this.Subtable = true
       this.$message({
         message: '表已锁定',
         type: 'success',
@@ -987,6 +999,12 @@ export default {
     Unlocking() {
       this.locking = 1
       this.Lock = false
+      if (this.ruleForm.resource === 'true') {
+        this.Subtable = true
+      } else {
+        this.Subtable = false
+      }
+      // this.Subtable = false
       this.$message({
         message: '表已解锁',
         type: 'success',
