@@ -1969,7 +1969,6 @@ export default {
         })
       }
     },
-<<<<<<< HEAD
     getItem(del) {
       this.loading = true
       this.listQuery.userId = JSON.parse(localStorage.getItem('userId'))
@@ -2015,9 +2014,6 @@ export default {
         })
       })
     },
-=======
-
->>>>>>> cb775f7927a8b05c4cc617bddd8b9470d8cd12a6
     /**
      * @description: 刷新列表
      */
