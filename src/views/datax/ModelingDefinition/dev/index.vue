@@ -201,6 +201,7 @@ export default {
   },
   data() {
     return {
+      aaa: '',
       tabledata: '',
       contextMenu1Visible: false,
       contextMenu1Target: '',
@@ -467,15 +468,13 @@ export default {
   },
   created() {
     this.getItem()
-    this.formCopy = JSON.parse(JSON.stringify(this.form))
-    // if(localStorage.getItem('project_id')|| sessionStorage.getItem('strParam')){
-    //   let id =JSON.parse(localStorage.getItem('project_id')).split('/')[0]||sessionStorage.getItem('strParam').split('/')[0]
-    //   this.dropdownText=JSON.parse(localStorage.getItem('project_id')).split('/')[1]||sessionStorage.getItem('strParam').split('/')[1]
-    // }
+    // this.formCopy = JSON.parse(JSON.stringify(this.form))
+    // console.log('this.formCopy', this.formCopy)
     const str = sessionStorage.getItem('strParam')
     if (sessionStorage.getItem('level') === '2') {
       if (str) {
         this.dropdownText = str.split('/')[1]
+        this.getlist(str.split('/')[0])
         this.$store.commit('changeCurrent', str)
       }
       this.showCurrent = false
@@ -488,8 +487,8 @@ export default {
           sessionStorage.getItem('strParam').split('/')[1] || 123
         this.getlist(project_id)
       } else {
-        let project_id = this.options[0].id + ''
-        this.dropdownText = this.options[0].name
+        let project_id = '45'
+        this.dropdownText = '123'
         this.getlist(project_id)
       }
     }, 1000)
@@ -504,6 +503,7 @@ export default {
     handleCommand(data) {
       this.dropdownText = data.split('/')[1]
       let project_id = data.split('/')[0]
+      sessionStorage.setItem('strParam', data)
       this.getlist(project_id)
     },
     //获取下拉选择列表
@@ -665,20 +665,25 @@ export default {
     // 删除工作流
     delWorkFlow(data) {
       console.log('删除', this.nowObject)
-      modeling.DeleteTable({ id: this.nowObject.id }).then((res) => {
-        if (res.code === 200) {
-          this.getlist(this.nowObject.projectId)
-          for (let i = 0; i < this.editableTabs.length; i++) {
-            if (this.editableTabs[i].name == this.nowObject.name) {
-              this.editableTabs.splice(i, 1)
+      modeling
+        .DeleteTable({ id: this.nowObject.id })
+        .then((res) => {
+          if (res.code === 200) {
+            this.getlist(this.nowObject.projectId)
+            for (let i = 0; i < this.editableTabs.length; i++) {
+              if (this.editableTabs[i].name == this.nowObject.name) {
+                this.editableTabs.splice(i, 1)
+              }
             }
+            let lastdata = this.editableTabs[this.editableTabs.length - 1]
+            console.log('lastdata--->', lastdata)
+            this.handleWorkFlow(lastdata)
+            this.$message.success('删除成功')
           }
-          let lastdata = this.editableTabs[this.editableTabs.length - 1]
-          console.log('lastdata--->', lastdata)
-          this.handleWorkFlow(lastdata)
-          this.$message.success('删除成功')
-        }
-      })
+        })
+        .catch((err) => {
+          console.log(err)
+        })
       this.contextMenuVisible = false
     },
     // 取消对话框
@@ -711,8 +716,8 @@ export default {
     // 点击左侧工作流列表
     handleWorkFlow(data) {
       console.log('任务数据', data)
-      this.$bus.$emit('SingleData', data)
       this.$store.commit('TABLEDATA', data)
+      this.$store.commit('Singledata', data)
       this.nowObject = data
       if (data.jobType === 'wenjianjia') {
         return

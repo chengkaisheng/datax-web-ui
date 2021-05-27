@@ -1179,9 +1179,55 @@ export default {
         }
       }
     },
+    //获取下拉框数据
+    getItem(del) {
+      this.loading = true
+      this.listQuery.userId = JSON.parse(localStorage.getItem('userId'))
+      jobProjectApi.list(this.listQuery).then((response) => {
+        this.loading = false
+        const { records } = response
+        const { total } = response
+        this.total = total
+        this.options = records
+        this.options = objList(this.options, 'name')
+        this.selectValue = this.options[0].id
+        this.fetchJobs(this.selectValue)
+        const listQuery = {
+          current: 1,
+          size: 10000,
+          jobGroup: 0,
+          // projectIds: '',
+          triggerStatus: -1,
+          name: '',
+          glueType: '',
+        }
+        listQuery.projectIds = this.projectIds
+          ? this.projectIds
+          : this.options[0].id
+        job.getList(listQuery).then((response) => {
+          const { content } = response
+          this.List = content.data
+          const firstElement = content?.data[0] || {}
+          const a = {}
+          a.title = firstElement.name
+          a.name = firstElement.name
+          a.content = firstElement
+          if (!this.firstTime) {
+            if (!del) {
+              this.$store.state.taskAdmin.taskDetailList.push(a)
+              this.$store.commit('ADD_TASKDETAIL', a)
+              this.jobDetailIdx = a.content.id + ''
+            }
+          } else {
+            this.firstTime = false
+          }
+          this.jobDetailLoading = false
+        })
+      })
+    },
     // 获取tree数据结构
     getDataTree(data) {
-      this.loading = true
+      this.loading = false
       if (this.$store.state.project.currentItem) {
         const projectId = this.$store.state.project.currentItem.split('/')[0]
         job
@@ -1923,6 +1969,7 @@ export default {
         })
       }
     },
+<<<<<<< HEAD
     getItem(del) {
       this.loading = true
       this.listQuery.userId = JSON.parse(localStorage.getItem('userId'))
@@ -1968,6 +2015,9 @@ export default {
         })
       })
     },
+=======
+
+>>>>>>> cb775f7927a8b05c4cc617bddd8b9470d8cd12a6
     /**
      * @description: 刷新列表
      */
@@ -2060,6 +2110,7 @@ export default {
     // 切换项目
     handleCommand(command) {
       console.log('command', command)
+      sessionStorage.setItem('strParam', command)
       const commandId = command.split('/')[0]
       const commandName = command.split('/')[1]
       this.$store.commit('changeCurrent', command)
