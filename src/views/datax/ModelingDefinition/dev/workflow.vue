@@ -25,6 +25,7 @@
           <el-upload
             class="upload-demo"
             action="https://jsonplaceholder.typicode.com/posts/"
+            :http-request="update"
             :on-preview="handlePreview"
             :on-remove="handleRemove"
             :before-remove="beforeRemove"
@@ -32,6 +33,7 @@
             :limit="3"
             :on-exceed="handleExceed"
             :file-list="fileList"
+            :disabled="Lock"
           >
             <i class="el-icon-upload" />
           </el-upload>
@@ -115,13 +117,14 @@
     >
       <div style="padding-left: 30px; padding-right: 30px">
         <div style="margin-bottom: 30px; font-size: 14px">
-          <span style="margin-right: 20px">表明中包含的主题域层级:</span>
+          <span style="margin-right: 20px">表名中包含的主题域层级:</span>
           <span>
-            <el-radio v-model="radio" label="1">二级主题域</el-radio>
-            <el-radio v-model="radio" label="2">三级主题域</el-radio>
-            <el-radio v-model="radio" label="3">四级主题域</el-radio>
+            <el-radio v-model="radio" label="2">二级主题域</el-radio>
+            <el-radio v-model="radio" label="3">三级主题域</el-radio>
+            <el-radio v-model="radio" label="4">四级主题域</el-radio>
           </span>
         </div>
+
         <el-input
           style="margin-bottom: 20px"
           show-word-limit="true"
@@ -329,32 +332,28 @@
               style="text-align: center"
             >
             </el-table-column>
-            <!-- <el-table-column
+            <el-table-column
               label="操作"
               width="120%"
               style="text-align: center"
             >
               <template slot-scope="scope">
                 <el-button
-                  @click="handleClick(scope.row, index)"
-                  type="text"
-                  size="small"
-                  >查看</el-button
-                >
-                <el-button
-                  @click.native.prevent="DeleteData(scope.row, scope.$index)"
+                  :disabled="Donotadd"
+                  @click.native.prevent="DeleteDatas(scope.row, scope.$index)"
                   type="text"
                   size="small"
                   >删除</el-button
                 >
                 <el-button
-                  @click.native.prevent="Editdata(scope.row, scope.$index)"
+                  :disabled="Donotadd"
+                  @click.native.prevent="Editdatas(scope.row, scope.$index)"
                   type="text"
                   size="small"
                   >编辑</el-button
                 >
               </template>
-            </el-table-column> -->
+            </el-table-column>
             <div slot="empty">
               <p style="margin-top: 20px">
                 <img src="@/icons/Nodata.jpg" />
@@ -363,27 +362,30 @@
           </el-table>
         </template>
         <div class="foot" v-if="show" style="margin-top: 30px">
-          <el-button
-            @click="addfield('top')"
-            icon="el-icon-plus"
-            :disabled="Donotadd"
-            >添加字段</el-button
-          >
-
-          <el-upload
-            class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :before-remove="beforeRemove"
-            multiple
-            :disabled="Donotadd"
-            :limit="3"
-            :on-exceed="handleExceed"
-            :file-list="fileList"
-          >
-            <el-button :disabled="Donotadd">从需求导入</el-button>
-          </el-upload>
+          <div>
+            <el-button
+              @click="addfield('top')"
+              icon="el-icon-plus"
+              :disabled="Donotadd"
+              >添加字段</el-button
+            >
+          </div>
+          <div>
+            <el-upload
+              class="upload-demo"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :before-remove="beforeRemove"
+              multiple
+              :disabled="Donotadd"
+              :limit="3"
+              :on-exceed="handleExceed"
+              :file-list="fileList"
+            >
+              <el-button :disabled="Donotadd">从需求导入</el-button>
+            </el-upload>
+          </div>
         </div>
         <el-dialog title="添加字段" :visible.sync="dialogVisibles" width="35%">
           <div class="table_top">
@@ -487,12 +489,12 @@
               style="text-align: center"
             >
               <template slot-scope="scope">
-                <el-button
+                <!-- <el-button
                   @click="handleClick(scope.row, index)"
                   type="text"
                   size="small"
                   >查看</el-button
-                >
+                > -->
                 <el-button
                   @click.native.prevent="DeleteData(scope.row, scope.$index)"
                   type="text"
@@ -611,7 +613,7 @@
           <el-button type="primary" @click="Addfields">确 定</el-button>
         </span>
       </el-dialog>
-      <el-dialog
+      <!-- <el-dialog
         title="字段信息查看"
         :visible.sync="DialogVisible"
         @close="closeDialog"
@@ -627,7 +629,7 @@
           >
           </el-table-column>
         </el-table>
-      </el-dialog>
+      </el-dialog> -->
     </div>
   </div>
 </template>
@@ -730,8 +732,9 @@ export default {
         Modelname2: '',
         Modelname3: '',
         theme: [
-          { id: 1, value: '主题域1', name: '主题域11' },
-          { id: 2, value: '主题域2', name: '主题域22' },
+          { id: 1, value: '二级主题域', name: '二级主题域' },
+          { id: 2, value: '三级主题域', name: '三级主题域' },
+          { id: 3, value: '四级主题域', name: '四级主题域' },
         ],
         TableType: [
           { id: 1, value: 'hive', name: 'hive' },
@@ -850,9 +853,22 @@ export default {
       .prititionJson
       ? JSON.parse(this.$store.state.taskAdmin.tabledata.prititionJson)
       : []
+    console.log('tableDatas===>', this.ruleForm.tableDatas)
   },
   mounted() {},
   methods: {
+    handlePreview(file) {
+      // console.log('file---->', file)
+    },
+    handleRemove(file) {
+      // console.log('file----->', file)
+    },
+    update(val) {
+      // console.log('val----', val.file)
+    },
+    handleExceed(val) {
+      console.log(val)
+    },
     submitForm(formName, data) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -1010,13 +1026,32 @@ export default {
       })
     },
     //查看表
-    handleClick(data) {
-      this.DialogVisible = true
-      this.Table.push(data)
-      console.log('查看表', data)
-    },
+    // handleClick(data) {
+    //   this.DialogVisible = true
+    //   this.Table.push(data)
+    //   console.log('查看表', data)
+    // },
     DeleteData(data, index) {
       this.ruleForm.tableData.splice(index, 1)
+    },
+    DeleteDatas(data, index) {
+      this.ruleForm.tableDatas.splice(index, 1)
+    },
+    Editdatas(data, index) {
+      console.log('分表table', data, index)
+      this.names = data.name
+      this.comments = data.comment
+      this.BusinessCalibers = data.BusinessCaliber
+      this.types = data.type
+      this.isKeys = data.isKey
+      this.BindingIndexs = data.BindingIndex
+      this.notNulls = data.notNull
+      this.dialogVisibles = true
+      this.btn = 'edit'
+      this.index = index
+      console.log(this.notNull)
+      console.log('编辑数组', this.ruleForm.tableData)
+      console.log('编辑表', data, index)
     },
     //编辑表
     Editdata(data, index) {
@@ -1055,24 +1090,49 @@ export default {
       this.names = ''
       this.comments = ''
       this.BusinessCalibers = ''
-      this.type = ''
+      this.types = ''
       this.isKeys = ''
       this.BindingIndexs = ''
       this.notNulls = ''
     },
     //是否分表表格
     addfields() {
-      let data = {
-        name: this.names,
-        comment: this.comments,
-        BusinessCaliber: this.BusinessCalibers,
-        type: this.types,
-        isKey: this.isKeys,
-        BindingIndex: this.BindingIndexs,
-        notNull: this.notNulls,
+      console.log('分表table', this.index)
+      if (this.btn === '') {
+        let data = {
+          name: this.names,
+          comment: this.comments,
+          BusinessCaliber: this.BusinessCalibers,
+          type: this.types,
+          isKey: this.isKeys,
+          BindingIndex: this.BindingIndexs,
+          notNull: this.notNulls,
+        }
+        this.ruleForm.tableDatas.push(data)
+        this.dialogVisibles = false
+        this.names = ''
+        this.comments = ''
+        this.BusinessCalibers = ''
+        this.types = ''
+        this.isKeys = ''
+        this.BindingIndexs = ''
+        this.notNulls = ''
       }
-      this.ruleForm.tableDatas.push(data)
-      this.dialogVisibles = false
+      if (this.btn === 'edit') {
+        let data = {
+          name: this.names,
+          comment: this.comments,
+          BusinessCaliber: this.BusinessCalibers,
+          type: this.types,
+          isKey: this.isKeys,
+          BindingIndex: this.BindingIndexs,
+          notNull: this.notNulls,
+        }
+        console.log('edit', this.index, data)
+        this.ruleForm.tableDatas.splice(this.index, 1, data)
+        this.dialogVisibles = false
+        this.btn = ''
+      }
     },
     //添加字段
     Addfield() {

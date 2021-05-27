@@ -529,11 +529,27 @@ export default {
         .then((res) => {
           this.workflowList = res.content
           this.loading = false
-          this.lastdata =
-            res.content[0].children[res.content[0].children.length - 1]
+          // this.lastdata =
+          //   res.content[0].children[res.content[0].children.length - 1]
           if (newtask && newtask.name === 'newtask') {
-            this.handleWorkFlow(this.lastdata)
-            console.log('qwe----->')
+            let newarr = []
+            for (var i in res.content[0].children) {
+              if (res.content[0].children[i].children) {
+                newarr.push(res.content[0].children[i].children)
+              } else {
+                newarr.push(res.content[0].children)
+              }
+              if (res.content[0].children[i].children) {
+                for (var j in res.content[0].children[i].children) {
+                  newarr.push(res.content[0].children[i].children[j])
+                }
+              }
+            }
+            this.lastdata = newarr.flat(Infinity).filter((itme) => {
+              return itme.id == newtask.id
+            })
+            console.log('新建工作流-=-=-=newtask', this.lastdata[0])
+            this.handleWorkFlow(this.lastdata[0])
           }
         })
         .catch((err) => {
@@ -604,7 +620,7 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             this.workflowName = ''
-            let newtask = { name: 'newtask' }
+            let newtask = { name: 'newtask', id: res.content }
             this.getlist(params.projectId, newtask)
           }
           console.log('新建', res)
@@ -669,6 +685,7 @@ export default {
         .DeleteTable({ id: this.nowObject.id })
         .then((res) => {
           if (res.code === 200) {
+            console.log('delete')
             this.getlist(this.nowObject.projectId)
             for (let i = 0; i < this.editableTabs.length; i++) {
               if (this.editableTabs[i].name == this.nowObject.name) {
@@ -682,7 +699,8 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err)
+          this.$message('删除失败' + err)
+          console.log('删除失败', err)
         })
       this.contextMenuVisible = false
     },
@@ -1461,3 +1479,4 @@ export default {
   // }
 }
 </style>
+

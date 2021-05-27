@@ -106,9 +106,9 @@ export default {
   computed: {
     DataMerging() {
       if (!this.code) {
-        return this.notes + (this.code || '')
+        return this.notes + (this.code || '') + `\n`
       } else if (this.code) {
-        return this.code
+        return this.code + `\n`
       }
       // if (this.code !== '') {
       //   return this.$store.state.taskAdmin.setcode

@@ -312,11 +312,14 @@ rkJggg=="
         @tab-click="JobTabClick"
       >
         <el-tab-pane
+          style="user-select: none"
           v-if="!$store.state.taskAdmin.taskDetailList.length"
           label="欢迎"
           name="欢迎"
         >
-          <div class="title_h3">一站式数据开发解决方案</div>
+          <div style="user-select: none" class="title_h3">
+            一站式数据开发解决方案
+          </div>
           <svg-icon
             style="width: 100%; height: 90%; margin-top: 25px"
             icon-class="fengdie"
@@ -329,7 +332,7 @@ rkJggg=="
           :label="item.title"
           :name="item.content.id + ''"
         >
-          <span slot="label">
+          <span slot="label" style="user-select: none">
             <el-tooltip class="item" effect="dark" placement="top-end">
               <span>
                 <svg-icon
@@ -1276,7 +1279,7 @@ export default {
       console.log(this.selectedIndex)
     },
     JobTabClick(ele) {
-      console.log('ele', ele)
+      console.log('ele', ele.label)
       this.jobType = ele.name
       console.log(this.jobType, 'tthis ')
 
@@ -1292,40 +1295,44 @@ export default {
       }
       this.$store.commit('SETCODE', '')
       this.$nextTick(() => {
-        job
-          .getTaskInfo(ele.name)
-          .then((res) => {
-            console.log(res, 'content')
-            if (res.code === 200) {
-              if (res.content) {
-                console.log('content----->>>>', res.content.jobParam)
-                this.$store.commit('SET_JOB_INFO', res.content)
-                this.$store.commit('SETCODE', res.content.jobParam)
-                this.detailData = res.content
-                this.getJobDetail(res.content)
+        if (ele.label === '欢迎') {
+          console.log('欢迎不需要')
+        } else {
+          job
+            .getTaskInfo(ele.name)
+            .then((res) => {
+              console.log(res, 'content')
+              if (res.code === 200) {
+                if (res.content) {
+                  console.log('content----->>>>', res.content.jobParam)
+                  this.$store.commit('SET_JOB_INFO', res.content)
+                  this.$store.commit('SETCODE', res.content.jobParam)
+                  this.detailData = res.content
+                  this.getJobDetail(res.content)
+                } else {
+                  this.createNewJob(res.content.jobType)
+                }
               } else {
                 this.createNewJob(res.content.jobType)
               }
-            } else {
-              this.createNewJob(res.content.jobType)
-            }
-          })
-          .catch((err) => {
-            console.log(err)
-          })
-        job
-          .ParametersList({
-            jobId: ele.name,
-          })
-          .then((res) => {
-            console.log('ParametersList===---', res)
-            this.$store.commit('ParametersList', res.content)
-            this.parameters = res.content
-          })
-          .catch((err) => {
-            console.log(err)
-          })
-        this.$store.commit('changeJobId', ele.name)
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+          job
+            .ParametersList({
+              jobId: ele.name,
+            })
+            .then((res) => {
+              console.log('ParametersList===---', res)
+              this.$store.commit('ParametersList', res.content)
+              this.parameters = res.content
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+          this.$store.commit('changeJobId', ele.name)
+        }
       })
       this.$forceUpdate()
     },
