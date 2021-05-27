@@ -13,13 +13,17 @@ export function handlerExecute(row) {
     param.executorParam = row.executorParam
 
     job.triggerJob(param).then(response => {
+      console.log(response)
       this.$store.commit('SET_LOG_WATCH', !this.$store.state.taskAdmin.logWatch)
-      this.$notify({
-        title: '成功',
-        message: '执行成功',
-        type: 'success',
-        duration: 2000
-      })
+      // this.$notify({
+      //   title: '成功',
+      //   message: 'response.msg',
+      //   type: 'success',
+      //   duration: 2000
+      // })
+      // this.$message.success('执行' + response.msg)
+    }).catch((err) => {
+      this.$message.error('执行' + err.msg)
     })
   })
 }
