@@ -34,6 +34,7 @@
           node-key="id"
           :expand-on-click-node="false"
           :filter-node-method="filterNode"
+          @contextmenu="showContextMenu"
           @node-click="handleWorkFlow"
         >
           <span
@@ -394,6 +395,16 @@ export default {
     window.removeEventListener('scroll', this.getPos)
   },
   methods: {
+    // 右击弹窗
+    showContextMenu(e) {
+      console.log(e)
+      e.preventDefault()
+      this.contextMenuVisible = true
+      this.contextMenuOffset = {
+        left: e.pageX,
+        top: e.pageY
+      }
+    },
     // 快速检索关键字
     filterNode(value, data) {
       console.log(value, data)

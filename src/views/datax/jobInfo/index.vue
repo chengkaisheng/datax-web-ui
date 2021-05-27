@@ -46,7 +46,6 @@
               :data="treeList"
               highlight-current
               :filter-node-method="filterNode"
-              accordion
               :props="defaultProps"
               default-expand-all
               :allow-drop="allowDrop"
@@ -123,13 +122,22 @@ rkJggg=="
               </span>
             </el-tree>
             <vue-context-menu
+              :offset="contextMenuOffset"
               class="right-menu"
               :target="contextMenuTarget"
               :show="contextMenuVisible"
               @update:show="(show) => (contextMenuVisible = show)"
             >
-              <a href="javascript:" @click="showAllName">新建文件夹</a>
-              <a id="newFile" href="javascript:"
+              <a
+                v-show="selectRow.jobType === 'wenjianjia'"
+                href="javascript:"
+                @click="showAllName"
+                >新建文件夹</a
+              >
+              <a
+                v-show="selectRow.jobType === 'wenjianjia'"
+                id="newFile"
+                href="javascript:"
                 >新建任务<i class="el-icon-arrow-right" />
                 <vue-context-menu
                   class="right-menu1"
@@ -737,6 +745,7 @@ rkJggg=="
 </template>
 
 <script>
+/* eslint-disable */
 import Workflow from './components/workflow.vue'
 import SimpleJob from './components/simpleJob.vue'
 import Hive from './components/Hive.vue'
@@ -755,7 +764,7 @@ import _ from 'lodash'
 import { component as VueContextMenu } from '@xunlei/vue-context-menu'
 import { getJobList as jdbcDsList } from '@/api/datax-jdbcDatasource'
 import { objList } from '@/utils/sortArr'
-import { mapState } from 'vuex'
+// import { mapState } from 'vuex'
 var time
 export default {
   name: '',
@@ -776,6 +785,11 @@ export default {
   },
   data() {
     return {
+      contextMenuVisible: false,
+      contextMenuOffset: {
+        left: 0,
+        top: 0,
+      },
       isdisabled: true,
       showHive: false,
       chineseName: '',
@@ -999,6 +1013,7 @@ export default {
   },
   mounted() {
     const myChartContainer = document.getElementById('main_span')
+    console.log(myChartContainer)
     // 右击显示菜单 区域位置
     this.contextMenuTarget = myChartContainer
     this.contextMenu1Target = myChartContainer
@@ -1014,7 +1029,7 @@ export default {
         console.log(_this.Ycoords, 'this')
       }
       console.log(menu[1].style.top)
-      return false
+      return false // 首先取消右键的系统默认弹窗
     }
     // myChartContainer.onmousedown = function(e) {
 
@@ -1123,6 +1138,15 @@ export default {
     this.handleNodeClick(this.$store.state.taskAdmin.SingleData)
   },
   methods: {
+    //
+    // showContextMenu(e) {
+    //   e.preventDefault()
+    //   this.contextMenuVisible = true
+    //   this.contextMenuOffset = {
+    //     left: e.pageX,
+    //     top: e.pageY
+    //   }
+    // },
     /**
      * @description: tab关闭逻辑
      */
@@ -1227,6 +1251,7 @@ export default {
           })
           .then((res) => {
             if (res.code === 200) {
+              // console.log(res.content);
               this.treeList = res.content
               this.loading = false
               if (data) {
@@ -1599,6 +1624,21 @@ export default {
       this.englishName = ''
       this.task = ''
     },
+    // tree鼠标右键点击
+    rightClick(event, item, node, self) {
+      // console.log(event, item, node, self);
+      // 显示
+      // if (item.jobType === 'wenjianjia') {
+      //   console.log('wenjianjia');
+      //   const myChartContainer = document.getElementById('main_span')
+      //   console.log(myChartContainer)
+      //   // 右击显示菜单 区域位置
+      //   this.$nextTick(()=>{
+      //     this.contextMenuTarget = myChartContainer
+      //   this.contextMenu1Target = myChartContainer
+      //   })
+      // }
+    },
     // 拖拽tree
     handleDragStart(node, ev) {
       this.dropId = node.data.id
@@ -1619,7 +1659,7 @@ export default {
       console.log('拖拽成功完成时触发的事件')
     },
     handleDrop(draggingNode, dropNode, dropType, ev) {
-      console.log('qqq')
+      console.log(dropNode)
       if (dropNode.data.type === 1) {
         job
           .dragReName({
@@ -1845,6 +1885,7 @@ export default {
         }
       } else {
         this.currentJobName = ''
+        // this.contextMenuVisible = true
       }
       // console.log(this.$store.state.taskAdmin.setcode)
       console.log(this.currentJobName, '当前任务的名称')
@@ -1946,7 +1987,51 @@ export default {
         })
       }
     },
-
+    getItem(del) {
+      this.loading = true
+      this.listQuery.userId = JSON.parse(localStorage.getItem('userId'))
+      jobProjectApi.list(this.listQuery).then((response) => {
+        this.loading = false
+        const { records } = response
+        const { total } = response
+        this.total = total
+        this.options = records
+        this.options = objList(this.options, 'name')
+        this.selectValue = this.options[0].id
+        this.fetchJobs(this.selectValue)
+        const listQuery = {
+          current: 1,
+          size: 10000,
+          jobGroup: 0,
+          // projectIds: '',
+          triggerStatus: -1,
+          name: '',
+          glueType: '',
+        }
+        listQuery.projectIds = this.projectIds
+          ? this.projectIds
+          : this.options[0].id
+        job.getList(listQuery).then((response) => {
+          const { content } = response
+          this.List = content.data
+          const firstElement = content?.data[0] || {}
+          const a = {}
+          a.title = firstElement.name
+          a.name = firstElement.name
+          a.content = firstElement
+          if (!this.firstTime) {
+            if (!del) {
+              this.$store.state.taskAdmin.taskDetailList.push(a)
+              this.$store.commit('ADD_TASKDETAIL', a)
+              this.jobDetailIdx = a.content.id + ''
+            }
+          } else {
+            this.firstTime = false
+          }
+          this.jobDetailLoading = false
+        })
+      })
+    },
     /**
      * @description: 刷新列表
      */
@@ -2250,8 +2335,9 @@ export default {
               .right-menu1 {
                 border: 1px solid #eee;
                 box-shadow: 0 0.5em 1em 0 rgba(0, 0, 0, 0.1);
-                height: 516px;
-                // overflow-y: auto;
+                height: 216px;
+                width: 355px;
+                overflow-y: auto;
                 border-radius: 1px;
                 display: block;
                 margin-left: 116px;
@@ -2272,7 +2358,7 @@ export default {
                 box-shadow: 5px 5px 10px gray;
                 a {
                   padding: 2px 15px;
-                  width: 176px;
+                  width: 170px;
                   height: 28px;
                   line-height: 28px;
                   text-align: left;
@@ -2286,7 +2372,7 @@ export default {
                 }
                 #level3 {
                   padding: 2px 15px;
-                  width: 176px;
+                  width: 170px;
                   height: 28px;
                   line-height: 28px;
                   text-align: left;
@@ -2303,7 +2389,7 @@ export default {
                     display: block;
                     margin-left: 116px;
                     margin-top: 28px;
-                    left: 60px;
+                    left: 50px;
                     top: -28px;
                     font-family: Microsoft Yahei, Avenir, Helvetica, Arial,
                       sans-serif;
@@ -2321,7 +2407,7 @@ export default {
                     box-shadow: 5px 5px 10px gray;
                     a {
                       padding: 2px 15px;
-                      width: 176px;
+                      width: 150px;
                       height: 28px;
                       line-height: 28px;
                       text-align: left;

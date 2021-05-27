@@ -2,6 +2,7 @@
   <div>
     <el-form
       ref="dataForm"
+      :rules="rules"
       :model="temp"
       label-position="top"
       label-width="120px"
@@ -378,7 +379,12 @@ export default {
         { value: 'yyyyMMdd', label: 'yyyyMMdd' },
         { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' }
       ],
-      showStrategy: false
+      showStrategy: false,
+      rules: {
+        // name: [{ required: true, message: '任务名称不能为空', trigger: 'blur' }],
+        jobDesc: [{ required: true, message: '任务描述不能为空', trigger: 'blur' }]
+
+      }
     }
   },
 
@@ -468,6 +474,7 @@ export default {
       this.temp.projectGroupId = this.$store.state.taskAdmin.TreeId
       console.log(this.temp, 'temp')
       job.createJob(this.temp).then(response => {
+        console.log(response)
         this.$notify({
           title: 'Success',
           message: 'Created Successfully',

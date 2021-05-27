@@ -14,7 +14,7 @@
         <h1 class="tab-title">{{ tabTitle(1) }}</h1>
       </el-col>
       <el-col>
-        <el-form ref="dataForm">
+        <el-form ref="dataForm" :rules="rules">
           <el-row :gutter="20">
             <el-card shadow="never" :bordered="false">
               <el-col :span="12">
@@ -696,7 +696,7 @@ export default {
       tableForm: {
         lcolumns: [],
         rcolumns: [],
-        rules: [],
+        // rules: [],
         lcheckAll: false,
         rcheckAll: false,
         isIndeterminate: true
@@ -705,6 +705,7 @@ export default {
       fromColumnsList: [],
       /** 目标表列 */
       toColumnsList: []
+
     }
   },
   computed: {
