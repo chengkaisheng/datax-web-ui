@@ -23,7 +23,7 @@ export function handlerExecute(row) {
       // })
       // this.$message.success('执行' + response.msg)
     }).catch((err) => {
-      this.$message.error('执行' + err.msg)
+      this.$message.err('执行' + err.msg)
     })
   })
 }

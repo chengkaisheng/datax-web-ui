@@ -400,7 +400,7 @@ rkJggg=="
 </template>
 
 <script>
-import * as dsQueryApi from '@/api/metadata-query'
+// import * as dsQueryApi from '@/api/metadata-query'
 import * as infoApi from '@/api/datax-job-info'
 // logApi
 import { getList as logGetList, viewJobLog } from '@/api/datax-job-log'
@@ -419,20 +419,20 @@ import writer from '@/views/datax/json-build/writer'
 import qualityReader from '../../jsonQuality/reader'
 import qualityWriter from '../../jsonQuality/writer'
 import mapper from '@/views/datax/json-build/mapper'
-import { isJSON } from '@/utils/validate'
+// import { isJSON } from '@/utils/validate'
 import jobLog from './jobLog'
 import jobResult from './jobResult'
-import { getTableSchema } from '@/api/metadata-query'
+// import { getTableSchema } from '@/api/metadata-query'
 
 import {
   handlerExecute,
-  handlerViewLog,
+  // handlerViewLog,
   handlerDelete,
   handlerStart,
   handlerStop,
   loadById,
-  nextTriggerTime,
-  handlerUpdate
+  nextTriggerTime
+  // handlerUpdate
 } from '../method'
 import { translaterMaster } from '@/utils/dictionary'
 import Description from '@/components/Description/index'
@@ -959,8 +959,12 @@ export default {
     this.getJobProject()
     this.getDataSourceList()
     this.currentTask = this.jobInfo
+    console.log(this.jobInfo)
     this.myId = this.guid
     this.temp = this.$store.state.taskAdmin.jobDataDetail
+    if (this.currentTask.name === null) {
+      this.currentTask.name = this.$store.state.taskAdmin.GroupName
+    }
   },
   mounted() {
     this.initGoJs()
@@ -1022,7 +1026,7 @@ export default {
       this.scheduleForm.executor = this.$store.state.taskAdmin.jobDataDetail.jobGroup // 执行器
       this.scheduleShow = true
     },
-
+    // 选择子任务
     selectChange(val) {
       console.log(val, 'val')
       this.scheduleForm.subTask = val
@@ -1550,8 +1554,8 @@ export default {
         }
       })
     },
-    resetScheduleForm(formName) {
-      this.$refs[formName].resetFields()
+    resetScheduleForm(scheduleForm) {
+      this.$refs[scheduleForm].resetFields()
       this.scheduleForm.cron = ''
     },
     closeScheduleForm(formName) {
