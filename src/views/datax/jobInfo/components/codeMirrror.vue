@@ -87,7 +87,8 @@ export default {
 -- 备注信息:
 -- 脚本版本: 修改人\t修改日期\t修改内容
 -- v1
--- ===================================================================================================`,
+-- =================================================================================================== 
+    `,
       code: '',
       sqlLoading: false,
       tips: {},
@@ -106,16 +107,16 @@ export default {
   computed: {
     DataMerging() {
       if (!this.code) {
-        return this.notes + (this.code || '')
+        return this.notes + (this.code || '') + `\n`
       } else if (this.code) {
-        return this.code
+        return this.code + `\n`
       }
       // if (this.code !== '') {
       //   return this.$store.state.taskAdmin.setcode
       // } else {
       //   return this.notes
       // }
-    },
+    }
   },
   watch: {
     // desbel(val){
@@ -433,11 +434,11 @@ export default {
         // _this.code = editor.getValue();
       })
       return editor
-    },
+    }
     /**
      * @description: 回显sql
      */
-  },
+  }
 }
 </script>
 

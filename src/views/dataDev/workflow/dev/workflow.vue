@@ -152,8 +152,8 @@ rkJggg=="
               <el-button v-else slot="append" icon="el-icon-open" title="关闭图形配置" @click="showCronBox = false" />
             </el-input>
           </el-form-item>
-          <div>IMPORT配置参数：</div>
-          <el-form-item label="" prop="subTask"  >
+          <div>IMPALA / HIVE配置参数：</div>
+          <el-form-item label="" prop="subTask">
             <div style="padding-left: 26px">
               <div
                 v-for="(itme, index) in parameters"
@@ -187,12 +187,12 @@ rkJggg=="
                 </span>
               </div>
               <div v-show="isshow" style="margin-top: 20px">
-                <el-button
+                <!-- <el-button
                   size="small"
                   style="margin-bottom: 20px"
                   type="success"
                   @click="Addhandel"
-                >添加</el-button>
+                >添加</el-button> -->
                 <!-- <el-button
                   size="small"
                   style="margin-bottom: 20px"
@@ -203,17 +203,17 @@ rkJggg=="
                     }
                   "
                 >取消</el-button> -->
-                <el-button
+                <!-- <el-button
                   size="small"
                   style="margin-bottom: 20px"
                   type="success"
                   @click="SaveParameter"
-                >保存</el-button>
+                >保存</el-button> -->
               </div>
             </div>
           </el-form-item>
-          <div>HIVE配置参数：</div>
-            <el-form-item label="" prop="subTask" >
+          <!-- <div>HIVE配置参数：</div> -->
+          <el-form-item label="" prop="subTask">
             <div style="padding-left: 26px">
               <div
                 v-for="(itme, index) in parameters1"
@@ -247,12 +247,12 @@ rkJggg=="
                 </span>
               </div>
               <div v-show="isshow" style="margin-top: 20px">
-                <el-button
+                <!-- <el-button
                   size="small"
                   style="margin-bottom: 20px"
                   type="success"
                   @click="Addhandel1"
-                >添加</el-button>
+                >添加</el-button> -->
                 <!-- <el-button
                   size="small"
                   style="margin-bottom: 20px"
@@ -263,12 +263,12 @@ rkJggg=="
                     }
                   "
                 >取消</el-button> -->
-                <el-button
+                <!-- <el-button
                   size="small"
                   style="margin-bottom: 20px"
                   type="success"
                   @click="SaveParameter1"
-                >保存</el-button>
+                >保存</el-button> -->
               </div>
             </div>
           </el-form-item>
@@ -418,7 +418,7 @@ rkJggg=="
           </span>
         </div>
       </div>
-       <div
+      <div
         v-for="(itme, index) in ReplaceParameters1"
         v-show="isshow"
         :key="index"
@@ -525,7 +525,7 @@ export default {
         //   parameter: '',
         // },
       ],
-       parameters1: [
+      parameters1: [
         // {
         //   id: '',
         //   jobId:this.$store.state.taskAdmin.SingleData.jobId,
@@ -540,7 +540,7 @@ export default {
       ReplaceParameters1: [
         {}
       ],
-      replaceParam: '',// 获取的任务配置参数
+      replaceParam: '', // 获取的任务配置参数
       replaceParam1: ''// 获取的任务配置参数
     }
   },
@@ -637,7 +637,7 @@ export default {
       }
     },
     // hive保存配置参数
-     SaveParameter1() {
+    SaveParameter1() {
       const arr1 = []
       this.parameters1.forEach((itme) => {
         arr1.push(itme.parameter)
@@ -766,11 +766,11 @@ export default {
         })
       }
       for (let i = 0; i < replacedata.length; i++) {
-        this.CODE.code = this.CODE.code
-          .split(replacedata[i].param)
-          .join(replacedata[i].value)
+        // this.CODE.code = this.CODE.code
+        //   .split(replacedata[i].param)
+        //   .join(replacedata[i].value)
       }
-       for (let i = 0; i < this.parameters1.length; i++) {
+      for (let i = 0; i < this.parameters1.length; i++) {
         replacedata1.push({
           param: this.parameters1[i].parameter,
           value:
@@ -779,11 +779,11 @@ export default {
         })
       }
       for (let i = 0; i < replacedata1.length; i++) {
-        this.CODE.code = this.CODE.code
-          .split(replacedata1[i].param)
-          .join(replacedata1[i].value)
+        // this.CODE.code = this.CODE.code
+        //   .split(replacedata1[i].param)
+        //   .join(replacedata1[i].value)
       }
-      this.getinto = true
+      // this.getinto = true
       this.dosomthing()
       this.DialogVisiBle = false
     },
@@ -798,7 +798,8 @@ export default {
       this.doparams = params
       console.log(params)
       console.log(typelist.nodeDataArray)
-      const arr1 = ['IMPORT', 'HIVE']
+      this.GetParameters()
+      // const arr1 = ['IMPORT', 'HIVE']
       // typelist.nodeDataArray.forEach(item => {
       //   if (item.type === 'IMPORT') {
       //     // 如果是这个'IMPORT', 'HIVE' 弹窗
@@ -863,98 +864,103 @@ export default {
       // }
       // 掉函数
       // this.dosomthing(params)
-      const arr = []
-      for (var i = 0;i < typelist.nodeDataArray.length;i++) {
-        // if (i.type === 'IMPORT' || 'HIVE') {
-        arr.push(typelist.nodeDataArray[i].type)
-        // console.log(i.type)
-        // }
-      }
-      if (arr.includes('IMPORT')||arr.includes('HIVE')) {
-        console.log('IMPORT')
-        typelist.nodeDataArray.forEach(item => {
-          if (item.type === 'IMPORT') {
-            job
-            .ParametersList({ jobId:item.id })
-            .then((res) => {
-              console.log('ParametersList', res.content)
-              this.parameters = res.content
-              this.ReplaceParameters = res.content
-            })
-        //     job.getTaskInfo(item.id).then((res) => {
-        //   console.log(res.content)
-        //   this.replaceParam = res.content.replaceParam
-        //   console.log(this.replaceParam)
-        //   if (this.replaceParam !== '') {
-        //     console.log(111111)
-        //     this.DialogVisiBle = true
-        //     return
-        //   }
-        // })
-          }
-          if (item.type === 'HIVE') {
-            job
-            .ParametersList({ jobId:item.id })
-            .then((res) => {
-              console.log('ParametersList', res.content)
-              this.parameters1 = res.content
-              this.ReplaceParameters1 = res.content
-            })
-        //     job.getTaskInfo(item.id).then((res) => {
-        //   console.log(res.content)
-        //   this.replaceParam1 = res.content.replaceParam
-        //   console.log(this.replaceParam)
-        //   if (this.replaceParam1 !== '') {
-        //     console.log(2222222222)
-        //     this.DialogVisiBle = true
-        //     return
-        //   }
-        // })
-          }
-        })
-        // this.DialogVisiBle = true
-      } 
+      // const arr = []
+      // for (var i = 0;i < typelist.nodeDataArray.length;i++) {
+      //   // if (i.type === 'IMPORT' || 'HIVE') {
+      //   arr.push(typelist.nodeDataArray[i].type)
+      //   // console.log(i.type)
+      //   // }
+      // }
+      // if (arr.includes('IMPORT') || arr.includes('HIVE')) {
+      //   console.log('IMPORT')
+      //   typelist.nodeDataArray.forEach(item => {
+      //     if (item.type === 'IMPORT') {
+      //       job
+      //         .ParametersList({ jobId: item.id })
+      //         .then((res) => {
+      //           console.log('ParametersList', res.content)
+      //           this.parameters = res.content
+      //           this.ReplaceParameters = res.content
+      //         })
+      //       //     job.getTaskInfo(item.id).then((res) => {
+      //       //   console.log(res.content)
+      //       //   this.replaceParam = res.content.replaceParam
+      //       //   console.log(this.replaceParam)
+      //       //   if (this.replaceParam !== '') {
+      //       //     console.log(111111)
+      //       //     this.DialogVisiBle = true
+      //       //     return
+      //       //   }
+      //       // })
+      //     }
+      //     if (item.type === 'HIVE') {
+      //       job
+      //         .ParametersList({ jobId: item.id })
+      //         .then((res) => {
+      //           console.log('ParametersList', res.content)
+      //           this.parameters1 = res.content
+      //           this.ReplaceParameters1 = res.content
+      //         })
+      //       //     job.getTaskInfo(item.id).then((res) => {
+      //       //   console.log(res.content)
+      //       //   this.replaceParam1 = res.content.replaceParam
+      //       //   console.log(this.replaceParam)
+      //       //   if (this.replaceParam1 !== '') {
+      //       //     console.log(2222222222)
+      //       //     this.DialogVisiBle = true
+      //       //     return
+      //       //   }
+      //       // })
+      //     }
+      //   })
+      //   // this.DialogVisiBle = true
+      // }
       // if(this.parameters.length!==0||this.parameters1.length!==0){
 
       // }
-      if(this.parameters.length!==0||this.parameters1.length!==0){
-        this.DialogVisiBle = true
-      } else {
-        this.dosomthing(params)
-      }
+      // if (this.parameters.length !== 0 || this.parameters1.length !== 0) {
+      //   this.DialogVisiBle = true
+      // } else {
+      //   this.dosomthing(params)
+      // }
     },
     // 获取参数列表
-     GetParameters() {
-       const arr = []
-        const typelist = JSON.parse(this.myDiagram.model.toJson())
-        for (var i = 0;i < typelist.nodeDataArray.length;i++) {
+    GetParameters() {
+      const arr = []
+      const typelist = JSON.parse(this.myDiagram.model.toJson())
+      for (var i = 0;i < typelist.nodeDataArray.length;i++) {
         arr.push(typelist.nodeDataArray[i].type)
       }
-      if (arr.includes('IMPORT')||arr.includes('HIVE')) {
-        console.log('IMPORT')
+      if (arr.includes('IMPALA') || arr.includes('HIVE')) {
+        console.log('IMPALA')
         typelist.nodeDataArray.forEach(item => {
-          if (item.type === 'IMPORT') {
-            this.importId=item.id
+          if (item.type === 'IMPALA') {
+            this.importId = item.id
             job
-            .ParametersList({ jobId:item.id })
-            .then((res) => {
-              console.log('ParametersList', res.content)
-              this.parameters = res.content
-              this.ReplaceParameters = res.content
-            })
+              .ParametersList({ jobId: item.id })
+              .then((res) => {
+                console.log('ParametersList', res.content)
+                this.parameters = res.content
+                this.ReplaceParameters = res.content
+              })
           }
           if (item.type === 'HIVE') {
-            this.hiveId= item.id
+            this.hiveId = item.id
             job
-            .ParametersList({ jobId:item.id })
-            .then((res) => {
-              console.log('ParametersList', res.content)
-              this.parameters1 = res.content
-              this.ReplaceParameters1 = res.content
-            })
+              .ParametersList({ jobId: item.id })
+              .then((res) => {
+                console.log('ParametersList', res.content)
+                this.parameters1 = res.content
+                this.ReplaceParameters1 = res.content
+              })
           }
         })
-      } 
+        if (this.parameters.length !== 0 || this.parameters1.length !== 0) {
+          this.DialogVisiBle = true
+        } else {
+          this.dosomthing()
+        }
+      }
 
     //   job
     //     .ParametersList({ jobId: this.$store.state.taskAdmin.SingleData.jobId })
@@ -967,6 +973,12 @@ export default {
 
     // 执行函数
     dosomthing() {
+      let params = {}
+      params = this.$store.state.workflow.currentData
+      params.jobJson = this.myDiagram.model.toJson()
+      // params.jobIds = []
+      // const typelist = JSON.parse(params.jobJson)
+      this.doparams = params
       // let params = {}
       // params = this.$store.state.workflow.currentData
       // params.jobJson = this.myDiagram.model.toJson()
@@ -1116,6 +1128,8 @@ export default {
           console.log(err)
         }
       )
+      this.SaveParameter()
+      this.SaveParameter2()
     },
     // 选择任务
     sure() {
@@ -1482,7 +1496,7 @@ export default {
             { text: '导出任务', id: 'c', type: 'EXPORT' },
             { text: 'Hive任务', id: 'd', type: 'HIVE' },
             { text: 'Impala任务', id: 'e', type: 'IMPALA' },
-            { text: 'shell任务', id: 'f', type: 'SHELL' },
+            { text: 'shell任务', id: 'f', type: 'SHELL' }
             // { category: 'Conditional', text: '判断' },
             // { category: 'End', text: '结束' }
             // { category: 'Comment', text: '注释' }

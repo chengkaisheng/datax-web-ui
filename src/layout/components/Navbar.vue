@@ -219,6 +219,7 @@ export default {
       console.log(command)
       const commandName = command.split('/')[1]
       this.dropdownText = commandName
+      sessionStorage.setItem('strParam', command)
       this.$store.commit('changeCurrent', command)
       console.log(this.$store.state.project.currentItem, 'item')
     },
