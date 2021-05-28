@@ -552,6 +552,7 @@ export default {
     document.removeEventListener('mouseup', this.mouseUp)
   },
   methods: {
+    //移动鼠标放大
     mousedown(event) {
       document.addEventListener('mousemove', this.mouseMove)
       this.lastX = event.screenX
@@ -559,12 +560,18 @@ export default {
     },
     mouseMove(event) {
       this.width = event.screenX - 230
+      if (this.width < 200) {
+        this.width = 200
+      }
+      if (this.width > 200) {
+        this.width = event.screenX - 230
+      }
       console.log(event)
     },
     mouseUp() {
       document.removeEventListener('mousemove', this.mouseMove)
     },
-    //移动鼠标放大元素
+    //移动鼠标放大
 
     // 拖拽tree
     handleDragStart(node, ev) {
