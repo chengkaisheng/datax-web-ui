@@ -388,7 +388,7 @@ cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
 rkJggg=="
                   />
                 </svg>
-                {{ item.title }}
+                {{ item.content.name }}
               </span>
               <!-- <span
               style="
@@ -488,7 +488,7 @@ cC9pbWFnZWxjL2ltZ3ZpZXcyXzlfMTYwOTkwMzUxMTcyMzMzODZfNDNfWzBdxZFLGAAAAABJRU5E
 rkJggg=="
               />
             </svg>
-            {{ $store.state.taskAdmin.Group.name }}
+            {{ $store.state.taskAdmin.GroupName }}
           </span>
           <div
             v-if="
@@ -1442,7 +1442,7 @@ export default {
           this.editableTabsValue = this.editableTabs[i].name
         }
       }
-      console.log(this.editableTabsValue, 'changTab')
+      console.log(e, 'changTab')
     },
     getChild(v) {
       console.log(v)
@@ -2379,7 +2379,7 @@ export default {
               .right-menu1 {
                 border: 1px solid #eee;
                 box-shadow: 0 0.5em 1em 0 rgba(0, 0, 0, 0.1);
-                height: 216px;
+                height: 200px;
                 width: 355px;
                 overflow-y: auto;
                 border-radius: 1px;

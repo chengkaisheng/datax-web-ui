@@ -452,7 +452,7 @@ export default {
         console.log(response, 'response')
       })
     },
-
+    // 提交生成任务
     createTask() {
       console.log('33333333333333333333333333333333')
       this.temp.jobJson = JSON.stringify(this.fjson, null, 2)
@@ -473,6 +473,7 @@ export default {
       console.log(this.$store.state.taskAdmin.Group.id, 'this.$store.state.taskAdmin.Group.id')
       this.temp.projectGroupId = this.$store.state.taskAdmin.TreeId
       console.log(this.temp, 'temp')
+      // this.$store.commit('SET_JOB_INFO', this.tepm)
       job.createJob(this.temp).then(response => {
         console.log(response)
         this.$notify({
