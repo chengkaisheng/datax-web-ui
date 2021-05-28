@@ -1,7 +1,16 @@
 <template>
   <div class="app-container">
     <div class="main">
-      <div id="menu_lt" class="lt">
+      <!-- <vue-draggable-resizable
+        style="z-index: 999"
+        :h="650"
+        :w="300"
+        :parent="true"
+        @resizing="handleResize"
+        class-name="dragging1"
+        id="dragging1"
+      > -->
+      <div id="menu_lt" class="lt" :style="{ width: width + 'px' }">
         <!-- <ul>
           <li
             v-for="item in workflowList"
@@ -43,6 +52,7 @@
           draggable
           node-key="id"
           :expand-on-click-node="false"
+          @node-drag-start="handleDragStart"
           @node-click="handleWorkFlow"
           :filter-node-method="filterNode"
         >
@@ -83,6 +93,7 @@
           class="right-menu"
           :target="contextMenuTarget"
           :show="contextMenuVisible"
+          :contextMenuData="contextMenuData"
           @update:show="(show) => (contextMenuVisible = show)"
         >
           <a href="javascript:0" @click="newFolder">新建文件夹</a>
@@ -105,13 +116,32 @@
           <a href="javascript:0" @click="reName">重命名</a>
           <a href="javascript:0" @click="delWorkFlow">删除</a>
         </vue-context-menu>
+        <u id="drag" @mousedown="mousedown">
+          <li>.</li>
+          <li>.</li>
+          <li>.</li>
+        </u>
       </div>
+      <!-- </vue-draggable-resizable> -->
+      <!--拖拽-->
+      <!-- <vue-draggable-resizable
+        style="z-index: 999"
+        :h="height"
+        :w="width"
+        :x="-50"
+        :y="10"
+        @resizing="handleResize"
+        class-name="dragging1"
+      >
+        <div class="drag">拖拽</div>
+      </vue-draggable-resizable> -->
+      <!--拖拽-->
+
       <div class="rg">
         <el-tabs
           v-model="editableTabsValue"
           type="card"
           closable
-          close
           @tab-remove="removeTab"
           @tab-click="handleTabs"
         >
@@ -130,7 +160,6 @@
               style="width: 100%; height: 600px; margin-top: 25px"
               icon-class="fengdie"
             />
-
             <Flow
               @getTree="gettree"
               :tabsIds="item.id"
@@ -201,7 +230,7 @@ export default {
   },
   data() {
     return {
-      aaa: '',
+      width: '300',
       tabledata: '',
       contextMenu1Visible: false,
       contextMenu1Target: '',
@@ -393,6 +422,9 @@ export default {
       dropdownText: '123',
       showCurrent: true,
       loading: true,
+      // 右键鼠标的Y坐标
+      Ycoords: null,
+      lastX: '',
     }
   },
   watch: {
@@ -427,11 +459,29 @@ export default {
     nowObject: function (val) {
       this.$store.commit('changeCurrent', val)
     },
+    Ycoords(val) {
+      const menu = document.getElementsByClassName('right-menu')
+      const menu1 = document.getElementsByClassName('right-menu1')
+      const menu2 = document.getElementsByClassName('right-menu2')
+      console.log(menu, menu1, menu2)
+      if (val > 500) {
+        setTimeout(() => {
+          menu[1].style.top =
+            parseInt(menu[1].style.top.split('px')[0]) - 200 + 'px'
+          menu1[0].style.top =
+            parseInt(menu1[0].style.top.split('px')[0]) - 200 + 'px'
+          menu2[0].style.top =
+            parseInt(menu2[0].style.top.split('px')[0]) - 200 + 'px'
+        }, 100)
+      }
+    },
   },
   mounted() {
+    const drag = document.getElementById('drag')
+    console.log('drag--->', drag)
     window.addEventListener('scroll', this.getPos)
-    // const myChartContainer = document.getElementById('main_span')
     const myChartContainer = document.getElementById('menu_lt')
+    console.log(myChartContainer)
     // 右击显示菜单 区域位置
     this.contextMenuTarget = myChartContainer
     this.contextMenu1Target = myChartContainer
@@ -452,7 +502,8 @@ export default {
     // 关闭浏览器右击默认菜单
     const _this = this
     myChartContainer.oncontextmenu = function (e) {
-      console.log(e, '113123')
+      console.log(e, '右键事件')
+      console.log(menu[1])
       if (e.pageY > 400) {
         menu[1].style.top = 100 + 'px'
         _this.Ycoords = e.pageY
@@ -467,6 +518,7 @@ export default {
     // }
   },
   created() {
+    document.addEventListener('mouseup', this.mouseUp)
     this.getItem()
     // this.formCopy = JSON.parse(JSON.stringify(this.form))
     // console.log('this.formCopy', this.formCopy)
@@ -496,7 +548,28 @@ export default {
   beforeDestroy() {
     window.removeEventListener('scroll', this.getPos)
   },
+  destroyed() {
+    document.removeEventListener('mouseup', this.mouseUp)
+  },
   methods: {
+    mousedown(event) {
+      document.addEventListener('mousemove', this.mouseMove)
+      this.lastX = event.screenX
+      console.log('事件源', event, event.screenX)
+    },
+    mouseMove(event) {
+      this.width = event.screenX - 230
+      console.log(event)
+    },
+    mouseUp() {
+      document.removeEventListener('mousemove', this.mouseMove)
+    },
+    //移动鼠标放大元素
+
+    // 拖拽tree
+    handleDragStart(node, ev) {
+      console.log('节点开始拖拽时触发的事件', node, ev)
+    },
     gettree(data) {
       this.getlist(data)
     },
@@ -1269,8 +1342,12 @@ export default {
         }
       }
     }
+
     .lt {
-      width: 20%;
+      position: relative;
+      border: 1px solid #ccc;
+      width: 300px;
+      height: 650px;
       padding: 10px;
       // height: calc(100vh - 181px);
       background: #f8f8fa;
@@ -1331,14 +1408,37 @@ export default {
           color: #eee;
         }
       }
+      .dragging1 {
+        border: 1px solid #000;
+        color: #000;
+      }
+    }
+    #drag {
+      position: absolute;
+      top: 200px;
+      right: -4px;
+      z-index: 999;
+      height: 100px;
+      width: 5px;
+      cursor: e-resize;
+      background: red;
+    }
+    #drag li {
+      list-style: none;
     }
     .rg {
       // flex: 1;
-      width: 80%;
+      width: 100%;
+      height: 100%;
+      flex: 1;
+      overflow-y: hidden;
       .el-tabs__nav .el-tabs__item:nth-child(1) span {
         display: none;
       }
+
       .el-tabs {
+        margin: 0;
+        padding: 0;
         .el-tabs__content {
           // height: calc(100vh - 80px);
           overflow-y: auto;
@@ -1348,11 +1448,48 @@ export default {
           height: 32px;
           line-height: 32px;
           margin: 0;
+          padding: 0;
+          .el-tabs__nav-wrap {
+            .el-tabs__nav-next,
+            .el-tabs__nav-prev {
+              background-color: #ccc;
+              height: 32px;
+              width: 20px;
+              border: none;
+              text-align: center;
+              line-height: 32px;
+              margin: 0;
+              padding: 0;
+            }
+          }
           .el-tabs__nav {
-            width: 200px;
-            border-top: 1px solid #f8f8fa;
+            // background-color: #f8f8fa;
+            margin: 0;
+            padding: 0;
             .el-tabs__item {
-              width: 100%;
+              border-top: 1px solid #f8f8fa;
+              width: 300px;
+              text-align: center;
+              border: none;
+              border-top: 1px solid #f8f8fa;
+              // border-radius: 6px 6px 0px 0px;
+              height: 32px;
+              line-height: 32px;
+              position: relative;
+              overflow: hidden;
+              vertical-align: bottom;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              .el-icon-close {
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+              }
+            }
+            .el-tabs__item {
+              // width: 100%;
+              width: 200px;
               border: none;
               border-top: 1px solid #f8f8fa;
               border-radius: 6px 6px 0px 0px;
@@ -1479,4 +1616,8 @@ export default {
   // }
 }
 </style>
-
+<style scoped>
+.el-bar-tab >>> .el-tabs__nav-scroll {
+  background: #000;
+}
+</style>

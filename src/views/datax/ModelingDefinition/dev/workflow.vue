@@ -39,7 +39,7 @@
           </el-upload>
         </el-tooltip>
       </div>
-      <div class="header_action" style="margin-left: 27px">
+      <div @click="Looktable" class="header_action" style="margin-left: 27px">
         <el-tooltip
           class="item"
           effect="dark"
@@ -1024,6 +1024,9 @@ export default {
         message: '表已解锁',
         type: 'success',
       })
+    },
+    Looktable() {
+      console.log('查看表')
     },
     //查看表
     // handleClick(data) {
