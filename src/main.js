@@ -2,6 +2,10 @@ import Vue from 'vue'
 
 import Cookies from 'js-cookie'
 
+//拖拽插件引入
+import VueDraggableResizable from 'vue-draggable-resizable'
+import "vue-draggable-resizable/dist/VueDraggableResizable.css"
+Vue.component('vue-draggable-resizable', VueDraggableResizable)
 // import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 
 import './assets/css/reset.css'
