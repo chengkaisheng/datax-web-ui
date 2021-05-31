@@ -571,10 +571,10 @@ export default {
   // },
   methods: {
     handle(row, column, event, cell) {
-      console.log(row)
-      console.log(column)
-      console.log(event)
-      console.log(cell)
+      // console.log(row)
+      // console.log(column)
+      // console.log(event)
+      // console.log(cell)
     },
     tableSql(row) {
       console.log(row.sqlContent)
@@ -793,18 +793,37 @@ export default {
           }
         }
       }
-      const resCreateConnection = await createConnection(params1)
-      console.log(resCreateConnection)
-
-      if (resCreateConnection.data == null) {
+      const resCreateConnection = await createConnection(params1).catch((error) => {
+        console.log(error)
         this.$notify({
           title: '错误',
-          message: resCreateConnection.message,
+          // message: resCreateConnection.errors[0].message,
+          message: error,
           type: 'error',
           duration: 2000
         })
+        this.loglist = []
+        this.loglist.unshift({
+          title: '错误sql返回',
+          // tableData: this.tableData,
+          // secondData: this.secondData,
+          // columns: this.columns,
+          logtime: new Date(),
+          content: sql,
+          error: error
+        })
         this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
-      }
+      })
+      // if (resCreateConnection.data === null) {
+      //   this.$notify({
+      //     title: '错误',
+      //     // message: resCreateConnection.errors[0].message,
+      //     message: 'shibai',
+      //     type: 'error',
+      //     duration: 2000
+      //   })
+      //   this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
+      // }
 
       this.connectionId = resCreateConnection.data.createConnection.id
       // 2、初始化连接
@@ -998,14 +1017,15 @@ export default {
           if (response.code === 200) {
             this.$notify({
               title: '成功',
-              message: response.msg,
+              // message: response.msg,
+              message: '查询成功',
               type: 'success',
               duration: 2000
             })
           } else {
             this.$notify({
               title: '错误',
-              message: '失败',
+              message: '查询失败',
               type: 'error',
               duration: 2000
             })

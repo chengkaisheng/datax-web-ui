@@ -1,9 +1,9 @@
 <template>
   <div class="workflowCanves">
     <div class="header">
-      <div class="header_action" style="margin-left:17px;" id="SaveButton" @click="DataSave">
+      <div id="SaveButton" class="header_action" style="margin-left:17px;" @click="DataSave">
         <i class="el-icon-s-order" />
-        <span >保存</span>
+        <span>保存</span>
       </div>
       <div class="header_action" style="margin-left:27px;" @click="runData">
         <i class="el-icon-video-play" />
@@ -32,7 +32,7 @@
     >
       参数配置
     </el-button> -->
-<!--    <div class="header_action1 but" @click="changes">
+    <!--    <div class="header_action1 but" @click="changes">
       <i class="el-icon-rank" />
       <span>自动布局</span>
     </div> -->
@@ -383,7 +383,7 @@ rkJggg=="
         <el-button @click="dialogDetails = false">
           关闭
         </el-button>
-        <el-button type="primary">
+        <el-button type="primary" @click="resloglist">
           刷新日志
         </el-button>
       </div>
@@ -575,9 +575,11 @@ export default {
     this.init()
     this.myDiagram.model = go.Model.fromJson(this.$store.state.workflow.currentData.jobJson)
     console.log(this.tabsIds, 'tabsId')
-    // this.$refs.pre.innerHTML = this.list
+
     // document.getElementById('#pre')
     // console.log(this.$refs.pre)
+    document.getElementById('#pre')
+    // this.$refs.pre.innerHTML = this.list
   },
   methods: {
     // 删除配置参数
@@ -928,6 +930,7 @@ export default {
     GetParameters() {
       const arr = []
       const typelist = JSON.parse(this.myDiagram.model.toJson())
+      console.log(typelist)
       for (var i = 0;i < typelist.nodeDataArray.length;i++) {
         arr.push(typelist.nodeDataArray[i].type)
       }
@@ -960,6 +963,8 @@ export default {
         } else {
           this.dosomthing()
         }
+      } else {
+        this.dosomthing()
       }
 
     //   job
@@ -1059,21 +1064,28 @@ export default {
     // 查看日志详情
 
     handleView(row) {
+      // console.log(row)
+      this.dialogDetails = true
       // alert(this.$refs.pre.div)
       // var logContent = docment
-      document.getElementById('#pre')
+      // document.getElementById('#pre')
+      // console.log(document.getElementById('#pre'))
 
       console.log(row, '日志详情')
+      this.list = ''
       const childrenlist = row.children
-      var list = ''
+
       childrenlist.forEach(item => {
         for (const i in item) {
-          console.log(i)
-          this.list += `<p>${i}:${item[i]}</p>`
+          // console.log(i)
+          this.list += `<p>${i}:${item[i]}</p><br>`
         }
       })
+      this.$nextTick(() => {
+        this.$refs.pre.innerHTML = this.list
+      })
       // console.log(list)
-      this.$refs.pre.innerHTML = this.list
+
       // DIV.innerHTML = list
       // this.logContent.innerHTML = list
       // for (var i = 0;i < childrenlist.length;i++) {
@@ -1092,7 +1104,10 @@ export default {
       //   }
       // }
       // this.logContent = row.children
-      this.dialogDetails = true
+    },
+    // 刷新日志
+    resloglist() {
+      this.getlogList()
     },
     // 显示调度配置抽屉
     dispatchData() {
@@ -1169,7 +1184,7 @@ export default {
               $(go.Shape, 'LineV', { stroke: 'lightgray', strokeWidth: 0.5 })
             ),
             layout: $(go.TreeLayout, // specify a Diagram.layout that arranges trees
-              { angle: 90, layerSpacing: 35},
+              { angle: 90, layerSpacing: 35 },
               {
                 sorting: go.TreeLayout.SortingAscending,
                 comparer: function(a, b) {
@@ -1179,9 +1194,9 @@ export default {
                   if (av < bv) return -1
                   if (av > bv) return 1
                   return 0
-                },
+                }
               },
-              {isOngoing: false}
+              { isOngoing: false }
             ),
             // 'isValidLayout': false,
             'draggingTool.isGridSnapEnabled': true,
@@ -1198,22 +1213,22 @@ export default {
             'undoManager.isEnabled': true
           })
       // 当文档被修改时，在标题中添加一个“*”，并启用“保存”按钮
-      let tabs = this.$store.state.taskAdmin.wfdevTabs
-      let tabsId = this.$props.tabsIds;
+      const tabs = this.$store.state.taskAdmin.wfdevTabs
+      const tabsId = this.$props.tabsIds
       this.myDiagram.addDiagramListener('Modified', function(e) {
         var tempDiagram = e.diagram
         console.log(e)
         console.log(tempDiagram.isModified)
         console.log('tabsId: ' + tabsId)
         for (let i = 0; i < tabs.length; i++) {
-          let obj = tabs[i]
+          const obj = tabs[i]
           if (obj.content.id === tabsId) {
             console.log('before,', obj.title)
-            console.log('tempDiagram.isModified,',tempDiagram.isModified)
-            let idx = obj.title.indexOf('*')
+            console.log('tempDiagram.isModified,', tempDiagram.isModified)
+            const idx = obj.title.indexOf('*')
 
             if (tempDiagram.isModified) {
-              if (idx < 0) obj.title += "*"
+              if (idx < 0) obj.title += '*'
             } else {
               if (idx >= 0) obj.title = obj.title.substr(0, idx)
             }
@@ -1336,7 +1351,7 @@ export default {
           // 主要对象是一个用矩形形状包围文本块的面板
           $(go.Panel, 'Auto',
             $(go.Shape, 'RoundedRectangle',
-              { fill: '#E0F2E0', desiredSize: new go.Size(NaN, 30),stroke: '#00B600', strokeWidth: 1.5 },
+              { fill: '#E0F2E0', desiredSize: new go.Size(NaN, 30), stroke: '#00B600', strokeWidth: 1.5 },
               new go.Binding('figure', 'figure')),
             $(go.TextBlock, textStyle(),
               {

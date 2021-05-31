@@ -29,8 +29,7 @@
               v-for="item in options"
               :key="item.id"
               :command="item.id + '/' + item.name"
-              >{{ item.name }}</el-dropdown-item
-            >
+            >{{ item.name }}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
         <!-- <div style="height: 20px"></div> -->
@@ -42,19 +41,18 @@
           style="margin-top: -10px"
         />
         <el-tree
-          v-loading="loading"
           id="main_span"
           ref="tree"
+          v-loading="loading"
           :data="workflowList"
           highlight-current
-          accordion
           default-expand-all
           draggable
           node-key="id"
           :expand-on-click-node="false"
+          :filter-node-method="filterNode"
           @node-drag-start="handleDragStart"
           @node-click="handleWorkFlow"
-          :filter-node-method="filterNode"
         >
           <span
             slot-scope="{ node, data }"
@@ -93,12 +91,13 @@
           class="right-menu"
           :target="contextMenuTarget"
           :show="contextMenuVisible"
-          :contextMenuData="contextMenuData"
           @update:show="(show) => (contextMenuVisible = show)"
         >
           <a href="javascript:0" @click="newFolder">新建文件夹</a>
-          <a id="newFile" href="javascript:"
-            >新建模型<i class="el-icon-arrow-right" />
+          <a
+            id="newFile"
+            href="javascript:"
+          >新建模型<i class="el-icon-arrow-right" />
             <vue-context-menu
               class="right-menu1"
               :target="contextMenu1Target"
@@ -162,19 +161,18 @@
               icon-class="fengdie"
             />
             <Flow
-              @getTree="gettree"
-              :tabsIds="item.id"
-              :tableType="item.jobType"
-              :tabledata="nowObject"
               v-if="item.name !== '首页' && item.jobType !== 'wenjianjia'"
+              :tabs-ids="item.id"
+              :table-type="item.jobType"
+              :tabledata="nowObject"
+              @getTree="gettree"
             />
           </el-tab-pane>
         </el-tabs>
       </div>
       <!-- 新建文件夹对话框 -->
       <el-dialog :visible.sync="newFolderDialog" width="40%" title="新建文件夹">
-        <span style="margin-left: 20px">文件夹名称：</span
-        ><el-input v-model="folderName" style="width: 80%; margin-left: 20px" />
+        <span style="margin-left: 20px">文件夹名称：</span><el-input v-model="folderName" style="width: 80%; margin-left: 20px" />
         <div slot="footer" class="dialog-footer">
           <el-button size="small" @click="cancelDialog"> 取消 </el-button>
           <el-button type="goon" size="small" @click="createFolder">
@@ -184,8 +182,7 @@
       </el-dialog>
       <!-- 新建工作流对话框 -->
       <el-dialog :visible.sync="newETLdialog" width="40%" title="新建表">
-        <span style="margin-left: 20px">表名称：</span
-        ><el-input
+        <span style="margin-left: 20px">表名称：</span><el-input
           v-model="workflowName"
           style="width: 80%; margin-left: 20px"
         />
@@ -198,8 +195,7 @@
       </el-dialog>
       <!-- 工作流重命名 -->
       <el-dialog :visible.sync="ReETLdialog" width="40%" title="重命名工作流">
-        <span style="margin-left: 20px">名称：</span
-        ><el-input
+        <span style="margin-left: 20px">名称：</span><el-input
           v-model="reWorkflowName"
           style="width: 80%; margin-left: 20px"
         />
@@ -227,7 +223,7 @@ export default {
   name: 'DDLTransform',
   components: {
     Flow,
-    'vue-context-menu': VueContextMenu,
+    'vue-context-menu': VueContextMenu
   },
   data() {
     return {
@@ -248,8 +244,8 @@ export default {
         {
           title: '首页',
           name: '首页',
-          content: '',
-        },
+          content: ''
+        }
       ],
       workflowList: [
         // {
@@ -326,23 +322,23 @@ export default {
         rowformatSerdeName: '', // 当rowformat为SERDE时，serde类名
         storedAs: 'PARQUET', // 文件存储格式，取之范围：: SEQUENCEFILE，TEXTFILE，RCFILE，ORC，PARQUET，AVRO，JSONFILE
         location: '/tmp', // 对应location，存储位置
-        targetSQL: 1, // 目标SQL类型
+        targetSQL: 1 // 目标SQL类型
       },
       formCopy: undefined,
       rules: {
         projectId: [
-          { required: true, message: '请选择所属项目名称', trigger: 'change' },
+          { required: true, message: '请选择所属项目名称', trigger: 'change' }
         ],
         datasourceId: [
-          { required: true, message: '请选择待转换数据源', trigger: 'change' },
+          { required: true, message: '请选择待转换数据源', trigger: 'change' }
         ],
         schema: [
           {
             required: true,
             message: '请选择待转换数据库/Schema',
-            trigger: 'change',
-          },
-        ],
+            trigger: 'change'
+          }
+        ]
       },
       storedAslist: [
         'SEQUENCEFILE',
@@ -352,28 +348,28 @@ export default {
         'PARQUET',
         'AVRO',
         'JSONFILE',
-        '无',
+        '无'
       ],
       hiveVersion: [
         {
           cdh: '> CDH 5.3.x',
-          hive: 'hive-1.1.0',
+          hive: 'hive-1.1.0'
         },
         {
           cdh: 'CDH 5.2.x | CDH 5.3.x',
-          hive: 'hive-0.13.1',
+          hive: 'hive-0.13.1'
         },
         {
           cdh: 'CDH 5.0.x | CDH 5.1.x',
-          hive: 'hive-0.12.0',
-        },
+          hive: 'hive-0.12.0'
+        }
       ],
       transformPercentage: 0,
       listQuery: {
         pageNo: 1,
         pageSize: 10,
         searchVal: '',
-        userId: '',
+        userId: ''
       },
       projectlist: [],
       datasourcelist: [],
@@ -381,7 +377,7 @@ export default {
         current: 1,
         size: 10000,
         projectId: '',
-        datasourceName: '',
+        datasourceName: ''
       },
       schemalist: [],
       tablelist: [],
@@ -394,7 +390,7 @@ export default {
         double: 'DOUBLE',
         varchar: 'String',
         datetime: 'DATE',
-        timestamp: 'DATETIME',
+        timestamp: 'DATETIME'
       },
       dialogVisible: false,
       isLoading: false,
@@ -404,7 +400,7 @@ export default {
         { nav: 'db', name: '数据库&表' },
         { nav: 'partition', name: '分区&分桶' },
         { nav: 'format', name: '格式控制' },
-        { nav: 'storage', name: '存储' },
+        { nav: 'storage', name: '存储' }
       ],
       pos: {
         source: 0,
@@ -412,7 +408,7 @@ export default {
         db: 0,
         partition: 0,
         format: 0,
-        storage: 0,
+        storage: 0
       },
       navActive: '0',
       project_id: '', // 当前项目id
@@ -425,7 +421,7 @@ export default {
       loading: true,
       // 右键鼠标的Y坐标
       Ycoords: null,
-      lastX: '',
+      lastX: ''
     }
   },
   watch: {
@@ -444,7 +440,7 @@ export default {
     },
     '$store.state.project.currentItem'(val) {
       localStorage.setItem('project_id', JSON.stringify(val))
-      let project_id = JSON.parse(localStorage.getItem('project_id'))
+      const project_id = JSON.parse(localStorage.getItem('project_id'))
         ? JSON.parse(localStorage.getItem('project_id'))
         : JSON.parse(localStorage.getItem('projectid'))
       if (typeof val === 'string') {
@@ -453,11 +449,11 @@ export default {
       }
     },
     // 快速检索工作流
-    search: function (val) {
+    search: function(val) {
       this.$refs.tree.filter(val)
     },
     // 当前选择的工作流节点数据
-    nowObject: function (val) {
+    nowObject: function(val) {
       this.$store.commit('changeCurrent', val)
     },
     Ycoords(val) {
@@ -475,7 +471,7 @@ export default {
             parseInt(menu2[0].style.top.split('px')[0]) - 200 + 'px'
         }, 100)
       }
-    },
+    }
   },
   mounted() {
     const drag = document.getElementById('drag')
@@ -488,12 +484,12 @@ export default {
     this.contextMenu1Target = myChartContainer
     const a = document.getElementById('newFile')
     const b = document.getElementsByClassName('right-menu1')
-    a.onmouseover = function () {
+    a.onmouseover = function() {
       for (var i = 0; i < b.length; i++) {
         b[i].style.display = 'block'
       }
     }
-    a.onmouseout = function () {
+    a.onmouseout = function() {
       for (var i = 0; i < b.length; i++) {
         b[i].style.display = 'none'
       }
@@ -502,7 +498,7 @@ export default {
 
     // 关闭浏览器右击默认菜单
     const _this = this
-    myChartContainer.oncontextmenu = function (e) {
+    myChartContainer.oncontextmenu = function(e) {
       console.log(e, '右键事件')
       console.log(menu[1])
       if (e.pageY > 400) {
@@ -535,12 +531,12 @@ export default {
     setTimeout(() => {
       console.log('res.records--->', this.options)
       if (sessionStorage.getItem('strParam')) {
-        let project_id = sessionStorage.getItem('strParam').split('/')[0] || 45
+        const project_id = sessionStorage.getItem('strParam').split('/')[0] || 45
         this.dropdownText =
           sessionStorage.getItem('strParam').split('/')[1] || 123
         this.getlist(project_id)
       } else {
-        let project_id = '45'
+        const project_id = '45'
         this.dropdownText = '123'
         this.getlist(project_id)
       }
@@ -553,7 +549,7 @@ export default {
     document.removeEventListener('mouseup', this.mouseUp)
   },
   methods: {
-    //移动鼠标放大
+    // 移动鼠标放大
     mousedown(event) {
       document.addEventListener('mousemove', this.mouseMove)
       this.lastX = event.screenX
@@ -572,7 +568,7 @@ export default {
     mouseUp() {
       document.removeEventListener('mousemove', this.mouseMove)
     },
-    //移动鼠标放大
+    // 移动鼠标放大
 
     // 拖拽tree
     handleDragStart(node, ev) {
@@ -583,11 +579,11 @@ export default {
     },
     handleCommand(data) {
       this.dropdownText = data.split('/')[1]
-      let project_id = data.split('/')[0]
+      const project_id = data.split('/')[0]
       sessionStorage.setItem('strParam', data)
       this.getlist(project_id)
     },
-    //获取下拉选择列表
+    // 获取下拉选择列表
     getItem() {
       this.loading = true
       this.listQuery.userId = JSON.parse(localStorage.getItem('userId'))
@@ -601,10 +597,10 @@ export default {
           console.log(err)
         })
     },
-    //获取tree列表
+    // 获取tree列表
     getlist(val, newtask) {
       this.loading = true
-      let projectId = { projectId: val }
+      const projectId = { projectId: val }
       modeling
         .Getlist(projectId)
         .then((res) => {
@@ -613,7 +609,7 @@ export default {
           // this.lastdata =
           //   res.content[0].children[res.content[0].children.length - 1]
           if (newtask && newtask.name === 'newtask') {
-            let newarr = []
+            const newarr = []
             for (var i in res.content[0].children) {
               if (res.content[0].children[i].children) {
                 newarr.push(res.content[0].children[i].children)
@@ -656,7 +652,7 @@ export default {
         parentId: this.nowObject.id,
         type: 1,
         jobType: 'wenjianjia',
-        name: this.folderName,
+        name: this.folderName
       }
       console.log('======', params)
       modeling
@@ -693,7 +689,7 @@ export default {
         projectId: this.nowObject.projectId,
         parentId: this.nowObject.id,
         type: 2,
-        jobType: this.jobType,
+        jobType: this.jobType
       }
       console.log('params------>', params)
       modeling
@@ -701,7 +697,7 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             this.workflowName = ''
-            let newtask = { name: 'newtask', id: res.content }
+            const newtask = { name: 'newtask', id: res.content }
             this.getlist(params.projectId, newtask)
           }
           console.log('新建', res)
@@ -773,7 +769,7 @@ export default {
                 this.editableTabs.splice(i, 1)
               }
             }
-            let lastdata = this.editableTabs[this.editableTabs.length - 1]
+            const lastdata = this.editableTabs[this.editableTabs.length - 1]
             console.log('lastdata--->', lastdata)
             this.handleWorkFlow(lastdata)
             this.$message.success('删除成功')
@@ -821,7 +817,7 @@ export default {
       if (data.jobType === 'wenjianjia') {
         return
       }
-      let arr = []
+      const arr = []
       this.editableTabs.forEach((itme) => {
         arr.push(itme.name)
       })
@@ -850,7 +846,7 @@ export default {
     // 添加或查找tabs页面
     changeTabs(obj) {
       if (this.editableTabs.length > 0) {
-        let indexTabs = this.editableTabs
+        const indexTabs = this.editableTabs
           .map((item) => item.title)
           .indexOf(obj.name)
         console.log(indexTabs)
@@ -862,7 +858,7 @@ export default {
           this.editableTabs.push({
             title: obj.name,
             name: newTabName,
-            content: obj,
+            content: obj
           })
           this.editableTabsValue = newTabName
           console.log('add', this.editableTabs, newTabName)
@@ -873,7 +869,7 @@ export default {
         this.editableTabs.push({
           title: obj.name,
           name: newTabName,
-          content: obj,
+          content: obj
         })
         this.editableTabsValue = newTabName
         return
@@ -1005,7 +1001,7 @@ export default {
     onDSChange(value) {
       console.log(value)
       getTableSchema({
-        datasourceId: value,
+        datasourceId: value
       }).then((res) => {
         console.log(res)
         this.schemalist = res
@@ -1015,7 +1011,7 @@ export default {
     onSchemaChange(value) {
       getTableListWithComment({
         id: this.form.datasourceId,
-        schema: value,
+        schema: value
       }).then((res) => {
         console.log('res', res)
         // this.tableList = res;
@@ -1062,14 +1058,14 @@ export default {
     onCopy(e) {
       this.$message({
         message: '复制成功！',
-        type: 'success',
+        type: 'success'
       })
     },
     // 复制失败
     onError(e) {
       this.$message({
         message: '复制失败！',
-        type: 'error',
+        type: 'error'
       })
     },
     /**
@@ -1099,7 +1095,7 @@ export default {
       this.$refs[nav].$el.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
-        inline: 'nearest',
+        inline: 'nearest'
       })
     },
     getPos() {
@@ -1179,8 +1175,8 @@ export default {
       ) {
         this.navActive = '0'
       }
-    },
-  },
+    }
+  }
 }
 </script>
 
