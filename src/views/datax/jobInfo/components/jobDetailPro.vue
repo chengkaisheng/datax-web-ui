@@ -149,6 +149,7 @@
               />
             </el-input>
             <el-dialog
+              ref="JobCron"
               title="JobCron"
               :visible.sync="showCronBox"
               width="60%"
@@ -157,10 +158,9 @@
               <cron v-model="scheduleForm.cron" />
               <span slot="footer" class="dialog-footer">
                 <el-button @click="showCronBox = false">关闭</el-button>
-                <el-button
-                  type="primary"
-                  @click="showCronBox = false"
-                >确 定</el-button>
+                <el-button type="primary" @click="showCronBox = false"
+                  >确 定</el-button
+                >
               </span>
             </el-dialog>
           </el-form-item>
@@ -212,11 +212,11 @@
             />
           </el-form-item>
           <el-form-item label="失败重试次数" prop="retry">
-            <br>
+            <br />
             <el-input-number v-model="scheduleForm.retry" :min="0" />
           </el-form-item>
           <el-form-item label="超时时间" prop="timeout">
-            <br>
+            <br />
             <el-input-number v-model="scheduleForm.timeout" :min="0" />（分钟）
           </el-form-item>
         </el-form>
@@ -226,16 +226,19 @@
         <el-button
           class="drawer-btn-temp"
           @click="closeScheduleForm('scheduleForm')"
-        >取消</el-button>
+          >取消</el-button
+        >
         <el-button
           class="drawer-btn-temp"
           @click="resetScheduleForm('scheduleForm')"
-        >重置</el-button>
+          >重置</el-button
+        >
         <el-button
           class="drawer-btn-temp"
           type="primary"
           @click="submitScheduleForm('scheduleForm')"
-        >提交</el-button>
+          >提交</el-button
+        >
       </div>
     </el-drawer>
     <!-- gojs任务联系 -->
@@ -246,7 +249,12 @@
       />
     </div>
     <!-- 任务详情面板 -->
-    <el-tabs v-model="detailActiveName" type="border-card" class="el-bar-tab" @tab-click="clickTabs">
+    <el-tabs
+      v-model="detailActiveName"
+      type="border-card"
+      class="el-bar-tab"
+      @tab-click="clickTabs"
+    >
       <el-tab-pane label="任务详情" name="detail">
         <description class="detail_container">
           <template slot="title">
@@ -299,15 +307,17 @@ rkJggg=="
               v-show="
                 this.$store.state.taskAdmin.jobDataDetail.jobType ===
                   'IMPORT' ||
-                  this.$store.state.taskAdmin.jobDataDetail.jobType ===
+                this.$store.state.taskAdmin.jobDataDetail.jobType ===
                   'NORMAL' ||
-                  this.$store.state.taskAdmin.jobDataDetail.jobType === 'EXPORT' ||
-                  this.$store.state.taskAdmin.jobDataDetail.jobType === 'SHELL'
+                this.$store.state.taskAdmin.jobDataDetail.jobType ===
+                  'EXPORT' ||
+                this.$store.state.taskAdmin.jobDataDetail.jobType === 'SHELL'
               "
               type="text"
               icon="el-icon-edit"
               @click="showEdit(currentTask)"
-            >编辑</el-button>
+              >编辑</el-button
+            >
           </template>
           <template slot="context">
             <!-- <description-items keys="执行器" :values="jobGroupName" /> -->
@@ -373,7 +383,6 @@ rkJggg=="
       :show="editPanelShow"
       :title="'编辑任务：' + currentTask.name + ' ( ' + projectName + ' )'"
       :job-id="editPanelId"
-
       @close="closeEdit"
       @fetchData="fetchData"
     />
@@ -431,7 +440,7 @@ import {
   handlerStart,
   handlerStop,
   loadById,
-  nextTriggerTime
+  nextTriggerTime,
   // handlerUpdate
 } from '../method'
 import { translaterMaster } from '@/utils/dictionary'
@@ -439,7 +448,7 @@ import Description from '@/components/Description/index'
 import DescriptionItems from '@/components/Description/components/items'
 import go from 'gojs'
 import JobDetailProEdit from './editDialog/jobDetailProEdit'
-
+import moment from 'moment'
 let timer = null
 
 export default {
@@ -460,23 +469,23 @@ export default {
     mapper,
     Description,
     DescriptionItems,
-    JobDetailProEdit
+    JobDetailProEdit,
   },
   directives: {
-    waves
+    waves,
   },
   filters: {
     statusFilter(status) {
       const statusMap = {
         published: 'success',
         draft: 'gray',
-        deleted: 'danger'
+        deleted: 'danger',
       }
       return statusMap[status]
-    }
+    },
   },
   props: {
-    jobInfo: { type: Object, default: () => ({}) }
+    jobInfo: { type: Object, default: () => ({}) },
   },
   data() {
     const validateIncParam = (rule, value, callback) => {
@@ -492,6 +501,7 @@ export default {
       callback()
     }
     return {
+      num: '',
       tableData: [],
       mapperJson: {},
       fromColumnsList: [],
@@ -527,12 +537,12 @@ export default {
         primaryKey: '',
         projectId: '',
         datasourceId: '',
-        readerTable: ''
+        readerTable: '',
       }, // 任务调度参数
       blockStrategies: [
         { value: 'SERIAL_EXECUTION', label: '单机串行' },
         { value: 'DISCARD_LATER', label: '丢弃后续调度' },
-        { value: 'COVER_EARLY', label: '覆盖之前调度' }
+        { value: 'COVER_EARLY', label: '覆盖之前调度' },
       ],
       routeStrategies: [
         { value: 'FIRST', label: '第一个' },
@@ -543,7 +553,7 @@ export default {
         { value: 'LEAST_FREQUENTLY_USED', label: '最不经常使用' },
         { value: 'LEAST_RECENTLY_USED', label: '最近最久未使用' },
         { value: 'FAILOVER', label: '故障转移' },
-        { value: 'BUSYOVER', label: '忙碌转移' }
+        { value: 'BUSYOVER', label: '忙碌转移' },
         // { value: 'SHARDING_BROADCAST', label: '分片广播' }
       ],
       readerForm: {
@@ -552,7 +562,7 @@ export default {
         rules: [],
         lcheckAll: false,
         rcheckAll: false,
-        isIndeterminate: true
+        isIndeterminate: true,
       },
       /** 数据库-表-列 */
       fromColumnList: [],
@@ -560,7 +570,7 @@ export default {
       writerForm: {
         checkAll: false,
         isIndeterminate: true,
-        ifCreateTable: false
+        ifCreateTable: false,
       },
       rColumnList: [],
       rTbList: [],
@@ -585,7 +595,7 @@ export default {
         projectIds: '',
         triggerStatus: -1,
         name: '',
-        glueType: ''
+        glueType: '',
       },
       showCronBox: false,
       dialogPluginVisible: false,
@@ -601,45 +611,45 @@ export default {
           {
             required: true,
             message: 'jobGroup is required',
-            trigger: 'change'
-          }
+            trigger: 'change',
+          },
         ],
         executorRouteStrategy: [
           {
             required: true,
             message: 'executorRouteStrategy is required',
-            trigger: 'change'
-          }
+            trigger: 'change',
+          },
         ],
         executorBlockStrategy: [
           {
             required: true,
             message: 'executorBlockStrategy is required',
-            trigger: 'change'
-          }
+            trigger: 'change',
+          },
         ],
         glueType: [
-          { required: true, message: 'jobType is required', trigger: 'change' }
+          { required: true, message: 'jobType is required', trigger: 'change' },
         ],
         projectId: [
           {
             required: true,
             message: 'projectId is required',
-            trigger: 'change'
-          }
+            trigger: 'change',
+          },
         ],
         name: [
-          { required: true, message: 'name is required', trigger: 'blur' }
+          { required: true, message: 'name is required', trigger: 'blur' },
         ],
         jobProject: [
           {
             required: true,
             message: 'jobProject is required',
-            trigger: 'blur'
-          }
+            trigger: 'blur',
+          },
         ],
         jobCron: [
-          { required: true, message: 'jobCron is required', trigger: 'blur' }
+          { required: true, message: 'jobCron is required', trigger: 'blur' },
         ],
         incStartId: [{ trigger: 'blur', validator: validateIncParam }],
         replaceParam: [{ trigger: 'blur', validator: validateIncParam }],
@@ -647,10 +657,10 @@ export default {
         incStartTime: [{ trigger: 'change', validator: validateIncParam }],
         replaceParamType: [{ trigger: 'change', validator: validateIncParam }],
         partitionField: [
-          { trigger: 'blur', validator: validatePartitionParam }
+          { trigger: 'blur', validator: validatePartitionParam },
         ],
         datasourceId: [{ trigger: 'change', validator: validateIncParam }],
-        readerTable: [{ trigger: 'blur', validator: validateIncParam }]
+        readerTable: [{ trigger: 'blur', validator: validateIncParam }],
       },
       currentTask: {
         id: undefined,
@@ -682,7 +692,7 @@ export default {
         projectId: '',
         datasourceId: '',
         readerTable: '',
-        jobType: ''
+        jobType: '',
       },
       executorList: [],
       jobIdList: '',
@@ -713,36 +723,42 @@ export default {
         retry: 0,
         timeout: 0,
         routeStrategy: '',
-        subTask: []
+        subTask: [],
       },
       scheduleRules: {
         executor: [
-          { required: true, message: '请选择执行器', trigger: 'change' }
+          { required: true, message: '请选择执行器', trigger: 'change' },
         ],
         cron: [
-          { required: true, message: '请输入Cron表达式', trigger: 'blur' }
+          {
+            required: true,
+            message: '请输入Cron表达式',
+            trigger: ['blur', 'change'],
+          },
         ],
         blockStrategy: [
-          { required: false, message: '请选择阻塞处理策略', trigger: 'change' }
+          { required: false, message: '请选择阻塞处理策略', trigger: 'change' },
         ],
         alarmEmail: [
-          { required: false, message: '请输入报警邮箱', trigger: 'blur' }
+          { required: false, message: '请输入报警邮箱', trigger: 'blur' },
         ],
         retry: [
-          { required: true, message: '请输入失败重试次数', trigger: 'blur' }
+          { required: true, message: '请输入失败重试次数', trigger: 'blur' },
         ],
         timeout: [
-          { required: true, message: '请输入超时时间', trigger: 'blur' }
+          { required: true, message: '请输入超时时间', trigger: 'blur' },
         ],
         routeStrategy: [
-          { required: false, message: '请选择路由策略', trigger: 'change' }
+          { required: false, message: '请选择路由策略', trigger: 'change' },
         ],
         subTask: [
-          { required: false, message: '请选择子任务', trigger: 'change' }
-        ]
+          { required: false, message: '请选择子任务', trigger: 'change' },
+        ],
       },
       scheduleShow: false,
-      detailActiveName: 'detail'
+      detailActiveName: 'detail',
+      time: '',
+      interval: '',
     }
   },
 
@@ -790,7 +806,7 @@ export default {
         return [
           this.$store.state.taskAdmin.taskList.find(
             (ele) => ele.id === this.currentTask.childJobId
-          )
+          ),
         ]
       }
     },
@@ -874,7 +890,7 @@ export default {
     guid() {
       return 'xxxxxxxxxxxxxxxxxxx'
         .concat(new Date().valueOf().toString())
-        .replace(/[xy]/g, function(c) {
+        .replace(/[xy]/g, function (c) {
           var r = (Math.random() * 16) | 0
           var v = c === 'x' ? r : (r & 0x3) | 0x8
           return v.toString(16)
@@ -888,10 +904,13 @@ export default {
         this.dataSource === 'oracle' ||
         this.dataSource === 'sqlserver'
       )
-    }
+    },
   },
 
   watch: {
+    time(date) {
+      console.log('监听时间---》', date)
+    },
     fromColumnsListChecked(newval) {
       const arr = []
       newval.forEach((element, index) => {
@@ -899,7 +918,7 @@ export default {
           sourceField: this.readerForm.lcolumns[index],
           clearRule: this.readerForm.rules[index],
           targetField: this.readerForm.rcolumns[index],
-          index: index
+          index: index,
         }
         arr.push(obj)
       })
@@ -914,7 +933,7 @@ export default {
       val.forEach((row, index) => {
         const obj = {
           column: row,
-          index
+          index,
         }
         this.tableData.push(obj)
       })
@@ -940,7 +959,7 @@ export default {
         this.jsons = this.jsonString
         console.log(this.jsons)
       }
-    }
+    },
 
     /**
      * @description: 等待trigger执行完再获取log列表
@@ -953,6 +972,7 @@ export default {
   },
 
   created() {
+    // this.watchtime()
     this.fetchData()
     this.getExecutor()
     this.getJobIdList()
@@ -975,6 +995,11 @@ export default {
   },
 
   methods: {
+    // watchtime() {
+    //   setInterval(() => {
+    //     this.time = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+    //   }, 1000)
+    // },
     getReaderData() {
       return this.$refs.reader.getData()
     },
@@ -990,9 +1015,9 @@ export default {
           //       this.logList()
           //     }, 2000)
         }
-      //   // this.logList()
-      // } else {
-      //   clearInterval(dsq)
+        //   // this.logList()
+        // } else {
+        //   clearInterval(dsq)
       }
     },
 
@@ -1004,12 +1029,17 @@ export default {
     //   this.editShell = false
     // },
     showJobSchedule() {
-      this.scheduleForm.cron = this.$store.state.taskAdmin.jobDataDetail.jobCron
+      this.scheduleShow = true
+      this.scheduleForm.cron =
+        this.$store.state.taskAdmin.jobDataDetail.jobCron || '* * * ? * * *'
       this.scheduleForm.timeout = this.$store.state.taskAdmin.jobDataDetail.executorTimeout
       this.scheduleForm.alarmEmail = this.$store.state.taskAdmin.jobDataDetail.alarmEmail
       this.scheduleForm.blockStrategy = this.$store.state.taskAdmin.jobDataDetail.executorBlockStrategy
       if (this.$store.state.taskAdmin.jobDataDetail.childJobId) {
-        if (typeof this.$store.state.taskAdmin.jobDataDetail.childJobId === 'string') {
+        if (
+          typeof this.$store.state.taskAdmin.jobDataDetail.childJobId ===
+          'string'
+        ) {
           this.scheduleForm.subTask = this.$store.state.taskAdmin.jobDataDetail.childJobId.split(
             ','
           )
@@ -1024,7 +1054,6 @@ export default {
       this.scheduleForm.retry = this.$store.state.taskAdmin.jobDataDetail.executorFailRetryCount
       this.scheduleForm.routeStrategy = this.$store.state.taskAdmin.jobDataDetail.executorRouteStrategy // 路由
       this.scheduleForm.executor = this.$store.state.taskAdmin.jobDataDetail.jobGroup // 执行器
-      this.scheduleShow = true
     },
     // 选择子任务
     selectChange(val) {
@@ -1052,6 +1081,7 @@ export default {
      * @param {object} taskInfo
      */
     handlerExecute(taskInfo) {
+      console.log('执行任务', taskInfo)
       // this.newstlogContent = ''
       handlerExecute.call(this, taskInfo).then((response) => {
         this.newstlogContent = ''
@@ -1061,15 +1091,16 @@ export default {
         // setTimeout(() => {
         //   this.logList()
         // }, 2000)
+        let _this = this
         var timesRun = 0
         var interval = setInterval(() => {
-          timesRun += 1
+          _this.num = timesRun += 1
           console.log(timesRun)
           if (timesRun === 12) {
             clearInterval(interval)
           }
           this.logList()
-        }, 3000)
+        }, 1500)
       })
     },
 
@@ -1133,6 +1164,7 @@ export default {
      * @description: 下次触发时间
      */
     nextTriggerTime(row) {
+      console.log('下次触发时间', row)
       nextTriggerTime.call(this, row)
     },
 
@@ -1146,12 +1178,19 @@ export default {
         jobGroup: 0,
         jobId: this.currentTask?.id,
         logStatus: -1,
-        filterTime: ''
+        filterTime: '',
       }
       let status = 0
 
       logGetList(param).then((response) => {
-        console.log(response)
+        if (this.num === 12) {
+          if (response.code === 200) {
+            this.$message({
+              message: '执行完毕,请点击日志查看运行结果！',
+              type: 'success',
+            })
+          }
+        }
         const newestLog = response.content.data[0] || {}
         if (!newestLog?.executorAddress) {
           return
@@ -1171,7 +1210,6 @@ export default {
         ).then((response) => {
           console.log(response, '日志详情')
           this.newstlogContent = response.content.logContent
-          // console.log(this.newstlogContent, '日志详情')
           if (status !== 0) {
             clearInterval(timer)
             timer = null
@@ -1311,7 +1349,7 @@ export default {
         go.Diagram,
         'myDiagramDiv' + this.myId, // create a Diagram for the DIV HTML element
         {
-          'undoManager.isEnabled': true // enable undo & redo
+          'undoManager.isEnabled': true, // enable undo & redo
         }
       )
       /** 右键面板 */
@@ -1324,12 +1362,12 @@ export default {
             margin: 5,
             font: '12px sans-serif',
             opacity: 0.75,
-            stroke: '#404040'
+            stroke: '#404040',
           }),
           {
             click: (e, obj) => {
               this.checkInfo(obj)
-            }
+            },
           }
         ),
         $(
@@ -1339,12 +1377,12 @@ export default {
             margin: 5,
             font: '12px sans-serif',
             opacity: 0.75,
-            stroke: '#404040'
+            stroke: '#404040',
           }),
           {
             click: (e, obj) => {
               this.online(obj)
-            }
+            },
           }
         ),
         $(
@@ -1354,12 +1392,12 @@ export default {
             margin: 5,
             font: '12px sans-serif',
             opacity: 0.75,
-            stroke: '#404040'
+            stroke: '#404040',
           }),
           {
             click: (e, obj) => {
               this.deleteTask(obj)
-            }
+            },
           }
         ),
         $(
@@ -1369,12 +1407,12 @@ export default {
             margin: 5,
             font: '12px sans-serif',
             opacity: 0.75,
-            stroke: '#404040'
+            stroke: '#404040',
           }),
           {
             click: (e, obj) => {
               this.checkLog(obj)
-            }
+            },
           }
         ),
         $(
@@ -1384,12 +1422,12 @@ export default {
             margin: 5,
             font: '12px sans-serif',
             opacity: 0.75,
-            stroke: '#404040'
+            stroke: '#404040',
           }),
           {
             click: (e, obj) => {
               this.editTask(obj)
-            }
+            },
           }
         ),
         $(
@@ -1399,12 +1437,12 @@ export default {
             margin: 5,
             font: '12px sans-serif',
             opacity: 0.75,
-            stroke: '#404040'
+            stroke: '#404040',
           }),
           {
             click: (e, obj) => {
               this.exportTask(obj)
-            }
+            },
           }
         )
       )
@@ -1432,8 +1470,8 @@ export default {
           text: this.currentTask.name,
           key: this.currentTask.id,
           data: this.currentTask,
-          color: 'lightblue'
-        }
+          color: 'lightblue',
+        },
       ]
       if (this.isVal(this.currentTask.childJobId)) {
         for (const i of this.childJob) {
@@ -1441,7 +1479,7 @@ export default {
             text: this.hasVal(i, 'name'),
             key: parseInt(this.hasVal(i, 'id')),
             data: i,
-            color: 'orange'
+            color: 'orange',
           })
         }
       }
@@ -1450,7 +1488,7 @@ export default {
         for (const i of this.childJob) {
           paramLine.push({
             from: this.currentTask.id,
-            to: parseInt(this.hasVal(i, 'id'))
+            to: parseInt(this.hasVal(i, 'id')),
           })
         }
       }
@@ -1487,6 +1525,7 @@ export default {
      * @description: 编辑任务属性
      */
     editTask(obj) {
+      console.log('111')
       this.showEdit(obj?.part.data.data)
     },
     /**
@@ -1541,7 +1580,7 @@ export default {
                 title: '成功',
                 message: '调度修改成功',
                 type: 'success',
-                duration: 2000
+                duration: 2000,
               })
             })
             .catch((err) => {
@@ -1554,16 +1593,30 @@ export default {
         }
       })
     },
-    resetScheduleForm(scheduleForm) {
-      this.$refs[scheduleForm].resetFields()
-      this.scheduleForm.cron = ''
+    resetScheduleForm(formName) {
+      console.log(this.scheduleForm.cron)
+
+      this.$refs[formName].resetFields()
+      this.$nextTick(() => {
+        this.scheduleForm.cron = '* * * ? * * *'
+        this.scheduleForm.executor = ''
+        this.scheduleForm.blockStrategy = ''
+        this.scheduleForm.routeStrategy = ''
+        this.scheduleForm.subTask = ''
+        this.scheduleForm.alarmEmail = ''
+        this.scheduleForm.retry = 0
+        this.scheduleForm.timeout = 0
+        // this.$refs.JobCron
+      })
+
+      console.log(this.scheduleForm.cron)
     },
     closeScheduleForm(formName) {
       this.$refs[formName].resetFields()
       this.scheduleForm.cron = ''
       this.scheduleShow = false
-    }
-  }
+    },
+  },
 }
 </script>
 

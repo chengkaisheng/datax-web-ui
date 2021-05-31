@@ -1,12 +1,9 @@
 <template>
   <div class="app-container">
-    <h1
-      style="font-size: 21px;
-    font-weight: 700;
-    margin-right: 10px;"
-    >添加 SQL任务</h1>
+    <h1 style="font-size: 21px; font-weight: 700; margin-right: 10px">
+      添加 SQL任务
+    </h1>
     <div class="main-content">
-
       <el-form
         ref="dataForm"
         :rules="rules"
@@ -15,7 +12,6 @@
         label-width="110px"
         class="input_from"
       >
-
         <el-form-item label="任务名称：" prop="jobDesc">
           <el-input
             v-model="temp.jobDesc"
@@ -29,7 +25,12 @@
         </el-form-item>
         <el-form-item label="执行器：" prop="jobGroup">
           <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
-            <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
+            <el-option
+              v-for="item in executorList"
+              :key="item.id"
+              :label="item.title"
+              :value="item.id"
+            />
           </el-select>
         </el-form-item>
 
@@ -43,10 +44,9 @@
           <cron v-model="temp.jobCron" />
           <span slot="footer" class="dialog-footer">
             <el-button @click="showCronBox = false">关闭</el-button>
-            <el-button
-              type="primary"
-              @click="showCronBox = false"
-            >确 定</el-button>
+            <el-button type="primary" @click="showCronBox = false"
+              >确 定</el-button
+            >
           </span>
         </el-dialog>
         <el-form-item label="Cron：" prop="jobCron">
@@ -163,18 +163,18 @@
 
         <el-form-item>
           <div class="scriptJson">
-            <textarea
-              ref="mycode"
-              v-model="jsonContent"
-              class="codesql"
-            />
+            <textarea ref="mycode" v-model="jsonContent" class="codesql" />
           </div>
         </el-form-item>
       </el-form>
     </div>
     <div class="from_btn">
-      <el-button size="small" @click="dialogFormVisible = false"> 取消 </el-button>
-      <el-button size="small" type="primary" @click="createData()"> 确定 </el-button>
+      <el-button size="small" @click="dialogFormVisible = false">
+        取消
+      </el-button>
+      <el-button size="small" type="primary" @click="createData()">
+        确定
+      </el-button>
     </div>
   </div>
 </template>
@@ -196,6 +196,7 @@ import { getTableSchema } from '@/api/metadata-query'
 import 'codemirror/theme/ambiance.css'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/addon/hint/show-hint.css'
+import { ContextMenuTool } from 'gojs'
 
 const CodeMirror = require('codemirror/lib/codemirror')
 require('codemirror/addon/edit/matchbrackets')
@@ -211,7 +212,7 @@ export default {
     ShellEditor,
     PythonEditor,
     PowershellEditor,
-    Cron
+    Cron,
   },
   directives: { waves },
   filters: {
@@ -219,10 +220,10 @@ export default {
       const statusMap = {
         published: 'success',
         draft: 'gray',
-        deleted: 'danger'
+        deleted: 'danger',
       }
       return statusMap[status]
-    }
+    },
   },
   props: ['jobType', 'jobTypeLabel'],
   data() {
@@ -256,7 +257,7 @@ export default {
         projectIds: '',
         triggerStatus: -1,
         jobDesc: '',
-        glueType: ''
+        glueType: '',
       },
       showCronBox: false,
       dialogPluginVisible: false,
@@ -265,52 +266,52 @@ export default {
       dialogStatus: '',
       textMap: {
         update: 'Edit',
-        create: 'Create'
+        create: 'Create',
       },
       rules: {
         jobGroup: [
           {
             required: true,
             message: 'jobGroup is required',
-            trigger: 'change'
-          }
+            trigger: 'change',
+          },
         ],
         executorRouteStrategy: [
           {
             required: true,
             message: 'executorRouteStrategy is required',
-            trigger: 'change'
-          }
+            trigger: 'change',
+          },
         ],
         executorBlockStrategy: [
           {
             required: true,
             message: 'executorBlockStrategy is required',
-            trigger: 'change'
-          }
+            trigger: 'change',
+          },
         ],
         glueType: [
-          { required: true, message: 'jobType is required', trigger: 'change' }
+          { required: true, message: 'jobType is required', trigger: 'change' },
         ],
         projectId: [
           {
             required: true,
             message: 'projectId is required',
-            trigger: 'change'
-          }
+            trigger: 'change',
+          },
         ],
         jobDesc: [
-          { required: true, message: 'jobDesc is required', trigger: 'blur' }
+          { required: true, message: 'jobDesc is required', trigger: 'blur' },
         ],
         jobProject: [
           {
             required: true,
             message: 'jobProject is required',
-            trigger: 'blur'
-          }
+            trigger: 'blur',
+          },
         ],
         jobCron: [
-          { required: true, message: 'jobCron is required', trigger: 'blur' }
+          { required: true, message: 'jobCron is required', trigger: 'blur' },
         ],
         incStartId: [{ trigger: 'blur', validator: validateIncParam }],
         replaceParam: [{ trigger: 'blur', validator: validateIncParam }],
@@ -318,10 +319,10 @@ export default {
         incStartTime: [{ trigger: 'change', validator: validateIncParam }],
         replaceParamType: [{ trigger: 'change', validator: validateIncParam }],
         partitionField: [
-          { trigger: 'blur', validator: validatePartitionParam }
+          { trigger: 'blur', validator: validatePartitionParam },
         ],
         datasourceId: [{ trigger: 'change', validator: validateIncParam }],
-        readerTable: [{ trigger: 'blur', validator: validateIncParam }]
+        readerTable: [{ trigger: 'blur', validator: validateIncParam }],
       },
       temp: {
         id: undefined,
@@ -351,7 +352,7 @@ export default {
         primaryKey: '',
         projectId: '',
         datasourceId: '',
-        readerTable: ''
+        readerTable: '',
       },
       resetTemp() {
         this.temp = this.$options.data().temp
@@ -375,12 +376,12 @@ export default {
         { value: 'LEAST_FREQUENTLY_USED', label: '最不经常使用' },
         { value: 'LEAST_RECENTLY_USED', label: '最近最久未使用' },
         { value: 'FAILOVER', label: '故障转移' },
-        { value: 'BUSYOVER', label: '忙碌转移' }
+        { value: 'BUSYOVER', label: '忙碌转移' },
         // { value: 'SHARDING_BROADCAST', label: '分片广播' }
       ],
       glueTypes: [
         // { value: 'BEAN', label: 'DataX任务' },
-        { value: 'GLUE_SHELL', label: 'Shell任务' }
+        { value: 'GLUE_SHELL', label: 'Shell任务' },
         // { value: 'GLUE_PYTHON', label: 'Python任务' },
         // { value: 'GLUE_POWERSHELL', label: 'PowerShell任务' }
       ],
@@ -388,7 +389,7 @@ export default {
         { value: 0, label: '无' },
         { value: 1, label: '主键自增' },
         { value: 2, label: '时间自增' },
-        { value: 3, label: 'HIVE分区' }
+        { value: 3, label: 'HIVE分区' },
       ],
       triggerNextTimes: '',
       registerNode: [],
@@ -400,7 +401,7 @@ export default {
       timeFormatTypes: [
         { value: 'yyyy-MM-dd', label: 'yyyy-MM-dd' },
         { value: 'yyyyMMdd', label: 'yyyyMMdd' },
-        { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' }
+        { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' },
       ],
       replaceFormatTypes: [
         { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' },
@@ -408,27 +409,27 @@ export default {
         { value: 'HH:mm:ss', label: 'HH:mm:ss' },
         { value: 'yyyy/MM/dd HH:mm:ss', label: 'yyyy/MM/dd HH:mm:ss' },
         { value: 'yyyy-MM-dd HH:mm:ss', label: 'yyyy-MM-dd HH:mm:ss' },
-        { value: 'Timestamp', label: '时间戳' }
+        { value: 'Timestamp', label: '时间戳' },
       ],
       statusList: [
         { value: 500, label: '失败' },
         { value: 502, label: '失败(超时)' },
         { value: 200, label: '成功' },
-        { value: 0, label: '无' }
-      ]
+        { value: 0, label: '无' },
+      ],
     }
   },
 
   computed: {
     datasourceIdSchema() {
       return this.temp.datasourceId
-    }
+    },
   },
 
   watch: {
     datasourceIdSchema() {
       this.getSchemaList()
-    }
+    },
   },
   created() {
     this.fetchData()
@@ -484,7 +485,7 @@ export default {
       this.total = content.recordsTotal
       this.list = content.data
       this.listLoading = false
-
+      console.log(this.list)
       const firstElement = content?.data[0] || {}
       const a = {}
 
@@ -492,6 +493,7 @@ export default {
       a.name = firstElement.jobDesc
       a.content = firstElement
       if (!this.firstTime) {
+        console.log(555555555555555555)
         this.$store.commit('ADD_TASKDETAIL', a)
       } else {
         this.firstTime = false
@@ -532,7 +534,10 @@ export default {
             .getDataSourceDetail(this.temp.datasourceId)
             .then((res) => {
               console.log('dafa', res)
-              const jsonObj = Object.assign({ sqlScript: this.jobJson }, { jobDatasource: res })
+              const jsonObj = Object.assign(
+                { sqlScript: this.jobJson },
+                { jobDatasource: res }
+              )
               this.jobJson = JSON.stringify(jsonObj, null, 2)
             })
             .then(() => {
@@ -560,7 +565,7 @@ export default {
                   title: '成功',
                   message: '新建成功',
                   type: 'success',
-                  duration: 2000
+                  duration: 2000,
                 })
               })
             })
@@ -616,7 +621,7 @@ export default {
           title: 'Fail',
           message: 'json格式错误',
           type: 'error',
-          duration: 2000
+          duration: 2000,
         })
         return
       }
@@ -647,7 +652,7 @@ export default {
               title: 'Success',
               message: 'Update Successfully',
               type: 'success',
-              duration: 2000
+              duration: 2000,
             })
           })
         }
@@ -657,7 +662,7 @@ export default {
       this.$confirm('确定删除吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       }).then(() => {
         job.removeJob(row.id).then((response) => {
           this.fetchData()
@@ -665,7 +670,7 @@ export default {
             title: 'Success',
             message: 'Delete Successfully',
             type: 'success',
-            duration: 2000
+            duration: 2000,
           })
         })
       })
@@ -676,7 +681,7 @@ export default {
       this.$confirm('确定执行吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       }).then(() => {
         const param = {}
         param.jobId = row.id
@@ -686,7 +691,7 @@ export default {
             title: 'Success',
             message: 'Execute Successfully',
             type: 'success',
-            duration: 2000
+            duration: 2000,
           })
         })
       })
@@ -695,7 +700,7 @@ export default {
     handlerViewLog(row) {
       this.$router.push({
         path: '/datax/log/jobLog',
-        query: { jobId: row.id }
+        query: { jobId: row.id },
       })
     },
     handlerStart(row) {
@@ -704,7 +709,7 @@ export default {
           title: 'Success',
           message: 'Start Successfully',
           type: 'success',
-          duration: 2000
+          duration: 2000,
         })
       })
     },
@@ -714,7 +719,7 @@ export default {
           title: 'Success',
           message: 'Start Successfully',
           type: 'success',
-          duration: 2000
+          duration: 2000,
         })
       })
     },
@@ -757,7 +762,7 @@ export default {
       // FileReader读取文件内容
       const reader = new FileReader()
       reader.readAsText(file.raw, 'UTF-8')
-      reader.onload = function(e) {
+      reader.onload = function (e) {
         // urlData就是对应的文件内容
         const urlData = this.result
         _this.jsonContent = urlData
@@ -776,7 +781,7 @@ export default {
     // schema列表
     async getSchemaList() {
       const schemaList = await getTableSchema({
-        datasourceId: this.temp.datasourceId
+        datasourceId: this.temp.datasourceId,
       })
       console.log(schemaList)
       this.schemaList = schemaList
@@ -799,20 +804,20 @@ export default {
         // extraKeys: { Ctrl: 'delCharBefore' }, // 自定义快捷键
         hintOptions: {
           // 自定义提示选项,
-          completeSingle: false
+          completeSingle: false,
           // tables: _this.tips,
         },
         configureMouse() {
           console.log(window.getSelection())
           return {
-            unit: 'word'
+            unit: 'word',
           }
-        }
+        },
       })
-    }
+    },
   },
 
-  editor: null
+  editor: null,
 }
 </script>
 

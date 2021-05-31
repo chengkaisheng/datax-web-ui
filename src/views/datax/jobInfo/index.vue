@@ -1244,6 +1244,7 @@ export default {
     getDataTree(data) {
       this.loading = false
       if (this.$store.state.project.currentItem) {
+        let id = sessionStorage.getItem('strParam')
         const projectId = this.$store.state.project.currentItem.split('/')[0]
         job
           .getTreeData({

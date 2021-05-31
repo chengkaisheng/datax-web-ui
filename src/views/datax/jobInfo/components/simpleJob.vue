@@ -1,6 +1,12 @@
 <template>
   <div class="app-container">
-    <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="110px">
+    <el-form
+      ref="dataForm"
+      :rules="rules"
+      :model="temp"
+      label-position="left"
+      label-width="110px"
+    >
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="任务类型" prop="glueType">
@@ -13,12 +19,15 @@
             <!-- <el-input v-model="temp.name" disabled size="medium" placeholder="请输入任务名称" /> -->
           </el-form-item>
         </el-col>
-
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="任务描述" prop="jobDesc">
-            <el-input v-model="temp.jobDesc" size="medium" placeholder="请输入任务描述" />
+            <el-input
+              v-model="temp.jobDesc"
+              size="medium"
+              placeholder="请输入任务描述"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -30,14 +39,32 @@
           >
             <cron v-model="temp.jobCron" />
             <span slot="footer" class="dialog-footer">
-              <el-button @click="showCronBox = false;">关闭</el-button>
-              <el-button type="primary" @click="showCronBox = false">确 定</el-button>
+              <el-button @click="showCronBox = false">关闭</el-button>
+              <el-button type="primary" @click="showCronBox = false"
+                >确 定</el-button
+              >
             </span>
           </el-dialog>
           <el-form-item label="Cron" prop="jobCron">
-            <el-input v-model="temp.jobCron" auto-complete="off" placeholder="请输入Cron表达式">
-              <el-button v-if="!showCronBox" slot="append" icon="el-icon-turn-off" title="打开图形配置" @click="showCronBox = true" />
-              <el-button v-else slot="append" icon="el-icon-open" title="关闭图形配置" @click="showCronBox = false" />
+            <el-input
+              v-model="temp.jobCron"
+              auto-complete="off"
+              placeholder="请输入Cron表达式"
+            >
+              <el-button
+                v-if="!showCronBox"
+                slot="append"
+                icon="el-icon-turn-off"
+                title="打开图形配置"
+                @click="showCronBox = true"
+              />
+              <el-button
+                v-else
+                slot="append"
+                icon="el-icon-open"
+                title="关闭图形配置"
+                @click="showCronBox = false"
+              />
             </el-input>
           </el-form-item>
         </el-col>
@@ -45,14 +72,25 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="阻塞处理" prop="executorBlockStrategy">
-            <el-select v-model="temp.executorBlockStrategy" placeholder="请选择阻塞处理策略">
-              <el-option v-for="item in blockStrategies" :key="item.value" :label="item.label" :value="item.value" />
+            <el-select
+              v-model="temp.executorBlockStrategy"
+              placeholder="请选择阻塞处理策略"
+            >
+              <el-option
+                v-for="item in blockStrategies"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="报警邮件">
-            <el-input v-model="temp.alarmEmail" placeholder="请输入报警邮件，多个用逗号分隔" />
+            <el-input
+              v-model="temp.alarmEmail"
+              placeholder="请输入报警邮件，多个用逗号分隔"
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -60,64 +98,127 @@
         <el-col :span="12">
           <el-form-item label="执行器" prop="jobGroup">
             <el-select v-model="temp.jobGroup" placeholder="请选择执行器">
-              <el-option v-for="item in executorList" :key="item.id" :label="item.title" :value="item.id" />
+              <el-option
+                v-for="item in executorList"
+                :key="item.id"
+                :label="item.title"
+                :value="item.id"
+              />
             </el-select>
           </el-form-item>
         </el-col>
       </el-row>
       <el-col :span="12">
         <el-form-item label="失败重试次数">
-          <el-input-number v-model="temp.executorFailRetryCount" size="small" :min="0" :max="20" />
+          <el-input-number
+            v-model="temp.executorFailRetryCount"
+            size="small"
+            :min="0"
+            :max="20"
+          />
         </el-form-item>
       </el-col>
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="超时时间(分钟)">
-            <el-input-number v-model="temp.executorTimeout" size="small" :min="0" :max="120" />
+            <el-input-number
+              v-model="temp.executorTimeout"
+              size="small"
+              :min="0"
+              :max="120"
+            />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="路由策略" prop="executorRouteStrategy">
-            <el-select v-model="temp.executorRouteStrategy" placeholder="请选择路由策略">
-              <el-option v-for="item in routeStrategies" :key="item.value" :label="item.label" :value="item.value" />
+            <el-select
+              v-model="temp.executorRouteStrategy"
+              placeholder="请选择路由策略"
+            >
+              <el-option
+                v-for="item in routeStrategies"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="子任务">
-            <el-select v-model="temp.childJobId" multiple placeholder="子任务" value-key="id">
-              <el-option v-for="item in jobIdList" :key="item.id" :label="item.jobDesc ? item.jobDesc : item.jobType + '任务' + item.id" :value="item" />
+            <el-select
+              v-model="temp.childJobId"
+              multiple
+              placeholder="子任务"
+              value-key="id"
+            >
+              <el-option
+                v-for="item in jobIdList"
+                :key="item.id"
+                :label="
+                  item.jobDesc ? item.jobDesc : item.jobType + '任务' + item.id
+                "
+                :value="item"
+              />
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12" />
       </el-row>
-      <el-row v-if="temp.glueType==='BEAN'" :gutter="20">
+      <el-row v-if="temp.glueType === 'BEAN'" :gutter="20">
         <el-col :span="12">
           <el-form-item label="辅助参数" prop="incrementType">
-            <el-select v-model="temp.incrementType" placeholder="请选择参数类型" value="">
-              <el-option v-for="item in incrementTypes" :key="item.value" :label="item.label" :value="item.value" />
+            <el-select
+              v-model="temp.incrementType"
+              placeholder="请选择参数类型"
+              value=""
+            >
+              <el-option
+                v-for="item in incrementTypes"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
             </el-select>
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row v-if="temp.glueType==='BEAN' && temp.incrementType === 1" :gutter="20">
+      <el-row
+        v-if="temp.glueType === 'BEAN' && temp.incrementType === 1"
+        :gutter="20"
+      >
         <el-col :span="12">
           <el-form-item label="增量主键开始ID" prop="incStartId">
-            <el-input v-model="temp.incStartId" placeholder="首次增量使用" style="width: 56%" />
+            <el-input
+              v-model="temp.incStartId"
+              placeholder="首次增量使用"
+              style="width: 56%"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="ID增量参数" prop="replaceParam">
-            <el-input v-model="temp.replaceParam" placeholder="-DstartId='%s' -DendId='%s'" />
+            <el-input
+              v-model="temp.replaceParam"
+              placeholder="-DstartId='%s' -DendId='%s'"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="reader数据源" prop="datasourceId">
-            <el-select v-model="temp.datasourceId" placeholder="reader数据源" class="filter-item">
-              <el-option v-for="item in dataSourceList" :key="item.id" :label="item.datasourceName" :value="item.id" />
+            <el-select
+              v-model="temp.datasourceId"
+              placeholder="reader数据源"
+              class="filter-item"
+            >
+              <el-option
+                v-for="item in dataSourceList"
+                :key="item.id"
+                :label="item.datasourceName"
+                :value="item.id"
+              />
             </el-select>
           </el-form-item>
         </el-col>
@@ -128,11 +229,17 @@
         </el-col>
         <el-col :span="5">
           <el-form-item label="主键" label-width="40px" prop="primaryKey">
-            <el-input v-model="temp.primaryKey" placeholder="请填写主键字段名" />
+            <el-input
+              v-model="temp.primaryKey"
+              placeholder="请填写主键字段名"
+            />
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row v-if="temp.glueType==='BEAN' && temp.incrementType === 2" :gutter="20">
+      <el-row
+        v-if="temp.glueType === 'BEAN' && temp.incrementType === 2"
+        :gutter="20"
+      >
         <el-col :span="12">
           <el-form-item label="增量开始时间" prop="incStartTime">
             <el-date-picker
@@ -146,54 +253,98 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="增量时间字段" prop="replaceParam">
-            <el-input v-model="temp.replaceParam" placeholder="-DlastTime='%s' -DcurrentTime='%s'" />
+            <el-input
+              v-model="temp.replaceParam"
+              placeholder="-DlastTime='%s' -DcurrentTime='%s'"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="增量时间格式" prop="replaceParamType">
-            <el-select v-model="temp.replaceParamType" placeholder="增量时间格式" @change="incStartTimeFormat">
-              <el-option v-for="item in replaceFormatTypes" :key="item.value" :label="item.label" :value="item.value" />
+            <el-select
+              v-model="temp.replaceParamType"
+              placeholder="增量时间格式"
+              @change="incStartTimeFormat"
+            >
+              <el-option
+                v-for="item in replaceFormatTypes"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
             </el-select>
           </el-form-item>
         </el-col>
-
       </el-row>
-      <el-row v-if="temp.glueType==='BEAN' && temp.incrementType === 3" :gutter="20">
+      <el-row
+        v-if="temp.glueType === 'BEAN' && temp.incrementType === 3"
+        :gutter="20"
+      >
         <el-col :span="12">
           <el-form-item label="分区字段" prop="partitionField">
-            <el-input v-model="partitionField" placeholder="请输入分区字段" style="width: 56%" />
+            <el-input
+              v-model="partitionField"
+              placeholder="请输入分区字段"
+              style="width: 56%"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="7">
           <el-form-item label="分区时间">
             <el-select v-model="timeFormatType" placeholder="分区时间格式">
-              <el-option v-for="item in timeFormatTypes" :key="item.value" :label="item.label" :value="item.value" />
+              <el-option
+                v-for="item in timeFormatTypes"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="5">
-          <el-input-number v-model="timeOffset" size="samll" :min="-20" :max="0" style="width: 65%" />
+          <el-input-number
+            v-model="timeOffset"
+            size="samll"
+            :min="-20"
+            :max="0"
+            style="width: 65%"
+          />
         </el-col>
       </el-row>
-      <el-row v-if="temp.glueType==='BEAN'" :gutter="20">
+      <el-row v-if="temp.glueType === 'BEAN'" :gutter="20">
         <el-col :span="24">
           <el-form-item label="JVM启动参数">
-            <el-input v-model="temp.jvmParam" placeholder="-Xms1024m -Xmx1024m -XX:+HeapDumpOnOutOfMemoryError" />
+            <el-input
+              v-model="temp.jvmParam"
+              placeholder="-Xms1024m -Xmx1024m -XX:+HeapDumpOnOutOfMemoryError"
+            />
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
-    <json-editor v-if="temp.glueType==='BEAN'" ref="jsonEditor" v-model="jobJson" />
-    <shell-editor v-if="temp.glueType==='GLUE_SHELL'" ref="shellEditor" v-model="glueSource" />
-    <python-editor v-if="temp.glueType==='GLUE_PYTHON'" ref="pythonEditor" v-model="glueSource" />
-    <powershell-editor v-if="temp.glueType==='GLUE_POWERSHELL'" ref="powershellEditor" v-model="glueSource" />
+    <json-editor
+      v-if="temp.glueType === 'BEAN'"
+      ref="jsonEditor"
+      v-model="jobJson"
+    />
+    <shell-editor
+      v-if="temp.glueType === 'GLUE_SHELL'"
+      ref="shellEditor"
+      v-model="glueSource"
+    />
+    <python-editor
+      v-if="temp.glueType === 'GLUE_PYTHON'"
+      ref="pythonEditor"
+      v-model="glueSource"
+    />
+    <powershell-editor
+      v-if="temp.glueType === 'GLUE_POWERSHELL'"
+      ref="powershellEditor"
+      v-model="glueSource"
+    />
     <div slot="footer" class="dialog-footer">
-      <el-button @click="dialogFormVisible = false">
-        取消
-      </el-button>
-      <el-button type="primary" @click="createData()">
-        确定
-      </el-button>
+      <el-button @click="dialogFormVisible = false"> 取消 </el-button>
+      <el-button type="primary" @click="createData()"> 确定 </el-button>
     </div>
   </div>
 </template>
@@ -221,10 +372,10 @@ export default {
       const statusMap = {
         published: 'success',
         draft: 'gray',
-        deleted: 'danger'
+        deleted: 'danger',
       }
       return statusMap[status]
-    }
+    },
   },
   props: ['jobType', 'jobTypeLabel'],
   data() {
@@ -254,7 +405,7 @@ export default {
         projectIds: '',
         triggerStatus: -1,
         name: '',
-        glueType: ''
+        glueType: '',
       },
       showCronBox: false,
       dialogPluginVisible: false,
@@ -263,26 +414,58 @@ export default {
       dialogStatus: '',
       textMap: {
         update: 'Edit',
-        create: 'Create'
+        create: 'Create',
       },
       rules: {
-        jobGroup: [{ required: true, message: '执行器不能为空', trigger: 'change' }],
-        executorRouteStrategy: [{ required: true, message: '路由策略不能为空', trigger: 'change' }],
-        executorBlockStrategy: [{ required: true, message: '阻塞处理不能为空', trigger: 'change' }],
-        glueType: [{ required: true, message: 'jobType is required', trigger: 'change' }],
-        projectId: [{ required: true, message: 'projectId is required', trigger: 'change' }],
-        name: [{ required: true, message: '任务名称不能为空', trigger: 'blur' }],
-        jobProject: [{ required: true, message: 'jobProject is required', trigger: 'blur' }],
-        jobCron: [{ required: true, message: 'cron表达式不能为空', trigger: 'blur' }],
-        jobDesc: [{ required: true, message: '任务描述不能为空', trigger: 'blur' }],
+        jobGroup: [
+          { required: true, message: '执行器不能为空', trigger: 'change' },
+        ],
+        executorRouteStrategy: [
+          { required: true, message: '路由策略不能为空', trigger: 'change' },
+        ],
+        executorBlockStrategy: [
+          { required: true, message: '阻塞处理不能为空', trigger: 'change' },
+        ],
+        glueType: [
+          { required: true, message: 'jobType is required', trigger: 'change' },
+        ],
+        projectId: [
+          {
+            required: true,
+            message: 'projectId is required',
+            trigger: 'change',
+          },
+        ],
+        name: [
+          { required: true, message: '任务名称不能为空', trigger: 'blur' },
+        ],
+        jobProject: [
+          {
+            required: true,
+            message: 'jobProject is required',
+            trigger: 'blur',
+          },
+        ],
+        jobCron: [
+          {
+            required: true,
+            message: 'cron表达式不能为空',
+            trigger: ['blur', 'change'],
+          },
+        ],
+        jobDesc: [
+          { required: true, message: '任务描述不能为空', trigger: 'blur' },
+        ],
         incStartId: [{ trigger: 'blur', validator: validateIncParam }],
         replaceParam: [{ trigger: 'blur', validator: validateIncParam }],
         primaryKey: [{ trigger: 'blur', validator: validateIncParam }],
         incStartTime: [{ trigger: 'change', validator: validateIncParam }],
         replaceParamType: [{ trigger: 'change', validator: validateIncParam }],
-        partitionField: [{ trigger: 'blur', validator: validatePartitionParam }],
+        partitionField: [
+          { trigger: 'blur', validator: validatePartitionParam },
+        ],
         datasourceId: [{ trigger: 'change', validator: validateIncParam }],
-        readerTable: [{ trigger: 'blur', validator: validateIncParam }]
+        readerTable: [{ trigger: 'blur', validator: validateIncParam }],
       },
       temp: {
         id: undefined,
@@ -313,7 +496,7 @@ export default {
         primaryKey: '',
         projectId: '',
         datasourceId: '',
-        readerTable: ''
+        readerTable: '',
       },
       resetTemp() {
         this.temp = this.$options.data().temp
@@ -330,7 +513,7 @@ export default {
       blockStrategies: [
         { value: 'SERIAL_EXECUTION', label: '单机串行' },
         { value: 'DISCARD_LATER', label: '丢弃后续调度' },
-        { value: 'COVER_EARLY', label: '覆盖之前调度' }
+        { value: 'COVER_EARLY', label: '覆盖之前调度' },
       ],
       routeStrategies: [
         { value: 'FIRST', label: '第一个' },
@@ -341,12 +524,12 @@ export default {
         { value: 'LEAST_FREQUENTLY_USED', label: '最不经常使用' },
         { value: 'LEAST_RECENTLY_USED', label: '最近最久未使用' },
         { value: 'FAILOVER', label: '故障转移' },
-        { value: 'BUSYOVER', label: '忙碌转移' }
+        { value: 'BUSYOVER', label: '忙碌转移' },
         // { value: 'SHARDING_BROADCAST', label: '分片广播' }
       ],
       glueTypes: [
         // { value: 'BEAN', label: 'DataX任务' },
-        { value: 'GLUE_SHELL', label: 'Shell任务' }
+        { value: 'GLUE_SHELL', label: 'Shell任务' },
         // { value: 'GLUE_PYTHON', label: 'Python任务' },
         // { value: 'GLUE_POWERSHELL', label: 'PowerShell任务' }
       ],
@@ -354,7 +537,7 @@ export default {
         { value: 0, label: '无' },
         { value: 1, label: '主键自增' },
         { value: 2, label: '时间自增' },
-        { value: 3, label: 'HIVE分区' }
+        { value: 3, label: 'HIVE分区' },
       ],
       triggerNextTimes: '',
       registerNode: [],
@@ -366,7 +549,7 @@ export default {
       timeFormatTypes: [
         { value: 'yyyy-MM-dd', label: 'yyyy-MM-dd' },
         { value: 'yyyyMMdd', label: 'yyyyMMdd' },
-        { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' }
+        { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' },
       ],
       replaceFormatTypes: [
         { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' },
@@ -374,14 +557,14 @@ export default {
         { value: 'HH:mm:ss', label: 'HH:mm:ss' },
         { value: 'yyyy/MM/dd HH:mm:ss', label: 'yyyy/MM/dd HH:mm:ss' },
         { value: 'yyyy-MM-dd HH:mm:ss', label: 'yyyy-MM-dd HH:mm:ss' },
-        { value: 'Timestamp', label: '时间戳' }
+        { value: 'Timestamp', label: '时间戳' },
       ],
       statusList: [
         { value: 500, label: '失败' },
         { value: 502, label: '失败(超时)' },
         { value: 200, label: '成功' },
-        { value: 0, label: '无' }
-      ]
+        { value: 0, label: '无' },
+      ],
     }
   },
   created() {
@@ -398,31 +581,31 @@ export default {
   methods: {
     handleClose(done) {
       this.$confirm('确认关闭？')
-        .then(_ => {
+        .then((_) => {
           done()
         })
-        .catch(_ => {})
+        .catch((_) => {})
     },
     getExecutor() {
-      job.getExecutorList().then(response => {
+      job.getExecutorList().then((response) => {
         const { content } = response
         this.executorList = content
       })
     },
     getJobIdList() {
-      job.getJobIdList().then(response => {
+      job.getJobIdList().then((response) => {
         const { content } = response
         this.jobIdList = content
         console.log(content, '子任务')
       })
     },
     getJobProject() {
-      jobProjectApi.getJobProjectList().then(response => {
+      jobProjectApi.getJobProjectList().then((response) => {
         this.jobProjectList = response
       })
     },
     getDataSourceList() {
-      datasourceApi.getDataSourceList().then(response => {
+      datasourceApi.getDataSourceList().then((response) => {
         this.dataSourceList = response
       })
     },
@@ -430,8 +613,10 @@ export default {
       this.listLoading = true
 
       this.listQuery.projectIds = this.$store.state.taskAdmin.projectId
+      this.listQuery.name = this.$store.state.taskAdmin.GroupName
 
-      job.getList(this.listQuery).then(response => {
+      job.getList(this.listQuery).then((response) => {
+        console.log(response)
         const { content } = response
         this.total = content.recordsTotal
         this.list = content.data
@@ -441,7 +626,11 @@ export default {
         const a = {}
 
         a.title = firstElement.name
+          ? null
+          : this.$store.state.taskAdmin.GroupName
         a.name = firstElement.name
+          ? null
+          : this.$store.state.taskAdmin.GroupName
         a.content = firstElement
         if (!this.firstTime) {
           this.$store.commit('ADD_TASKDETAIL', a)
@@ -452,8 +641,7 @@ export default {
         this.$store.commit('SET_TASKLIST', this.list)
       })
     },
-    incStartTimeFormat(vData) {
-    },
+    incStartTimeFormat(vData) {},
     handleCreate() {
       this.resetTemp()
       this.dialogStatus = 'create'
@@ -468,11 +656,14 @@ export default {
           title: 'Fail',
           message: 'json格式错误',
           type: 'error',
-          duration: 2000
+          duration: 2000,
         })
         return
       }
-      console.log(this.$store.state.taskAdmin.GroupId, 'this.$store.state.taskAdmin.GroupId')
+      console.log(
+        this.$store.state.taskAdmin.GroupId,
+        'this.$store.state.taskAdmin.GroupId'
+      )
       this.$refs['dataForm'].validate((valid) => {
         console.log(valid)
         if (valid) {
@@ -485,12 +676,24 @@ export default {
           }
           this.temp.jobJson = this.jobJson
           this.temp.glueSource = this.glueSource
-          this.temp.executorHandler = this.temp.glueType === 'BEAN' ? 'executorJobHandler' : ''
-          if (this.partitionField) this.temp.partitionInfo = this.partitionField + ',' + this.timeOffset + ',' + this.timeFormatType
+          this.temp.executorHandler =
+            this.temp.glueType === 'BEAN' ? 'executorJobHandler' : ''
+          if (this.partitionField)
+            this.temp.partitionInfo =
+              this.partitionField +
+              ',' +
+              this.timeOffset +
+              ',' +
+              this.timeFormatType
 
           this.temp.projectId = this.$store.state.taskAdmin.projectId
           this.temp.jobType = this.$store.state.taskAdmin.tabType
-          console.log(this.$store.state.taskAdmin.Group.id, this.$store.state.taskAdmin.Group, this.$store.state.taskAdmin.TreeId, 'this.$store.state.taskAdmin.TreeId')
+          console.log(
+            this.$store.state.taskAdmin.Group.id,
+            this.$store.state.taskAdmin.Group,
+            this.$store.state.taskAdmin.TreeId,
+            'this.$store.state.taskAdmin.TreeId'
+          )
           this.temp.projectGroupId = this.$store.state.taskAdmin.TreeId
           // this.temp.projectGroupId = 99999
           console.log(this.temp.projectGroupId, 'this.temp.projectGroupId')
@@ -505,7 +708,7 @@ export default {
               title: 'Success',
               message: 'Created Successfully',
               type: 'success',
-              duration: 2000
+              duration: 2000,
             })
           })
         }
@@ -551,13 +754,16 @@ export default {
       })
     },
     updateData() {
-      this.temp.jobJson = typeof (this.jobJson) !== 'string' ? JSON.stringify(this.jobJson) : this.jobJson
+      this.temp.jobJson =
+        typeof this.jobJson !== 'string'
+          ? JSON.stringify(this.jobJson)
+          : this.jobJson
       if (this.temp.glueType === 'BEAN' && !isJSON(this.temp.jobJson)) {
         this.$notify({
           title: 'Fail',
           message: 'json格式错误',
           type: 'error',
-          duration: 2000
+          duration: 2000,
         })
         return
       }
@@ -570,9 +776,16 @@ export default {
             }
             this.temp.childJobId = auth.toString()
           }
-          this.temp.executorHandler = this.temp.glueType === 'BEAN' ? 'executorJobHandler' : ''
+          this.temp.executorHandler =
+            this.temp.glueType === 'BEAN' ? 'executorJobHandler' : ''
           this.temp.glueSource = this.glueSource
-          if (this.partitionField) this.temp.partitionInfo = this.partitionField + ',' + this.timeOffset + ',' + this.timeFormatType
+          if (this.partitionField)
+            this.temp.partitionInfo =
+              this.partitionField +
+              ',' +
+              this.timeOffset +
+              ',' +
+              this.timeFormatType
           job.updateJob(this.temp).then(() => {
             this.fetchData()
             this.dialogFormVisible = false
@@ -580,7 +793,7 @@ export default {
               title: '成功',
               message: '添加成功',
               type: 'success',
-              duration: 2000
+              duration: 2000,
             })
           })
         }
@@ -590,15 +803,15 @@ export default {
       this.$confirm('确定删除吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       }).then(() => {
-        job.removeJob(row.id).then(response => {
+        job.removeJob(row.id).then((response) => {
           this.fetchData()
           this.$notify({
             title: 'Success',
             message: 'Delete Successfully',
             type: 'success',
-            duration: 2000
+            duration: 2000,
           })
         })
       })
@@ -609,42 +822,42 @@ export default {
       this.$confirm('确定执行吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       }).then(() => {
         const param = {}
         param.jobId = row.id
         param.executorParam = row.executorParam
-        job.triggerJob(param).then(response => {
+        job.triggerJob(param).then((response) => {
           this.$notify({
             title: 'Success',
             message: 'Execute Successfully',
             type: 'success',
-            duration: 2000
+            duration: 2000,
           })
         })
       })
     },
     // 查看日志
     handlerViewLog(row) {
-      this.$router.push({ path: '/datax/log/jobLog', query: { jobId: row.id }})
+      this.$router.push({ path: '/datax/log/jobLog', query: { jobId: row.id } })
     },
     handlerStart(row) {
-      job.startJob(row.id).then(response => {
+      job.startJob(row.id).then((response) => {
         this.$notify({
           title: 'Success',
           message: 'Start Successfully',
           type: 'success',
-          duration: 2000
+          duration: 2000,
         })
       })
     },
     handlerStop(row) {
-      job.stopJob(row.id).then(response => {
+      job.stopJob(row.id).then((response) => {
         this.$notify({
           title: 'Success',
           message: 'Start Successfully',
           type: 'success',
-          duration: 2000
+          duration: 2000,
         })
       })
     },
@@ -652,34 +865,34 @@ export default {
       row.triggerStatus === 1 ? this.handlerStart(row) : this.handlerStop(row)
     },
     nextTriggerTime(row) {
-      job.nextTriggerTime(row.jobCron).then(response => {
+      job.nextTriggerTime(row.jobCron).then((response) => {
         const { content } = response
         this.triggerNextTimes = content.join('<br>')
       })
     },
     loadById(row) {
-      executor.loadById(row.jobGroup).then(response => {
+      executor.loadById(row.jobGroup).then((response) => {
         this.registerNode = []
         const { content } = response
         this.registerNode.push(content)
       })
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style scoped>
-  .el-dropdown-link {
-    cursor: pointer;
-    color: #409EFF;
-  }
-  .el-dropdown + .el-dropdown {
-    margin-left: 15px;
-  }
-  .dialog-footer {
-    text-align: right;
-    padding-top: 20px;
-    margin-top: 20px;
-    border-top: 1px solid rgba(243, 243, 243, 1);
-  }
+.el-dropdown-link {
+  cursor: pointer;
+  color: #409eff;
+}
+.el-dropdown + .el-dropdown {
+  margin-left: 15px;
+}
+.dialog-footer {
+  text-align: right;
+  padding-top: 20px;
+  margin-top: 20px;
+  border-top: 1px solid rgba(243, 243, 243, 1);
+}
 </style>

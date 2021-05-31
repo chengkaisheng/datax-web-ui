@@ -9,7 +9,7 @@
       :header-cell-style="{
         background: '#F8F8FA',
         'font-weight': 500,
-        color: '#333333'
+        color: '#333333',
       }"
     >
       <el-table-column align="center" label="任务ID" width="70">
@@ -25,16 +25,16 @@
         <template slot-scope="scope">
           <span>
             <div
-              :style="
-                `background:${
-                  scope.row.triggerCode == 500
-                    ? 'rgba(254, 70, 70, 1)'
-                    : 'rgba(0, 182, 0, 1)'
-                }`
-              "
+              :style="`background:${
+                scope.row.triggerCode == 500
+                  ? 'rgba(254, 70, 70, 1)'
+                  : 'rgba(0, 182, 0, 1)'
+              }`"
               class="yuan"
             />
-            {{ statusList.find(t => t.value === scope.row.triggerCode).label }}
+            {{
+              statusList.find((t) => t.value === scope.row.triggerCode).label
+            }}
           </span>
         </template>
       </el-table-column>
@@ -53,16 +53,14 @@
         <template slot-scope="scope">
           <span>
             <div
-              :style="
-                `background:${
-                  scope.row.handleCode == 500
-                    ? 'rgba(254, 70, 70, 1)'
-                    : 'rgba(0, 182, 0, 1)'
-                }`
-              "
+              :style="`background:${
+                scope.row.handleCode == 500
+                  ? 'rgba(254, 70, 70, 1)'
+                  : 'rgba(0, 182, 0, 1)'
+              }`"
               class="yuan"
             />
-            {{ statusList.find(t => t.value === scope.row.handleCode).label }}
+            {{ statusList.find((t) => t.value === scope.row.handleCode).label }}
           </span>
         </template>
       </el-table-column>
@@ -87,14 +85,14 @@
             v-if="row.handleCode === 0 && row.triggerCode === 200"
             direction="vertical"
           />
-          <el-button
+          <!-- <el-button
             v-show="row.handleCode === 0 && row.triggerCode === 200"
             type="primary"
             size="small"
             @click="killRunningJob(row)"
           >
             终止任务
-          </el-button>
+          </el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -110,12 +108,8 @@
         <pre :loading="logLoading" v-text="logContent" />
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">
-          关闭
-        </el-button>
-        <el-button type="primary" @click="loadLog">
-          刷新日志
-        </el-button>
+        <el-button @click="dialogVisible = false"> 关闭 </el-button>
+        <el-button type="primary" @click="loadLog"> 刷新日志 </el-button>
       </div>
     </el-dialog>
   </div>
@@ -124,7 +118,7 @@
 <script>
 import * as log from '@/api/datax-job-log'
 import * as job from '@/api/datax-job-info'
-
+import moment from 'moment'
 export default {
   props: ['id'],
   data() {
@@ -138,7 +132,7 @@ export default {
         jobGroup: 0,
         jobId: this.id,
         logStatus: -1,
-        filterTime: ''
+        filterTime: '',
       },
       // 日志内容
       logContent: '',
@@ -151,27 +145,27 @@ export default {
         executorAddress: '',
         triggerTime: '',
         id: '',
-        fromLineNum: 1
+        fromLineNum: 1,
       },
       // handleViewJobLog: false,
       statusList: [
         {
           value: 500,
-          label: '失败'
+          label: '失败',
         },
         {
           value: 502,
-          label: '失败(超时)'
+          label: '失败(超时)',
         },
         {
           value: 200,
-          label: '成功'
+          label: '成功',
         },
         {
           value: 0,
-          label: '无'
-        }
-      ]
+          label: '无',
+        },
+      ],
     }
   },
 
@@ -182,7 +176,7 @@ export default {
     fetchData() {
       this.listLoading = true
       const param = Object.assign({}, this.listQuery)
-      log.getList(param).then(response => {
+      log.getList(param).then((response) => {
         const { content } = response
         this.total = content.recordsTotal
         this.list = content.data
@@ -230,7 +224,7 @@ export default {
             this.jobLogQuery.id,
             this.jobLogQuery.fromLineNum
           )
-          .then(response => {
+          .then((response) => {
             console.log(response)
             // 判断是否是 '\n'，如果是表示显示完成，不重新加载
             // if (response.content.end === '\n') {
@@ -253,7 +247,7 @@ export default {
             this.jobLogQuery.id,
             this.jobLogQuery.fromLineNum
           )
-          .then(response => {
+          .then((response) => {
             console.log(response, '11111111111')
             // 判断是否是 '\n'，如果是表示显示完成，不重新加载
             // if (response.content.logContent === '\n') {
@@ -272,8 +266,8 @@ export default {
     },
     test(info) {
       console.log(info)
-    }
-  }
+    },
+  },
 }
 </script>
 

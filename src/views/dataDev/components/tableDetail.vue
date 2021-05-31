@@ -1005,7 +1005,7 @@ export default {
           } else {
             this.$notify({
               title: '错误',
-              message: '保存失败',
+              message: '失败',
               type: 'error',
               duration: 2000
             })
@@ -1014,7 +1014,7 @@ export default {
         .catch((_) => {
           this.$notify({
             title: '错误',
-            message: '保存失败.',
+            message: '失败.',
             type: 'error',
             duration: 2000
           })
