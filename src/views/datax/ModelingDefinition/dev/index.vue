@@ -117,9 +117,9 @@
           <a href="javascript:0" @click="delWorkFlow">删除</a>
         </vue-context-menu>
         <u id="drag" @mousedown="mousedown">
-          <li>.</li>
-          <li>.</li>
-          <li>.</li>
+          <li></li>
+          <li></li>
+          <li></li>
         </u>
       </div>
       <!-- </vue-draggable-resizable> -->
@@ -1428,7 +1428,7 @@ export default {
       height: 100px;
       width: 5px;
       cursor: e-resize;
-      background: red;
+      background: #ccc;
     }
     #drag li {
       list-style: none;

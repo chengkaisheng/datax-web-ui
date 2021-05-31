@@ -1119,8 +1119,9 @@ export default {
       this.showAdmin = true
     }
     this.getItem()
+    let projectId = sessionStorage.getItem('strParam').split('/')[0]
     setTimeout(() => {
-      this.getDataTree()
+      this.getDataTree(projectId)
     }, 600)
     const p = {
       current: 1,
@@ -1247,7 +1248,7 @@ export default {
         const projectId = this.$store.state.project.currentItem.split('/')[0]
         job
           .getTreeData({
-            projectId: projectId,
+            projectId: data || projectId,
           })
           .then((res) => {
             if (res.code === 200) {
