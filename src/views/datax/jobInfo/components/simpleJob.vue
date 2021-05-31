@@ -273,7 +273,7 @@ export default {
         projectId: [{ required: true, message: 'projectId is required', trigger: 'change' }],
         name: [{ required: true, message: '任务名称不能为空', trigger: 'blur' }],
         jobProject: [{ required: true, message: 'jobProject is required', trigger: 'blur' }],
-        jobCron: [{ required: true, message: 'cron表达式不能为空', trigger: 'blur' }],
+        jobCron: [{ required: true, message: 'cron表达式不能为空', trigger: ['blur', 'change'] }],
         jobDesc: [{ required: true, message: '任务描述不能为空', trigger: 'blur' }],
         incStartId: [{ trigger: 'blur', validator: validateIncParam }],
         replaceParam: [{ trigger: 'blur', validator: validateIncParam }],
@@ -430,8 +430,10 @@ export default {
       this.listLoading = true
 
       this.listQuery.projectIds = this.$store.state.taskAdmin.projectId
+      this.listQuery.name = this.$store.state.taskAdmin.GroupName
 
       job.getList(this.listQuery).then(response => {
+        console.log(response)
         const { content } = response
         this.total = content.recordsTotal
         this.list = content.data
@@ -440,8 +442,8 @@ export default {
         const firstElement = content?.data[0] || {}
         const a = {}
 
-        a.title = firstElement.name
-        a.name = firstElement.name
+        a.title = firstElement.name ? null : this.$store.state.taskAdmin.GroupName
+        a.name = firstElement.name ? null : this.$store.state.taskAdmin.GroupName
         a.content = firstElement
         if (!this.firstTime) {
           this.$store.commit('ADD_TASKDETAIL', a)

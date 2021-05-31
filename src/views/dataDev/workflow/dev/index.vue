@@ -28,7 +28,6 @@
           v-loading="loading"
           :data="workflowList"
           highlight-current
-          accordion
           default-expand-all
           draggable
           node-key="id"

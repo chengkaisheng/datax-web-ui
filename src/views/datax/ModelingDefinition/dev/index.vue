@@ -33,13 +33,13 @@
             >
           </el-dropdown-menu>
         </el-dropdown>
-        <div style="height: 20px"></div>
+        <!-- <div style="height: 20px"></div> -->
         <el-input
           v-model="search"
-          class="input_serach"
           prefix-icon="el-icon-search"
           placeholder="文件夹或建模名称"
           clearable
+          style="margin-top: -10px"
         />
         <el-tree
           v-loading="loading"
@@ -140,7 +140,7 @@
       <div class="rg">
         <el-tabs
           v-model="editableTabsValue"
-          type="card"
+          type="border-card"
           closable
           @tab-remove="removeTab"
           @tab-click="handleTabs"
@@ -151,13 +151,14 @@
             :label="item.name"
             :name="item.name"
             closable
+            tab-position="left"
           >
             <div v-if="item.name === '首页'" class="title_h3">
               一站式数据开发解决方案
             </div>
             <svg-icon
               v-if="item.name === '首页'"
-              style="width: 100%; height: 600px; margin-top: 25px"
+              style="width: 100%; height: calc(100vh - 50px); margin-top: 25px"
               icon-class="fengdie"
             />
             <Flow
@@ -1321,7 +1322,7 @@ export default {
     padding: 0px 24px 0px 0;
     background-color: #fff;
     overflow: hidden;
-    margin: 20px 20px 0 20px;
+    // margin: 20px 20px 0 20px;
     display: flex;
     .el-form {
       margin: 15px 0;
@@ -1352,19 +1353,19 @@ export default {
 
     .lt {
       position: relative;
-      border: 1px solid #ccc;
+      // border: 1px solid #ccc;
       width: 300px;
-      height: 650px;
+      // height: 650px;
       padding: 10px;
-      // height: calc(100vh - 181px);
+      height: calc(100vh - 50px);
       background: #f8f8fa;
       .el-input {
         margin-bottom: 20px;
       }
       ul {
         li {
-          height: 40px;
-          line-height: 40px;
+          height: 32px;
+          line-height: 32px;
           background-color: #f8f8fa;
           cursor: pointer;
         }
@@ -1439,108 +1440,6 @@ export default {
       height: 100%;
       flex: 1;
       overflow-y: hidden;
-      .el-tabs__nav .el-tabs__item:nth-child(1) span {
-        display: none;
-      }
-
-      .el-tabs {
-        margin: 0;
-        padding: 0;
-        .el-tabs__content {
-          // height: calc(100vh - 80px);
-          overflow-y: auto;
-          overflow-x: auto;
-        }
-        .el-tabs__header {
-          height: 32px;
-          line-height: 32px;
-          margin: 0;
-          padding: 0;
-          .el-tabs__nav-wrap {
-            .el-tabs__nav-next,
-            .el-tabs__nav-prev {
-              background-color: #ccc;
-              height: 32px;
-              width: 20px;
-              border: none;
-              text-align: center;
-              line-height: 32px;
-              margin: 0;
-              padding: 0;
-            }
-          }
-          .el-tabs__nav {
-            // background-color: #f8f8fa;
-            margin: 0;
-            padding: 0;
-            .el-tabs__item {
-              border-top: 1px solid #f8f8fa;
-              width: 300px;
-              text-align: center;
-              border: none;
-              border-top: 1px solid #f8f8fa;
-              // border-radius: 6px 6px 0px 0px;
-              height: 32px;
-              line-height: 32px;
-              position: relative;
-              overflow: hidden;
-              vertical-align: bottom;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-              .el-icon-close {
-                position: absolute;
-                right: 10px;
-                top: 50%;
-                transform: translateY(-50%);
-              }
-            }
-            .el-tabs__item {
-              // width: 100%;
-              width: 200px;
-              border: none;
-              border-top: 1px solid #f8f8fa;
-              border-radius: 6px 6px 0px 0px;
-              height: 32px;
-              line-height: 32px;
-              position: relative;
-              overflow: hidden;
-              vertical-align: bottom;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-              .el-icon-close {
-                position: absolute;
-                right: 10px;
-                top: 50%;
-                transform: translateY(-50%);
-              }
-            }
-          }
-        }
-        .el-tabs__item.is-active {
-          background-color: #ffffff;
-          // border-bottom-color:  #3d5eff;
-        }
-        // .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active {
-        //   height: 50px;
-        //   line-height: 50px;
-        // }
-        .el-tab-pane {
-          // padding: 10px;
-          // height: 100%;
-          position: relative;
-          .job_detail {
-            height: 100%;
-          }
-          .title_h3 {
-            position: absolute;
-            font-size: 24px;
-            font-weight: 700;
-            font-family: '楷体';
-            left: 24px;
-            top: 30px;
-          }
-        }
-      }
     }
   }
 
@@ -1622,9 +1521,48 @@ export default {
   //   border-left: 1px solid #e6e6e6;
   // }
 }
-</style>
-<style scoped>
-.el-bar-tab >>> .el-tabs__nav-scroll {
-  background: #000;
+.el-input .el-input__inner {
+    height: 32px;
+    line-height: 32px;
 }
+
+.el-tree {
+    position: relative;
+    cursor: default;
+    background: #f8f8fa;
+    color: #606266;
+    margin: -10px 0px 0 0;
+}
+
+.el-tabs--border-card>.el-tabs__content {
+    padding: 0px;
+}
+.el-tabs--border-card>.el-tabs__header {
+    background-color: #f8f8fa;
+    border-bottom: 1px solid #dfe4ed;
+    margin: 0;
+    /* height: 32px; */
+}
+.el-tabs__item {
+    padding: 0 20px;
+    height: 32px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    line-height: 32px;
+    display: inline-block;
+    list-style: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #303133;
+    position: relative;
+}
+
+.title_h3 {
+          position: absolute;
+          font-size: 24px;
+          font-weight: 700;
+          font-family: '楷体';
+          left: 24px;
+          top: 30px;
+        }
 </style>

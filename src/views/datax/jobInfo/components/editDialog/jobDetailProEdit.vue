@@ -1067,12 +1067,14 @@ export default {
      * @description: map点击删除
      */
     bHandleClick(index, v) {
-      console.log(index)
+      console.log(index, v)
       // this.fromColumnsListChecked.splice(index, 1)
       // this.toColumnsListChecked.splice(index, 1)
-
-      this.tableForm.lcolumns.splice(index, 1)
-      this.tableForm.rcolumns.splice(index, 1)
+      this.$store.state.taskAdmin.selectReaderColumn.splice(index, 1)
+      // this.tableForm.lcolumns
+      // console.log(this.tableForm.lcolumns)
+      // this.tableForm.rcolumns.splice(index, 1)
+      this.taskParam.writerColumns.splice(index, 1)
       this.mappingTable.splice(index, 1)
     },
     /**
@@ -1220,7 +1222,7 @@ export default {
         // }
         this.$store.commit('changeWatch', 1)
         this.$store.commit('closeTabs', 1)
-        this.$emit('fetchData',)
+        this.$emit('fetchData')
         this.$emit('close')
         this.$notify({
           title: 'Success',
