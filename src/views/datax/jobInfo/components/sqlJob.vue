@@ -196,6 +196,7 @@ import { getTableSchema } from '@/api/metadata-query'
 import 'codemirror/theme/ambiance.css'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/addon/hint/show-hint.css'
+import { ContextMenuTool } from 'gojs'
 
 const CodeMirror = require('codemirror/lib/codemirror')
 require('codemirror/addon/edit/matchbrackets')
@@ -484,7 +485,7 @@ export default {
       this.total = content.recordsTotal
       this.list = content.data
       this.listLoading = false
-
+      console.log(this.list)
       const firstElement = content?.data[0] || {}
       const a = {}
 
@@ -492,6 +493,7 @@ export default {
       a.name = firstElement.jobDesc
       a.content = firstElement
       if (!this.firstTime) {
+        console.log(555555555555555555)
         this.$store.commit('ADD_TASKDETAIL', a)
       } else {
         this.firstTime = false

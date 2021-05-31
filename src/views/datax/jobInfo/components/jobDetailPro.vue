@@ -149,6 +149,7 @@
               />
             </el-input>
             <el-dialog
+              ref="JobCron"
               title="JobCron"
               :visible.sync="showCronBox"
               width="60%"
@@ -720,7 +721,7 @@ export default {
           { required: true, message: '请选择执行器', trigger: 'change' }
         ],
         cron: [
-          { required: true, message: '请输入Cron表达式', trigger: 'blur' }
+          { required: true, message: '请输入Cron表达式', trigger: ['blur', 'change'] }
         ],
         blockStrategy: [
           { required: false, message: '请选择阻塞处理策略', trigger: 'change' }
@@ -1004,6 +1005,7 @@ export default {
     //   this.editShell = false
     // },
     showJobSchedule() {
+      this.scheduleShow = true
       this.scheduleForm.cron = this.$store.state.taskAdmin.jobDataDetail.jobCron
       this.scheduleForm.timeout = this.$store.state.taskAdmin.jobDataDetail.executorTimeout
       this.scheduleForm.alarmEmail = this.$store.state.taskAdmin.jobDataDetail.alarmEmail
@@ -1024,7 +1026,6 @@ export default {
       this.scheduleForm.retry = this.$store.state.taskAdmin.jobDataDetail.executorFailRetryCount
       this.scheduleForm.routeStrategy = this.$store.state.taskAdmin.jobDataDetail.executorRouteStrategy // 路由
       this.scheduleForm.executor = this.$store.state.taskAdmin.jobDataDetail.jobGroup // 执行器
-      this.scheduleShow = true
     },
     // 选择子任务
     selectChange(val) {
@@ -1554,9 +1555,16 @@ export default {
         }
       })
     },
-    resetScheduleForm(scheduleForm) {
-      this.$refs[scheduleForm].resetFields()
-      this.scheduleForm.cron = ''
+    resetScheduleForm(formName) {
+      console.log(this.scheduleForm.cron)
+
+      this.$refs[formName].resetFields()
+      this.$nextTick(() => {
+        this.scheduleForm.cron = ''
+        // this.$refs.JobCron
+      })
+
+      console.log(this.scheduleForm.cron)
     },
     closeScheduleForm(formName) {
       this.$refs[formName].resetFields()
