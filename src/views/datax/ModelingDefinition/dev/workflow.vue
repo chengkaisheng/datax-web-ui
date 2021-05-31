@@ -355,7 +355,7 @@
               :on-exceed="handleExceed"
               :file-list="fileList"
             >
-              <el-button :disabled="Donotadd">从需求导入</el-button>
+              <el-button :disabled="Donotadd" style="margin-left: 10px;">从需求导入</el-button>
             </el-upload>
           </div>
         </div>
@@ -504,7 +504,7 @@
             :on-exceed="handleExceed"
             :file-list="fileList"
           >
-            <el-button>从需求导入</el-button>
+            <el-button style="margin-left: 10px;">从需求导入</el-button>
           </el-upload>
         </div>
       </el-form>
@@ -1238,7 +1238,7 @@ export default {
   padding-left: 10px;
   margin-bottom: 20px;
   line-height: 40px;
-  background: #f5f5f5;
+  background: #f8f8fa;
   color: #000;
 
   /* background: #00ffff; */

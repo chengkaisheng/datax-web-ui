@@ -37,9 +37,9 @@
         <el-input
           v-model="search"
           prefix-icon="el-icon-search"
-          placeholder="文件夹或建模名称"
+          placeholder="输入文件夹或模型名称快速检索"
           clearable
-          style="margin-top: -10px"
+          style="margin-top: 27px"
         />
         <el-tree
           v-loading="loading"
@@ -56,33 +56,31 @@
           @node-click="handleWorkFlow"
           :filter-node-method="filterNode"
         >
+<!--        style="
+          height: 32px;
+          line-height: 32px;
+          position: relative;
+          display: block;
+          width: 100%;
+          font-size: 14px;
+        " -->
           <span
             slot-scope="{ node, data }"
             class="custom-tree-node"
-            style="
-              height: 26px;
-              line-height: 26px;
-              position: relative;
-              display: block;
-              width: 100%;
-              font-size: 14px;
-            "
+            style="font-size: 14px;"
           >
-            <p style="height: 26px; line-height: 26px">
+            <p >
               <svg-icon
                 v-if="data.type === 1"
                 :icon-class="data.jobType"
-                style="font-size: 15px; margin-right: 3px"
               />
               <svg-icon
                 v-if="data.jobType === 'HIVE'"
                 :icon-class="data.jobType"
-                style="font-size: 15px; margin-right: 3px"
               />
               <svg-icon
                 v-if="data.jobType === 'IMPALA'"
                 :icon-class="data.jobType"
-                style="font-size: 15px; margin-right: 3px"
               />
               {{ data.name }}
             </p>
@@ -93,7 +91,6 @@
           class="right-menu"
           :target="contextMenuTarget"
           :show="contextMenuVisible"
-          :contextMenuData="contextMenuData"
           @update:show="(show) => (contextMenuVisible = show)"
         >
           <a href="javascript:0" @click="newFolder">新建文件夹</a>
@@ -197,7 +194,7 @@
         </div>
       </el-dialog>
       <!-- 工作流重命名 -->
-      <el-dialog :visible.sync="ReETLdialog" width="40%" title="重命名工作流">
+      <el-dialog :visible.sync="ReETLdialog" width="40%" title="重命名模型">
         <span style="margin-left: 20px">名称：</span
         ><el-input
           v-model="reWorkflowName"
@@ -1357,7 +1354,7 @@ export default {
       width: 300px;
       // height: 650px;
       padding: 10px;
-      height: calc(100vh - 50px);
+      // height: calc(100vh - 50px);
       background: #f8f8fa;
       .el-input {
         margin-bottom: 20px;
@@ -1444,7 +1441,7 @@ export default {
   }
 
   .el-dialog {
-    border-radius: 8px;
+    border-radius: 4px;
 
     .el-dialog__header {
       font-size: 24px;
@@ -1531,7 +1528,7 @@ export default {
     cursor: default;
     background: #f8f8fa;
     color: #606266;
-    margin: -10px 0px 0 0;
+    margin: -10px 0px 0 -8px;
 }
 
 .el-tabs--border-card>.el-tabs__content {
@@ -1543,12 +1540,17 @@ export default {
     margin: 0;
     /* height: 32px; */
 }
+.el-tabs--border-card {
+    background: #fff;
+    margin-top: 1px;
+    border: none;
+}
 .el-tabs__item {
     padding: 0 20px;
-    height: 32px;
+    height: 34px;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    line-height: 32px;
+    line-height: 31px;
     display: inline-block;
     list-style: none;
     font-size: 14px;
@@ -1565,4 +1567,19 @@ export default {
           left: 24px;
           top: 30px;
         }
+.el-tree-node__expand-icon {
+    cursor: pointer;
+    color: black;
+    font-size: 18px;
+}
+
+.el-tree-node__expand-icon.is-leaf {
+    color: transparent;
+    cursor: default;
+    margin-left: -7px;
+}
+
+.el-tree-node__content {
+    height: 32px;
+}
 </style>
