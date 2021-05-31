@@ -1522,47 +1522,47 @@ export default {
   // }
 }
 .el-input .el-input__inner {
-    height: 32px;
-    line-height: 32px;
+  height: 32px;
+  line-height: 32px;
 }
 
 .el-tree {
-    position: relative;
-    cursor: default;
-    background: #f8f8fa;
-    color: #606266;
-    margin: -10px 0px 0 0;
+  position: relative;
+  cursor: default;
+  background: #f8f8fa;
+  color: #606266;
+  margin: -10px 0px 0 0;
 }
 
-.el-tabs--border-card>.el-tabs__content {
-    padding: 0px;
+.el-tabs--border-card > .el-tabs__content {
+  padding: 0px;
 }
-.el-tabs--border-card>.el-tabs__header {
-    background-color: #f8f8fa;
-    border-bottom: 1px solid #dfe4ed;
-    margin: 0;
-    /* height: 32px; */
+.el-tabs--border-card > .el-tabs__header {
+  background-color: #f8f8fa;
+  border-bottom: 1px solid #dfe4ed;
+  margin: 0;
+  /* height: 32px; */
 }
 .el-tabs__item {
-    padding: 0 20px;
-    height: 32px;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    line-height: 32px;
-    display: inline-block;
-    list-style: none;
-    font-size: 14px;
-    font-weight: 500;
-    color: #303133;
-    position: relative;
+  padding: 0 20px;
+  height: 32px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  line-height: 32px;
+  display: inline-block;
+  list-style: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: #303133;
+  position: relative;
 }
 
 .title_h3 {
-          position: absolute;
-          font-size: 24px;
-          font-weight: 700;
-          font-family: '楷体';
-          left: 24px;
-          top: 30px;
-        }
+  position: absolute;
+  font-size: 24px;
+  font-weight: 700;
+  font-family: '楷体';
+  left: 24px;
+  top: 30px;
+}
 </style>

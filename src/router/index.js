@@ -237,7 +237,7 @@ export const asyncRoutes = [
         path: 'jobInfo',
         name: 'JobInfo',
         component: () => import('@/views/datax/jobInfo/index'),
-        meta: { title: '数据研发', icon: 'icon_svg08', keepAlive: true }
+        meta: { title: '任务开发', icon: 'icon_svg08', keepAlive: true }
       },
       {
         path: 'jobInfo2',
@@ -305,7 +305,7 @@ export const asyncRoutes = [
         path: 'ModelingDefinition',
         component: () => import('@/views/datax/ModelingDefinition/dev'),
         name: 'ModelingDefinition',
-        meta: { title: '建模定义', icon: 'icon_svg10', keepAlive: true }
+        meta: { title: '模型定义', icon: 'icon_svg10', keepAlive: true }
       },
       {
         path: 'dataDev',
@@ -461,13 +461,13 @@ export const asyncRoutes = [
       {
         path: 'standard',
         name: 'standard',
-        component: {render: (e) => e('router-view')},
+        component: { render: (e) => e('router-view') },
         meta: { title: '资产规范', icon: 'education' },
         children: [
           {
             path: 'domain',
             name: 'domain',
-            component: {render: (e) => e('router-view')},
+            component: { render: (e) => e('router-view') },
             meta: { title: '域管理', icon: 'education' },
             children: [
               {
@@ -495,7 +495,7 @@ export const asyncRoutes = [
       {
         path: 'dm',
         name: 'dm',
-        component: {render: (e) => e('router-view')},
+        component: { render: (e) => e('router-view') },
         meta: { title: '维度建模', icon: 'education' },
         children: [
           {
@@ -521,7 +521,7 @@ export const asyncRoutes = [
       {
         path: 'index',
         name: 'index',
-        component: {render: (e) => e('router-view')},
+        component: { render: (e) => e('router-view') },
         meta: { title: '指标管理', icon: 'education' },
         children: [
           {
@@ -533,7 +533,7 @@ export const asyncRoutes = [
           {
             path: 'research',
             name: 'research',
-            component: {render: (e) => e('router-view')},
+            component: { render: (e) => e('router-view') },
             meta: { title: '指标研发', icon: 'education' },
             children: [
               {
@@ -547,7 +547,7 @@ export const asyncRoutes = [
           {
             path: 'lexicon',
             name: 'lexicon',
-            component: {render: (e) => e('router-view')},
+            component: { render: (e) => e('router-view') },
             meta: { title: '词库管理', icon: 'education' },
             children: [
               {
