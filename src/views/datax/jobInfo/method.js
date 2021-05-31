@@ -1,6 +1,6 @@
 import * as job from '@/api/datax-job-info'
 import * as executor from '@/api/datax-executor'
-
+import moment from 'moment'
 // 执行一次
 export function handlerExecute(row) {
   return this.$confirm('确定执行吗？', '提示', {
@@ -17,7 +17,7 @@ export function handlerExecute(row) {
       this.$store.commit('SET_LOG_WATCH', !this.$store.state.taskAdmin.logWatch)
       // this.$notify({
       //   title: '成功',
-      //   message: 'response.msg',
+      //   message: response.msg,
       //   type: 'success',
       //   duration: 2000
       // })
@@ -30,7 +30,7 @@ export function handlerExecute(row) {
 
 // 查看日志
 export function handlerViewLog(row) {
-  this.$router.push({ path: '/datax/log/jobLog', query: { jobId: row.id }})
+  this.$router.push({ path: '/datax/log/jobLog', query: { jobId: row.id } })
 }
 
 // 删除
@@ -87,6 +87,8 @@ export function loadById(row) {
 // 下次注册时间
 export function nextTriggerTime(row) {
   job.nextTriggerTime(row.jobCron).then(response => {
+    console.log('下次执行时间', response)
+    console.log(moment(new Date()).format('YYYY-MM-DD HH:mm:ss'))
     const { content } = response
     this.triggerNextTimes = content.join('<br>')
   })
