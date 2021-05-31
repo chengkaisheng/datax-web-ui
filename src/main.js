@@ -2,6 +2,10 @@ import Vue from 'vue'
 
 import Cookies from 'js-cookie'
 
+//拖拽插件引入
+import VueDraggableResizable from 'vue-draggable-resizable'
+import "vue-draggable-resizable/dist/VueDraggableResizable.css"
+Vue.component('vue-draggable-resizable', VueDraggableResizable)
 // import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 
 import './assets/css/reset.css'
@@ -60,7 +64,8 @@ Vue.prototype.$axios = axios
 axios.defaults.baseURL = process.env.VUE_APP_BASE_API
 
 Vue.use(Element, {
-  size: Cookies.get('size') // set element-ui default size
+  size: 'small' // set element-ui default size
+  // size: Cookies.get('size') // set element-ui default size
 })
 
 // register global utility filters

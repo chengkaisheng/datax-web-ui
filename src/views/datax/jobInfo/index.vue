@@ -1268,14 +1268,45 @@ export default {
                   if (res.content[0].children[i].children) {
                     for (var j in res.content[0].children[i].children) {
                       newarr.push(res.content[0].children[i].children[j])
+                      if (res.content[0].children[i].children[j].children) {
+                        for (var k in res.content[0].children[i].children[j]
+                          .children) {
+                          newarr.push(
+                            res.content[0].children[i].children[j].children[k]
+                          )
+                        }
+                      } else {
+                        newarr.push(
+                          res.content[0].children[i].children[i].children
+                        )
+                      }
                     }
+                  } else {
+                    newarr.push(res.content[0].children)
                   }
                 }
-                console.log(newarr.flat(Infinity))
-                const NewTask = newarr.flat(Infinity).filter((itme) => {
-                  return itme.id == data.id
-                })
-                this.handleNodeClick(NewTask[0])
+                console.log('新建之后的newarr', newarr.flat(Infinity))
+                for (var kk = 0; kk < newarr.length; kk++) {
+                  if (newarr[kk] === null) {
+                    newarr.splice(kk, 1)
+                  }
+                }
+                if (data.name) {
+                  const NewTask = newarr.flat(Infinity).filter((itme) => {
+                    if (itme.name) {
+                      return itme.name === data.name
+                    }
+                  })
+                  this.handleNodeClick(NewTask[0])
+                }
+                if (data.id) {
+                  const NewTask = newarr.flat(Infinity).filter((itme) => {
+                    if (itme.name) {
+                      return itme.id === data.id
+                    }
+                  })
+                  this.handleNodeClick(NewTask[0])
+                }
               }
             } else {
               this.$message.error(res.msg)
@@ -1662,7 +1693,7 @@ export default {
       console.log('拖拽成功完成时触发的事件')
     },
     handleDrop(draggingNode, dropNode, dropType, ev) {
-      console.log(dropNode)
+      console.log('...', dropNode)
       if (dropNode.data.type === 1) {
         job
           .dragReName({
@@ -1719,6 +1750,7 @@ export default {
         .then((res) => {
           console.log('pppppp>>>>>>>', res)
           if (res.code === 200) {
+            console.log('有木有id', res)
             this.getDataTree({ data: 'NewTask', id: res.content })
             this.selectRow = {}
             if (res.content !== '请选择父级目录') {
@@ -1805,6 +1837,8 @@ export default {
     },
     // 点击删除文件夹
     delFolder() {
+      console.log('this.selectrow', this.selectRow)
+      console.log('this.selectRow', this.tablist)
       this.$confirm('此操作将删除该' + this.delType + ', 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -1816,8 +1850,20 @@ export default {
             .then((res) => {
               console.log(res)
               if (res.code === 200) {
-                this.getDataTree()
-                this.removeJobTab(this.selectRow.id)
+                let index = ''
+                if (this.tablist.length > 0) {
+                  for (var i = 0; i < this.tablist.length; i++) {
+                    if (this.tablist[i].content.name === this.selectRow.name) {
+                      index = i
+                    }
+                  }
+                }
+                this.tablist.splice(index, 1)
+                let data = this.tablist[this.tablist.length - 1]
+                this.getDataTree({ data: 'NewTask', name: data.content.name })
+
+                this.handleNodeClick(data)
+                // this.removeJobTab(this.selectRow.id)
                 this.selectRow = {}
                 this.$message({
                   type: 'success',
@@ -1888,10 +1934,7 @@ export default {
         }
       } else {
         this.currentJobName = ''
-        // this.contextMenuVisible = true
       }
-      // console.log(this.$store.state.taskAdmin.setcode)
-      console.log(this.currentJobName, '当前任务的名称')
     },
     // 显示代码
     showCode(row) {
@@ -2047,6 +2090,7 @@ export default {
       )
       this.$store.commit('DELETE_TASKDETAIL', removeIndex)
       jobProjectApi.list(this.listQuery).then((response) => {
+        console.log('response', response)
         const { records } = response
         const { total } = response
         this.total = total

@@ -1,7 +1,16 @@
 <template>
   <div class="app-container">
     <div class="main">
-      <div id="menu_lt" class="lt">
+      <!-- <vue-draggable-resizable
+        style="z-index: 999"
+        :h="650"
+        :w="300"
+        :parent="true"
+        @resizing="handleResize"
+        class-name="dragging1"
+        id="dragging1"
+      > -->
+      <div id="menu_lt" class="lt" :style="{ width: width + 'px' }">
         <!-- <ul>
           <li
             v-for="item in workflowList"
@@ -24,13 +33,13 @@
             >
           </el-dropdown-menu>
         </el-dropdown>
-        <div style="height: 20px"></div>
+        <!-- <div style="height: 20px"></div> -->
         <el-input
           v-model="search"
-          class="input_serach"
           prefix-icon="el-icon-search"
           placeholder="文件夹或建模名称"
           clearable
+          style="margin-top: -10px"
         />
         <el-tree
           v-loading="loading"
@@ -43,6 +52,7 @@
           draggable
           node-key="id"
           :expand-on-click-node="false"
+          @node-drag-start="handleDragStart"
           @node-click="handleWorkFlow"
           :filter-node-method="filterNode"
         >
@@ -83,6 +93,7 @@
           class="right-menu"
           :target="contextMenuTarget"
           :show="contextMenuVisible"
+          :contextMenuData="contextMenuData"
           @update:show="(show) => (contextMenuVisible = show)"
         >
           <a href="javascript:0" @click="newFolder">新建文件夹</a>
@@ -105,13 +116,32 @@
           <a href="javascript:0" @click="reName">重命名</a>
           <a href="javascript:0" @click="delWorkFlow">删除</a>
         </vue-context-menu>
+        <u id="drag" @mousedown="mousedown">
+          <li>.</li>
+          <li>.</li>
+          <li>.</li>
+        </u>
       </div>
+      <!-- </vue-draggable-resizable> -->
+      <!--拖拽-->
+      <!-- <vue-draggable-resizable
+        style="z-index: 999"
+        :h="height"
+        :w="width"
+        :x="-50"
+        :y="10"
+        @resizing="handleResize"
+        class-name="dragging1"
+      >
+        <div class="drag">拖拽</div>
+      </vue-draggable-resizable> -->
+      <!--拖拽-->
+
       <div class="rg">
         <el-tabs
           v-model="editableTabsValue"
-          type="card"
+          type="border-card"
           closable
-          close
           @tab-remove="removeTab"
           @tab-click="handleTabs"
         >
@@ -121,16 +151,16 @@
             :label="item.name"
             :name="item.name"
             closable
+            tab-position="left"
           >
             <div v-if="item.name === '首页'" class="title_h3">
               一站式数据开发解决方案
             </div>
             <svg-icon
               v-if="item.name === '首页'"
-              style="width: 100%; height: 600px; margin-top: 25px"
+              style="width: 100%; height: calc(100vh - 50px); margin-top: 25px"
               icon-class="fengdie"
             />
-
             <Flow
               @getTree="gettree"
               :tabsIds="item.id"
@@ -201,7 +231,7 @@ export default {
   },
   data() {
     return {
-      aaa: '',
+      width: '300',
       tabledata: '',
       contextMenu1Visible: false,
       contextMenu1Target: '',
@@ -393,6 +423,9 @@ export default {
       dropdownText: '123',
       showCurrent: true,
       loading: true,
+      // 右键鼠标的Y坐标
+      Ycoords: null,
+      lastX: '',
     }
   },
   watch: {
@@ -427,11 +460,29 @@ export default {
     nowObject: function (val) {
       this.$store.commit('changeCurrent', val)
     },
+    Ycoords(val) {
+      const menu = document.getElementsByClassName('right-menu')
+      const menu1 = document.getElementsByClassName('right-menu1')
+      const menu2 = document.getElementsByClassName('right-menu2')
+      console.log(menu, menu1, menu2)
+      if (val > 500) {
+        setTimeout(() => {
+          menu[1].style.top =
+            parseInt(menu[1].style.top.split('px')[0]) - 200 + 'px'
+          menu1[0].style.top =
+            parseInt(menu1[0].style.top.split('px')[0]) - 200 + 'px'
+          menu2[0].style.top =
+            parseInt(menu2[0].style.top.split('px')[0]) - 200 + 'px'
+        }, 100)
+      }
+    },
   },
   mounted() {
+    const drag = document.getElementById('drag')
+    console.log('drag--->', drag)
     window.addEventListener('scroll', this.getPos)
-    // const myChartContainer = document.getElementById('main_span')
     const myChartContainer = document.getElementById('menu_lt')
+    console.log(myChartContainer)
     // 右击显示菜单 区域位置
     this.contextMenuTarget = myChartContainer
     this.contextMenu1Target = myChartContainer
@@ -452,7 +503,8 @@ export default {
     // 关闭浏览器右击默认菜单
     const _this = this
     myChartContainer.oncontextmenu = function (e) {
-      console.log(e, '113123')
+      console.log(e, '右键事件')
+      console.log(menu[1])
       if (e.pageY > 400) {
         menu[1].style.top = 100 + 'px'
         _this.Ycoords = e.pageY
@@ -467,6 +519,7 @@ export default {
     // }
   },
   created() {
+    document.addEventListener('mouseup', this.mouseUp)
     this.getItem()
     // this.formCopy = JSON.parse(JSON.stringify(this.form))
     // console.log('this.formCopy', this.formCopy)
@@ -496,7 +549,35 @@ export default {
   beforeDestroy() {
     window.removeEventListener('scroll', this.getPos)
   },
+  destroyed() {
+    document.removeEventListener('mouseup', this.mouseUp)
+  },
   methods: {
+    //移动鼠标放大
+    mousedown(event) {
+      document.addEventListener('mousemove', this.mouseMove)
+      this.lastX = event.screenX
+      console.log('事件源', event, event.screenX)
+    },
+    mouseMove(event) {
+      this.width = event.screenX - 230
+      if (this.width < 200) {
+        this.width = 200
+      }
+      if (this.width > 200) {
+        this.width = event.screenX - 230
+      }
+      console.log(event)
+    },
+    mouseUp() {
+      document.removeEventListener('mousemove', this.mouseMove)
+    },
+    //移动鼠标放大
+
+    // 拖拽tree
+    handleDragStart(node, ev) {
+      console.log('节点开始拖拽时触发的事件', node, ev)
+    },
     gettree(data) {
       this.getlist(data)
     },
@@ -1241,7 +1322,7 @@ export default {
     padding: 0px 24px 0px 0;
     background-color: #fff;
     overflow: hidden;
-    margin: 20px 20px 0 20px;
+    // margin: 20px 20px 0 20px;
     display: flex;
     .el-form {
       margin: 15px 0;
@@ -1269,18 +1350,22 @@ export default {
         }
       }
     }
+
     .lt {
-      width: 20%;
+      position: relative;
+      // border: 1px solid #ccc;
+      width: 300px;
+      // height: 650px;
       padding: 10px;
-      // height: calc(100vh - 181px);
+      height: calc(100vh - 50px);
       background: #f8f8fa;
       .el-input {
         margin-bottom: 20px;
       }
       ul {
         li {
-          height: 40px;
-          line-height: 40px;
+          height: 32px;
+          line-height: 32px;
           background-color: #f8f8fa;
           cursor: pointer;
         }
@@ -1331,72 +1416,30 @@ export default {
           color: #eee;
         }
       }
+      .dragging1 {
+        border: 1px solid #000;
+        color: #000;
+      }
+    }
+    #drag {
+      position: absolute;
+      top: 200px;
+      right: -4px;
+      z-index: 999;
+      height: 100px;
+      width: 5px;
+      cursor: e-resize;
+      background: red;
+    }
+    #drag li {
+      list-style: none;
     }
     .rg {
       // flex: 1;
-      width: 80%;
-      .el-tabs__nav .el-tabs__item:nth-child(1) span {
-        display: none;
-      }
-      .el-tabs {
-        .el-tabs__content {
-          // height: calc(100vh - 80px);
-          overflow-y: auto;
-          overflow-x: auto;
-        }
-        .el-tabs__header {
-          height: 32px;
-          line-height: 32px;
-          margin: 0;
-          .el-tabs__nav {
-            width: 200px;
-            border-top: 1px solid #f8f8fa;
-            .el-tabs__item {
-              width: 100%;
-              border: none;
-              border-top: 1px solid #f8f8fa;
-              border-radius: 6px 6px 0px 0px;
-              height: 32px;
-              line-height: 32px;
-              position: relative;
-              overflow: hidden;
-              vertical-align: bottom;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-              .el-icon-close {
-                position: absolute;
-                right: 10px;
-                top: 50%;
-                transform: translateY(-50%);
-              }
-            }
-          }
-        }
-        .el-tabs__item.is-active {
-          background-color: #ffffff;
-          // border-bottom-color:  #3d5eff;
-        }
-        // .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active {
-        //   height: 50px;
-        //   line-height: 50px;
-        // }
-        .el-tab-pane {
-          // padding: 10px;
-          // height: 100%;
-          position: relative;
-          .job_detail {
-            height: 100%;
-          }
-          .title_h3 {
-            position: absolute;
-            font-size: 24px;
-            font-weight: 700;
-            font-family: '楷体';
-            left: 24px;
-            top: 30px;
-          }
-        }
-      }
+      width: 100%;
+      height: 100%;
+      flex: 1;
+      overflow-y: hidden;
     }
   }
 
@@ -1478,5 +1521,48 @@ export default {
   //   border-left: 1px solid #e6e6e6;
   // }
 }
-</style>
+.el-input .el-input__inner {
+    height: 32px;
+    line-height: 32px;
+}
 
+.el-tree {
+    position: relative;
+    cursor: default;
+    background: #f8f8fa;
+    color: #606266;
+    margin: -10px 0px 0 0;
+}
+
+.el-tabs--border-card>.el-tabs__content {
+    padding: 0px;
+}
+.el-tabs--border-card>.el-tabs__header {
+    background-color: #f8f8fa;
+    border-bottom: 1px solid #dfe4ed;
+    margin: 0;
+    /* height: 32px; */
+}
+.el-tabs__item {
+    padding: 0 20px;
+    height: 32px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    line-height: 32px;
+    display: inline-block;
+    list-style: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #303133;
+    position: relative;
+}
+
+.title_h3 {
+          position: absolute;
+          font-size: 24px;
+          font-weight: 700;
+          font-family: '楷体';
+          left: 24px;
+          top: 30px;
+        }
+</style>

@@ -1,9 +1,9 @@
 <template>
   <div class="workflowCanves">
     <div class="header">
-      <div class="header_action" style="margin-left:17px;" @click="DataSave">
+      <div class="header_action" style="margin-left:17px;" id="SaveButton" @click="DataSave">
         <i class="el-icon-s-order" />
-        <span>保存</span>
+        <span >保存</span>
       </div>
       <div class="header_action" style="margin-left:27px;" @click="runData">
         <i class="el-icon-video-play" />
@@ -32,10 +32,10 @@
     >
       参数配置
     </el-button> -->
-    <div class="header_action1 but" @click="changes">
+<!--    <div class="header_action1 but" @click="changes">
       <i class="el-icon-rank" />
       <span>自动布局</span>
-    </div>
+    </div> -->
     <div id="parentDiv" style="width: 100%; display: flex; border: solid 1px lightgray;">
       <div :id="'myPaletteDiv' + myId" style="width: 100px; margin-right: 2px; " />
       <div :id="'myDiagramDiv' + myId" style="flex-grow: 1; height: 589px;" />
@@ -471,6 +471,7 @@ export default {
       form: {
         // taskName: '子任务' // 选中任务名称
       },
+      tempTabs: [],
       currentType: '', // 当前选中节点的任务类型
       dialogFormVisible: false,
       doparams: null,
@@ -674,9 +675,12 @@ export default {
     changes() {
       // this.init()
       console.log(11111111111)
-      console.log(this.$store.state.workflow.currentData.jobJson)
-      this.myDiagram.model = go.Model.fromJson(this.$store.state.workflow.currentData.jobJson)
-      this.load()
+      // this.myDiagram.model = go.Model.fromJson(this.$store.state.workflow.currentData.jobJson)
+      // this.myDiagram.isModified = true
+      this.myDiagram.model = go.Model.fromJson(this.myDiagram.model)
+      console.log('++++++=', this.myDiagram.isModified)
+      // this.myDiagram.isModified = true
+      // this.load()
     },
     // 获取当前项目下的任务列表
     getCurrentProjectList(val) {
@@ -716,6 +720,21 @@ export default {
         if (res.code === 200) {
           this.$message.success('保存' + res.msg)
         }
+        // let tabs = this.$store.state.taskAdmin.wfdevTabs
+        // let tabsId = this.$props.tabsIds;
+        // console.log('======', this.myDiagram.isModified)
+        // if (this.myDiagram.isModified) {
+        //   for (let i = 0; i < tabs.length; i++) {
+        //     let obj = tabs[i]
+        //     if (obj.content.id === tabsId) {
+        //       console.log('obj name: ', obj.title)
+        //       obj.title = obj.title.substr(2, obj.title.length - 2)
+        //       console.log('obj name: ', obj.title)
+        //     }
+        //   }
+        // }
+        this.myDiagram.isModified = false
+        this.myDiagram.model = go.Model.fromJson(this.myDiagram.model)
       }).catch(
         err => {
           console.log(err)
@@ -1144,13 +1163,13 @@ export default {
       this.myDiagram =
         $(go.Diagram, 'myDiagramDiv' + this.myId, // 必须命名或引用DIV HTML元素
           {
-            padding: 20, // extra space when scrolled all the way
+            padding: 50, // extra space when scrolled all the way
             grid: $(go.Panel, 'Grid', // a simple 10x10 grid
               $(go.Shape, 'LineH', { stroke: 'lightgray', strokeWidth: 0.5 }),
               $(go.Shape, 'LineV', { stroke: 'lightgray', strokeWidth: 0.5 })
             ),
             layout: $(go.TreeLayout, // specify a Diagram.layout that arranges trees
-              { angle: 90, layerSpacing: 35 },
+              { angle: 90, layerSpacing: 35},
               {
                 sorting: go.TreeLayout.SortingAscending,
                 comparer: function(a, b) {
@@ -1160,17 +1179,17 @@ export default {
                   if (av < bv) return -1
                   if (av > bv) return 1
                   return 0
-                }
-
-              }
+                },
+              },
+              {isOngoing: false}
             ),
             // 'isValidLayout': false,
             'draggingTool.isGridSnapEnabled': true,
             handlesDragDropForTopLevelParts: true,
-            'clickCreatingTool.archetypeNodeData': { text: 'NEW NODE' }, // create a new node by double-clicking in background
+            // 'clickCreatingTool.archetypeNodeData': { text: 'NEW NODE' }, // create a new node by double-clicking in background
             'PartCreated': function(e) {
               var node = e.subject // the newly inserted Node -- now need to snap its location to the grid
-              node.location = node.location.copy().snapToGridPoint(e.diagram.grid.gridOrigin, e.diagram.grid.gridCellSize)
+              // node.location = node.location.copy().snapToGridPoint(e.diagram.grid.gridOrigin, e.diagram.grid.gridCellSize)
               setTimeout(function() { // and have the user start editing its text
                 e.diagram.commandHandler.editTextBlock()
               }, 20)
@@ -1179,17 +1198,36 @@ export default {
             'undoManager.isEnabled': true
           })
       // 当文档被修改时，在标题中添加一个“*”，并启用“保存”按钮
-      // this.myDiagram.addDiagramListener('Modified', function(e) {
-      //   console.log(e)
-      //   var button = document.getElementById('SaveButton')
-      //   if (button) button.disabled = !e.isModified
-      //   var idx = document.title.indexOf('*')
-      //   if (e.isModified) {
-      //     if (idx < 0) document.title += '*'
-      //   } else {
-      //     if (idx >= 0) document.title = document.title.substr(0, idx)
-      //   }
-      // })
+      let tabs = this.$store.state.taskAdmin.wfdevTabs
+      let tabsId = this.$props.tabsIds;
+      this.myDiagram.addDiagramListener('Modified', function(e) {
+        var tempDiagram = e.diagram
+        console.log(e)
+        console.log(tempDiagram.isModified)
+        console.log('tabsId: ' + tabsId)
+        for (let i = 0; i < tabs.length; i++) {
+          let obj = tabs[i]
+          if (obj.content.id === tabsId) {
+            console.log('before,', obj.title)
+            console.log('tempDiagram.isModified,',tempDiagram.isModified)
+            let idx = obj.title.indexOf('*')
+
+            if (tempDiagram.isModified) {
+              if (idx < 0) obj.title += "*"
+            } else {
+              if (idx >= 0) obj.title = obj.title.substr(0, idx)
+            }
+            console.log('obj name: ', obj.title)
+            console.log('idx: ', idx)
+          }
+        }
+        // var idx = document.title.indexOf('*')
+        // if (e.isModified) {
+        //   if (idx < 0) document.title += '*'
+        // } else {
+        //   if (idx >= 0) document.title = document.title.substr(0, idx)
+        // }
+      })
 
       // this.myDiagram.addDiagramListener('Modified', function(e) {
       //   console.log(e)
@@ -1272,19 +1310,19 @@ export default {
       })
 
       // 开始节点图表
-      this.myDiagram.nodeTemplateMap.add('Start',
-        $(go.Node, 'Table', nodeStyle(),
-          $(go.Panel, 'Spot',
-            $(go.Shape, 'Circle',
-              { desiredSize: new go.Size(64, 64), fill: '#F9F3E0', stroke: '#F8BE00', strokeWidth: 1.5 }),
-            $(go.TextBlock, 'Start', textStyle(),
-              new go.Binding('text'))
-          ),
-          // 三个指定端口(除顶部外，每一边都有一个端口)都是输出端口:
-          makePort('L', go.Spot.Left, go.Spot.Left, true, false),
-          makePort('R', go.Spot.Right, go.Spot.Right, true, false),
-          makePort('B', go.Spot.Bottom, go.Spot.Bottom, true, false)
-        ))
+      // this.myDiagram.nodeTemplateMap.add('Start',
+      //   $(go.Node, 'Table', nodeStyle(),
+      //     $(go.Panel, 'Spot',
+      //       $(go.Shape, 'Circle',
+      //         { desiredSize: new go.Size(48, 48), fill: '#F9F3E0', stroke: '#F8BE00', strokeWidth: 1.5 }),
+      //       $(go.TextBlock, 'Start', textStyle(),
+      //         new go.Binding('text'))
+      //     ),
+      //     // 三个指定端口(除顶部外，每一边都有一个端口)都是输出端口:
+      //     makePort('L', go.Spot.Left, go.Spot.Left, true, false),
+      //     makePort('R', go.Spot.Right, go.Spot.Right, true, false),
+      //     makePort('B', go.Spot.Bottom, go.Spot.Bottom, true, false)
+      //   ))
 
       // 步骤节点图表
       this.myDiagram.nodeTemplateMap.add('', // 默认类别
@@ -1298,7 +1336,7 @@ export default {
           // 主要对象是一个用矩形形状包围文本块的面板
           $(go.Panel, 'Auto',
             $(go.Shape, 'RoundedRectangle',
-              { fill: '#E0F2E0', stroke: '#00B600', strokeWidth: 1.5 },
+              { fill: '#E0F2E0', desiredSize: new go.Size(NaN, 30),stroke: '#00B600', strokeWidth: 1.5 },
               new go.Binding('figure', 'figure')),
             $(go.TextBlock, textStyle(),
               {
@@ -1316,44 +1354,43 @@ export default {
         ))
 
       // 判断节点图表
-      this.myDiagram.nodeTemplateMap.add('Conditional',
-        $(go.Node, 'Table', nodeStyle(),
-          // 主要对象是一个用矩形形状包围文本块的面板
-          $(go.Panel, 'Auto',
-            $(go.Shape, 'Diamond',
-              { desiredSize: new go.Size(70, 70), fill: '#E2ECFA', stroke: '#1774FF', strokeWidth: 1.5 },
-              new go.Binding('figure', 'figure')),
-            $(go.TextBlock, textStyle(),
-              {
-                margin: 8,
-                maxSize: new go.Size(160, NaN),
-                wrap: go.TextBlock.WrapFit,
-                editable: true
-              },
-              new go.Binding('text').makeTwoWay())
-          ),
-          // 四个指定的端口，每边一个:
-          makePort('T', go.Spot.Top, go.Spot.Top, false, true),
-          makePort('L', go.Spot.Left, go.Spot.Left, true, true),
-          makePort('R', go.Spot.Right, go.Spot.Right, true, true),
-          makePort('B', go.Spot.Bottom, go.Spot.Bottom, true, false)
-          // myDiagram.layout.O
-        ))
+      // this.myDiagram.nodeTemplateMap.add('Conditional',
+      //   $(go.Node, 'Table', nodeStyle(),
+      //     // 主要对象是一个用矩形形状包围文本块的面板
+      //     $(go.Panel, 'Auto',
+      //       $(go.Shape, 'Diamond',
+      //         { desiredSize: new go.Size(48, 48), fill: '#E2ECFA', stroke: '#1774FF', strokeWidth: 1.5 },
+      //         new go.Binding('figure', 'figure')),
+      //       $(go.TextBlock, textStyle(),
+      //         {
+      //           margin: 8,
+      //           maxSize: new go.Size(160, NaN),
+      //           wrap: go.TextBlock.WrapFit,
+      //           editable: true
+      //         },
+      //         new go.Binding('text').makeTwoWay())
+      //     ),
+      //     // 四个指定的端口，每边一个:
+      //     makePort('T', go.Spot.Top, go.Spot.Top, false, true),
+      //     makePort('L', go.Spot.Left, go.Spot.Left, true, true),
+      //     makePort('R', go.Spot.Right, go.Spot.Right, true, true),
+      //     makePort('B', go.Spot.Bottom, go.Spot.Bottom, true, false)
+      //   ))
 
       // 结束节点图表
-      this.myDiagram.nodeTemplateMap.add('End',
-        $(go.Node, 'Table', nodeStyle(),
-          $(go.Panel, 'Spot',
-            $(go.Shape, 'Circle',
-              { desiredSize: new go.Size(64, 64), fill: '#FAE8E8', stroke: '#FF4D4D', strokeWidth: 1.5 }),
-            $(go.TextBlock, 'End', textStyle(),
-              new go.Binding('text'))
-          ),
-          // 三个指定的端口，除底部外，每一边都有一个端口，都是输入端口:
-          makePort('T', go.Spot.Top, go.Spot.Top, false, true),
-          makePort('L', go.Spot.Left, go.Spot.Left, false, true),
-          makePort('R', go.Spot.Right, go.Spot.Right, false, true)
-        ))
+      // this.myDiagram.nodeTemplateMap.add('End',
+      //   $(go.Node, 'Table', nodeStyle(),
+      //     $(go.Panel, 'Spot',
+      //       $(go.Shape, 'Circle',
+      //         { desiredSize: new go.Size(48, 48), fill: '#FAE8E8', stroke: '#FF4D4D', strokeWidth: 1.5 }),
+      //       $(go.TextBlock, 'End', textStyle(),
+      //         new go.Binding('text'))
+      //     ),
+      //     // 三个指定的端口，除底部外，每一边都有一个端口，都是输入端口:
+      //     makePort('T', go.Spot.Top, go.Spot.Top, false, true),
+      //     makePort('L', go.Spot.Left, go.Spot.Left, false, true),
+      //     makePort('R', go.Spot.Right, go.Spot.Right, false, true)
+      //   ))
 
       // taken from ../extensions/Figures.js:
       go.Shape.defineFigureGenerator('File', function(shape, w, h) {
@@ -1406,7 +1443,7 @@ export default {
             mouseLeave: function(e, link) { link.findObject('HIGHLIGHT').stroke = 'transparent' },
             selectionAdorned: false
           },
-          new go.Binding('points').makeTwoWay(),
+          // new go.Binding('points').makeTwoWay(),
           $(go.Shape, // 高光形状，通常是透明的
             { isPanelMain: true, strokeWidth: 8, stroke: 'transparent', name: 'HIGHLIGHT' }),
           $(go.Shape, // 链接路径形状
@@ -1451,7 +1488,6 @@ export default {
           // 使用自定义渐变代替默认的动画
           'animationManager.initialAnimationStyle': go.AnimationManager.None,
           'InitialAnimationStarting': animateFadeDown, // 相反，动画使用此函数
-
           nodeTemplateMap: this.myDiagram.nodeTemplateMap, // 共享myDiagram使用的模板
           model: new go.GraphLinksModel([ // 指定调色板的内容
             // { category: 'Start', text: '开始' },

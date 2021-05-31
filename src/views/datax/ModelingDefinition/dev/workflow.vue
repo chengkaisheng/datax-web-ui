@@ -39,7 +39,7 @@
           </el-upload>
         </el-tooltip>
       </div>
-      <div class="header_action" style="margin-left: 27px">
+      <div @click="Looktable" class="header_action" style="margin-left: 27px">
         <el-tooltip
           class="item"
           effect="dark"
@@ -115,7 +115,7 @@
       size="50%"
       :with-header="true"
     >
-      <div style="padding-left: 30px; padding-right: 30px">
+      <div style="padding-right: 30px">
         <div style="margin-bottom: 30px; font-size: 14px">
           <span style="margin-right: 20px">表名中包含的主题域层级:</span>
           <span>
@@ -152,7 +152,6 @@
         <el-form-item label="数据层级:">
           <el-radio-group
             v-model="ruleForm.tabPosition"
-            style="margin-bottom: 30px"
           >
             <el-radio-button
               @click="
@@ -223,7 +222,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="模型名称:">
+        <el-form-item label="模型名称:" style="margin-bottom: 0px;">
           <el-col :span="11">
             <el-form-item>
               <el-input
@@ -231,35 +230,8 @@
                 v-model="ruleForm.Modelname1"
                 style="width: 30%"
               ></el-input>
-              <!-- _<el-input
-                :disabled="Lock"
-                v-model="ruleForm.Modelname2"
-                style="width: 30%"
-              ></el-input
-              >_
-              <el-input
-                :disabled="Lock"
-                v-model="ruleForm.Modelname3"
-                style="width: 30%"
-              ></el-input> -->
             </el-form-item>
           </el-col>
-          <!-- <el-col :span="11">
-            <el-form-item>
-              <el-select
-                :disabled="Lock"
-                v-model="ruleForm.ModelNames"
-                placeholder="请选择模型名称"
-              >
-                <el-option
-                  v-for="item in ruleForm.ModelName"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col> -->
         </el-form-item>
         <el-form-item label="保障等级:" prop="Securitys">
           <el-select
@@ -1025,6 +997,9 @@ export default {
         type: 'success',
       })
     },
+    Looktable() {
+      console.log('查看表')
+    },
     //查看表
     // handleClick(data) {
     //   this.DialogVisible = true
@@ -1272,8 +1247,8 @@ export default {
   width: 100%;
   height: auto;
   padding-top: 15px;
-  padding-left: 30px;
-  border: 1px solid #ccc;
+  padding-left: 15px;
+  /* border: 1px solid #ccc; */
 }
 .tips {
   display: block;
