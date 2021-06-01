@@ -32,7 +32,7 @@
             >{{ item.name }}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <!-- <div style="height: 20px"></div> -->
+        <div style="height: 20px"></div>
         <el-input
           v-model="search"
           prefix-icon="el-icon-search"
@@ -116,9 +116,10 @@
           <a href="javascript:0" @click="delWorkFlow">删除</a>
         </vue-context-menu>
         <u id="drag" @mousedown="mousedown">
-          <li>.</li>
-          <li>.</li>
-          <li>.</li>
+          <div class="arrow">
+            <li class="el-icon-caret-left"></li>
+            <li class="el-icon-caret-right"></li>
+          </div>
         </u>
       </div>
       <!-- </vue-draggable-resizable> -->
@@ -136,7 +137,7 @@
       </vue-draggable-resizable> -->
       <!--拖拽-->
 
-      <div class="rg">
+      <div class="rg" style="user-select: none">
         <el-tabs
           v-model="editableTabsValue"
           type="border-card"
@@ -551,17 +552,17 @@ export default {
   methods: {
     // 移动鼠标放大
     mousedown(event) {
+      console.log(event.clientX)
       document.addEventListener('mousemove', this.mouseMove)
-      this.lastX = event.screenX
-      console.log('事件源', event, event.screenX)
+      this.lastX = event.clientX
     },
     mouseMove(event) {
-      this.width = event.screenX - 230
+      this.width = event.screenX - 210
       if (this.width < 200) {
         this.width = 200
       }
       if (this.width > 200) {
-        this.width = event.screenX - 230
+        this.width = event.screenX - 210
       }
       console.log(event)
     },
@@ -1418,17 +1419,30 @@ export default {
       }
     }
     #drag {
+      margin: 0;
+      padding: 0;
       position: absolute;
-      top: 200px;
-      right: -4px;
+      top: 0px;
+      right: -3px;
       z-index: 999;
-      height: 100px;
-      width: 5px;
+      height: 100%;
+      width: 1px;
+      // border: 2px solid #ccc;
+      background: #ccc;
       cursor: e-resize;
-      background: red;
+    }
+    #drag:hover {
+      width: 5px;
+    }
+    .arrow {
+      position: absolute;
+      top: 300px;
     }
     #drag li {
       list-style: none;
+      margin: 0;
+      padding: 0;
+      color: #ccc;
     }
     .rg {
       // flex: 1;
@@ -1518,47 +1532,47 @@ export default {
   // }
 }
 .el-input .el-input__inner {
-    height: 32px;
-    line-height: 32px;
+  height: 32px;
+  line-height: 32px;
 }
 
 .el-tree {
-    position: relative;
-    cursor: default;
-    background: #f8f8fa;
-    color: #606266;
-    margin: -10px 0px 0 0;
+  position: relative;
+  cursor: default;
+  background: #f8f8fa;
+  color: #606266;
+  margin: -10px 0px 0 0;
 }
 
-.el-tabs--border-card>.el-tabs__content {
-    padding: 0px;
+.el-tabs--border-card > .el-tabs__content {
+  padding: 0px;
 }
-.el-tabs--border-card>.el-tabs__header {
-    background-color: #f8f8fa;
-    border-bottom: 1px solid #dfe4ed;
-    margin: 0;
-    /* height: 32px; */
+.el-tabs--border-card > .el-tabs__header {
+  background-color: #f8f8fa;
+  border-bottom: 1px solid #dfe4ed;
+  margin: 0;
+  /* height: 32px; */
 }
 .el-tabs__item {
-    padding: 0 20px;
-    height: 32px;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    line-height: 32px;
-    display: inline-block;
-    list-style: none;
-    font-size: 14px;
-    font-weight: 500;
-    color: #303133;
-    position: relative;
+  padding: 0 20px;
+  height: 32px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  line-height: 32px;
+  display: inline-block;
+  list-style: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: #303133;
+  position: relative;
 }
 
 .title_h3 {
-          position: absolute;
-          font-size: 24px;
-          font-weight: 700;
-          font-family: '楷体';
-          left: 24px;
-          top: 30px;
-        }
+  position: absolute;
+  font-size: 24px;
+  font-weight: 700;
+  font-family: '楷体';
+  left: 24px;
+  top: 30px;
+}
 </style>

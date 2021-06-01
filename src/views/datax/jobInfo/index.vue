@@ -17,7 +17,8 @@
                   v-for="item in options"
                   :key="item.id"
                   :command="item.id + '/' + item.name"
-                >{{ item.name }}</el-dropdown-item>
+                  >{{ item.name }}</el-dropdown-item
+                >
               </el-dropdown-menu>
             </el-dropdown>
           </el-col>
@@ -131,12 +132,13 @@ rkJggg=="
                 v-show="selectRow.jobType === 'wenjianjia'"
                 href="javascript:"
                 @click="showAllName"
-              >新建文件夹</a>
+                >新建文件夹</a
+              >
               <a
                 v-show="selectRow.jobType === 'wenjianjia'"
                 id="newFile"
                 href="javascript:"
-              >新建任务<i class="el-icon-arrow-right" />
+                >新建任务<i class="el-icon-arrow-right" />
                 <vue-context-menu
                   class="right-menu1"
                   :target="contextMenu1Target"
@@ -225,7 +227,7 @@ rkJggg=="
                   <a href="javascript:" @click="showAllName('DQCJOB')">
                     <svg-icon class="svg_icon" icon-class="DQCJOB" />质量任务
                   </a>
-                  <hr style="padding: 0; margin: 0">
+                  <hr style="padding: 0; margin: 0" />
                   <a href="javascript:" @click="showAllName('METACOLLECT')">
                     <svg-icon
                       class="svg_icon"
@@ -238,7 +240,7 @@ rkJggg=="
                       icon-class="METACOMPARE"
                     />元数据比较任务
                   </a>
-                  <hr style="padding: 0; margin: 0">
+                  <hr style="padding: 0; margin: 0" />
                   <a href="javascript:" @click="showAllName('SHELL')">
                     <svg-icon class="svg_icon" icon-class="SHELL" />SHELL任务
                   </a>
@@ -251,7 +253,7 @@ rkJggg=="
                   <a href="javascript:" @click="showAllName('PYTHON')">
                     <svg-icon class="svg_icon" icon-class="PYTHON" />PYTHON任务
                   </a>
-                  <hr style="padding: 0; margin: 0">
+                  <hr style="padding: 0; margin: 0" />
                   <a href="javascript:" @click="showAllName('VJOB')">
                     <svg-icon class="svg_icon" icon-class="VJOB" />虚任务
                   </a>
@@ -285,21 +287,24 @@ rkJggg=="
                 v-show="selectRow.jobType !== 'wenjianjia'"
                 href="javascript:"
                 @click="ViewFile"
-              >查看文件信息</a>
+                >查看文件信息</a
+              >
               <a
                 v-show="selectRow.jobType !== 'wenjianjia'"
                 href="javascript:"
                 @click="ViewVersion"
-              >查看文件版本</a>
+                >查看文件版本</a
+              >
               <a href="javascript:" @click="resetName">重命名</a>
-              <hr style="padding: 0; margin: 0">
+              <hr style="padding: 0; margin: 0" />
               <a href="javascript:" @click="copyFile">复制(C)</a>
               <a href="javascript:" @click="pasteFile">粘贴(P)</a>
               <a
                 v-show="selectRow.parentId !== 0"
                 href="javascript:"
                 @click="delFolder"
-              >删除(D)</a>
+                >删除(D)</a
+              >
             </vue-context-menu>
           </el-scrollbar>
         </div>
@@ -315,8 +320,8 @@ rkJggg=="
         @tab-click="JobTabClick"
       >
         <el-tab-pane
-          v-if="!$store.state.taskAdmin.taskDetailList.length"
           style="user-select: none"
+          v-if="!$store.state.taskAdmin.taskDetailList.length"
           label="欢迎"
           name="欢迎"
         >
@@ -397,12 +402,13 @@ rkJggg=="
               <div slot="content">
                 <div>{{ item.title }}</div>
               </div>
-            </el-tooltip></span>
+            </el-tooltip></span
+          >
           <JobDetailPro
             v-if="
               item.content.jobType !== 'VJOB' &&
-                item.content.jobType !== 'IMPALA' &&
-                item.content.jobType !== 'HIVE'
+              item.content.jobType !== 'IMPALA' &&
+              item.content.jobType !== 'HIVE'
             "
             ref="jobfp"
             :job-info="$store.state.taskAdmin.jobInfo"
@@ -487,8 +493,8 @@ rkJggg=="
           <div
             v-if="
               jobType === 'NORMAL' ||
-                jobType === 'IMPORT' ||
-                jobType === 'EXPORT'
+              jobType === 'IMPORT' ||
+              jobType === 'EXPORT'
             "
             class="rg"
           >
@@ -558,7 +564,8 @@ rkJggg=="
 
     <!-- 重命名对话框 -->
     <el-dialog :visible.sync="dialogRenameVisible" width="40%" title="重命名">
-      <span style="margin-left: 20px">名称：</span><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
+      <span style="margin-left: 20px">名称：</span
+      ><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelDialog"> 取消 </el-button>
         <el-button type="goon" size="small" @click="sureRe"> 确定 </el-button>
@@ -566,7 +573,8 @@ rkJggg=="
     </el-dialog>
     <!-- 新建文件夹或任务对话框 -->
     <el-dialog width="30%" title="新建" :visible.sync="dialogNameVisible">
-      <span style="margin-left: 50px; font-size: 12px">名称：</span><el-input
+      <span style="margin-left: 50px; font-size: 12px">名称：</span
+      ><el-input
         v-model="allName"
         style="width: 60%; height: 30px; margin-left: 20px"
       />
@@ -587,13 +595,14 @@ rkJggg=="
             display: inline-block;
             width: 100px;
           "
-        >任务中文名：</span><el-input
+          >任务中文名：</span
+        ><el-input
           v-model="chineseName"
           size="mini"
           style="width: 60%; margin-left: 5px"
         />
       </div>
-      <br>
+      <br />
       <div class="boxs">
         <span
           style="
@@ -602,13 +611,14 @@ rkJggg=="
             display: inline-block;
             width: 100px;
           "
-        >任务英文名：</span><el-input
+          >任务英文名：</span
+        ><el-input
           v-model="englishName"
           size="mini"
           style="width: 60%; margin-left: 5px"
         />
       </div>
-      <br>
+      <br />
       <div class="boxs">
         <span
           style="
@@ -617,7 +627,8 @@ rkJggg=="
             display: inline-block;
             width: 100px;
           "
-        >任务说明：</span><el-input
+          >任务说明：</span
+        ><el-input
           v-model="task"
           size="mini"
           style="width: 60%; margin-left: 5px"
@@ -680,13 +691,12 @@ rkJggg=="
                 type="text"
                 size="small"
                 @click="showCode(row)"
-              >代码</el-button>
+                >代码</el-button
+              >
             </el-popover>
-            <el-button
-              type="text"
-              size="small"
-              @click="rollback(row)"
-            >回滚</el-button>
+            <el-button type="text" size="small" @click="rollback(row)"
+              >回滚</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -991,20 +1001,10 @@ export default {
       deep: true,
       handler: function (newValue) {
         // if (newValue !== oldValue) {
-          console.log(newValue, 'newValue12')
+        //   console.log(newValue, 'newValue12')
         //   this.removeJobTab(newValue)
         // }
         this.tablist = newValue
-      },
-    },
-    '$store.state.taskAdmin.GroupName': {
-      deep: true,
-      handler: function (newValue) {
-        // if (newValue !== oldValue) {
-          console.log(newValue, 'newValue12')
-        //   this.removeJobTab(newValue)
-        // }
-        // this.tablist = newValue
       },
     },
     search: function (val) {
@@ -1013,7 +1013,6 @@ export default {
   },
   mounted() {
     const myChartContainer = document.getElementById('main_span')
-    // console.log(myChartContainer)
     // 右击显示菜单 区域位置
     this.contextMenuTarget = myChartContainer
     this.contextMenu1Target = myChartContainer
@@ -1026,9 +1025,9 @@ export default {
       if (e.pageY > 400) {
         menu[1].style.top = 100 + 'px'
         _this.Ycoords = e.pageY
-        // console.log(_this.Ycoords, 'this')
+        console.log(_this.Ycoords, 'this')
       }
-      // console.log(menu[1].style.top)
+      console.log(menu[1].style.top)
       return false // 首先取消右键的系统默认弹窗
     }
     // myChartContainer.onmousedown = function(e) {
@@ -1220,10 +1219,9 @@ export default {
           ? this.projectIds
           : this.options[0].id
         job.getList(listQuery).then((response) => {
-         
+          console.log('获取tree列表', response)
           const { content } = response
           this.List = content.data
-           console.log(this.List)
           const firstElement = content?.data[0] || {}
           const a = {}
           a.title = firstElement.name
@@ -1231,7 +1229,6 @@ export default {
           a.content = firstElement
           if (!this.firstTime) {
             if (!del) {
-              console.log(this.List3333333333333)
               this.$store.state.taskAdmin.taskDetailList.push(a)
               this.$store.commit('ADD_TASKDETAIL', a)
               this.jobDetailIdx = a.content.id + ''
@@ -1247,6 +1244,7 @@ export default {
     getDataTree(data) {
       this.loading = false
       if (this.$store.state.project.currentItem) {
+        let id = sessionStorage.getItem('strParam')
         const projectId = this.$store.state.project.currentItem.split('/')[0]
         job
           .getTreeData({
@@ -2061,7 +2059,6 @@ export default {
         job.getList(listQuery).then((response) => {
           const { content } = response
           this.List = content.data
-           console.log(this.List)
           const firstElement = content?.data[0] || {}
           const a = {}
           a.title = firstElement.name
@@ -2069,7 +2066,6 @@ export default {
           a.content = firstElement
           if (!this.firstTime) {
             if (!del) {
-              console.log(ADD_TASKDETAIL111111)
               this.$store.state.taskAdmin.taskDetailList.push(a)
               this.$store.commit('ADD_TASKDETAIL', a)
               this.jobDetailIdx = a.content.id + ''
@@ -2113,7 +2109,6 @@ export default {
         job.getList(listQuery).then((response) => {
           const { content } = response
           this.List = content.data
-          console.log( this.List)
           const a = {}
           const eleIndex = _.findIndex(
             this.List,
@@ -2124,7 +2119,6 @@ export default {
           a.content = this.List[eleIndex]
           if (!this.firstTime) {
             if (!del) {
-              console.log(ADD_TASKDETAIL22222222222)
               this.$store.state.taskAdmin.taskDetailList.push(a)
               this.$store.commit('ADD_TASKDETAIL', a)
               this.jobDetailIdx = a.content.id + ''
