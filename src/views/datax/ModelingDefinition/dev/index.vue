@@ -42,19 +42,18 @@
           style="margin-top: -10px"
         />
         <el-tree
-          v-loading="loading"
           id="main_span"
           ref="tree"
+          v-loading="loading"
           :data="workflowList"
           highlight-current
-          accordion
           default-expand-all
           draggable
           node-key="id"
           :expand-on-click-node="false"
+          :filter-node-method="filterNode"
           @node-drag-start="handleDragStart"
           @node-click="handleWorkFlow"
-          :filter-node-method="filterNode"
         >
           <span
             slot-scope="{ node, data }"
@@ -170,11 +169,11 @@
               icon-class="fengdie"
             />
             <Flow
-              @getTree="gettree"
-              :tabsIds="item.id"
-              :tableType="item.jobType"
-              :tabledata="nowObject"
               v-if="item.name !== '首页' && item.jobType !== 'wenjianjia'"
+              :tabs-ids="item.id"
+              :table-type="item.jobType"
+              :tabledata="nowObject"
+              @getTree="gettree"
             />
           </el-tab-pane>
         </el-tabs>
@@ -453,7 +452,7 @@ export default {
     },
     '$store.state.project.currentItem'(val) {
       localStorage.setItem('project_id', JSON.stringify(val))
-      let project_id = JSON.parse(localStorage.getItem('project_id'))
+      const project_id = JSON.parse(localStorage.getItem('project_id'))
         ? JSON.parse(localStorage.getItem('project_id'))
         : JSON.parse(localStorage.getItem('projectid'))
       if (typeof val === 'string') {
@@ -544,12 +543,13 @@ export default {
     setTimeout(() => {
       console.log('res.records--->', this.options)
       if (sessionStorage.getItem('strParam')) {
-        let project_id = sessionStorage.getItem('strParam').split('/')[0] || 45
+        const project_id =
+          sessionStorage.getItem('strParam').split('/')[0] || 45
         this.dropdownText =
           sessionStorage.getItem('strParam').split('/')[1] || 123
         this.getlist(project_id)
       } else {
-        let project_id = '45'
+        const project_id = '45'
         this.dropdownText = '123'
         this.getlist(project_id)
       }
@@ -562,7 +562,7 @@ export default {
     document.removeEventListener('mouseup', this.mouseUp)
   },
   methods: {
-    //移动鼠标放大
+    // 移动鼠标放大
     mousedown(event) {
       document.addEventListener('mousemove', this.mouseMove)
       this.CurrentMousePosition = event.clientX
@@ -582,7 +582,7 @@ export default {
       this.CurrentWidth = this.width
       document.removeEventListener('mousemove', this.mouseMove)
     },
-    //移动鼠标放大
+    // 移动鼠标放大
 
     // 拖拽tree
     handleDragStart(node, ev) {
@@ -593,11 +593,11 @@ export default {
     },
     handleCommand(data) {
       this.dropdownText = data.split('/')[1]
-      let project_id = data.split('/')[0]
+      const project_id = data.split('/')[0]
       sessionStorage.setItem('strParam', data)
       this.getlist(project_id)
     },
-    //获取下拉选择列表
+    // 获取下拉选择列表
     getItem() {
       this.loading = true
       this.listQuery.userId = JSON.parse(localStorage.getItem('userId'))
@@ -611,10 +611,10 @@ export default {
           console.log(err)
         })
     },
-    //获取tree列表
+    // 获取tree列表
     getlist(val, newtask) {
       this.loading = true
-      let projectId = { projectId: val }
+      const projectId = { projectId: val }
       modeling
         .Getlist(projectId)
         .then((res) => {
@@ -623,7 +623,7 @@ export default {
           // this.lastdata =
           //   res.content[0].children[res.content[0].children.length - 1]
           if (newtask && newtask.name === 'newtask') {
-            let newarr = []
+            const newarr = []
             for (var i in res.content[0].children) {
               if (res.content[0].children[i].children) {
                 newarr.push(res.content[0].children[i].children)
@@ -711,7 +711,7 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             this.workflowName = ''
-            let newtask = { name: 'newtask', id: res.content }
+            const newtask = { name: 'newtask', id: res.content }
             this.getlist(params.projectId, newtask)
           }
           console.log('新建', res)
@@ -848,7 +848,7 @@ export default {
       if (data.jobType === 'wenjianjia') {
         return
       }
-      let arr = []
+      const arr = []
       this.editableTabs.forEach((itme) => {
         arr.push(itme.name)
       })
@@ -877,7 +877,7 @@ export default {
     // 添加或查找tabs页面
     changeTabs(obj) {
       if (this.editableTabs.length > 0) {
-        let indexTabs = this.editableTabs
+        const indexTabs = this.editableTabs
           .map((item) => item.title)
           .indexOf(obj.name)
         console.log(indexTabs)

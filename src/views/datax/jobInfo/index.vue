@@ -1718,6 +1718,7 @@ export default {
       console.log('tree drop: ', dropNode.label, dropType, draggingNode)
     },
     allowDrop(draggingNode, dropNode, type) {
+     
       if (dropNode.data.name === '二级 3-1') {
         return type !== 'inner'
       } else {
