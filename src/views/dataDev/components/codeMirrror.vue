@@ -321,7 +321,7 @@ export default {
      * @description: 保存查询
      */
     saveQuery() {
-      console.log('保存查询')
+      console.log('异步查询')
       // this.code = JSON.stringify(this.code);
       this.$emit('saveQuery', this.code)
     },

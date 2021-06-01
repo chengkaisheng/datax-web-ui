@@ -30,7 +30,7 @@ export function handlerExecute(row) {
 
 // 查看日志
 export function handlerViewLog(row) {
-  this.$router.push({ path: '/datax/log/jobLog', query: { jobId: row.id } })
+  this.$router.push({ path: '/datax/log/jobLog', query: { jobId: row.id }})
 }
 
 // 删除

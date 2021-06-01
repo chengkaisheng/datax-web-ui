@@ -32,7 +32,7 @@
             >{{ item.name }}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <div style="height: 20px"></div>
+        <div style="height: 20px" />
         <el-input
           v-model="search"
           prefix-icon="el-icon-search"
@@ -117,8 +117,8 @@
         </vue-context-menu>
         <u id="drag" @mousedown="mousedown">
           <div class="arrow">
-            <li class="el-icon-caret-left"></li>
-            <li class="el-icon-caret-right"></li>
+            <li class="el-icon-caret-left" />
+            <li class="el-icon-caret-right" />
           </div>
         </u>
       </div>
@@ -758,15 +758,16 @@ export default {
     },
     // 删除工作流
     delWorkFlow(data) {
-      console.log('删除', this.nowObject)
+      console.log('删除', this.nowObjectdata)
+      // console.log('删除', data)
       modeling
         .DeleteTable({ id: this.nowObject.id })
         .then((res) => {
           if (res.code === 200) {
-            console.log('delete')
+            console.log(res)
             this.getlist(this.nowObject.projectId)
             for (let i = 0; i < this.editableTabs.length; i++) {
-              if (this.editableTabs[i].name == this.nowObject.name) {
+              if (this.editableTabs[i].name === this.nowObject.name) {
                 this.editableTabs.splice(i, 1)
               }
             }
