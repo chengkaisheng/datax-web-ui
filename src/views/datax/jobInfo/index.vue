@@ -315,7 +315,7 @@ rkJggg=="
         @tab-click="JobTabClick"
       >
         <el-tab-pane
-          v-if="!$store.state.taskAdmin.taskDetailList.length"
+          v-if="lasttab || !$store.state.taskAdmin.taskDetailList.length"
           style="user-select: none"
           label="欢迎"
           name="欢迎"
@@ -529,7 +529,11 @@ rkJggg=="
             <JobTemplate />
           </div>
           <div v-if="jobType === 'SHELL'" class="rg">
-            <SimpleJob job-type="GLUE_SHELL" job-type-label="SHELL任务" />
+            <SimpleJob
+              job-type="GLUE_SHELL"
+              job-type-label="SHELL任务"
+              @gettreelist="Gettreelist"
+            />
           </div>
           <div v-if="jobType === 'POWERSHELL'" class="rg">
             <SimpleJob
@@ -775,6 +779,7 @@ export default {
   },
   data() {
     return {
+      lasttab: true,
       contextMenuVisible: false,
       contextMenuOffset: {
         left: 0,
@@ -1144,8 +1149,8 @@ export default {
       console.log(data, '是否关闭tabs')
     },
     // 点击子组件保存按钮后重新获取tree
-    Gettreelist() {
-      this.getDataTree()
+    Gettreelist(data) {
+      this.getDataTree(data)
     },
     // 删除任务Tabs窗口
     removeJobTab(targetId) {
@@ -1273,7 +1278,6 @@ export default {
                     newarr.push(res.content[0].children)
                   }
                 }
-                console.log('新建之后的newarr', newarr.flat(Infinity))
                 for (var kk = 0; kk < newarr.length; kk++) {
                   if (newarr[kk] === null) {
                     newarr.splice(kk, 1)
@@ -1326,10 +1330,8 @@ export default {
       console.log(this.selectedIndex)
     },
     JobTabClick(ele) {
-      console.log('ele', ele.label)
+      console.log('ele', ele)
       this.jobType = ele.name
-      console.log(this.jobType, 'tthis ')
-
       const t = this.List.filter(
         (item) => item.id === parseInt(this.jobDetailIdx)
       )
@@ -1848,11 +1850,15 @@ export default {
                   }
                 }
                 this.tablist.splice(index, 1)
-                let data = this.tablist[this.tablist.length - 1]
-                this.getDataTree({ data: 'NewTask', name: data.content.name })
-
-                this.handleNodeClick(data)
-                // this.removeJobTab(this.selectRow.id)
+                if (this.tablist.length === 0) {
+                  this.getDataTree()
+                  this.jobDetailIdx = '欢迎'
+                }
+                if (this.tablist.length !== 0) {
+                  console.log('是个啥玩意', this.tablist)
+                  let data = this.tablist[this.tablist.length - 1]
+                  this.getDataTree({ data: 'NewTask', name: data.content.name })
+                }
                 this.selectRow = {}
                 this.$message({
                   type: 'success',

@@ -97,11 +97,11 @@
         <el-col
           v-if="
             jobType === 'NORMAL' ||
-              jobType === 'IMPORT' ||
-              jobType === 'EXPORT' ||
-              jobType === 'SHELL' ||
-              jobType === 'POWERSHELL' ||
-              jobType === 'PYTHON'
+            jobType === 'IMPORT' ||
+            jobType === 'EXPORT' ||
+            jobType === 'SHELL' ||
+            jobType === 'POWERSHELL' ||
+            jobType === 'PYTHON'
           "
           class="detail_col"
           :xs="24"
@@ -120,11 +120,11 @@
         <el-col
           v-if="
             jobType === 'NORMAL' ||
-              jobType === 'IMPORT' ||
-              jobType === 'EXPORT' ||
-              jobType === 'SHELL' ||
-              jobType === 'POWERSHELL' ||
-              jobType === 'PYTHON'
+            jobType === 'IMPORT' ||
+            jobType === 'EXPORT' ||
+            jobType === 'SHELL' ||
+            jobType === 'POWERSHELL' ||
+            jobType === 'PYTHON'
           "
           class="detail_col"
           :xs="24"
@@ -293,13 +293,15 @@
           type="text"
           icon="el-icon-edit"
           @click="editable.newTask = !editable.newTask"
-        >{{ editable.newTask ? "取消" : "编辑" }}</el-button>
+          >{{ editable.newTask ? '取消' : '编辑' }}</el-button
+        >
         <el-button
           v-if="dialogStatus !== 'create' && editable.newTask"
           type="text"
           icon="el-icon-upload"
           @click="updateData()"
-        >保存更改</el-button>
+          >保存更改</el-button
+        >
       </h3>
       <div class="part-container">
         <el-form
@@ -327,7 +329,7 @@
                 </el-select>
                 <span v-else class="info-detail">{{
                   dashOrValue(
-                    finder(temp.jobGroup, executorList, "id", "title")
+                    finder(temp.jobGroup, executorList, 'id', 'title')
                   )
                 }}</span>
               </el-form-item>
@@ -366,8 +368,8 @@
                     finder(
                       temp.executorRouteStrategy,
                       routeStrategies,
-                      "value",
-                      "label"
+                      'value',
+                      'label'
                     )
                   )
                 }}</span>
@@ -383,10 +385,9 @@
                 <cron v-model="temp.jobCron" />
                 <span slot="footer" class="dialog-footer">
                   <el-button @click="showCronBox = false">关闭</el-button>
-                  <el-button
-                    type="primary"
-                    @click="showCronBox = false"
-                  >确 定</el-button>
+                  <el-button type="primary" @click="showCronBox = false"
+                    >确 定</el-button
+                  >
                 </span>
               </el-dialog>
               <el-form-item label="Cron表达式" prop="jobCron">
@@ -437,8 +438,8 @@
                     finder(
                       temp.executorBlockStrategy,
                       blockStrategies,
-                      "value",
-                      "label"
+                      'value',
+                      'label'
                     )
                   )
                 }}</span>
@@ -474,7 +475,7 @@
                 </el-select>
                 <span v-else class="info-detail">{{
                   dashOrValue(
-                    finder(temp.glueType, glueTypes, "value", "label")
+                    finder(temp.glueType, glueTypes, 'value', 'label')
                   )
                 }}</span>
               </el-form-item>
@@ -512,7 +513,7 @@
                 </el-select>
                 <span v-else class="info-detail">{{
                   dashOrValue(
-                    finder(temp.projectId, jobProjectList, "id", "name")
+                    finder(temp.projectId, jobProjectList, 'id', 'name')
                   )
                 }}</span>
               </el-form-item>
@@ -572,7 +573,7 @@
                 </el-select>
                 <span v-else class="info-detail">{{
                   dashOrValue(
-                    finder(temp.incrementType, incrementTypes, "value", "label")
+                    finder(temp.incrementType, incrementTypes, 'value', 'label')
                   )
                 }}</span>
               </el-form-item>
@@ -626,8 +627,8 @@
                     finder(
                       temp.datasourceId,
                       dataSourceList,
-                      "id",
-                      "datasourceName"
+                      'id',
+                      'datasourceName'
                     )
                   )
                 }}</span>
@@ -708,8 +709,8 @@
                     finder(
                       temp.replaceParamType,
                       replaceFormatTypes,
-                      "value",
-                      "label"
+                      'value',
+                      'label'
                     )
                   )
                 }}</span>
@@ -748,7 +749,7 @@
                 </el-select>
                 <span v-else class="info-detail">{{
                   dashOrValue(
-                    finder(timeFormatType, timeFormatTypes, "value", "label")
+                    finder(timeFormatType, timeFormatTypes, 'value', 'label')
                   )
                 }}</span>
               </el-form-item>
@@ -791,13 +792,15 @@
           type="text"
           icon="el-icon-edit"
           @click="editReader"
-        >{{ editable.reader ? "取消" : "编辑" }}</el-button>
+          >{{ editable.reader ? '取消' : '编辑' }}</el-button
+        >
         <el-button
           v-if="dialogStatus !== 'create' && editable.reader"
           type="text"
           icon="el-icon-upload"
           @click="updateData()"
-        >保存更改</el-button>
+          >保存更改</el-button
+        >
       </h3>
       <div class="part-container">
         <!-- {{ this.$store.state.taskAdmin.tabType }}
@@ -817,13 +820,15 @@
           type="text"
           icon="el-icon-edit"
           @click="editable.writer = !editable.writer"
-        >{{ editable.writer ? "取消" : "编辑" }}</el-button>
+          >{{ editable.writer ? '取消' : '编辑' }}</el-button
+        >
         <el-button
           v-if="dialogStatus !== 'create' && editable.writer"
           type="text"
           icon="el-icon-upload"
           @click="updateData()"
-        >保存更改</el-button>
+          >保存更改</el-button
+        >
       </h3>
       <div class="part-container">
         <!-- {{ jobInfo.jobParam }} -->
@@ -853,8 +858,8 @@
                 finder(
                   writerFormQuality.writerDatasourceId,
                   $store.state.taskAdmin.dataSourceList,
-                  "id",
-                  "datasourceName"
+                  'id',
+                  'datasourceName'
                 )
               )
             }}</span>
@@ -862,7 +867,7 @@
           <el-form-item
             v-if="
               $store.state.taskAdmin.jobInfoType === 'DQCJOB' &&
-                (dataSource === 'postgresql' ||
+              (dataSource === 'postgresql' ||
                 dataSource === 'greenplum' ||
                 dataSource === 'oracle' ||
                 dataSource === 'sqlserver')
@@ -905,7 +910,7 @@
               dashOrValue(
                 writerFormQuality.writerTables
                   ? writerFormQuality.writerTables[0]
-                  : ""
+                  : ''
               )
             }}</span>
           </el-form-item>
@@ -969,8 +974,8 @@
                 finder(
                   writerFormQuality.hiveWriter.writerFileType,
                   fileTypes,
-                  "value",
-                  "label"
+                  'value',
+                  'label'
                 )
               )
             }}</span>
@@ -997,8 +1002,8 @@
                 finder(
                   writerFormQuality.hiveWriter.writeMode,
                   writeModes,
-                  "value",
-                  "label"
+                  'value',
+                  'label'
                 )
               )
             }}</span>
@@ -1023,7 +1028,8 @@
               :disabled="!editable.writer"
               :indeterminate="writerForm.isIndeterminate"
               @change="wHandleCheckAllChange"
-            >全选</el-checkbox>
+              >全选</el-checkbox
+            >
             <div style="margin: 15px 0" />
             <el-checkbox-group
               v-model="writerFormQuality.writerColumns"
@@ -1034,7 +1040,8 @@
                 v-for="(item, index) in fromColumnList"
                 :key="index"
                 :label="item"
-              >{{ item }}</el-checkbox>
+                >{{ item }}</el-checkbox
+              >
             </el-checkbox-group>
           </el-form-item>
           <el-form-item v-if="dataSource !== 'hive'" label="前置sql语句：">
@@ -1046,7 +1053,7 @@
               :rows="3"
             />
             <span v-else class="info-detail">{{
-              dashOrValue(hasVal(writerFormQuality.rdbmsWriter, "preSql"))
+              dashOrValue(hasVal(writerFormQuality.rdbmsWriter, 'preSql'))
             }}</span>
           </el-form-item>
           <el-form-item v-if="dataSource !== 'hive'" label="后置Sql语句：">
@@ -1058,7 +1065,7 @@
               :rows="3"
             />
             <span v-else class="info-detail">{{
-              dashOrValue(hasVal(writerFormQuality.rdbmsWriter, "postSql"))
+              dashOrValue(hasVal(writerFormQuality.rdbmsWriter, 'postSql'))
             }}</span>
           </el-form-item>
         </el-form>
@@ -1169,13 +1176,15 @@
           type="text"
           icon="el-icon-edit"
           @click="editable.mapping = !editable.mapping"
-        >{{ editable.mapping ? "取消" : "编辑" }}</el-button>
+          >{{ editable.mapping ? '取消' : '编辑' }}</el-button
+        >
         <el-button
           v-if="dialogStatus !== 'create' && editable.mapping"
           type="text"
           icon="el-icon-upload"
           @click="updateData()"
-        >保存更改</el-button>
+          >保存更改</el-button
+        >
       </h3>
       <!-- {{ $store.state.taskAdmin.readerColumns }}
       <br>
@@ -1307,7 +1316,7 @@ import {
   handlerStop,
   loadById,
   nextTriggerTime,
-  handlerUpdate
+  handlerUpdate,
 } from '../method'
 import { translaterMaster } from '@/utils/dictionary'
 
@@ -1326,23 +1335,23 @@ export default {
     writer,
     qualityReader,
     qualityWriter,
-    mapper
+    mapper,
   },
   directives: {
-    waves
+    waves,
   },
   filters: {
     statusFilter(status) {
       const statusMap = {
         published: 'success',
         draft: 'gray',
-        deleted: 'danger'
+        deleted: 'danger',
       }
       return statusMap[status]
-    }
+    },
   },
   props: {
-    jobInfo: { type: Object, default: () => ({}) }
+    jobInfo: { type: Object, default: () => ({}) },
   },
   data() {
     const validateIncParam = (rule, value, callback) => {
@@ -1371,7 +1380,7 @@ export default {
         rules: [],
         lcheckAll: false,
         rcheckAll: false,
-        isIndeterminate: true
+        isIndeterminate: true,
       },
       /** 数据库-表-列 */
       fromColumnList: [],
@@ -1379,7 +1388,7 @@ export default {
       writerForm: {
         checkAll: false,
         isIndeterminate: true,
-        ifCreateTable: false
+        ifCreateTable: false,
       },
       /** 质量任务表单 */
       writerFormQuality: {},
@@ -1406,7 +1415,7 @@ export default {
         projectIds: '',
         triggerStatus: -1,
         jobDesc: '',
-        glueType: ''
+        glueType: '',
       },
       showCronBox: false,
       dialogPluginVisible: false,
@@ -1415,113 +1424,113 @@ export default {
       dialogStatus: '',
       textMap: {
         update: 'Edit',
-        create: 'Create'
+        create: 'Create',
       },
       rules: {
         jobGroup: [
           {
             required: true,
             message: 'jobGroup is required',
-            trigger: 'change'
-          }
+            trigger: 'change',
+          },
         ],
         executorRouteStrategy: [
           {
             required: true,
             message: 'executorRouteStrategy is required',
-            trigger: 'change'
-          }
+            trigger: 'change',
+          },
         ],
         executorBlockStrategy: [
           {
             required: true,
             message: 'executorBlockStrategy is required',
-            trigger: 'change'
-          }
+            trigger: 'change',
+          },
         ],
         glueType: [
           {
             required: true,
             message: 'jobType is required',
-            trigger: 'change'
-          }
+            trigger: 'change',
+          },
         ],
         projectId: [
           {
             required: true,
             message: 'projectId is required',
-            trigger: 'change'
-          }
+            trigger: 'change',
+          },
         ],
         jobDesc: [
           {
             required: true,
             message: 'jobDesc is required',
-            trigger: 'blur'
-          }
+            trigger: 'blur',
+          },
         ],
         jobProject: [
           {
             required: true,
             message: 'jobProject is required',
-            trigger: 'blur'
-          }
+            trigger: 'blur',
+          },
         ],
         jobCron: [
           {
             required: true,
             message: 'jobCron is required',
-            trigger: 'blur'
-          }
+            trigger: 'blur',
+          },
         ],
         incStartId: [
           {
             trigger: 'blur',
-            validator: validateIncParam
-          }
+            validator: validateIncParam,
+          },
         ],
         replaceParam: [
           {
             trigger: 'blur',
-            validator: validateIncParam
-          }
+            validator: validateIncParam,
+          },
         ],
         primaryKey: [
           {
             trigger: 'blur',
-            validator: validateIncParam
-          }
+            validator: validateIncParam,
+          },
         ],
         incStartTime: [
           {
             trigger: 'change',
-            validator: validateIncParam
-          }
+            validator: validateIncParam,
+          },
         ],
         replaceParamType: [
           {
             trigger: 'change',
-            validator: validateIncParam
-          }
+            validator: validateIncParam,
+          },
         ],
         partitionField: [
           {
             trigger: 'blur',
-            validator: validatePartitionParam
-          }
+            validator: validatePartitionParam,
+          },
         ],
         datasourceId: [
           {
             trigger: 'change',
-            validator: validateIncParam
-          }
+            validator: validateIncParam,
+          },
         ],
         readerTable: [
           {
             trigger: 'blur',
-            validator: validateIncParam
-          }
-        ]
+            validator: validateIncParam,
+          },
+        ],
       },
       temp: {
         id: undefined,
@@ -1553,7 +1562,7 @@ export default {
         projectId: '',
         datasourceId: '',
         readerTable: '',
-        jobType: ''
+        jobType: '',
       },
       resetTemp() {
         this.temp = this.$options.data().temp
@@ -1570,91 +1579,91 @@ export default {
       blockStrategies: [
         {
           value: 'SERIAL_EXECUTION',
-          label: '单机串行'
+          label: '单机串行',
         },
         {
           value: 'DISCARD_LATER',
-          label: '丢弃后续调度'
+          label: '丢弃后续调度',
         },
         {
           value: 'COVER_EARLY',
-          label: '覆盖之前调度'
-        }
+          label: '覆盖之前调度',
+        },
       ],
       routeStrategies: [
         {
           value: 'FIRST',
-          label: '第一个'
+          label: '第一个',
         },
         {
           value: 'LAST',
-          label: '最后一个'
+          label: '最后一个',
         },
         {
           value: 'ROUND',
-          label: '轮询'
+          label: '轮询',
         },
         {
           value: 'RANDOM',
-          label: '随机'
+          label: '随机',
         },
         {
           value: 'CONSISTENT_HASH',
-          label: '一致性HASH'
+          label: '一致性HASH',
         },
         {
           value: 'LEAST_FREQUENTLY_USED',
-          label: '最不经常使用'
+          label: '最不经常使用',
         },
         {
           value: 'LEAST_RECENTLY_USED',
-          label: '最近最久未使用'
+          label: '最近最久未使用',
         },
         {
           value: 'FAILOVER',
-          label: '故障转移'
+          label: '故障转移',
         },
         {
           value: 'BUSYOVER',
-          label: '忙碌转移'
-        }
+          label: '忙碌转移',
+        },
         // { value: 'SHARDING_BROADCAST', label: '分片广播' }
       ],
       glueTypes: [
         {
           value: 'BEAN',
-          label: 'DataX任务'
+          label: 'DataX任务',
         },
         {
           value: 'GLUE_SHELL',
-          label: 'Shell任务'
+          label: 'Shell任务',
         },
         {
           value: 'GLUE_PYTHON',
-          label: 'Python任务'
+          label: 'Python任务',
         },
         {
           value: 'GLUE_POWERSHELL',
-          label: 'PowerShell任务'
-        }
+          label: 'PowerShell任务',
+        },
       ],
       incrementTypes: [
         {
           value: 0,
-          label: '无'
+          label: '无',
         },
         {
           value: 1,
-          label: '主键自增'
+          label: '主键自增',
         },
         {
           value: 2,
-          label: '时间自增'
+          label: '时间自增',
         },
         {
           value: 3,
-          label: 'HIVE分区'
-        }
+          label: 'HIVE分区',
+        },
       ],
       triggerNextTimes: '',
       registerNode: [],
@@ -1666,60 +1675,60 @@ export default {
       timeFormatTypes: [
         {
           value: 'yyyy-MM-dd',
-          label: 'yyyy-MM-dd'
+          label: 'yyyy-MM-dd',
         },
         {
           value: 'yyyyMMdd',
-          label: 'yyyyMMdd'
+          label: 'yyyyMMdd',
         },
         {
           value: 'yyyy/MM/dd',
-          label: 'yyyy/MM/dd'
-        }
+          label: 'yyyy/MM/dd',
+        },
       ],
       replaceFormatTypes: [
         {
           value: 'yyyy/MM/dd',
-          label: 'yyyy/MM/dd'
+          label: 'yyyy/MM/dd',
         },
         {
           value: 'yyyy-MM-dd',
-          label: 'yyyy-MM-dd'
+          label: 'yyyy-MM-dd',
         },
         {
           value: 'HH:mm:ss',
-          label: 'HH:mm:ss'
+          label: 'HH:mm:ss',
         },
         {
           value: 'yyyy/MM/dd HH:mm:ss',
-          label: 'yyyy/MM/dd HH:mm:ss'
+          label: 'yyyy/MM/dd HH:mm:ss',
         },
         {
           value: 'yyyy-MM-dd HH:mm:ss',
-          label: 'yyyy-MM-dd HH:mm:ss'
+          label: 'yyyy-MM-dd HH:mm:ss',
         },
         {
           value: 'Timestamp',
-          label: '时间戳'
-        }
+          label: '时间戳',
+        },
       ],
       statusList: [
         {
           value: 500,
-          label: '失败'
+          label: '失败',
         },
         {
           value: 502,
-          label: '失败(超时)'
+          label: '失败(超时)',
         },
         {
           value: 200,
-          label: '成功'
+          label: '成功',
         },
         {
           value: 0,
-          label: '无'
-        }
+          label: '无',
+        },
       ],
       /** 可编辑 */
       editable: {
@@ -1730,21 +1739,21 @@ export default {
         /** 构建writer */
         writer: false,
         /** 字段映射 */
-        mapping: false
+        mapping: false,
       },
       dataSource: '',
       fileTypes: [
         { value: 'text', label: 'text' },
-        { value: 'orc', label: 'orc' }
+        { value: 'orc', label: 'orc' },
       ],
       writeModes: [
         { value: 'append', label: 'append 写入前不做任何处理' },
         {
           value: 'nonConflict',
-          label: 'nonConflict 目录下有fileName前缀的文件，直接报错'
-        }
+          label: 'nonConflict 目录下有fileName前缀的文件，直接报错',
+        },
       ],
-      resultView: false // 结果查看
+      resultView: false, // 结果查看
     }
   },
 
@@ -1845,10 +1854,10 @@ export default {
           return ''
         }
       }
-    }
+    },
   },
   watch: {
-    'writerFormQuality.writerDatasourceId': function(oldVal, newVal) {
+    'writerFormQuality.writerDatasourceId': function (oldVal, newVal) {
       this.$store.state.taskAdmin.dataSourceList.find((item) => {
         if (item.id === this.writerFormQuality.writerDatasourceId) {
           this.dataSource = item.datasource
@@ -1872,7 +1881,7 @@ export default {
           sourceField: this.readerForm.lcolumns[index],
           clearRule: this.readerForm.rules[index],
           targetField: this.readerForm.rcolumns[index],
-          index: index
+          index: index,
         }
         arr.push(obj)
       })
@@ -1887,7 +1896,7 @@ export default {
       val.forEach((row, index) => {
         const obj = {
           column: row,
-          index
+          index,
         }
         this.tableData.push(obj)
       })
@@ -1924,7 +1933,7 @@ export default {
         this.writerFormQuality = JSON.parse(JSON.stringify(this.jobParam))
         this.getColumns()
       }
-    }
+    },
   },
   created() {
     this.fetchData()
@@ -2091,7 +2100,7 @@ export default {
           jobId: this.temp.id,
           logStatus: -1,
           filterTime: '',
-          userId: localStorage.getItem('userId')
+          userId: localStorage.getItem('userId'),
         }
       )
       console.log(param)
@@ -2123,7 +2132,7 @@ export default {
     // schema列表
     async getSchemaList() {
       const schemaList = await getTableSchema({
-        datasourceId: this.writerFormQuality.writerDatasourceId
+        datasourceId: this.writerFormQuality.writerDatasourceId,
       })
       this.schemaList = schemaList
     },
@@ -2215,7 +2224,7 @@ export default {
         hbaseReader: this.writerFormQuality.hbaseReader,
         hbaseWriter: this.writerFormQuality.hbaseWriter,
         mongoDBReader: this.writerFormQuality.mongoDBReader,
-        mongoDBWriter: this.writerFormQuality.mongoDBWriter
+        mongoDBWriter: this.writerFormQuality.mongoDBWriter,
       }
 
       if (this.temp.glueType === 'BEAN' && !isJSON(this.temp.jobJson)) {
@@ -2223,7 +2232,7 @@ export default {
           title: 'Fail',
           message: 'json格式错误',
           type: 'error',
-          duration: 2000
+          duration: 2000,
         })
         return
       }
@@ -2270,7 +2279,7 @@ export default {
               title: 'Success',
               message: 'Update Successfully',
               type: 'success',
-              duration: 2000
+              duration: 2000,
             })
             // this.$emit("deleteDetailTab", tabName);
             // this.$emit("deleteJob");
@@ -2305,11 +2314,11 @@ export default {
         ) {
           obj = {
             datasourceId: this.writerFormQuality.writerDatasourceId,
-            tableSchema: this.writerFormQuality.writerSchema
+            tableSchema: this.writerFormQuality.writerSchema,
           }
         } else {
           obj = {
-            datasourceId: this.writerFormQuality.writerDatasourceId
+            datasourceId: this.writerFormQuality.writerDatasourceId,
           }
         }
         // 组装
@@ -2330,7 +2339,7 @@ export default {
     getColumns() {
       const obj = {
         datasourceId: this.writerFormQuality.writerDatasourceId,
-        tableName: this.writerFormQuality.writerTables[0]
+        tableName: this.writerFormQuality.writerTables[0],
       }
       dsQueryApi.getColumns(obj).then((response) => {
         this.fromColumnList = response
@@ -2399,8 +2408,8 @@ export default {
      */
     schemaChange() {
       this.getTables('rdbmsWriter')
-    }
-  }
+    },
+  },
 }
 </script>
 
