@@ -696,9 +696,11 @@ export default {
           )
           this.temp.projectGroupId = this.$store.state.taskAdmin.TreeId
           // this.temp.projectGroupId = 99999
-          console.log(this.temp.projectGroupId, 'this.temp.projectGroupId')
+          console.log(this.temp, 'this.temp.projectGroupId')
           job.createJob(this.temp).then((res) => {
-            this.fetchData()
+            // this.fetchData()
+            console.log('temp--->', this.temp)
+            this.$emit('gettreelist', { name: this.temp.name })
             this.$store.commit('SET_TAB_TYPE', '')
             this.$store.commit('SET_TASKDETAIL_ID', res.content)
             this.$store.commit('changeWatch', 1)

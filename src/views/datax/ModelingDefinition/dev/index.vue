@@ -153,6 +153,14 @@
             closable
             tab-position="left"
           >
+            <!-- <span slot="label" style="user-select: none">
+              <svg-icon
+                v-if="item.name !== '首页'"
+                :icon-class="item.jobType"
+                style="font-size: 15px; margin-right: 3px"
+              />
+              {{ item.name }}
+            </span> -->
             <div v-if="item.name === '首页'" class="title_h3">
               一站式数据开发解决方案
             </div>
@@ -231,7 +239,7 @@ export default {
   },
   data() {
     return {
-      width: '300',
+      width: 300,
       tabledata: '',
       contextMenu1Visible: false,
       contextMenu1Target: '',
@@ -425,7 +433,8 @@ export default {
       loading: true,
       // 右键鼠标的Y坐标
       Ycoords: null,
-      lastX: '',
+      CurrentMousePosition: '',
+      CurrentWidth: 300,
     }
   },
   watch: {
@@ -555,21 +564,22 @@ export default {
   methods: {
     //移动鼠标放大
     mousedown(event) {
-      console.log(event.clientX)
       document.addEventListener('mousemove', this.mouseMove)
-      this.lastX = event.clientX
+      this.CurrentMousePosition = event.clientX
     },
     mouseMove(event) {
-      this.width = event.screenX - 210
+      let pixel = event.clientX - this.CurrentMousePosition
+      this.width = this.CurrentWidth + pixel
       if (this.width < 200) {
         this.width = 200
       }
       if (this.width > 200) {
-        this.width = event.screenX - 210
+        this.width = this.CurrentWidth + pixel
       }
       console.log(event)
     },
     mouseUp() {
+      this.CurrentWidth = this.width
       document.removeEventListener('mousemove', this.mouseMove)
     },
     //移动鼠标放大
@@ -759,31 +769,45 @@ export default {
       }
       this.ReETLdialog = false
     },
-    // 删除工作流
+    // 删除表任务
     delWorkFlow(data) {
       console.log('删除', this.nowObject)
-      modeling
-        .DeleteTable({ id: this.nowObject.id })
-        .then((res) => {
-          if (res.code === 200) {
-            console.log('delete')
-            this.getlist(this.nowObject.projectId)
-            for (let i = 0; i < this.editableTabs.length; i++) {
-              if (this.editableTabs[i].name == this.nowObject.name) {
-                this.editableTabs.splice(i, 1)
+      this.$confirm('此操作将删除该任务表' + ',' + '是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          modeling
+            .DeleteTable({ id: this.nowObject.id })
+            .then((res) => {
+              if (res.code === 200) {
+                console.log('delete')
+                this.getlist(this.nowObject.projectId)
+                for (let i = 0; i < this.editableTabs.length; i++) {
+                  if (this.editableTabs[i].name == this.nowObject.name) {
+                    this.editableTabs.splice(i, 1)
+                  }
+                }
+                let lastdata = this.editableTabs[this.editableTabs.length - 1]
+                console.log('lastdata--->', lastdata)
+                this.handleWorkFlow(lastdata)
+                this.$message.success('删除成功')
               }
-            }
-            let lastdata = this.editableTabs[this.editableTabs.length - 1]
-            console.log('lastdata--->', lastdata)
-            this.handleWorkFlow(lastdata)
-            this.$message.success('删除成功')
-          }
+            })
+            .catch((err) => {
+              // this.$message('删除失败' + err)
+              console.log('删除失败', err)
+            })
+          this.contextMenuVisible = false
         })
-        .catch((err) => {
-          this.$message('删除失败' + err)
-          console.log('删除失败', err)
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+          this.contextMenuVisible = false
         })
-      this.contextMenuVisible = false
     },
     // 取消对话框
     cancelDialog() {
@@ -794,6 +818,9 @@ export default {
     // 删除tabs窗口
     removeTab(targetName) {
       console.log(targetName, 'targetName')
+      if (targetName === '首页') {
+        return
+      }
       const tabs = this.editableTabs
       let activeName = this.editableTabsValue
       if (activeName === targetName) {
