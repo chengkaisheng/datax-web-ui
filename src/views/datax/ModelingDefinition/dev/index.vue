@@ -114,12 +114,10 @@
           <a href="javascript:0" @click="reName">重命名</a>
           <a href="javascript:0" @click="delWorkFlow">删除</a>
         </vue-context-menu>
-        <u id="drag" @mousedown="mousedown">
-          <div class="arrow">
-            <li class="el-icon-caret-left"></li>
-            <li class="el-icon-caret-right"></li>
-          </div>
-        </u>
+        <ul id="drag" @mousedown="mousedown">
+          <div class="arrow"></div>
+        </ul>
+        <div @click="shrink" id="icon" :class="icon"></div>
       </div>
       <!-- </vue-draggable-resizable> -->
       <!--拖拽-->
@@ -238,6 +236,7 @@ export default {
   },
   data() {
     return {
+      icon: 'el-icon-arrow-left',
       width: 300,
       tabledata: '',
       contextMenu1Visible: false,
@@ -562,6 +561,10 @@ export default {
     document.removeEventListener('mouseup', this.mouseUp)
   },
   methods: {
+    shrink() {
+      this.width = 200
+      this.icon = 'el-icon-arrow-right'
+    },
     // 移动鼠标放大
     mousedown(event) {
       document.addEventListener('mousemove', this.mouseMove)
@@ -576,7 +579,6 @@ export default {
       if (this.width > 200) {
         this.width = this.CurrentWidth + pixel
       }
-      console.log(event)
     },
     mouseUp() {
       this.CurrentWidth = this.width
@@ -1604,5 +1606,20 @@ export default {
   font-family: '楷体';
   left: 24px;
   top: 30px;
+}
+#icon {
+  z-index: 999;
+  position: absolute;
+  top: 300px;
+  right: -13px;
+  display: block;
+  height: 30px;
+  width: 10px;
+  color: white;
+  font-size: 12px;
+  border-radius: 5px;
+  text-align: center;
+  line-height: 30px;
+  background: rgb(16, 167, 132);
 }
 </style>
