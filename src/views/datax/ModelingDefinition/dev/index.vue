@@ -201,14 +201,9 @@
         </div>
       </el-dialog>
       <!-- 工作流重命名 -->
-<<<<<<< HEAD
       <el-dialog :visible.sync="ReETLdialog" width="40%" title="重命名模型">
         <span style="margin-left: 20px">名称：</span
         ><el-input
-=======
-      <el-dialog :visible.sync="ReETLdialog" width="40%" title="重命名工作流">
-        <span style="margin-left: 20px">名称：</span><el-input
->>>>>>> 2bdb61d53fdd0b95ccf33880d94ab997e5506baf
           v-model="reWorkflowName"
           style="width: 80%; margin-left: 20px"
         />
@@ -498,11 +493,11 @@ export default {
     this.contextMenu1Target = myChartContainer
     const a = document.getElementById('newFile')
     const b = document.getElementsByClassName('right-menu1')
-    a.onmouseover = function() {
-      for (var i = 0; i < b.length; i++) {
-        b[i].style.display = 'block'
-      }
-    }
+    // a.onmouseover = function() {
+    //   for (var i = 0; i < b.length; i++) {
+    //     b[i].style.display = 'block'
+    //   }
+    // }
     a.onmouseout = function() {
       for (var i = 0; i < b.length; i++) {
         b[i].style.display = 'none'
