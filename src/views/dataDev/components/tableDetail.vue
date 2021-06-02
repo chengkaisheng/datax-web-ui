@@ -307,9 +307,9 @@
           >
             <template slot-scope="scope">
               <!-- <el-button slot="reference" type="text" size="small" @click="handleClick1(scope.row)">查看</el-button> -->
-              <el-popover placement="top" width="400" trigger="click">
-                <h3>执行结果</h3>
-                <!-- <el-table
+              <!-- <el-popover placement="top" width="400" trigger="click">
+                <h3>执行结果</h3> -->
+              <!-- <el-table
                   v-loading="tableLoading"
                   style="padding: 0px; margin-right: 10px"
                   :data="JSON.parse(scope.row.sqlResult).tableData"
@@ -327,12 +327,13 @@
                     align="center"
                   />
                 </el-table> -->
-                <el-button
-                  slot="reference"
-                  type="text"
-                  size="small"
-                >查看</el-button>
-              </el-popover>
+              <el-button
+                slot="reference"
+                type="text"
+                size="small"
+                @click="handleClick1(scope.row)"
+              >查看日志</el-button>
+              <!-- </el-popover> -->
               <el-button
                 type="text"
                 icon="el-icon-refresh"
@@ -606,7 +607,26 @@ export default {
     },
     // 查看
     handleClick1(row) {
+      console.log(row)
+      this.tabsActive = 'querylog'
+      // this.getSqlList()
       // console.log(row)
+      this.$nextTick(() => {
+        this.loglist = []
+        this.loglist.unshift({
+          title: '异步查询日志',
+          // tableData: this.tableData,
+          // secondData: this.secondData,
+          // columns: this.columns,
+          logtime: row.submitTime,
+          content: row.sqlContent,
+          // tableData: row.sqlResult
+          tableData: row.datasourceName
+        // error: error
+        })
+        this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
+      })
+      console.log(this.loglist)
       // alert(row.id)
     },
     // 新增查询结果
@@ -632,8 +652,8 @@ export default {
     },
     // 点击tab
     handleClickTabs(tab, event) {
-      console.log(event)
-      console.log(tab)
+      // console.log(event)
+      // console.log(tab)
       // if (tab.name === 'querylog') {
       //   // window.scrollTo({
       //   //   top: 0,
