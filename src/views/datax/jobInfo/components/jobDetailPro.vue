@@ -158,9 +158,10 @@
               <cron v-model="scheduleForm.cron" />
               <span slot="footer" class="dialog-footer">
                 <el-button @click="showCronBox = false">关闭</el-button>
-                <el-button type="primary" @click="showCronBox = false"
-                  >确 定</el-button
-                >
+                <el-button
+                  type="primary"
+                  @click="showCronBox = false"
+                >确 定</el-button>
               </span>
             </el-dialog>
           </el-form-item>
@@ -212,11 +213,11 @@
             />
           </el-form-item>
           <el-form-item label="失败重试次数" prop="retry">
-            <br />
+            <br>
             <el-input-number v-model="scheduleForm.retry" :min="0" />
           </el-form-item>
           <el-form-item label="超时时间" prop="timeout">
-            <br />
+            <br>
             <el-input-number v-model="scheduleForm.timeout" :min="0" />（分钟）
           </el-form-item>
         </el-form>
@@ -226,19 +227,16 @@
         <el-button
           class="drawer-btn-temp"
           @click="closeScheduleForm('scheduleForm')"
-          >取消</el-button
-        >
+        >取消</el-button>
         <el-button
           class="drawer-btn-temp"
           @click="resetScheduleForm('scheduleForm')"
-          >重置</el-button
-        >
+        >重置</el-button>
         <el-button
           class="drawer-btn-temp"
           type="primary"
           @click="submitScheduleForm('scheduleForm')"
-          >提交</el-button
-        >
+        >提交</el-button>
       </div>
     </el-drawer>
     <!-- gojs任务联系 -->
@@ -307,17 +305,16 @@ rkJggg=="
               v-show="
                 this.$store.state.taskAdmin.jobDataDetail.jobType ===
                   'IMPORT' ||
-                this.$store.state.taskAdmin.jobDataDetail.jobType ===
+                  this.$store.state.taskAdmin.jobDataDetail.jobType ===
                   'NORMAL' ||
-                this.$store.state.taskAdmin.jobDataDetail.jobType ===
+                  this.$store.state.taskAdmin.jobDataDetail.jobType ===
                   'EXPORT' ||
-                this.$store.state.taskAdmin.jobDataDetail.jobType === 'SHELL'
+                  this.$store.state.taskAdmin.jobDataDetail.jobType === 'SHELL'
               "
               type="text"
               icon="el-icon-edit"
               @click="showEdit(currentTask)"
-              >编辑</el-button
-            >
+            >编辑</el-button>
           </template>
           <template slot="context">
             <!-- <description-items keys="执行器" :values="jobGroupName" /> -->
@@ -440,7 +437,7 @@ import {
   handlerStart,
   handlerStop,
   loadById,
-  nextTriggerTime,
+  nextTriggerTime
   // handlerUpdate
 } from '../method'
 import { translaterMaster } from '@/utils/dictionary'
@@ -469,23 +466,23 @@ export default {
     mapper,
     Description,
     DescriptionItems,
-    JobDetailProEdit,
+    JobDetailProEdit
   },
   directives: {
-    waves,
+    waves
   },
   filters: {
     statusFilter(status) {
       const statusMap = {
         published: 'success',
         draft: 'gray',
-        deleted: 'danger',
+        deleted: 'danger'
       }
       return statusMap[status]
-    },
+    }
   },
   props: {
-    jobInfo: { type: Object, default: () => ({}) },
+    jobInfo: { type: Object, default: () => ({}) }
   },
   data() {
     const validateIncParam = (rule, value, callback) => {
@@ -537,12 +534,12 @@ export default {
         primaryKey: '',
         projectId: '',
         datasourceId: '',
-        readerTable: '',
+        readerTable: ''
       }, // 任务调度参数
       blockStrategies: [
         { value: 'SERIAL_EXECUTION', label: '单机串行' },
         { value: 'DISCARD_LATER', label: '丢弃后续调度' },
-        { value: 'COVER_EARLY', label: '覆盖之前调度' },
+        { value: 'COVER_EARLY', label: '覆盖之前调度' }
       ],
       routeStrategies: [
         { value: 'FIRST', label: '第一个' },
@@ -553,7 +550,7 @@ export default {
         { value: 'LEAST_FREQUENTLY_USED', label: '最不经常使用' },
         { value: 'LEAST_RECENTLY_USED', label: '最近最久未使用' },
         { value: 'FAILOVER', label: '故障转移' },
-        { value: 'BUSYOVER', label: '忙碌转移' },
+        { value: 'BUSYOVER', label: '忙碌转移' }
         // { value: 'SHARDING_BROADCAST', label: '分片广播' }
       ],
       readerForm: {
@@ -562,7 +559,7 @@ export default {
         rules: [],
         lcheckAll: false,
         rcheckAll: false,
-        isIndeterminate: true,
+        isIndeterminate: true
       },
       /** 数据库-表-列 */
       fromColumnList: [],
@@ -570,7 +567,7 @@ export default {
       writerForm: {
         checkAll: false,
         isIndeterminate: true,
-        ifCreateTable: false,
+        ifCreateTable: false
       },
       rColumnList: [],
       rTbList: [],
@@ -595,7 +592,7 @@ export default {
         projectIds: '',
         triggerStatus: -1,
         name: '',
-        glueType: '',
+        glueType: ''
       },
       showCronBox: false,
       dialogPluginVisible: false,
@@ -611,45 +608,45 @@ export default {
           {
             required: true,
             message: 'jobGroup is required',
-            trigger: 'change',
-          },
+            trigger: 'change'
+          }
         ],
         executorRouteStrategy: [
           {
             required: true,
             message: 'executorRouteStrategy is required',
-            trigger: 'change',
-          },
+            trigger: 'change'
+          }
         ],
         executorBlockStrategy: [
           {
             required: true,
             message: 'executorBlockStrategy is required',
-            trigger: 'change',
-          },
+            trigger: 'change'
+          }
         ],
         glueType: [
-          { required: true, message: 'jobType is required', trigger: 'change' },
+          { required: true, message: 'jobType is required', trigger: 'change' }
         ],
         projectId: [
           {
             required: true,
             message: 'projectId is required',
-            trigger: 'change',
-          },
+            trigger: 'change'
+          }
         ],
         name: [
-          { required: true, message: 'name is required', trigger: 'blur' },
+          { required: true, message: 'name is required', trigger: 'blur' }
         ],
         jobProject: [
           {
             required: true,
             message: 'jobProject is required',
-            trigger: 'blur',
-          },
+            trigger: 'blur'
+          }
         ],
         jobCron: [
-          { required: true, message: 'jobCron is required', trigger: 'blur' },
+          { required: true, message: 'jobCron is required', trigger: 'blur' }
         ],
         incStartId: [{ trigger: 'blur', validator: validateIncParam }],
         replaceParam: [{ trigger: 'blur', validator: validateIncParam }],
@@ -657,10 +654,10 @@ export default {
         incStartTime: [{ trigger: 'change', validator: validateIncParam }],
         replaceParamType: [{ trigger: 'change', validator: validateIncParam }],
         partitionField: [
-          { trigger: 'blur', validator: validatePartitionParam },
+          { trigger: 'blur', validator: validatePartitionParam }
         ],
         datasourceId: [{ trigger: 'change', validator: validateIncParam }],
-        readerTable: [{ trigger: 'blur', validator: validateIncParam }],
+        readerTable: [{ trigger: 'blur', validator: validateIncParam }]
       },
       currentTask: {
         id: undefined,
@@ -692,7 +689,7 @@ export default {
         projectId: '',
         datasourceId: '',
         readerTable: '',
-        jobType: '',
+        jobType: ''
       },
       executorList: [],
       jobIdList: '',
@@ -723,42 +720,42 @@ export default {
         retry: 0,
         timeout: 0,
         routeStrategy: '',
-        subTask: [],
+        subTask: []
       },
       scheduleRules: {
         executor: [
-          { required: true, message: '请选择执行器', trigger: 'change' },
+          { required: true, message: '请选择执行器', trigger: 'change' }
         ],
         cron: [
           {
             required: true,
             message: '请输入Cron表达式',
-            trigger: ['blur', 'change'],
-          },
+            trigger: ['blur', 'change']
+          }
         ],
         blockStrategy: [
-          { required: false, message: '请选择阻塞处理策略', trigger: 'change' },
+          { required: false, message: '请选择阻塞处理策略', trigger: 'change' }
         ],
         alarmEmail: [
-          { required: false, message: '请输入报警邮箱', trigger: 'blur' },
+          { required: false, message: '请输入报警邮箱', trigger: 'blur' }
         ],
         retry: [
-          { required: true, message: '请输入失败重试次数', trigger: 'blur' },
+          { required: true, message: '请输入失败重试次数', trigger: 'blur' }
         ],
         timeout: [
-          { required: true, message: '请输入超时时间', trigger: 'blur' },
+          { required: true, message: '请输入超时时间', trigger: 'blur' }
         ],
         routeStrategy: [
-          { required: false, message: '请选择路由策略', trigger: 'change' },
+          { required: false, message: '请选择路由策略', trigger: 'change' }
         ],
         subTask: [
-          { required: false, message: '请选择子任务', trigger: 'change' },
-        ],
+          { required: false, message: '请选择子任务', trigger: 'change' }
+        ]
       },
       scheduleShow: false,
       detailActiveName: 'detail',
       time: '',
-      interval: '',
+      interval: ''
     }
   },
 
@@ -806,7 +803,7 @@ export default {
         return [
           this.$store.state.taskAdmin.taskList.find(
             (ele) => ele.id === this.currentTask.childJobId
-          ),
+          )
         ]
       }
     },
@@ -890,7 +887,7 @@ export default {
     guid() {
       return 'xxxxxxxxxxxxxxxxxxx'
         .concat(new Date().valueOf().toString())
-        .replace(/[xy]/g, function (c) {
+        .replace(/[xy]/g, function(c) {
           var r = (Math.random() * 16) | 0
           var v = c === 'x' ? r : (r & 0x3) | 0x8
           return v.toString(16)
@@ -904,7 +901,7 @@ export default {
         this.dataSource === 'oracle' ||
         this.dataSource === 'sqlserver'
       )
-    },
+    }
   },
 
   watch: {
@@ -918,7 +915,7 @@ export default {
           sourceField: this.readerForm.lcolumns[index],
           clearRule: this.readerForm.rules[index],
           targetField: this.readerForm.rcolumns[index],
-          index: index,
+          index: index
         }
         arr.push(obj)
       })
@@ -933,7 +930,7 @@ export default {
       val.forEach((row, index) => {
         const obj = {
           column: row,
-          index,
+          index
         }
         this.tableData.push(obj)
       })
@@ -959,7 +956,7 @@ export default {
         this.jsons = this.jsonString
         console.log(this.jsons)
       }
-    },
+    }
 
     /**
      * @description: 等待trigger执行完再获取log列表
@@ -1091,7 +1088,7 @@ export default {
         // setTimeout(() => {
         //   this.logList()
         // }, 2000)
-        let _this = this
+        const _this = this
         var timesRun = 0
         var interval = setInterval(() => {
           _this.num = timesRun += 1
@@ -1178,7 +1175,7 @@ export default {
         jobGroup: 0,
         jobId: this.currentTask?.id,
         logStatus: -1,
-        filterTime: '',
+        filterTime: ''
       }
       let status = 0
 
@@ -1187,7 +1184,7 @@ export default {
           if (response.code === 200) {
             this.$message({
               message: '执行完毕,请点击日志查看运行结果！',
-              type: 'success',
+              type: 'success'
             })
           }
         }
@@ -1349,7 +1346,7 @@ export default {
         go.Diagram,
         'myDiagramDiv' + this.myId, // create a Diagram for the DIV HTML element
         {
-          'undoManager.isEnabled': true, // enable undo & redo
+          'undoManager.isEnabled': true // enable undo & redo
         }
       )
       /** 右键面板 */
@@ -1362,12 +1359,12 @@ export default {
             margin: 5,
             font: '12px sans-serif',
             opacity: 0.75,
-            stroke: '#404040',
+            stroke: '#404040'
           }),
           {
             click: (e, obj) => {
               this.checkInfo(obj)
-            },
+            }
           }
         ),
         $(
@@ -1377,12 +1374,12 @@ export default {
             margin: 5,
             font: '12px sans-serif',
             opacity: 0.75,
-            stroke: '#404040',
+            stroke: '#404040'
           }),
           {
             click: (e, obj) => {
               this.online(obj)
-            },
+            }
           }
         ),
         $(
@@ -1392,12 +1389,12 @@ export default {
             margin: 5,
             font: '12px sans-serif',
             opacity: 0.75,
-            stroke: '#404040',
+            stroke: '#404040'
           }),
           {
             click: (e, obj) => {
               this.deleteTask(obj)
-            },
+            }
           }
         ),
         $(
@@ -1407,12 +1404,12 @@ export default {
             margin: 5,
             font: '12px sans-serif',
             opacity: 0.75,
-            stroke: '#404040',
+            stroke: '#404040'
           }),
           {
             click: (e, obj) => {
               this.checkLog(obj)
-            },
+            }
           }
         ),
         $(
@@ -1422,12 +1419,12 @@ export default {
             margin: 5,
             font: '12px sans-serif',
             opacity: 0.75,
-            stroke: '#404040',
+            stroke: '#404040'
           }),
           {
             click: (e, obj) => {
               this.editTask(obj)
-            },
+            }
           }
         ),
         $(
@@ -1437,12 +1434,12 @@ export default {
             margin: 5,
             font: '12px sans-serif',
             opacity: 0.75,
-            stroke: '#404040',
+            stroke: '#404040'
           }),
           {
             click: (e, obj) => {
               this.exportTask(obj)
-            },
+            }
           }
         )
       )
@@ -1470,8 +1467,8 @@ export default {
           text: this.currentTask.name,
           key: this.currentTask.id,
           data: this.currentTask,
-          color: 'lightblue',
-        },
+          color: 'lightblue'
+        }
       ]
       if (this.isVal(this.currentTask.childJobId)) {
         for (const i of this.childJob) {
@@ -1479,7 +1476,7 @@ export default {
             text: this.hasVal(i, 'name'),
             key: parseInt(this.hasVal(i, 'id')),
             data: i,
-            color: 'orange',
+            color: 'orange'
           })
         }
       }
@@ -1488,7 +1485,7 @@ export default {
         for (const i of this.childJob) {
           paramLine.push({
             from: this.currentTask.id,
-            to: parseInt(this.hasVal(i, 'id')),
+            to: parseInt(this.hasVal(i, 'id'))
           })
         }
       }
@@ -1580,7 +1577,7 @@ export default {
                 title: '成功',
                 message: '调度修改成功',
                 type: 'success',
-                duration: 2000,
+                duration: 2000
               })
             })
             .catch((err) => {
@@ -1615,8 +1612,8 @@ export default {
       this.$refs[formName].resetFields()
       this.scheduleForm.cron = ''
       this.scheduleShow = false
-    },
-  },
+    }
+  }
 }
 </script>
 

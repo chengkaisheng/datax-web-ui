@@ -307,9 +307,9 @@
           >
             <template slot-scope="scope">
               <!-- <el-button slot="reference" type="text" size="small" @click="handleClick1(scope.row)">查看</el-button> -->
-              <el-popover placement="top" width="400" trigger="click">
-                <h3>执行结果</h3>
-                <!-- <el-table
+              <!-- <el-popover placement="top" width="400" trigger="click">
+                <h3>执行结果</h3> -->
+              <!-- <el-table
                   v-loading="tableLoading"
                   style="padding: 0px; margin-right: 10px"
                   :data="JSON.parse(scope.row.sqlResult).tableData"
@@ -327,12 +327,13 @@
                     align="center"
                   />
                 </el-table> -->
-                <el-button
-                  slot="reference"
-                  type="text"
-                  size="small"
-                >查看</el-button>
-              </el-popover>
+              <el-button
+                slot="reference"
+                type="text"
+                size="small"
+                @click="handleClick1(scope.row)"
+              >查看日志</el-button>
+              <!-- </el-popover> -->
               <el-button
                 type="text"
                 icon="el-icon-refresh"
@@ -571,10 +572,10 @@ export default {
   // },
   methods: {
     handle(row, column, event, cell) {
-      console.log(row)
-      console.log(column)
-      console.log(event)
-      console.log(cell)
+      // console.log(row)
+      // console.log(column)
+      // console.log(event)
+      // console.log(cell)
     },
     tableSql(row) {
       console.log(row.sqlContent)
@@ -606,7 +607,26 @@ export default {
     },
     // 查看
     handleClick1(row) {
+      console.log(row)
+      this.tabsActive = 'querylog'
+      // this.getSqlList()
       // console.log(row)
+      this.$nextTick(() => {
+        this.loglist = []
+        this.loglist.unshift({
+          title: '异步查询日志',
+          // tableData: this.tableData,
+          // secondData: this.secondData,
+          // columns: this.columns,
+          logtime: row.submitTime,
+          content: row.sqlContent,
+          // tableData: row.sqlResult
+          tableData: row.datasourceName
+        // error: error
+        })
+        this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
+      })
+      console.log(this.loglist)
       // alert(row.id)
     },
     // 新增查询结果
@@ -632,8 +652,8 @@ export default {
     },
     // 点击tab
     handleClickTabs(tab, event) {
-      console.log(event)
-      console.log(tab)
+      // console.log(event)
+      // console.log(tab)
       // if (tab.name === 'querylog') {
       //   // window.scrollTo({
       //   //   top: 0,
@@ -793,18 +813,37 @@ export default {
           }
         }
       }
-      const resCreateConnection = await createConnection(params1)
-      console.log(resCreateConnection)
-
-      if (resCreateConnection.data == null) {
+      const resCreateConnection = await createConnection(params1).catch((error) => {
+        console.log(error)
         this.$notify({
           title: '错误',
-          message: resCreateConnection.message,
+          // message: resCreateConnection.errors[0].message,
+          message: error,
           type: 'error',
           duration: 2000
         })
+        this.loglist = []
+        this.loglist.unshift({
+          title: '错误sql返回',
+          // tableData: this.tableData,
+          // secondData: this.secondData,
+          // columns: this.columns,
+          logtime: new Date(),
+          content: sql,
+          error: error
+        })
         this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
-      }
+      })
+      // if (resCreateConnection.data === null) {
+      //   this.$notify({
+      //     title: '错误',
+      //     // message: resCreateConnection.errors[0].message,
+      //     message: 'shibai',
+      //     type: 'error',
+      //     duration: 2000
+      //   })
+      //   this.$store.commit('graphQL/SET_SQL_BTN_STSTUS', false)
+      // }
 
       this.connectionId = resCreateConnection.data.createConnection.id
       // 2、初始化连接
@@ -998,14 +1037,15 @@ export default {
           if (response.code === 200) {
             this.$notify({
               title: '成功',
-              message: response.msg,
+              // message: response.msg,
+              message: '查询成功',
               type: 'success',
               duration: 2000
             })
           } else {
             this.$notify({
               title: '错误',
-              message: '失败',
+              message: '查询失败',
               type: 'error',
               duration: 2000
             })

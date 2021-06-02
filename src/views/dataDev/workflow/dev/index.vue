@@ -31,10 +31,18 @@
           default-expand-all
           draggable
           node-key="id"
+          :allow-drop="allowDrop"
+          :allow-drag="allowDrag"
           :expand-on-click-node="false"
           :filter-node-method="filterNode"
           @contextmenu="showContextMenu"
           @node-click="handleWorkFlow"
+          @node-drag-start="handleDragStart"
+          @node-drag-enter="handleDragEnter"
+          @node-drag-leave="handleDragLeave"
+          @node-drag-over="handleDragOver"
+          @node-drag-end="handleDragEnd"
+          @node-drop="handleDrop"
         >
           <span
             slot-scope="{ node, data }"
@@ -139,14 +147,15 @@
 import * as jobProjectApi from '@/api/datax-job-project'
 import * as workFlowApi from '@/api/datax-job-info'
 import * as datasourceApi from '@/api/datax-jdbcDatasource'
+import * as job from '@/api/datax-job-info'
 import Workflow from './workflow.vue'
 import { component as VueContextMenu } from '@xunlei/vue-context-menu'
 import {
   getTableSchema,
-  getTableListWithComment
+  getTableListWithComment,
   // getTableList,
   // getTableColumns,
-  // db2hive
+  db2hive
 } from '@/api/metadata-query'
 
 export default {
@@ -940,6 +949,62 @@ export default {
       if (this.pos.source !== undefined && this.pos.source <= 20 && this.pos.sql > 20) {
         this.navActive = '0'
       }
+    },
+    // 拖拽tree
+    handleDragStart(node, ev) {
+      this.dropId = node.data.id
+      console.log('节点开始拖拽时触发的事件', node)
+    },
+    handleDragEnter(draggingNode, dropNode, ev) {
+      this.targetId = dropNode.key
+      console.log('拖拽进入其他节点时触发的事件', this.targetId)
+      console.log('拖拽进入其他节点时触发的事件', dropNode)
+    },
+    handleDragLeave(draggingNode, dropNode, ev) {
+      console.log('拖拽离开某个节点时触发的事件')
+    },
+    handleDragOver(draggingNode, dropNode, ev) {
+      console.log('拖拽结束时（可能未成功）触发的事件')
+    },
+    handleDragEnd(draggingNode, dropNode, dropType, ev) {
+      console.log('拖拽成功完成时触发的事件')
+    },
+    allowDrop(draggingNode, dropNode, type) {
+      console.log(dropNode)
+      // if (dropNode.data.type === '2') {
+      //   return type !== 'inner'
+      // } else {
+      return true
+      // }
+    },
+    allowDrag(draggingNode) {
+      console.log(draggingNode, 'draggingNode')
+      return draggingNode.data.name.indexOf('三级 3-2-2') === -1
+    },
+    handleDrop(draggingNode, dropNode, dropType, ev) {
+      console.log('...', dropNode)
+      if (dropNode.data.type === 1) {
+        job
+          .dragReName({
+            id: this.dropId,
+            parentId: this.targetId
+          })
+          .then((res) => {
+            console.log(res)
+            if (res.code === 200) {
+              console.log(res.msg)
+            } else {
+              this.$message.err(res.msg)
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      } else {
+        this.$message.error('拖拽失败，目标必须是文件夹')
+        this.serachWorkFlowList(this.$store.state.project.currentItem.split('/')[0])
+      }
+      console.log('tree drop: ', dropNode.label, dropType, draggingNode)
     }
   }
 }

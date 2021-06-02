@@ -17,8 +17,7 @@
                   v-for="item in options"
                   :key="item.id"
                   :command="item.id + '/' + item.name"
-                  >{{ item.name }}</el-dropdown-item
-                >
+                >{{ item.name }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </el-col>
@@ -132,13 +131,12 @@ rkJggg=="
                 v-show="selectRow.jobType === 'wenjianjia'"
                 href="javascript:"
                 @click="showAllName"
-                >新建文件夹</a
-              >
+              >新建文件夹</a>
               <a
                 v-show="selectRow.jobType === 'wenjianjia'"
                 id="newFile"
                 href="javascript:"
-                >新建任务<i class="el-icon-arrow-right" />
+              >新建任务<i class="el-icon-arrow-right" />
                 <vue-context-menu
                   class="right-menu1"
                   :target="contextMenu1Target"
@@ -227,7 +225,7 @@ rkJggg=="
                   <a href="javascript:" @click="showAllName('DQCJOB')">
                     <svg-icon class="svg_icon" icon-class="DQCJOB" />质量任务
                   </a>
-                  <hr style="padding: 0; margin: 0" />
+                  <hr style="padding: 0; margin: 0">
                   <a href="javascript:" @click="showAllName('METACOLLECT')">
                     <svg-icon
                       class="svg_icon"
@@ -240,7 +238,7 @@ rkJggg=="
                       icon-class="METACOMPARE"
                     />元数据比较任务
                   </a>
-                  <hr style="padding: 0; margin: 0" />
+                  <hr style="padding: 0; margin: 0">
                   <a href="javascript:" @click="showAllName('SHELL')">
                     <svg-icon class="svg_icon" icon-class="SHELL" />SHELL任务
                   </a>
@@ -253,7 +251,7 @@ rkJggg=="
                   <a href="javascript:" @click="showAllName('PYTHON')">
                     <svg-icon class="svg_icon" icon-class="PYTHON" />PYTHON任务
                   </a>
-                  <hr style="padding: 0; margin: 0" />
+                  <hr style="padding: 0; margin: 0">
                   <a href="javascript:" @click="showAllName('VJOB')">
                     <svg-icon class="svg_icon" icon-class="VJOB" />虚任务
                   </a>
@@ -287,24 +285,21 @@ rkJggg=="
                 v-show="selectRow.jobType !== 'wenjianjia'"
                 href="javascript:"
                 @click="ViewFile"
-                >查看文件信息</a
-              >
+              >查看文件信息</a>
               <a
                 v-show="selectRow.jobType !== 'wenjianjia'"
                 href="javascript:"
                 @click="ViewVersion"
-                >查看文件版本</a
-              >
+              >查看文件版本</a>
               <a href="javascript:" @click="resetName">重命名</a>
-              <hr style="padding: 0; margin: 0" />
+              <hr style="padding: 0; margin: 0">
               <a href="javascript:" @click="copyFile">复制(C)</a>
               <a href="javascript:" @click="pasteFile">粘贴(P)</a>
               <a
                 v-show="selectRow.parentId !== 0"
                 href="javascript:"
                 @click="delFolder"
-                >删除(D)</a
-              >
+              >删除(D)</a>
             </vue-context-menu>
           </el-scrollbar>
         </div>
@@ -320,8 +315,8 @@ rkJggg=="
         @tab-click="JobTabClick"
       >
         <el-tab-pane
+          v-if="lasttab || !$store.state.taskAdmin.taskDetailList.length"
           style="user-select: none"
-          v-if="!$store.state.taskAdmin.taskDetailList.length"
           label="欢迎"
           name="欢迎"
         >
@@ -402,13 +397,12 @@ rkJggg=="
               <div slot="content">
                 <div>{{ item.title }}</div>
               </div>
-            </el-tooltip></span
-          >
+            </el-tooltip></span>
           <JobDetailPro
             v-if="
               item.content.jobType !== 'VJOB' &&
-              item.content.jobType !== 'IMPALA' &&
-              item.content.jobType !== 'HIVE'
+                item.content.jobType !== 'IMPALA' &&
+                item.content.jobType !== 'HIVE'
             "
             ref="jobfp"
             :job-info="$store.state.taskAdmin.jobInfo"
@@ -493,8 +487,8 @@ rkJggg=="
           <div
             v-if="
               jobType === 'NORMAL' ||
-              jobType === 'IMPORT' ||
-              jobType === 'EXPORT'
+                jobType === 'IMPORT' ||
+                jobType === 'EXPORT'
             "
             class="rg"
           >
@@ -535,7 +529,11 @@ rkJggg=="
             <JobTemplate />
           </div>
           <div v-if="jobType === 'SHELL'" class="rg">
-            <SimpleJob job-type="GLUE_SHELL" job-type-label="SHELL任务" />
+            <SimpleJob
+              job-type="GLUE_SHELL"
+              job-type-label="SHELL任务"
+              @gettreelist="Gettreelist"
+            />
           </div>
           <div v-if="jobType === 'POWERSHELL'" class="rg">
             <SimpleJob
@@ -564,8 +562,7 @@ rkJggg=="
 
     <!-- 重命名对话框 -->
     <el-dialog :visible.sync="dialogRenameVisible" width="40%" title="重命名">
-      <span style="margin-left: 20px">名称：</span
-      ><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
+      <span style="margin-left: 20px">名称：</span><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelDialog"> 取消 </el-button>
         <el-button type="goon" size="small" @click="sureRe"> 确定 </el-button>
@@ -573,8 +570,7 @@ rkJggg=="
     </el-dialog>
     <!-- 新建文件夹或任务对话框 -->
     <el-dialog width="30%" title="新建" :visible.sync="dialogNameVisible">
-      <span style="margin-left: 50px; font-size: 12px">名称：</span
-      ><el-input
+      <span style="margin-left: 50px; font-size: 12px">名称：</span><el-input
         v-model="allName"
         style="width: 60%; height: 30px; margin-left: 20px"
       />
@@ -595,14 +591,13 @@ rkJggg=="
             display: inline-block;
             width: 100px;
           "
-          >任务中文名：</span
-        ><el-input
+        >任务中文名：</span><el-input
           v-model="chineseName"
           size="mini"
           style="width: 60%; margin-left: 5px"
         />
       </div>
-      <br />
+      <br>
       <div class="boxs">
         <span
           style="
@@ -611,14 +606,13 @@ rkJggg=="
             display: inline-block;
             width: 100px;
           "
-          >任务英文名：</span
-        ><el-input
+        >任务英文名：</span><el-input
           v-model="englishName"
           size="mini"
           style="width: 60%; margin-left: 5px"
         />
       </div>
-      <br />
+      <br>
       <div class="boxs">
         <span
           style="
@@ -627,8 +621,7 @@ rkJggg=="
             display: inline-block;
             width: 100px;
           "
-          >任务说明：</span
-        ><el-input
+        >任务说明：</span><el-input
           v-model="task"
           size="mini"
           style="width: 60%; margin-left: 5px"
@@ -691,12 +684,13 @@ rkJggg=="
                 type="text"
                 size="small"
                 @click="showCode(row)"
-                >代码</el-button
-              >
+              >代码</el-button>
             </el-popover>
-            <el-button type="text" size="small" @click="rollback(row)"
-              >回滚</el-button
-            >
+            <el-button
+              type="text"
+              size="small"
+              @click="rollback(row)"
+            >回滚</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -785,6 +779,7 @@ export default {
   },
   data() {
     return {
+      lasttab: true,
       contextMenuVisible: false,
       contextMenuOffset: {
         left: 0,
@@ -1154,8 +1149,8 @@ export default {
       console.log(data, '是否关闭tabs')
     },
     // 点击子组件保存按钮后重新获取tree
-    Gettreelist() {
-      this.getDataTree()
+    Gettreelist(data) {
+      this.getDataTree(data)
     },
     // 删除任务Tabs窗口
     removeJobTab(targetId) {
@@ -1283,7 +1278,6 @@ export default {
                     newarr.push(res.content[0].children)
                   }
                 }
-                console.log('新建之后的newarr', newarr.flat(Infinity))
                 for (var kk = 0; kk < newarr.length; kk++) {
                   if (newarr[kk] === null) {
                     newarr.splice(kk, 1)
@@ -1336,10 +1330,8 @@ export default {
       console.log(this.selectedIndex)
     },
     JobTabClick(ele) {
-      console.log('ele', ele.label)
+      console.log('ele', ele)
       this.jobType = ele.name
-      console.log(this.jobType, 'tthis ')
-
       const t = this.List.filter(
         (item) => item.id === parseInt(this.jobDetailIdx)
       )
@@ -1716,6 +1708,7 @@ export default {
       console.log('tree drop: ', dropNode.label, dropType, draggingNode)
     },
     allowDrop(draggingNode, dropNode, type) {
+     
       if (dropNode.data.name === '二级 3-1') {
         return type !== 'inner'
       } else {
@@ -1857,11 +1850,15 @@ export default {
                   }
                 }
                 this.tablist.splice(index, 1)
-                let data = this.tablist[this.tablist.length - 1]
-                this.getDataTree({ data: 'NewTask', name: data.content.name })
-
-                this.handleNodeClick(data)
-                // this.removeJobTab(this.selectRow.id)
+                if (this.tablist.length === 0) {
+                  this.getDataTree()
+                  this.jobDetailIdx = '欢迎'
+                }
+                if (this.tablist.length !== 0) {
+                  console.log('是个啥玩意', this.tablist)
+                  let data = this.tablist[this.tablist.length - 1]
+                  this.getDataTree({ data: 'NewTask', name: data.content.name })
+                }
                 this.selectRow = {}
                 this.$message({
                   type: 'success',

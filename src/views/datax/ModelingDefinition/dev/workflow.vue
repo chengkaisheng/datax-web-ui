@@ -115,7 +115,7 @@
       size="50%"
       :with-header="true"
     >
-      <div style="padding-right: 30px">
+      <div style="padding-left: 30px; padding-right: 30px">
         <div style="margin-bottom: 30px; font-size: 14px">
           <span style="margin-right: 20px">表名中包含的主题域层级:</span>
           <span>
@@ -129,7 +129,7 @@
           style="margin-bottom: 20px"
           show-word-limit="true"
           type="textarea"
-          rows="20"
+          rows="18"
           v-model="desc"
         ></el-input>
         <div>
@@ -150,9 +150,7 @@
         class="demo-ruleForm"
       >
         <el-form-item label="数据层级:">
-          <el-radio-group
-            v-model="ruleForm.tabPosition"
-          >
+          <el-radio-group v-model="ruleForm.tabPosition">
             <el-radio-button
               @click="
                 () => {
@@ -222,7 +220,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="模型名称:" style="margin-bottom: 0px;">
+        <el-form-item label="模型名称:" style="margin-bottom: 0px">
           <el-col :span="11">
             <el-form-item>
               <el-input
