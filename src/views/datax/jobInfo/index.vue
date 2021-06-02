@@ -2706,4 +2706,12 @@ export default {
 ::v-deep .el-scrollbar__wrap {
   overflow-x: hidden !important;
 }
+
+.el-tabs--card>.el-tabs__header .el-tabs__nav {
+    border: 0px solid #dfe4ed;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
 </style>
