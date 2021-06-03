@@ -115,19 +115,12 @@
           <a href="javascript:0" @click="reName">重命名</a>
           <a href="javascript:0" @click="delWorkFlow">删除</a>
         </vue-context-menu>
-<<<<<<< HEAD
-        <ul id="drag" @mousedown="mousedown">
-          <div class="arrow"></div>
-        </ul>
-        <div @click="shrink" id="icon" :class="icon"></div>
-=======
         <u id="drag" @mousedown="mousedown">
           <div class="arrow">
             <li class="el-icon-caret-left" />
             <li class="el-icon-caret-right" />
           </div>
         </u>
->>>>>>> 2bdb61d53fdd0b95ccf33880d94ab997e5506baf
       </div>
       <!-- </vue-draggable-resizable> -->
       <!--拖拽-->
@@ -697,6 +690,7 @@ export default {
     },
     // 新建工作流
     newWorkFlow(val) {
+      console.log(val)
       this.jobType = val
       if (this.nowObject.type === 2) {
         this.$message.info('请选择文件夹')
@@ -728,6 +722,7 @@ export default {
         .catch((err) => {
           this.workflowName = ''
           console.log('新建', err)
+          // this.newETLdialog = false
         })
 
       this.newETLdialog = false
@@ -794,7 +789,7 @@ export default {
                 console.log('delete')
                 this.getlist(this.nowObject.projectId)
                 for (let i = 0; i < this.editableTabs.length; i++) {
-                  if (this.editableTabs[i].name == this.nowObject.name) {
+                  if (this.editableTabs[i].name === this.nowObject.name) {
                     this.editableTabs.splice(i, 1)
                   }
                 }

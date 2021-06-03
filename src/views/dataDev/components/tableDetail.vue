@@ -602,6 +602,7 @@ export default {
           this.tableLoading = false
         })
     },
+    // 刷新日志
     handleClick(tab) {
       this.getSqlListSaved()
     },
@@ -796,7 +797,7 @@ export default {
       if (driverId === 'oracle:oracle_thin') {
         this.databaseName = queryDsInfo.jdbcUrl.split('//')[1].split('/')[1]
       }
-      console.log(driverId)
+      console.log(this.databaseName)
       // console.log(this.databaseName)
       // 1、创建链接
       const params1 = {

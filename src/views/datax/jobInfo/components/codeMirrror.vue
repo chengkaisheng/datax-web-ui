@@ -184,7 +184,7 @@ export default {
       // }
       this.tips = Object.assign(this.tips, tableObj)
       console.log(this.tips, 'tips2')
-    },
+    }
   },
   beforeMount() {
     // const columeObj = {};
