@@ -181,8 +181,8 @@
         </el-tabs>
       </div>
       <!-- 新建文件夹对话框 -->
-      <el-dialog :visible.sync="newFolderDialog" width="40%" title="新建文件夹">
-        <span style="margin-left: 20px">文件夹名称：</span><el-input v-model="folderName" style="width: 80%; margin-left: 20px" />
+      <el-dialog :visible.sync="newFolderDialog" width="30%" title="新建文件夹">
+        <span>文件夹名称：</span><el-input v-model="folderName" style="width: 71%; margin-left: 20px" />
         <div slot="footer" class="dialog-footer">
           <el-button size="small" @click="cancelDialog"> 取消 </el-button>
           <el-button type="goon" size="small" @click="createFolder">
@@ -1459,10 +1459,10 @@ export default {
       padding: 0;
       position: absolute;
       top: 0px;
-      right: -3px;
+      right: 4px;
       z-index: 999;
       height: 100%;
-      width: 1px;
+      // width: 1px;
       // border: 2px solid #ccc;
       background: #f8f8fa;
       cursor: e-resize;
@@ -1513,7 +1513,7 @@ export default {
     }
 
     .el-dialog__footer {
-      border-top: 1px solid #f3f3f3;
+      // border-top: 1px solid #f3f3f3;
       padding: 20px;
     }
   }
