@@ -675,4 +675,9 @@ export default {
   .el-dropdown + .el-dropdown {
     margin-left: 15px;
   }
+
+  .el-input .el-input__inner {
+      height: 32px;
+      line-height: 32px;
+  }
 </style>

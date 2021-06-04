@@ -12,7 +12,7 @@
           content="脚本模式"
           placement="top-start"
         >
-          <i class="el-icon-picture-outline" />
+          <i class="el-icon-tickets" />
         </el-tooltip>
       </div>
       <div class="header_action" style="margin-left: 27px">

@@ -38,7 +38,7 @@
           prefix-icon="el-icon-search"
           placeholder="输入文件夹或模型名称快速检索"
           clearable
-          style="margin-top: 27px"
+          style="margin-top: 7px"
         />
         <el-tree
           id="main_span"
@@ -71,14 +71,17 @@
               <svg-icon
                 v-if="data.type === 1"
                 :icon-class="data.jobType"
+                style="margin-right: 6px"
               />
               <svg-icon
                 v-if="data.jobType === 'HIVE'"
                 :icon-class="data.jobType"
+                style="margin-right: 6px"
               />
               <svg-icon
                 v-if="data.jobType === 'IMPALA'"
                 :icon-class="data.jobType"
+                style="margin-right: 6px"
               />
               {{ data.name }}
             </p>
@@ -1455,7 +1458,7 @@ export default {
       height: 100%;
       width: 1px;
       // border: 2px solid #ccc;
-      background: #ccc;
+      background: #f8f8fa;
       cursor: e-resize;
     }
     #drag:hover {
@@ -1567,7 +1570,7 @@ export default {
     position: relative;
     cursor: default;
     background: #f8f8fa;
-    color: #606266;
+    color: black;
     margin: -10px 0px 0 -8px;
 }
 
@@ -1621,5 +1624,25 @@ export default {
 
 .el-tree-node__content {
     height: 32px;
+}
+
+.el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active {
+    color: #3D5FFF;
+    background-color: #fff;
+    border-right-color: white;
+    border-left-color: white;
+    /* border-bottom-color: white; */
+}
+
+.el-tabs--border-card>.el-tabs__header {
+    background-color: #f8f8fa;
+    border-bottom: 0px solid #dfe4ed;
+    margin: 0;
+}
+
+.el-tabs--border-card>.el-tabs__header .el-tabs__item {
+    border: 1px solid transparent;
+    margin-top: -1px;
+    color: black;
 }
 </style>
