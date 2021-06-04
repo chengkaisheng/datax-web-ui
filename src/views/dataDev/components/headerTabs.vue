@@ -18,7 +18,7 @@
               />
             </el-select>
           </el-col>
-          <el-col style="textalign: right" :span="4">
+          <el-col style="textalign: right" :span="2">
             <el-tooltip class="item" effect="dark" placement="top-start">
               <i v-popover:dspopover class="el-icon-coin" />
               <div slot="content">
@@ -64,7 +64,7 @@
         <el-select
           v-if="dataSourceList.length > 0"
           v-model="datasourceSelectedId"
-          style="width: 100%; margin-bottom: 15px"
+          style="width: 100%; margin-bottom: 6px; color: black;"
           filterable
           clearable
           placeholder="请选择数据源/输入关键字"
@@ -677,7 +677,7 @@ export default {
 
     .tree {
       .search {
-        margin-bottom: 15px;
+        margin-bottom: 6px;
       }
 
       .treeData {
@@ -791,5 +791,31 @@ export default {
 
 .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
   background-color: #bbb;
+}
+
+.el-tree {
+    position: relative;
+    cursor: default;
+    background: #f8f8fa;
+    color: black;
+    margin: -10px 0px 0 -8px;
+    font-size: 14px;
+}
+.header .aside .top {
+    height: 25px;
+    line-height: 19px;
+    margin-bottom: 7px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.el-input .el-input__inner {
+    height: 32px;
+    line-height: 32px;
+}
+
+.el-tree-node__expand-icon {
+    cursor: pointer;
+    color: black;
+    font-size: 12px;
 }
 </style>

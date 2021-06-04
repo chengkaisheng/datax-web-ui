@@ -1,40 +1,13 @@
 <template>
   <div class="Management">
     <div class="lt">
-      <div class="top">
-        <el-row>
-          <el-col :span="12">
-            <el-dropdown v-show="showAdmin" @command="handleCommand">
-              <span>
-                {{ dropdownText
-                }}<i class="el-icon-arrow-down el-icon--right" />
-              </span>
-              <el-dropdown-menu
-                slot="dropdown"
-                style="max-height: calc(100vh - 200px); overflow: auto"
-              >
-                <el-dropdown-item
-                  v-for="item in options"
-                  :key="item.id"
-                  :command="item.id + '/' + item.name"
-                >{{ item.name }}</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </el-col>
-          <el-col :span="12">
-            <i class="el-icon-location-outline top-icon" />
-            <i class="el-icon-coin top-icon" />
-            <i class="el-icon-folder-add top-icon" @click="showAllName" />
-          </el-col>
-        </el-row>
-      </div>
       <div class="bottom">
-        <div class="body">
+        <div class="body" style="margin-top: 26px;">
           <el-input
             v-model="search"
             class="input_serach"
             prefix-icon="el-icon-search"
-            placeholder="文件夹或任务名称"
+            placeholder="请输入文件夹或任务名称以检索"
             clearable
           />
           <el-scrollbar>
@@ -324,7 +297,7 @@ rkJggg=="
             一站式数据开发解决方案
           </div>
           <svg-icon
-            style="width: 100%; height: 90%; margin-top: 25px"
+            style="width: 100%; height: calc(100vh - 50px); margin-top: 25px"
             icon-class="fengdie"
           />
         </el-tab-pane>
@@ -1298,6 +1271,7 @@ export default {
       this.loading = false
       if (this.$store.state.project.currentItem) {
         let id = sessionStorage.getItem('strParam')
+        // console.log('_+++++++', this.$store.state.project.currentItem)
         const projectId = this.$store.state.project.currentItem.split('/')[0]
         job
           .getTreeData({
@@ -2343,32 +2317,26 @@ export default {
 }
 </script>
 <style lang="scss">
+  .el-tabs--card>.el-tabs__header .el-tabs__nav {
+      border: 0px solid #dfe4ed;
+      border-bottom: none;
+      border-radius: 4px 4px 0 0;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+  }
+
 .el-tabs__header {
   margin: 0;
   padding: 0;
 }
 .Management {
   display: flex;
-  // min-height: 660px;
-  // height: calc(100vh - 50px);
-  // margin: 24px;
-  // box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.1);
-  // border-radius: 8px;
   .lt {
-    width: 360px;
-    // min-height: 660px;
-    // max-height: 700px;
-    // overflow: scroll;
-    // overflow: hidden;
+    width: 300px;
     padding: 10px;
-    // background: #f0f0f2;
-    // background: #fff;
     background: #f8f8fa;
-    // border-top-left-radius: 8px;
-    // border-bottom-left-radius: 8px;
-    // border-right: 1px solid #f0eded;
     .top {
-      height: 42px;
+      height: 37px;
       line-height: 34px;
       margin-bottom: 20px;
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
@@ -2378,11 +2346,6 @@ export default {
             cursor: pointer;
             margin-left: 20px;
           }
-          // .el-select {
-          //   .el-input__inner {
-          //     border: none;
-          //   }
-          // }
         }
       }
     }
@@ -2392,7 +2355,7 @@ export default {
       .body {
         border-top: 1px solid #f8f8f8;
         .el-scrollbar {
-          height: calc(100vh - 181px);
+          height: calc(100vh - 50px);
           .list {
             ul {
               padding: 0px;
@@ -2631,7 +2594,7 @@ export default {
         line-height: 32px;
 
         .el-tabs__nav {
-          width: 200px;
+          // width: 200px;
           border-top: 1px solid #f8f8fa;
           .el-tabs__item {
             width: 100%;
@@ -2639,7 +2602,7 @@ export default {
             border-top: 1px solid #f8f8fa;
             border-radius: 6px 6px 0px 0px;
             height: 32px;
-            line-height: 32px;
+            line-height: 29px;
             position: relative;
             overflow: hidden;
             vertical-align: bottom;
@@ -2708,12 +2671,12 @@ export default {
           border-top: 1px solid #f8f8fa;
           .el-tabs__item {
             // width: 100%;
-            width: 200px;
+            // width: 200px;
             border: none;
             border-top: 1px solid #f8f8fa;
             border-radius: 6px 6px 0px 0px;
             height: 32px;
-            line-height: 32px;
+            line-height: 29px;
             position: relative;
             overflow: hidden;
             vertical-align: bottom;
@@ -2721,8 +2684,8 @@ export default {
             white-space: nowrap;
             .el-icon-close {
               position: absolute;
-              right: 10px;
-              top: 50%;
+              right: 4px;
+              top: 46%;
               transform: translateY(-50%);
             }
           }
@@ -2782,6 +2745,38 @@ export default {
       height: 300px;
     }
   }
+
+  .el-input .el-input__inner {
+      height: 32px;
+      line-height: 32px;
+  }
+
+  .el-tree-node__expand-icon {
+      cursor: pointer;
+      color: black;
+      font-size: 18px;
+  }
+
+  .el-tree-node__expand-icon.is-leaf {
+      color: transparent;
+      cursor: default;
+      margin-left: -7px;
+  }
+
+  .el-tree-node__content {
+      height: 32px;
+  }
+
+  .el-tree {
+      position: relative;
+      cursor: default;
+      background: #fff;
+      color: black;
+  }
+
+  .el-tabs--card>.el-tabs__header .el-tabs__item.is-active.is-closable {
+      padding-left: 10px;
+  }
 }
 </style>
 <style scoped>
@@ -2798,7 +2793,7 @@ export default {
   background: #f8f8fa;
 }
 .el-bar-tab >>> .el-tabs__content {
-  height: 660px;
+  height: calc(100vh);
   overflow-y: scroll;
   padding: 0;
 }
@@ -2822,7 +2817,7 @@ export default {
   margin-right: 5px;
 }
 .svg_icon {
-  margin-right: 5px;
+  /* margin-right: 5px; */
 }
 .list-highlight {
   background: #daf3fd;
@@ -2832,5 +2827,13 @@ export default {
 }
 ::v-deep .el-scrollbar__wrap {
   overflow-x: hidden !important;
+}
+
+.el-tabs--card>.el-tabs__header .el-tabs__nav {
+    border: 0px solid #dfe4ed;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
 }
 </style>

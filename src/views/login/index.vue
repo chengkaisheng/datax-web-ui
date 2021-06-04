@@ -257,7 +257,7 @@ export default {
       .login_Account {
         margin-top: 1.75em;
         width: 100%;
-        height: 3.5em;
+        height: 40px;
         box-sizing: border-box;
         padding: 0.4em 0.67em;
         font-size: 0.58em;
@@ -282,9 +282,9 @@ export default {
       .login_btn {
         // padding-bottom: 1em;
         margin-top: 1em;
-        height: 3.5em;
+        height: 40px;
         color: #ffffff;
-        line-height: 3.5em;
+        line-height: 40px;
         font-size: 0.67em;
         text-align: center;
         cursor: pointer;

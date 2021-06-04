@@ -36,9 +36,9 @@
         <el-input
           v-model="search"
           prefix-icon="el-icon-search"
-          placeholder="文件夹或建模名称"
+          placeholder="输入文件夹或模型名称快速检索"
           clearable
-          style="margin-top: -10px"
+          style="margin-top: 7px"
         />
         <el-tree
           id="main_span"
@@ -61,33 +61,34 @@
           @node-drag-end="handleDragEnd"
           @node-drop="handleDrop"
         >
+<!--        style="
+          height: 32px;
+          line-height: 32px;
+          position: relative;
+          display: block;
+          width: 100%;
+          font-size: 14px;
+        " -->
           <span
             slot-scope="{ node, data }"
             class="custom-tree-node"
-            style="
-              height: 26px;
-              line-height: 26px;
-              position: relative;
-              display: block;
-              width: 100%;
-              font-size: 14px;
-            "
+            style="font-size: 14px;"
           >
-            <p style="height: 26px; line-height: 26px">
+            <p >
               <svg-icon
                 v-if="data.type === 1"
                 :icon-class="data.jobType"
-                style="font-size: 15px; margin-right: 3px"
+                style="margin-right: 6px"
               />
               <svg-icon
                 v-if="data.jobType === 'HIVE'"
                 :icon-class="data.jobType"
-                style="font-size: 15px; margin-right: 3px"
+                style="margin-right: 6px"
               />
               <svg-icon
                 v-if="data.jobType === 'IMPALA'"
                 :icon-class="data.jobType"
-                style="font-size: 15px; margin-right: 3px"
+                style="margin-right: 6px"
               />
               {{ data.name }}
             </p>
@@ -187,8 +188,8 @@
         </el-tabs>
       </div>
       <!-- 新建文件夹对话框 -->
-      <el-dialog :visible.sync="newFolderDialog" width="40%" title="新建文件夹">
-        <span style="margin-left: 20px">文件夹名称：</span><el-input v-model="folderName" style="width: 80%; margin-left: 20px" />
+      <el-dialog :visible.sync="newFolderDialog" width="30%" title="新建文件夹">
+        <span>文件夹名称：</span><el-input v-model="folderName" style="width: 71%; margin-left: 20px" />
         <div slot="footer" class="dialog-footer">
           <el-button size="small" @click="cancelDialog"> 取消 </el-button>
           <el-button type="goon" size="small" @click="createFolder">
@@ -210,8 +211,9 @@
         </div>
       </el-dialog>
       <!-- 工作流重命名 -->
-      <el-dialog :visible.sync="ReETLdialog" width="40%" title="重命名工作流">
-        <span style="margin-left: 20px">名称：</span><el-input
+      <el-dialog :visible.sync="ReETLdialog" width="40%" title="重命名模型">
+        <span style="margin-left: 20px">名称：</span
+        ><el-input
           v-model="reWorkflowName"
           style="width: 80%; margin-left: 20px"
         />
@@ -502,11 +504,11 @@ export default {
     this.contextMenu1Target = myChartContainer
     const a = document.getElementById('newFile')
     const b = document.getElementsByClassName('right-menu1')
-    a.onmouseover = function() {
-      for (var i = 0; i < b.length; i++) {
-        b[i].style.display = 'block'
-      }
-    }
+    // a.onmouseover = function() {
+    //   for (var i = 0; i < b.length; i++) {
+    //     b[i].style.display = 'block'
+    //   }
+    // }
     a.onmouseout = function() {
       for (var i = 0; i < b.length; i++) {
         b[i].style.display = 'none'
@@ -1436,7 +1438,7 @@ export default {
       width: 300px;
       // height: 650px;
       padding: 10px;
-      height: calc(100vh - 50px);
+      // height: calc(100vh - 50px);
       background: #f8f8fa;
       .el-input {
         margin-bottom: 20px;
@@ -1505,12 +1507,12 @@ export default {
       padding: 0;
       position: absolute;
       top: 0px;
-      right: -3px;
+      right: 4px;
       z-index: 999;
       height: 100%;
-      width: 1px;
+      // width: 1px;
       // border: 2px solid #ccc;
-      background: #ccc;
+      background: #f8f8fa;
       cursor: e-resize;
     }
     #drag:hover {
@@ -1536,7 +1538,7 @@ export default {
   }
 
   .el-dialog {
-    border-radius: 8px;
+    border-radius: 4px;
 
     .el-dialog__header {
       font-size: 24px;
@@ -1559,7 +1561,7 @@ export default {
     }
 
     .el-dialog__footer {
-      border-top: 1px solid #f3f3f3;
+      // border-top: 1px solid #f3f3f3;
       padding: 20px;
     }
   }
@@ -1619,11 +1621,11 @@ export default {
 }
 
 .el-tree {
-  position: relative;
-  cursor: default;
-  background: #f8f8fa;
-  color: #606266;
-  margin: -10px 0px 0 0;
+    position: relative;
+    cursor: default;
+    background: #f8f8fa;
+    color: black;
+    margin: -10px 0px 0 -8px;
 }
 
 .el-tabs--border-card > .el-tabs__content {
@@ -1635,27 +1637,67 @@ export default {
   margin: 0;
   /* height: 32px; */
 }
+.el-tabs--border-card {
+    background: #fff;
+    margin-top: 1px;
+    border: none;
+}
 .el-tabs__item {
-  padding: 0 20px;
-  height: 32px;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  line-height: 32px;
-  display: inline-block;
-  list-style: none;
-  font-size: 14px;
-  font-weight: 500;
-  color: #303133;
-  position: relative;
+    padding: 0 20px;
+    height: 34px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    line-height: 31px;
+    display: inline-block;
+    list-style: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #303133;
+    position: relative;
 }
 
 .title_h3 {
-  position: absolute;
-  font-size: 24px;
-  font-weight: 700;
-  font-family: '楷体';
-  left: 24px;
-  top: 30px;
+          position: absolute;
+          font-size: 24px;
+          font-weight: 700;
+          font-family: '楷体';
+          left: 24px;
+          top: 30px;
+        }
+.el-tree-node__expand-icon {
+    cursor: pointer;
+    color: black;
+    font-size: 18px;
+}
+
+.el-tree-node__expand-icon.is-leaf {
+    color: transparent;
+    cursor: default;
+    margin-left: -7px;
+}
+
+.el-tree-node__content {
+    height: 32px;
+}
+
+.el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active {
+    color: #3D5FFF;
+    background-color: #fff;
+    border-right-color: white;
+    border-left-color: white;
+    /* border-bottom-color: white; */
+}
+
+.el-tabs--border-card>.el-tabs__header {
+    background-color: #f8f8fa;
+    border-bottom: 0px solid #dfe4ed;
+    margin: 0;
+}
+
+.el-tabs--border-card>.el-tabs__header .el-tabs__item {
+    border: 1px solid transparent;
+    margin-top: -1px;
+    color: black;
 }
 #icon {
   z-index: 999;

@@ -250,7 +250,6 @@
     <el-tabs
       v-model="detailActiveName"
       type="border-card"
-      class="el-bar-tab"
       @tab-click="clickTabs"
     >
       <el-tab-pane label="任务详情" name="detail">
@@ -1620,7 +1619,7 @@ export default {
 
 <style lang="scss" scoped>
 .header {
-  height: 42px;
+  height: 37px;
   line-height: 42px;
   // overflow: hidden;
   padding: 10px 0;
@@ -1647,7 +1646,7 @@ export default {
 .header_switch {
   float: right;
   height: 20px;
-  line-height: 20px;
+  line-height: 16px;
   text-align: center;
 }
 
@@ -1752,8 +1751,18 @@ export default {
 }
 
 .detail_container {
-  height: calc(50vh - 157px);
+  // height: calc(50vh - 157px);
   overflow-y: auto;
+}
+.el-tabs--border-card {
+    background: #fff;
+    border: 0px solid #DCDFE6;
+}
+
+.el-bar-tab .el-tabs__content {
+    height: calc(100vh - 200px);
+    overflow-y: scroll;
+    padding: 0;
 }
 </style>
 <style lang="scss" scoped>

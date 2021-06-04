@@ -12,7 +12,7 @@
           content="脚本模式"
           placement="top-start"
         >
-          <i class="el-icon-picture-outline" />
+          <i class="el-icon-tickets" />
         </el-tooltip>
       </div>
       <div class="header_action" style="margin-left: 27px">
@@ -347,7 +347,7 @@
               :on-exceed="handleExceed"
               :file-list="fileList"
             >
-              <el-button :disabled="Donotadd">从需求导入</el-button>
+              <el-button :disabled="Donotadd" style="margin-left: 10px;">从需求导入</el-button>
             </el-upload>
           </div>
         </div>
@@ -481,7 +481,7 @@
             :on-exceed="handleExceed"
             :file-list="fileList"
           >
-            <el-button>从需求导入</el-button>
+            <el-button style="margin-left: 10px;">从需求导入</el-button>
           </el-upload>
         </div>
       </el-form>
@@ -1202,7 +1202,7 @@ export default {
   padding-left: 10px;
   margin-bottom: 20px;
   line-height: 40px;
-  background: #f5f5f5;
+  background: #f8f8fa;
   color: #000;
 
   /* background: #00ffff; */
