@@ -51,8 +51,15 @@
           node-key="id"
           :expand-on-click-node="false"
           :filter-node-method="filterNode"
+          :allow-drop="allowDrop"
+          :allow-drag="allowDrag"
           @node-drag-start="handleDragStart"
           @node-click="handleWorkFlow"
+          @node-drag-enter="handleDragEnter"
+          @node-drag-leave="handleDragLeave"
+          @node-drag-over="handleDragOver"
+          @node-drag-end="handleDragEnd"
+          @node-drop="handleDrop"
         >
           <span
             slot-scope="{ node, data }"
@@ -221,8 +228,8 @@
 
 <script>
 import * as modeling from '@/api/datax-job-modeling'
-import * as workFlowApi from '@/api/datax-job-info'
-import * as datasourceApi from '@/api/datax-jdbcDatasource'
+// import * as workFlowApi from '@/api/datax-job-modeling'
+// import * as datasourceApi from '@/api/datax-jdbcDatasource'
 import * as jobProjectApi from '@/api/datax-job-project'
 import Flow from './workflow.vue'
 import { component as VueContextMenu } from '@xunlei/vue-context-menu'
@@ -586,10 +593,6 @@ export default {
     },
     // 移动鼠标放大
 
-    // 拖拽tree
-    handleDragStart(node, ev) {
-      console.log('节点开始拖拽时触发的事件', node, ev)
-    },
     gettree(data) {
       this.getlist(data)
     },
@@ -639,7 +642,7 @@ export default {
               }
             }
             this.lastdata = newarr.flat(Infinity).filter((itme) => {
-              return itme.id == newtask.id
+              return itme.id === newtask.id
             })
             console.log('新建工作流-=-=-=newtask', this.lastdata[0])
             this.handleWorkFlow(this.lastdata[0])
@@ -727,27 +730,14 @@ export default {
 
       this.newETLdialog = false
     },
-    // 新增工作流或文件夹通用方法
-    saveWorkflow(params) {
-      // workFlowApi
-      //   .addWorkflow(params)
-      //   .then((res) => {
-      //     if (res.code === 200) {
-      //       console.log(res, '新增工作流或文件夹')
-      //       this.serachWorkFlowList(this.project_id)
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     console.log(err)
-      //   })
-    },
-    // 显示重命名工作流对话框
+
+    // 显示重命名对话框
     reName(val) {
       console.log('重命名')
       console.log('重命名', this.nowObject)
       this.ReETLdialog = true
     },
-    // 确定重命名工作流
+    // 确定重命名
     ReNameWorkflow() {
       if (!this.nowObject.id || this.nowObject === undefined) {
         this.$message('选择需要修改的表')
@@ -846,6 +836,7 @@ export default {
     // 点击左侧工作流列表
     handleWorkFlow(data) {
       console.log('任务数据', data)
+      this.reWorkflowName = data.name
       this.$store.commit('TABLEDATA', data)
       this.$store.commit('Singledata', data)
       this.nowObject = data
@@ -1210,7 +1201,64 @@ export default {
       ) {
         this.navActive = '0'
       }
+    },
+    // 拖拽tree
+    handleDragStart(node, ev) {
+      this.dropId = node.data.id
+      console.log('节点开始拖拽时触发的事件', node)
+    },
+    handleDragEnter(draggingNode, dropNode, ev) {
+      this.targetId = dropNode.key
+      console.log('拖拽进入其他节点时触发的事件', this.targetId)
+      console.log('拖拽进入其他节点时触发的事件', dropNode)
+    },
+    handleDragLeave(draggingNode, dropNode, ev) {
+      console.log('拖拽离开某个节点时触发的事件')
+    },
+    handleDragOver(draggingNode, dropNode, ev) {
+      console.log('拖拽结束时（可能未成功）触发的事件')
+    },
+    handleDragEnd(draggingNode, dropNode, dropType, ev) {
+      console.log('拖拽成功完成时触发的事件')
+    },
+    allowDrop(draggingNode, dropNode, type) {
+      console.log(dropNode)
+      if (dropNode.data.type === 1) {
+        return type === 'inner'
+      } else {
+        return false
+      }
+    },
+    allowDrag(draggingNode) {
+      console.log(draggingNode, 'draggingNode')
+      return draggingNode.data.name.indexOf('三级 3-2-2') === -1
+    },
+    handleDrop(draggingNode, dropNode, dropType, ev) {
+      console.log('...', dropNode)
+      if (dropNode.data.type === 1) {
+        modeling
+          .Update({
+            id: this.dropId,
+            parentId: this.targetId
+          })
+          .then((res) => {
+            console.log(res)
+            if (res.code === 200) {
+              console.log(res.msg)
+            } else {
+              this.$message.err(res.msg)
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      } else {
+        this.$message.error('拖拽失败，目标必须是文件夹')
+        this.serachWorkFlowList(this.$store.state.project.currentItem.split('/')[0])
+      }
+      console.log('tree drop: ', dropNode.label, dropType, draggingNode)
     }
+
   }
 }
 </script>

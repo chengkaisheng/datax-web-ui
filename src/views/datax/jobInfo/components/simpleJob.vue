@@ -40,9 +40,10 @@
             <cron v-model="temp.jobCron" />
             <span slot="footer" class="dialog-footer">
               <el-button @click="showCronBox = false">关闭</el-button>
-              <el-button type="primary" @click="showCronBox = false"
-                >确 定</el-button
-              >
+              <el-button
+                type="primary"
+                @click="showCronBox = false"
+              >确 定</el-button>
             </span>
           </el-dialog>
           <el-form-item label="Cron" prop="jobCron">
@@ -372,10 +373,10 @@ export default {
       const statusMap = {
         published: 'success',
         draft: 'gray',
-        deleted: 'danger',
+        deleted: 'danger'
       }
       return statusMap[status]
-    },
+    }
   },
   props: ['jobType', 'jobTypeLabel'],
   data() {
@@ -405,7 +406,7 @@ export default {
         projectIds: '',
         triggerStatus: -1,
         name: '',
-        glueType: '',
+        glueType: ''
       },
       showCronBox: false,
       dialogPluginVisible: false,
@@ -414,47 +415,47 @@ export default {
       dialogStatus: '',
       textMap: {
         update: 'Edit',
-        create: 'Create',
+        create: 'Create'
       },
       rules: {
         jobGroup: [
-          { required: true, message: '执行器不能为空', trigger: 'change' },
+          { required: true, message: '执行器不能为空', trigger: 'change' }
         ],
         executorRouteStrategy: [
-          { required: true, message: '路由策略不能为空', trigger: 'change' },
+          { required: true, message: '路由策略不能为空', trigger: 'change' }
         ],
         executorBlockStrategy: [
-          { required: true, message: '阻塞处理不能为空', trigger: 'change' },
+          { required: true, message: '阻塞处理不能为空', trigger: 'change' }
         ],
         glueType: [
-          { required: true, message: 'jobType is required', trigger: 'change' },
+          { required: true, message: 'jobType is required', trigger: 'change' }
         ],
         projectId: [
           {
             required: true,
             message: 'projectId is required',
-            trigger: 'change',
-          },
+            trigger: 'change'
+          }
         ],
         name: [
-          { required: true, message: '任务名称不能为空', trigger: 'blur' },
+          { required: true, message: '任务名称不能为空', trigger: 'blur' }
         ],
         jobProject: [
           {
             required: true,
             message: 'jobProject is required',
-            trigger: 'blur',
-          },
+            trigger: 'blur'
+          }
         ],
         jobCron: [
           {
             required: true,
             message: 'cron表达式不能为空',
-            trigger: ['blur', 'change'],
-          },
+            trigger: ['blur', 'change']
+          }
         ],
         jobDesc: [
-          { required: true, message: '任务描述不能为空', trigger: 'blur' },
+          { required: true, message: '任务描述不能为空', trigger: 'blur' }
         ],
         incStartId: [{ trigger: 'blur', validator: validateIncParam }],
         replaceParam: [{ trigger: 'blur', validator: validateIncParam }],
@@ -462,10 +463,10 @@ export default {
         incStartTime: [{ trigger: 'change', validator: validateIncParam }],
         replaceParamType: [{ trigger: 'change', validator: validateIncParam }],
         partitionField: [
-          { trigger: 'blur', validator: validatePartitionParam },
+          { trigger: 'blur', validator: validatePartitionParam }
         ],
         datasourceId: [{ trigger: 'change', validator: validateIncParam }],
-        readerTable: [{ trigger: 'blur', validator: validateIncParam }],
+        readerTable: [{ trigger: 'blur', validator: validateIncParam }]
       },
       temp: {
         id: undefined,
@@ -496,7 +497,7 @@ export default {
         primaryKey: '',
         projectId: '',
         datasourceId: '',
-        readerTable: '',
+        readerTable: ''
       },
       resetTemp() {
         this.temp = this.$options.data().temp
@@ -513,7 +514,7 @@ export default {
       blockStrategies: [
         { value: 'SERIAL_EXECUTION', label: '单机串行' },
         { value: 'DISCARD_LATER', label: '丢弃后续调度' },
-        { value: 'COVER_EARLY', label: '覆盖之前调度' },
+        { value: 'COVER_EARLY', label: '覆盖之前调度' }
       ],
       routeStrategies: [
         { value: 'FIRST', label: '第一个' },
@@ -524,12 +525,12 @@ export default {
         { value: 'LEAST_FREQUENTLY_USED', label: '最不经常使用' },
         { value: 'LEAST_RECENTLY_USED', label: '最近最久未使用' },
         { value: 'FAILOVER', label: '故障转移' },
-        { value: 'BUSYOVER', label: '忙碌转移' },
+        { value: 'BUSYOVER', label: '忙碌转移' }
         // { value: 'SHARDING_BROADCAST', label: '分片广播' }
       ],
       glueTypes: [
         // { value: 'BEAN', label: 'DataX任务' },
-        { value: 'GLUE_SHELL', label: 'Shell任务' },
+        { value: 'GLUE_SHELL', label: 'Shell任务' }
         // { value: 'GLUE_PYTHON', label: 'Python任务' },
         // { value: 'GLUE_POWERSHELL', label: 'PowerShell任务' }
       ],
@@ -537,7 +538,7 @@ export default {
         { value: 0, label: '无' },
         { value: 1, label: '主键自增' },
         { value: 2, label: '时间自增' },
-        { value: 3, label: 'HIVE分区' },
+        { value: 3, label: 'HIVE分区' }
       ],
       triggerNextTimes: '',
       registerNode: [],
@@ -549,7 +550,7 @@ export default {
       timeFormatTypes: [
         { value: 'yyyy-MM-dd', label: 'yyyy-MM-dd' },
         { value: 'yyyyMMdd', label: 'yyyyMMdd' },
-        { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' },
+        { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' }
       ],
       replaceFormatTypes: [
         { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' },
@@ -557,14 +558,14 @@ export default {
         { value: 'HH:mm:ss', label: 'HH:mm:ss' },
         { value: 'yyyy/MM/dd HH:mm:ss', label: 'yyyy/MM/dd HH:mm:ss' },
         { value: 'yyyy-MM-dd HH:mm:ss', label: 'yyyy-MM-dd HH:mm:ss' },
-        { value: 'Timestamp', label: '时间戳' },
+        { value: 'Timestamp', label: '时间戳' }
       ],
       statusList: [
         { value: 500, label: '失败' },
         { value: 502, label: '失败(超时)' },
         { value: 200, label: '成功' },
-        { value: 0, label: '无' },
-      ],
+        { value: 0, label: '无' }
+      ]
     }
   },
   created() {
@@ -656,7 +657,7 @@ export default {
           title: 'Fail',
           message: 'json格式错误',
           type: 'error',
-          duration: 2000,
+          duration: 2000
         })
         return
       }
@@ -678,13 +679,14 @@ export default {
           this.temp.glueSource = this.glueSource
           this.temp.executorHandler =
             this.temp.glueType === 'BEAN' ? 'executorJobHandler' : ''
-          if (this.partitionField)
+          if (this.partitionField) {
             this.temp.partitionInfo =
               this.partitionField +
               ',' +
               this.timeOffset +
               ',' +
               this.timeFormatType
+          }
 
           this.temp.projectId = this.$store.state.taskAdmin.projectId
           this.temp.jobType = this.$store.state.taskAdmin.tabType
@@ -705,14 +707,14 @@ export default {
             this.$store.commit('SET_TASKDETAIL_ID', res.content)
             this.$store.commit('changeWatch', 1)
 
-            this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
               message: 'Created Successfully',
               type: 'success',
-              duration: 2000,
+              duration: 2000
             })
           })
+          this.dialogFormVisible = false
         }
       })
     },
@@ -765,7 +767,7 @@ export default {
           title: 'Fail',
           message: 'json格式错误',
           type: 'error',
-          duration: 2000,
+          duration: 2000
         })
         return
       }
@@ -781,13 +783,14 @@ export default {
           this.temp.executorHandler =
             this.temp.glueType === 'BEAN' ? 'executorJobHandler' : ''
           this.temp.glueSource = this.glueSource
-          if (this.partitionField)
+          if (this.partitionField) {
             this.temp.partitionInfo =
               this.partitionField +
               ',' +
               this.timeOffset +
               ',' +
               this.timeFormatType
+          }
           job.updateJob(this.temp).then(() => {
             this.fetchData()
             this.dialogFormVisible = false
@@ -795,7 +798,7 @@ export default {
               title: '成功',
               message: '添加成功',
               type: 'success',
-              duration: 2000,
+              duration: 2000
             })
           })
         }
@@ -805,7 +808,7 @@ export default {
       this.$confirm('确定删除吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning',
+        type: 'warning'
       }).then(() => {
         job.removeJob(row.id).then((response) => {
           this.fetchData()
@@ -813,7 +816,7 @@ export default {
             title: 'Success',
             message: 'Delete Successfully',
             type: 'success',
-            duration: 2000,
+            duration: 2000
           })
         })
       })
@@ -824,7 +827,7 @@ export default {
       this.$confirm('确定执行吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning',
+        type: 'warning'
       }).then(() => {
         const param = {}
         param.jobId = row.id
@@ -834,14 +837,14 @@ export default {
             title: 'Success',
             message: 'Execute Successfully',
             type: 'success',
-            duration: 2000,
+            duration: 2000
           })
         })
       })
     },
     // 查看日志
     handlerViewLog(row) {
-      this.$router.push({ path: '/datax/log/jobLog', query: { jobId: row.id } })
+      this.$router.push({ path: '/datax/log/jobLog', query: { jobId: row.id }})
     },
     handlerStart(row) {
       job.startJob(row.id).then((response) => {
@@ -849,7 +852,7 @@ export default {
           title: 'Success',
           message: 'Start Successfully',
           type: 'success',
-          duration: 2000,
+          duration: 2000
         })
       })
     },
@@ -859,7 +862,7 @@ export default {
           title: 'Success',
           message: 'Start Successfully',
           type: 'success',
-          duration: 2000,
+          duration: 2000
         })
       })
     },
@@ -878,8 +881,8 @@ export default {
         const { content } = response
         this.registerNode.push(content)
       })
-    },
-  },
+    }
+  }
 }
 </script>
 

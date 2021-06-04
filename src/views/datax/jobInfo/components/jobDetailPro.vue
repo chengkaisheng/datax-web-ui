@@ -1571,7 +1571,6 @@ export default {
           updateTask(this.temp)
             .then((res) => {
               console.log(res, '任务调度。。。。')
-              this.scheduleShow = false
               this.$store.commit('setScheduleId', this.temp.id)
               this.$notify({
                 title: '成功',
@@ -1583,12 +1582,14 @@ export default {
             .catch((err) => {
               console.log(err)
             })
+
           console.log(this.scheduleForm)
           console.log(this.$store.state.taskAdmin.jobDataDetail, 'data')
         } else {
           return false
         }
       })
+      this.scheduleShow = false
     },
     resetScheduleForm(formName) {
       console.log(this.scheduleForm.cron)

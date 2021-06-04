@@ -8,25 +8,25 @@ import { Group } from 'gojs'
  * @param {*} params
  * @return {*}
  */
- export function DeleteParameters(id) {
+export function DeleteParameters(id) {
   return request({
     url: 'api/jobParameter/deleteId',
     method: 'delete',
-    params:id
+    params: id
   })
 }
- export function ParametersList(id) {
+export function ParametersList(id) {
   return request({
     url: 'api/jobParameter/list',
     method: 'get',
-    params:id
+    params: id
   })
 }
 export function SaveParameters(parameters) {
   return request({
     url: 'api/jobParameter/save',
     method: 'post',
-    data:parameters
+    data: parameters
   })
 }
 export function getList(params) {
@@ -210,7 +210,7 @@ export function exportTaskResult(params) {
 // 获取tree数据结构建
 export function getTreeData(params) {
   return request({
-    url:  '/api/jobProjectGroup/tree',
+    url: '/api/jobProjectGroup/tree',
     method: 'get',
     params
   })

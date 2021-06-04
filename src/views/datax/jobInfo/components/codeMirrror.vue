@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import * as job from '@/api/datax-job-info'
+// import * as job from '@/api/datax-job-info'
 import 'codemirror/theme/ambiance.css'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/addon/hint/show-hint.css'
