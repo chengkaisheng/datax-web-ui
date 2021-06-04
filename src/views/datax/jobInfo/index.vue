@@ -288,7 +288,7 @@ rkJggg=="
         @tab-click="JobTabClick"
       >
         <el-tab-pane
-          v-if="lasttab || !$store.state.taskAdmin.taskDetailList.length"
+          v-if="!lasttab || !$store.state.taskAdmin.taskDetailList.length"
           style="user-select: none"
           label="欢迎"
           name="欢迎"
@@ -538,7 +538,7 @@ rkJggg=="
       <span style="margin-left: 20px">名称：</span><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-        <el-button type="goon" size="small" @click="sureRe"> 确定 </el-button>
+        <el-button type="goon" size="small" :disabled="isdisabled" @click="sureRe"> 确定 </el-button>
       </div>
     </el-dialog>
     <!-- 新建文件夹或任务对话框 -->
@@ -549,14 +549,57 @@ rkJggg=="
       />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-        <el-button type="goon" size="small" @click="createFolder">
+        <el-button type="goon" size="small" :disabled="isdisabled" @click="createFolder">
           确定
         </el-button>
       </div>
     </el-dialog>
     <!--新增Hive任务-->
     <el-dialog width="40%" title="新建" :visible.sync="showHive">
-      <div class="boxs">
+      <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm">
+        <el-form-item
+          label="任务中文名："
+          prop="chineseName"
+        >
+          <el-input
+            v-model="ruleForm.chineseName"
+            autocomplete="off"
+            size="mini"
+          />
+        </el-form-item>
+        <el-form-item
+          label="任务英文名："
+          prop="englishName"
+        >
+          <el-input
+            v-model="ruleForm.englishName"
+            autocomplete="off"
+            size="mini"
+          />
+        </el-form-item>
+        <el-form-item
+          label="任务说明："
+          prop="task"
+        >
+          <el-input
+            v-model="ruleForm.task"
+            autocomplete="off"
+            size="mini"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button size="small" @click="cancelDialog"> 取消 </el-button>
+          <el-button
+            type="goon"
+
+            size="small"
+            @click="HivecreateHandl('ruleForm')"
+          >
+            确定
+          </el-button>
+        </el-form-item>
+      </el-form>
+      <!-- <div class="boxs">
         <span
           style="
             margin-left: 20px;
@@ -568,6 +611,7 @@ rkJggg=="
           v-model="chineseName"
           size="mini"
           style="width: 60%; margin-left: 5px"
+          validate-event
         />
       </div>
       <br>
@@ -610,7 +654,7 @@ rkJggg=="
         >
           确定
         </el-button>
-      </div>
+      </div> -->
     </el-dialog>
 
     <!-- 查看文件版本 -->
@@ -758,6 +802,11 @@ export default {
         left: 0,
         top: 0,
       },
+      ruleForm:{
+        chineseName: '',
+        englishName: '',
+        task: '',
+      },
       isdisabled: true,
       showHive: false,
       chineseName: '',
@@ -828,6 +877,38 @@ export default {
       conut: '',
       tablist: [],
       loading: true,
+      rules: {
+        chineseName: [
+          { required: true, message: "请输入中文的标题", trigger: "blur" },
+          {
+            validator: function(rule, value, callback) {
+              //校验中文的正则：/^[\u4e00-\u9fa5]{0,}$/
+              if (/^[\u4e00-\u9fa5]+$/.test(value) == false) {
+                callback(new Error("请输入中文"));
+              } else {
+                //校验通过
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
+        ],
+        englishName: [
+          { required: true, message: "请输入英文的组件名", trigger: "blur" },
+          {
+            validator: function(rule, value, callback) {
+              //  校验英文的正则
+              if (/[a-zA-z]$/.test(value) == false) {
+                callback(new Error("请输入英文"));
+              } else {
+                //校验通过
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
+        ],
+      }
     }
   },
   computed: {
@@ -868,8 +949,23 @@ export default {
   watch: {
     chineseName(val) {
       this.isdisabled = false
-      if (val !== '') {
-        this.isdisabled = false
+      console.log(val)
+      if (val === '') {
+        this.isdisabled = true
+      }
+    },
+    allName(val) {
+      this.isdisabled = false
+      console.log(val)
+      if (val === '') {
+        this.isdisabled = true
+      }
+    },
+    Rename(val) {
+      this.isdisabled = false
+      console.log(val)
+      if (val === '') {
+        this.isdisabled = true
       }
     },
     editableTabs(val) {
@@ -1048,35 +1144,6 @@ export default {
   deactivated() {
     alert('触发')
   },
-  // activated() {
-  //   // this.tablist = this.$store.state.taskAdmin.taskDetailList
-  //   // handleNodeClick(this.$store.state.taskAdmin.Singledata)
-  //   console.log('所有列表', this.$store.state.taskAdmin.taskDetailList)
-  //   if (sessionStorage.getItem('level') === '2') {
-  //     this.showAdmin = false
-  //   } else {
-  //     this.showAdmin = true
-  //   }
-  //   this.getItem()
-  //   setTimeout(() => {
-  //     this.getDataTree()
-  //   }, 600)
-  //   const p = {
-  //     current: 1,
-  //     size: 200,
-  //     ascs: 'datasource_name',
-  //     projectId: this.$store.state.project.currentItem
-  //       ? this.$store.state.project.currentItem.split('/')[0]
-  //       : ''
-  //   }
-  //   jdbcDsList(p).then((response) => {
-  //     const { records } = response
-  //     console.log(records, 'records________________________')
-  //     this.$store.commit('SET_DATASOURCE', records)
-  //   })
-  //   // console.log(this.$store.state.taskAdmin.Singledata)
-  //   this.handleNodeClick(this.$store.state.taskAdmin.SingleData)
-  // },
   created() {
     this.tablist = this.$store.state.taskAdmin.taskDetailList
     //   // handleNodeClick(this.$store.state.taskAdmin.Singledata)
@@ -1105,15 +1172,6 @@ export default {
     this.handleNodeClick(this.$store.state.taskAdmin.SingleData)
   },
   methods: {
-    //
-    // showContextMenu(e) {
-    //   e.preventDefault()
-    //   this.contextMenuVisible = true
-    //   this.contextMenuOffset = {
-    //     left: e.pageX,
-    //     top: e.pageY
-    //   }
-    // },
     /**
      * @description: tab关闭逻辑
      */
@@ -1621,6 +1679,7 @@ export default {
       this.chineseName = ''
       this.englishName = ''
       this.task = ''
+      this.ruleForm=''
     },
     // tree鼠标右键点击
     rightClick(event, item, node, self) {
@@ -1640,21 +1699,21 @@ export default {
     // 拖拽tree
     handleDragStart(node, ev) {
       this.dropId = node.data.id
-      console.log('节点开始拖拽时触发的事件', node)
+      // console.log('节点开始拖拽时触发的事件', node)
     },
     handleDragEnter(draggingNode, dropNode, ev) {
       this.targetId = dropNode.key
-      console.log('拖拽进入其他节点时触发的事件', this.targetId)
-      console.log('拖拽进入其他节点时触发的事件', dropNode)
+      // console.log('拖拽进入其他节点时触发的事件', this.targetId)
+      // console.log('拖拽进入其他节点时触发的事件', dropNode)
     },
     handleDragLeave(draggingNode, dropNode, ev) {
-      console.log('拖拽离开某个节点时触发的事件')
+      // console.log('拖拽离开某个节点时触发的事件')
     },
     handleDragOver(draggingNode, dropNode, ev) {
-      console.log('拖拽结束时（可能未成功）触发的事件')
+      // console.log('拖拽结束时（可能未成功）触发的事件')
     },
     handleDragEnd(draggingNode, dropNode, dropType, ev) {
-      console.log('拖拽成功完成时触发的事件')
+      // console.log('拖拽成功完成时触发的事件')
     },
     handleDrop(draggingNode, dropNode, dropType, ev) {
       console.log('...', dropNode)
@@ -1682,32 +1741,34 @@ export default {
       console.log('tree drop: ', dropNode.label, dropType, draggingNode)
     },
     allowDrop(draggingNode, dropNode, type) {
-
-      if (dropNode.data.name === '二级 3-1') {
-        return type !== 'inner'
+      if (dropNode.data.jobType !== '"wenjianjia"') {
+        return type == 'inner'
       } else {
-        return true
+        return false
       }
     },
     allowDrag(draggingNode) {
-      console.log(draggingNode, 'draggingNode')
+      // console.log(draggingNode, 'draggingNode')
       return draggingNode.data.name.indexOf('三级 3-2-2') === -1
     },
     Preservation(val) {
-      console.log('______>>>>>', val)
+      // console.log('______>>>>>', val)
     },
     // HIVE任务新建
-    HivecreateHandl() {
-      console.log('selectRow', this.selectRow)
-      console.log('currentJob', this.currentJob)
-      const params = {
+    HivecreateHandl(formName) {
+      this.$refs[formName].validate((valid) => {
+      if (valid) {
+        this.chineseName=this.ruleForm.chineseName
+        this.englishName =this.ruleForm.englishName
+        this.task =this.ruleForm.task
+      // alert('submit!');
+          const params = {
         name: this.chineseName,
         projectId: this.selectRow.projectId,
         parentId: this.selectRow.id,
         type: this.currentJob ? 2 : 1,
         jobType: this.currentJob,
       }
-
       const ename = this.englishName
       const specification = this.task
       job
@@ -1715,7 +1776,7 @@ export default {
         .then((res) => {
           console.log('pppppp>>>>>>>', res)
           if (res.code === 200) {
-            console.log('有木有id', res)
+            // console.log('有木有id', res)
             this.getDataTree({ data: 'NewTask', id: res.content })
             this.selectRow = {}
             if (res.content !== '请选择父级目录') {
@@ -1752,6 +1813,70 @@ export default {
           this.englishName = ''
           this.task = ''
         })
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      console.log('selectRow', this.selectRow)
+      console.log('currentJob', this.currentJob)
+      // if(this.chineseName===''&&/^[\u4e00-\u9fa5]+$/.test(val) == false){
+      //  return this.$message.error({ message: "请输入中文名" })
+      // }
+      //  if(this.englishName===''&&/[a-zA-z]$/.test(value) == false){
+      //  return this.$message.error({ message: "请输入英文名" })
+      // }
+      // const params = {
+      //   name: this.chineseName,
+      //   projectId: this.selectRow.projectId,
+      //   parentId: this.selectRow.id,
+      //   type: this.currentJob ? 2 : 1,
+      //   jobType: this.currentJob,
+      // }
+      // const ename = this.englishName
+      // const specification = this.task
+      // job
+      //   .CreateFile(params, ename, specification)
+      //   .then((res) => {
+      //     console.log('pppppp>>>>>>>', res)
+      //     if (res.code === 200) {
+      //       console.log('有木有id', res)
+      //       this.getDataTree({ data: 'NewTask', id: res.content })
+      //       this.selectRow = {}
+      //       if (res.content !== '请选择父级目录') {
+      //         this.$store.commit('changeGroupName', this.chineseName)
+      //         this.$store.commit('changeJobId', parseInt(res.content))
+      //         this.showHive = false
+      //         this.chineseName = ''
+      //         this.englishName = ''
+      //         this.task = ''
+      //         if (this.currentJob) {
+      //           console.log('this.currentJob', this.currentJob)
+      //           // this.createNewJob(this.currentJob)
+      //           this.currentJob = ''
+      //         }
+      //         this.chineseName = ''
+      //         this.englishName = ''
+      //         this.task = ''
+      //         this.$message.success('新增成功')
+      //       } else {
+      //         this.$message.warning(res.content)
+      //         this.showHive = false
+      //         this.chineseName = ''
+      //         this.englishName = ''
+      //         this.task = ''
+      //       }
+      //     } else {
+      //       this.$message.error(res.content)
+      //     }
+      //     console.log(res)
+      //   })
+      //   .catch((err) => {
+      //     console.log(err)
+      //     this.chineseName = ''
+      //     this.englishName = ''
+      //     this.task = ''
+      //   })
     },
     // 新建文件夹或任务
     createFolder() {

@@ -39,7 +39,7 @@
           </el-upload>
         </el-tooltip>
       </div>
-      <div @click="Looktable" class="header_action" style="margin-left: 27px">
+      <div class="header_action" style="margin-left: 27px" @click="Looktable">
         <el-tooltip
           class="item"
           effect="dark"
@@ -50,9 +50,9 @@
         </el-tooltip>
       </div>
       <div
-        @click="submitForm('ruleForm', 'data')"
         class="header_action"
         style="margin-left: 27px"
+        @click="submitForm('ruleForm', 'data')"
       >
         <el-tooltip
           class="item"
@@ -65,9 +65,9 @@
       </div>
       <div
         v-if="locking === 1"
-        @click="LocKing"
         class="header_action"
         style="margin-left: 27px"
+        @click="LocKing"
       >
         <el-tooltip
           class="item"
@@ -80,9 +80,9 @@
       </div>
       <div
         v-if="locking === 0"
-        @click="Unlocking"
         class="header_action"
         style="margin-left: 27px"
+        @click="Unlocking"
       >
         <el-tooltip
           class="item"
@@ -94,9 +94,9 @@
         </el-tooltip>
       </div>
       <div
-        @click="submitForm('ruleForm', 'DATA')"
         class="header_action"
         style="margin-left: 27px"
+        @click="submitForm('ruleForm', 'DATA')"
       >
         <el-tooltip
           class="item"
@@ -126,57 +126,55 @@
         </div>
 
         <el-input
+          v-model="desc"
           style="margin-bottom: 20px"
           show-word-limit="true"
           type="textarea"
           rows="18"
-          v-model="desc"
-        ></el-input>
+        />
         <div>
-          <el-button @click="synchronization" type="primary">同步</el-button>
+          <el-button type="primary" @click="synchronization">同步</el-button>
         </div>
       </div>
     </el-drawer>
-    <div class="top" v-loading="loading" :element-loading-text="loadingtext">
+    <div v-loading="loading" class="top" :element-loading-text="loadingtext">
       <div class="title1">基本信息</div>
       <span class="tips">
         模型发布后不可修改数据层级，表类型，主题域和模型名，请确定信息无误后再操作！
       </span>
       <el-form
+        ref="ruleForm"
         :model="ruleForm"
         :rules="rules"
-        ref="ruleForm"
         label-width="100px"
         class="demo-ruleForm"
       >
         <el-form-item label="数据层级:">
           <el-radio-group v-model="ruleForm.tabPosition">
             <el-radio-button
+              label="mid"
               @click="
                 () => {
                   ruleForm.tabPosition = 'MiddleLayer'
                 }
               "
-              label="mid"
-              >中间层</el-radio-button
-            >
+            >中间层</el-radio-button>
             <el-radio-button
+              label="app"
               @click="
                 () => {
                   ruleForm.tabPosition = 'applicationLayer'
                 }
               "
-              label="app"
-              >应用层</el-radio-button
-            >
+            >应用层</el-radio-button>
           </el-radio-group>
         </el-form-item>
         <el-row>
           <el-col :xs="24" :sm="24" :md="12" :lg="10" :xl="8">
             <el-form-item label="主题域:" prop="themes">
               <el-select
-                :disabled="Lock"
                 v-model="ruleForm.themes"
+                :disabled="Lock"
                 style="width: 234px"
               >
                 <el-option
@@ -191,8 +189,8 @@
           <el-col :xs="24" :sm="24" :md="12" :lg="10" :xl="8">
             <el-form-item label="表类型:">
               <el-select
-                :disabled="isbtn"
                 v-model="ruleForm.TableTypes"
+                :disabled="isbtn"
                 style="width: 234px"
               >
                 <el-option
@@ -208,8 +206,8 @@
         </el-row>
         <el-form-item label="业务过程:" prop="Business">
           <el-select
-            :disabled="Lock"
             v-model="ruleForm.Business"
+            :disabled="Lock"
             placeholder="请选择业务过程"
           >
             <el-option
@@ -224,17 +222,17 @@
           <el-col :span="11">
             <el-form-item>
               <el-input
-                :disabled="isbtn"
                 v-model="ruleForm.Modelname1"
+                :disabled="isbtn"
                 style="width: 30%"
-              ></el-input>
+              />
             </el-form-item>
           </el-col>
         </el-form-item>
         <el-form-item label="保障等级:" prop="Securitys">
           <el-select
-            :disabled="Lock"
             v-model="ruleForm.Securitys"
+            :disabled="Lock"
             placeholder="请选择保障等级"
           >
             <el-option
@@ -247,18 +245,18 @@
         </el-form-item>
         <el-form-item label="表描述:">
           <el-input
+            v-model="ruleForm.desc"
             :disabled="Lock"
             rows="5"
             type="textarea"
             placeholder="请输入表描述"
-            v-model="ruleForm.desc"
-          ></el-input>
+          />
         </el-form-item>
         <div class="title1">物理信息</div>
         <el-form-item label="project :" prop="delivery">
           <el-input
-            :disabled="Lock"
             v-model="ruleForm.project"
+            :disabled="Lock"
             style="width: 30%"
           >
             <template slot="append">天</template>
@@ -266,8 +264,8 @@
         </el-form-item>
         <el-form-item label="生命周期:" prop="delivery">
           <el-input
-            :disabled="Lock"
             v-model="ruleForm.lifecycle"
+            :disabled="Lock"
             style="width: 30%"
           >
             <template slot="append">天</template>
@@ -275,15 +273,15 @@
         </el-form-item>
         <el-form-item label="是否分区表:" prop="resource">
           <el-radio-group v-model="ruleForm.resource">
-            <span @click="showtable" :class="Resource ? Resource : ''">
-              <el-radio :disabled="Subtable" label="true"></el-radio>
+            <span :class="Resource ? Resource : ''" @click="showtable">
+              <el-radio :disabled="Subtable" label="true" />
             </span>
             <span
               style="margin-left: 20px"
-              @click="hidetable"
               :class="Resource ? Resource : ''"
+              @click="hidetable"
             >
-              <el-radio :disabled="Subtable" label="false"></el-radio>
+              <el-radio :disabled="Subtable" label="false" />
             </span>
           </el-radio-group>
         </el-form-item>
@@ -300,8 +298,7 @@
               :label="itme.label"
               width="auto"
               style="text-align: center"
-            >
-            </el-table-column>
+            />
             <el-table-column
               label="操作"
               width="120%"
@@ -310,35 +307,32 @@
               <template slot-scope="scope">
                 <el-button
                   :disabled="Donotadd"
-                  @click.native.prevent="DeleteDatas(scope.row, scope.$index)"
                   type="text"
                   size="small"
-                  >删除</el-button
-                >
+                  @click.native.prevent="DeleteDatas(scope.row, scope.$index)"
+                >删除</el-button>
                 <el-button
                   :disabled="Donotadd"
-                  @click.native.prevent="Editdatas(scope.row, scope.$index)"
                   type="text"
                   size="small"
-                  >编辑</el-button
-                >
+                  @click.native.prevent="Editdatas(scope.row, scope.$index)"
+                >编辑</el-button>
               </template>
             </el-table-column>
             <div slot="empty">
               <p style="margin-top: 20px">
-                <img src="@/icons/Nodata.jpg" />
+                <img src="@/icons/Nodata.jpg">
               </p>
             </div>
           </el-table>
         </template>
-        <div class="foot" v-if="show" style="margin-top: 30px">
+        <div v-if="show" class="foot" style="margin-top: 30px">
           <div>
             <el-button
-              @click="addfield('top')"
               icon="el-icon-plus"
               :disabled="Donotadd"
-              >添加字段</el-button
-            >
+              @click="addfield('top')"
+            >添加字段</el-button>
           </div>
           <div>
             <el-upload
@@ -359,70 +353,57 @@
         </div>
         <el-dialog title="添加字段" :visible.sync="dialogVisibles" width="35%">
           <div class="table_top">
-            <span style="margin-right: 20px">字段名称:</span
-            ><span
-              ><el-input
-                style="widht: 100px"
-                placeholder="请输入字段名称"
-                v-model="names"
-              >
-              </el-input
-            ></span>
+            <span style="margin-right: 20px">字段名称:</span><span><el-input
+              v-model="names"
+              style="widht: 100px"
+              placeholder="请输入字段名称"
+            /></span>
           </div>
-          <div style="height: 10px"></div>
+          <div style="height: 10px" />
           <div class="table_top">
-            <span style="margin-right: 20px">字段描述:</span
-            ><span>
-              <el-input placeholder="请输入字段描述" v-model="comments">
-              </el-input>
+            <span style="margin-right: 20px">字段描述:</span><span>
+              <el-input v-model="comments" placeholder="请输入字段描述" />
             </span>
           </div>
-          <div style="height: 10px"></div>
+          <div style="height: 10px" />
           <div class="table_top">
-            <span style="margin-right: 20px">业务口径:</span
-            ><span>
-              <el-input placeholder="请输入业务口径" v-model="BusinessCalibers">
-              </el-input>
+            <span style="margin-right: 20px">业务口径:</span><span>
+              <el-input v-model="BusinessCalibers" placeholder="请输入业务口径" />
             </span>
           </div>
-          <div style="height: 10px"></div>
+          <div style="height: 10px" />
           <div class="table_top">
-            <span style="margin-right: 20px">绑定指标:</span
-            ><span>
-              <el-input placeholder="请输入绑定指标" v-model="BindingIndexs">
-              </el-input>
+            <span style="margin-right: 20px">绑定指标:</span><span>
+              <el-input v-model="BindingIndexs" placeholder="请输入绑定指标" />
             </span>
           </div>
-          <div style="height: 10px"></div>
+          <div style="height: 10px" />
           <div class="table_top">
-            <span style="margin-right: 20px">字段主键:</span
-            ><span>
+            <span style="margin-right: 20px">字段主键:</span><span>
               <el-select v-model="isKeys" placeholder="请选择">
-                <el-option label="是" value="true"></el-option>
-                <el-option label="否" value="false"></el-option>
+                <el-option label="是" value="true" />
+                <el-option label="否" value="false" />
               </el-select>
             </span>
           </div>
-          <div style="height: 10px"></div>
+          <div style="height: 10px" />
           <div class="table_top">
-            <span style="margin-right: 20px">数据类型:</span
-            ><span>
+            <span style="margin-right: 20px">数据类型:</span><span>
               <el-select v-model="types" placeholder="请选择">
-                <el-option label="字符串" value="String"></el-option>
-                <el-option label="数值" value="int"></el-option>
-                <el-option label="日期类型" value="datetime"></el-option>
-                <el-option label="Boolean" value="Boolean"></el-option>
-                <el-option label="NaN" value="NaN"></el-option>
+                <el-option label="字符串" value="String" />
+                <el-option label="数值" value="int" />
+                <el-option label="日期类型" value="datetime" />
+                <el-option label="Boolean" value="Boolean" />
+                <el-option label="NaN" value="NaN" />
               </el-select>
             </span>
           </div>
-          <div style="height: 10px"></div>
+          <div style="height: 10px" />
           <div class="table_top">
-            <span style="margin-right: 20px">非空字段:</span
-            ><span>
+            <span style="margin-right: 20px">非空字段:</span><span>
               <el-select v-model="notNulls" placeholder="请选择">
-                <el-option label="是" value="true"></el-option>
-                <el-option label="否" value="false"></el-option>
+                <el-option label="是" value="true" />
+                <el-option label="否" value="false" />
               </el-select>
             </span>
           </div>
@@ -434,7 +415,7 @@
             <el-button type="primary" @click="addfields">确 定</el-button>
           </span>
         </el-dialog>
-        <div style="height: 30px"></div>
+        <div style="height: 30px" />
         <p style="margin-bottom: 30px; color: red">
           创建物理表后不可再修改分区信息，请谨慎操作！
         </p>
@@ -451,8 +432,7 @@
               :label="itme.label"
               width="auto"
               style="text-align: center"
-            >
-            </el-table-column>
+            />
             <el-table-column
               label="操作"
               width="120%"
@@ -466,30 +446,29 @@
                   >查看</el-button
                 > -->
                 <el-button
+                  type="text"
+                  size="small"
                   @click.native.prevent="DeleteData(scope.row, scope.$index)"
-                  type="text"
-                  size="small"
-                  >删除</el-button
-                >
+                >删除</el-button>
                 <el-button
-                  @click.native.prevent="Editdata(scope.row, scope.$index)"
                   type="text"
                   size="small"
-                  >编辑</el-button
-                >
+                  @click.native.prevent="Editdata(scope.row, scope.$index)"
+                >编辑</el-button>
               </template>
             </el-table-column>
             <div slot="empty">
               <p style="margin-top: 20px">
-                <img src="@/icons/nodata.gif" />
+                <img src="@/icons/nodata.gif">
               </p>
             </div>
           </el-table>
         </template>
         <div class="foot" style="margin-top: 30px">
-          <el-button @click="Addfield('bottom')" icon="el-icon-plus"
-            >添加字段</el-button
-          >
+          <el-button
+            icon="el-icon-plus"
+            @click="Addfield('bottom')"
+          >添加字段</el-button>
 
           <el-upload
             class="upload-demo"
@@ -508,70 +487,57 @@
       </el-form>
       <el-dialog title="添加字段" :visible.sync="dialogVisible" width="35%">
         <div class="table_top">
-          <span style="margin-right: 20px">字段名称:</span
-          ><span
-            ><el-input
-              style="widht: 100px"
-              placeholder="请输入字段名称"
-              v-model="name"
-            >
-            </el-input
-          ></span>
+          <span style="margin-right: 20px">字段名称:</span><span><el-input
+            v-model="name"
+            style="widht: 100px"
+            placeholder="请输入字段名称"
+          /></span>
         </div>
-        <div style="height: 10px"></div>
+        <div style="height: 10px" />
         <div class="table_top">
-          <span style="margin-right: 20px">字段描述:</span
-          ><span>
-            <el-input placeholder="请输入字段描述" v-model="comment">
-            </el-input>
+          <span style="margin-right: 20px">字段描述:</span><span>
+            <el-input v-model="comment" placeholder="请输入字段描述" />
           </span>
         </div>
-        <div style="height: 10px"></div>
+        <div style="height: 10px" />
         <div class="table_top">
-          <span style="margin-right: 20px">业务口径:</span
-          ><span>
-            <el-input placeholder="请输入业务口径" v-model="BusinessCaliber">
-            </el-input>
+          <span style="margin-right: 20px">业务口径:</span><span>
+            <el-input v-model="BusinessCaliber" placeholder="请输入业务口径" />
           </span>
         </div>
-        <div style="height: 10px"></div>
+        <div style="height: 10px" />
         <div class="table_top">
-          <span style="margin-right: 20px">绑定指标:</span
-          ><span>
-            <el-input placeholder="请输入绑定指标" v-model="BindingIndex">
-            </el-input>
+          <span style="margin-right: 20px">绑定指标:</span><span>
+            <el-input v-model="BindingIndex" placeholder="请输入绑定指标" />
           </span>
         </div>
-        <div style="height: 10px"></div>
+        <div style="height: 10px" />
         <div class="table_top">
-          <span style="margin-right: 20px">字段主键:</span
-          ><span>
+          <span style="margin-right: 20px">字段主键:</span><span>
             <el-select v-model="isKey" placeholder="请选择">
-              <el-option label="是" value="true"></el-option>
-              <el-option label="否" value="false"></el-option>
+              <el-option label="是" value="true" />
+              <el-option label="否" value="false" />
             </el-select>
           </span>
         </div>
-        <div style="height: 10px"></div>
+        <div style="height: 10px" />
         <div class="table_top">
-          <span style="margin-right: 20px">数据类型:</span
-          ><span>
+          <span style="margin-right: 20px">数据类型:</span><span>
             <el-select v-model="type" placeholder="请选择">
-              <el-option label="字符串" value="String"></el-option>
-              <el-option label="数值" value="int"></el-option>
-              <el-option label="日期类型" value="datetime"></el-option>
-              <el-option label="Boolean" value="Boolean"></el-option>
-              <el-option label="NaN" value="NaN"></el-option>
+              <el-option label="字符串" value="String" />
+              <el-option label="数值" value="int" />
+              <el-option label="日期类型" value="datetime" />
+              <el-option label="Boolean" value="Boolean" />
+              <el-option label="NaN" value="NaN" />
             </el-select>
           </span>
         </div>
-        <div style="height: 10px"></div>
+        <div style="height: 10px" />
         <div class="table_top">
-          <span style="margin-right: 20px">非空字段:</span
-          ><span>
+          <span style="margin-right: 20px">非空字段:</span><span>
             <el-select v-model="notNull" placeholder="请选择">
-              <el-option label="是" value="true"></el-option>
-              <el-option label="否" value="false"></el-option>
+              <el-option label="是" value="true" />
+              <el-option label="否" value="false" />
             </el-select>
           </span>
         </div>
@@ -634,7 +600,7 @@ export default {
         { label: '数据类型', prop: 'type' },
         { label: '主键', prop: 'isKey' },
         { label: '绑定指标', prop: 'BindingIndex' },
-        { label: '非空', prop: 'notNull' },
+        { label: '非空', prop: 'notNull' }
       ],
       Tabletops: [
         { label: '字段名', prop: 'name' },
@@ -643,13 +609,13 @@ export default {
         { label: '数据类型', prop: 'type' },
         { label: '主键', prop: 'isKey' },
         { label: '绑定指标', prop: 'BindingIndex' },
-        { label: '非空', prop: 'notNull' },
+        { label: '非空', prop: 'notNull' }
       ],
       locking: 1,
       desc: '',
       radio: '',
       Table: [],
-      //table
+      // table
       name: '',
       comment: '',
       BusinessCaliber: '',
@@ -657,8 +623,8 @@ export default {
       isKey: '',
       BindingIndex: '',
       notNull: '',
-      //table
-      //分表table
+      // table
+      // 分表table
       names: '',
       comments: '',
       BusinessCalibers: '',
@@ -666,7 +632,7 @@ export default {
       isKeys: '',
       BindingIndexs: '',
       notNulls: '',
-      //分表table
+      // 分表table
       ruleForm: {
         tableData: [
           // {
@@ -704,25 +670,25 @@ export default {
         theme: [
           { id: 1, value: '二级主题域', name: '二级主题域' },
           { id: 2, value: '三级主题域', name: '三级主题域' },
-          { id: 3, value: '四级主题域', name: '四级主题域' },
+          { id: 3, value: '四级主题域', name: '四级主题域' }
         ],
         TableType: [
           { id: 1, value: 'hive', name: 'hive' },
-          { id: 2, value: 'impala', name: 'impala' },
+          { id: 2, value: 'impala', name: 'impala' }
         ],
         Busines: [
           { id: 1, value: '业务过程1', name: '业务过程1' },
-          { id: 2, value: '业务过程2', name: '业务过程2' },
+          { id: 2, value: '业务过程2', name: '业务过程2' }
         ],
         Security: [
           { id: 1, value: 'A', name: 'A' },
           { id: 2, value: 'B', name: 'B' },
-          { id: 3, value: 'C', name: 'C' },
+          { id: 3, value: 'C', name: 'C' }
         ],
         ModelName: [
           { id: 1, value: '模型名称1', name: '模型名称1' },
           { id: 2, value: '模型名称2', name: '模型名称2' },
-          { id: 3, value: '模型名称3', name: '模型名称3' },
+          { id: 3, value: '模型名称3', name: '模型名称3' }
         ],
         themes: '',
         TableTypes: '',
@@ -738,21 +704,21 @@ export default {
         type: [],
         resource: '',
         desc: '',
-        tabPosition: '',
+        tabPosition: ''
       },
       rules: {
         Securitys: [
-          { required: true, message: '请选择保障等级', trigger: 'change' },
+          { required: true, message: '请选择保障等级', trigger: 'change' }
         ],
         // TableTypes: [
         //   { required: true, message: '请选择表类型', trigger: 'change' },
         // ],
         themes: [
-          { required: true, message: '请选择主图域', trigger: 'change' },
+          { required: true, message: '请选择主图域', trigger: 'change' }
         ],
         Business: [
-          { required: true, message: '请选择业务过程', trigger: 'change' },
-        ],
+          { required: true, message: '请选择业务过程', trigger: 'change' }
+        ]
       },
       drawer: false,
       /** 工作流Id */
@@ -773,27 +739,27 @@ export default {
       fileList: [],
       btn: '',
       index: '',
-      Resource: '',
+      Resource: ''
     }
   },
   computed: {},
   watch: {
     'ruleForm.resource': {
-      handler: function () {
+      handler: function() {
         if (this.ruleForm.resource === 'true') {
           this.show = true
         } else {
           this.show = false
           this.Donotadd = false
         }
-      },
+      }
     },
     Resource(val) {
       if (val === 'true') {
         this.Donotadd = true
         this.Subtable = true
       }
-    },
+    }
   },
   created() {
     this.ruleForm.Modelname1 = this.$store.state.taskAdmin.tabledata.name || ''
@@ -845,7 +811,7 @@ export default {
           if (data === 'data') {
             this.loading = true
             this.loadingtext = '保存中'
-            let params = {
+            const params = {
               name: this.$store.state.taskAdmin.tabledata.name,
               id: this.$store.state.taskAdmin.tabledata.id,
               modelJson: JSON.stringify(this.ruleForm.tableData),
@@ -865,7 +831,7 @@ export default {
                 pinyin(this.ruleForm.themes).substr(0, 1) +
                 '_' +
                 pinyin(this.ruleForm.Business).substr(0, 1),
-              prititionJson: JSON.stringify(this.ruleForm.tableDatas),
+              prititionJson: JSON.stringify(this.ruleForm.tableDatas)
             }
             console.log('保存数据', params)
             modeling
@@ -873,12 +839,12 @@ export default {
               .then((res) => {
                 if (res.code === 200) {
                   this.Resource = params.pritition + ''
-                  let projectId = this.$store.state.taskAdmin.tabledata
+                  const projectId = this.$store.state.taskAdmin.tabledata
                     .projectId
                   this.$emit('getTree', projectId)
                   this.$message({
                     message: '保存成功',
-                    type: 'success',
+                    type: 'success'
                   })
                   this.loading = false
                 }
@@ -892,7 +858,7 @@ export default {
           if (data === 'DATA') {
             this.loading = true
             this.loadingtext = '执行中'
-            let params = {
+            const params = {
               name: this.$store.state.taskAdmin.tabledata.name,
               id: this.$store.state.taskAdmin.tabledata.id,
               projectId: this.$store.state.taskAdmin.tabledata.projectId,
@@ -918,7 +884,7 @@ export default {
                 pinyin(this.ruleForm.themes).substr(0, 1) +
                 '_' +
                 pinyin(this.ruleForm.Business).substr(0, 1),
-              prititionJson: JSON.stringify(this.ruleForm.tableDatas),
+              prititionJson: JSON.stringify(this.ruleForm.tableDatas)
             }
             modeling
               .RunTask(params)
@@ -926,7 +892,7 @@ export default {
                 if (res.code === 200) {
                   this.$message({
                     message: res.msg,
-                    type: 'success',
+                    type: 'success'
                   })
                 }
                 this.loading = false
@@ -960,15 +926,15 @@ export default {
       this.show = false
       console.log('hide')
     },
-    //脚本模式同步
+    // 脚本模式同步
     synchronization() {
       console.log('label', this.radio, this.desc)
     },
-    //运行表
+    // 运行表
     Submit() {
       this.$message({
         message: '执行成功',
-        type: 'success',
+        type: 'success'
       })
       console.log('www', this.ruleForm)
     },
@@ -978,7 +944,7 @@ export default {
       this.Subtable = true
       this.$message({
         message: '表已锁定',
-        type: 'success',
+        type: 'success'
       })
     },
     Unlocking() {
@@ -992,13 +958,13 @@ export default {
       // this.Subtable = false
       this.$message({
         message: '表已解锁',
-        type: 'success',
+        type: 'success'
       })
     },
     Looktable() {
       console.log('查看表')
     },
-    //查看表
+    // 查看表
     // handleClick(data) {
     //   this.DialogVisible = true
     //   this.Table.push(data)
@@ -1026,7 +992,7 @@ export default {
       console.log('编辑数组', this.ruleForm.tableData)
       console.log('编辑表', data, index)
     },
-    //编辑表
+    // 编辑表
     Editdata(data, index) {
       this.name = data.name
       this.comment = data.comment
@@ -1042,7 +1008,7 @@ export default {
       console.log('编辑数组', this.ruleForm.tableData)
       console.log('编辑表', data, index)
     },
-    //是否分表编辑表
+    // 是否分表编辑表
     // Editdatas(data, index) {
     //   this.names = data.names
     //   this.comments = data.comments
@@ -1057,7 +1023,7 @@ export default {
     //   console.log('编辑数组', this.ruleForm.tableData)
     //   console.log('编辑表', data, index)
     // },
-    //是否分表表格
+    // 是否分表表格
     addfield() {
       this.dialogVisibles = true
       this.names = ''
@@ -1068,18 +1034,18 @@ export default {
       this.BindingIndexs = ''
       this.notNulls = ''
     },
-    //是否分表表格
+    // 是否分表表格
     addfields() {
       console.log('分表table', this.index)
       if (this.btn === '') {
-        let data = {
+        const data = {
           name: this.names,
           comment: this.comments,
           BusinessCaliber: this.BusinessCalibers,
           type: this.types,
           isKey: this.isKeys,
           BindingIndex: this.BindingIndexs,
-          notNull: this.notNulls,
+          notNull: this.notNulls
         }
         this.ruleForm.tableDatas.push(data)
         this.dialogVisibles = false
@@ -1092,14 +1058,14 @@ export default {
         this.notNulls = ''
       }
       if (this.btn === 'edit') {
-        let data = {
+        const data = {
           name: this.names,
           comment: this.comments,
           BusinessCaliber: this.BusinessCalibers,
           type: this.types,
           isKey: this.isKeys,
           BindingIndex: this.BindingIndexs,
-          notNull: this.notNulls,
+          notNull: this.notNulls
         }
         console.log('edit', this.index, data)
         this.ruleForm.tableDatas.splice(this.index, 1, data)
@@ -1107,7 +1073,7 @@ export default {
         this.btn = ''
       }
     },
-    //添加字段
+    // 添加字段
     Addfield() {
       this.dialogVisible = true
       this.name = ''
@@ -1118,17 +1084,17 @@ export default {
       this.BindingIndex = ''
       this.notNull = ''
     },
-    //添加字段
+    // 添加字段
     Addfields() {
       if (this.btn === '') {
-        let data = {
+        const data = {
           name: this.name,
           comment: this.comment,
           BusinessCaliber: this.BusinessCaliber,
           type: this.type,
           isKey: this.isKey,
           BindingIndex: this.BindingIndex,
-          notNull: this.notNull,
+          notNull: this.notNull
         }
         console.log('添加字段数据', data)
         this.ruleForm.tableData.push(data)
@@ -1142,14 +1108,14 @@ export default {
         this.notNull = ''
       }
       if (this.btn === 'edit') {
-        let data = {
+        const data = {
           name: this.name,
           comment: this.comment,
           BusinessCaliber: this.BusinessCaliber,
           type: this.type,
           isKey: this.isKey,
           BindingIndex: this.BindingIndex,
-          notNull: this.notNull,
+          notNull: this.notNull
         }
         console.log('edit', this.index, data)
         this.ruleForm.tableData.splice(this.index, 1, data)
@@ -1158,7 +1124,7 @@ export default {
       }
     },
 
-    //上传文件
+    // 上传文件
     handleRemove(file, fileList) {
       console.log(file, fileList)
     },
@@ -1174,9 +1140,9 @@ export default {
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`)
-    },
-    //上传文件
-  },
+    }
+    // 上传文件
+  }
 }
 </script>
 

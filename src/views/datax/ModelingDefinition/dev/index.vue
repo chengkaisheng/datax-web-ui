@@ -238,6 +238,7 @@ export default {
   },
   data() {
     return {
+      icon: 'el-icon-arrow-left',
       width: 300,
       tabledata: '',
       contextMenu1Visible: false,
@@ -562,6 +563,10 @@ export default {
     document.removeEventListener('mouseup', this.mouseUp)
   },
   methods: {
+    shrink() {
+      this.width = 200
+      this.icon = 'el-icon-arrow-right'
+    },
     // 移动鼠标放大
     mousedown(event) {
       document.addEventListener('mousemove', this.mouseMove)
@@ -576,7 +581,6 @@ export default {
       if (this.width > 200) {
         this.width = this.CurrentWidth + pixel
       }
-      console.log(event)
     },
     mouseUp() {
       this.CurrentWidth = this.width
@@ -688,6 +692,7 @@ export default {
     },
     // 新建工作流
     newWorkFlow(val) {
+      console.log(val)
       this.jobType = val
       if (this.nowObject.type === 2) {
         this.$message.info('请选择文件夹')
@@ -719,6 +724,7 @@ export default {
         .catch((err) => {
           this.workflowName = ''
           console.log('新建', err)
+          // this.newETLdialog = false
         })
 
       this.newETLdialog = false
@@ -785,7 +791,7 @@ export default {
                 console.log('delete')
                 this.getlist(this.nowObject.projectId)
                 for (let i = 0; i < this.editableTabs.length; i++) {
-                  if (this.editableTabs[i].name == this.nowObject.name) {
+                  if (this.editableTabs[i].name === this.nowObject.name) {
                     this.editableTabs.splice(i, 1)
                   }
                 }
@@ -1644,5 +1650,20 @@ export default {
     border: 1px solid transparent;
     margin-top: -1px;
     color: black;
+}
+#icon {
+  z-index: 999;
+  position: absolute;
+  top: 300px;
+  right: -13px;
+  display: block;
+  height: 30px;
+  width: 10px;
+  color: white;
+  font-size: 12px;
+  border-radius: 5px;
+  text-align: center;
+  line-height: 30px;
+  background: rgb(16, 167, 132);
 }
 </style>
