@@ -776,6 +776,7 @@ export default {
     /** 所属项目名称 */
     projectName() {
       const t = this.$store.state.project.currentItem
+      console.log('--------', t)
       const i = this.$store.state.project.currentItem.indexOf('/')
       if (i > -1) {
         return t.substring(i + 1, t.length)

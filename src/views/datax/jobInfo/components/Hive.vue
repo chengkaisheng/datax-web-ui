@@ -42,15 +42,16 @@
         @querysql="runQuery"
         @saveQuery="saveQuery"
       />
-      <el-button
-        size="small"
-        class="drawer"
-        type="primary"
-        style="margin-left: 16px"
-        @click="GetParameters"
-      >
-        参数配置
-      </el-button>
+      <el-tooltip class="item" effect="dark" content="参数设置" placement="top-start">
+          <el-button
+            size="small"
+            class="drawer"
+            style="margin-left: 16px"
+            @click="GetParameters"
+            icon="el-icon-setting"
+          >
+          </el-button>
+      </el-tooltip>
       <el-drawer
         title="新增参数"
         size="400px"
@@ -1168,6 +1169,7 @@ export default {
   position: absolute;
   right: 5px;
   top: 3px;
+  border: none;
 }
 .logs {
   width: 100%;

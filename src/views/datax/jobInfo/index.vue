@@ -292,6 +292,7 @@ rkJggg=="
           style="user-select: none"
           label="欢迎"
           name="欢迎"
+          v-loading="tabLoading"
         >
           <div style="user-select: none" class="title_h3">
             一站式数据开发解决方案
@@ -307,6 +308,7 @@ rkJggg=="
           :key="item.content.id"
           :label="item.title"
           :name="item.content.id + ''"
+          v-loading="tabLoading"
         >
           <span slot="label" style="user-select: none">
             <el-tooltip class="item" effect="dark" placement="top-end">
@@ -796,6 +798,7 @@ export default {
   },
   data() {
     return {
+      tabLoading: false,
       lasttab: true,
       contextMenuVisible: false,
       contextMenuOffset: {
@@ -1005,6 +1008,7 @@ export default {
           const commandId = newValue.split('/')[0]
           const commandName = newValue.split('/')[1]
           this.selectValue = commandName
+          console.log('kkkkk', commandId)
           this.$store.commit('SET_PROJECT_ID', commandId)
           // 获取任务列表
           const listQuery = {
@@ -1268,11 +1272,12 @@ export default {
     },
     // 获取tree数据结构
     getDataTree(data) {
-      this.loading = false
+      this.loading = true
       if (this.$store.state.project.currentItem) {
         let id = sessionStorage.getItem('strParam')
-        // console.log('_+++++++', this.$store.state.project.currentItem)
+        console.log('_+++++++', this.$store.state.project.currentItem)
         const projectId = this.$store.state.project.currentItem.split('/')[0]
+        // const projectId = this.$store.state.project.currentItem.projectId
         job
           .getTreeData({
             projectId: projectId,
@@ -1281,7 +1286,6 @@ export default {
             if (res.code === 200) {
               // console.log(res.content);
               this.treeList = res.content
-              this.loading = false
               if (data) {
                 const newarr = []
                 for (var i in res.content[0].children) {
@@ -1332,12 +1336,15 @@ export default {
                   this.handleNodeClick(NewTask[0])
                 }
               }
+              this.loading = false
             } else {
               this.$message.error(res.msg)
+              this.loading = false
             }
           })
           .catch((err) => {
             console.log('err----->', err)
+            this.loading = false
           })
       } else {
         const projectId = { projectId: this.options[0].id }
@@ -1351,11 +1358,14 @@ export default {
               if (data.data === 'NewTask') {
                 this.handleNodeClick(NewTask)
               }
+              this.loading = false
             } else {
               this.$message.error(res.msg)
+              this.loading = false
             }
           })
           .catch((err) => {})
+          this.loading = false
       }
     },
     showScene() {
@@ -1982,6 +1992,7 @@ export default {
     },
     // 点击tree控件方法
     handleNodeClick(data) {
+      this.tabLoading = true
       console.log('任务数据', data)
       this.Rename=data.name
       this.selectRow = data
@@ -2023,9 +2034,12 @@ export default {
               } else {
                 this.createNewJob(data.jobType)
               }
+              console.log('=========bb', this.tabLoading)
+              this.tabLoading = false
             })
             .catch((err) => {
               console.log(err)
+              this.tabLoading = false
             })
         } else {
           this.$store.commit('changeJobId', '')
@@ -2034,6 +2048,8 @@ export default {
       } else {
         this.currentJobName = ''
       }
+      // this.tabLoading = false
+      console.log('=========aa', this.tabLoading)
     },
     // 显示代码
     showCode(row) {
@@ -2332,7 +2348,7 @@ export default {
 .Management {
   display: flex;
   .lt {
-    width: 300px;
+    width: 325px;
     padding: 10px;
     background: #f8f8fa;
     .top {
@@ -2597,7 +2613,7 @@ export default {
           // width: 200px;
           border-top: 1px solid #f8f8fa;
           .el-tabs__item {
-            width: 100%;
+            // width: 200px;
             border: none;
             border-top: 1px solid #f8f8fa;
             border-radius: 6px 6px 0px 0px;
@@ -2667,11 +2683,11 @@ export default {
         }
 
         .el-tabs__nav {
-          // width: 200px;
+          width: 200px;
           border-top: 1px solid #f8f8fa;
           .el-tabs__item {
             // width: 100%;
-            // width: 200px;
+            width: 200px;
             border: none;
             border-top: 1px solid #f8f8fa;
             border-radius: 6px 6px 0px 0px;
@@ -2777,6 +2793,17 @@ export default {
   .el-tabs--card>.el-tabs__header .el-tabs__item.is-active.is-closable {
       padding-left: 10px;
   }
+
+  .el-tabs__nav-wrap::after {
+      content: none;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 0px;
+      background-color: #dfe4ed;
+      z-index: 1;
+  }
 }
 </style>
 <style scoped>
@@ -2837,4 +2864,6 @@ export default {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
 }
+
+
 </style>

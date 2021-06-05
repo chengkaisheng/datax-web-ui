@@ -28,7 +28,7 @@
         <div class="login_error"><span v-if="errorMes">密码输入错误</span></div>
         <div class="login_btn" @click="handleLogin">登录</div>
       </div>
-      <span class="statement">Copyright © 2020 上海哲锦信息科技有限公司</span>
+      <span class="statement">Copyright © 2021 上海哲锦信息科技有限公司</span>
     </div>
   </div>
 </template>
@@ -297,7 +297,8 @@ export default {
     }
 
     .statement {
-      color: rgba(0, 0, 0, 0.45);
+      // color: rgba(0, 0, 0, 0.45);
+      color: black;
       position: absolute;
       bottom: 25px;
       margin-left: 50%;

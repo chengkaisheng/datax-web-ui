@@ -25,7 +25,6 @@
           <el-upload
             class="upload-demo"
             action="https://jsonplaceholder.typicode.com/posts/"
-            :http-request="update"
             :on-preview="handlePreview"
             :on-remove="handleRemove"
             :before-remove="beforeRemove"
@@ -443,6 +442,7 @@
           <el-table
             :data="ruleForm.tableData"
             style="width: 100%; overflow: scroll; text-align: center"
+            :fit="true"
           >
             <el-table-column
               v-for="(itme, index) in Tabletop"
@@ -455,7 +455,7 @@
             </el-table-column>
             <el-table-column
               label="操作"
-              width="120%"
+              width="100%"
               style="text-align: center"
             >
               <template slot-scope="scope">

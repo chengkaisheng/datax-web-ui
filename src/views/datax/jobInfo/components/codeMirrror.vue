@@ -3,23 +3,27 @@
     <div class="btnContent">
       <ul>
         <li>
-          <a
-            v-if="desbel === true"
-            :loading="$store.state.graphQL.sqlBtnLoading"
-            @click="fromChild"
-          >
-            <i class="el-icon-video-play" />运行
-          </a>
-          <a
-            v-else
-            :loading="$store.state.graphQL.sqlBtnLoading"
-            @click="interrupt"
-          >
-            <i class="el-icon-video-pause" /> 停止
-          </a>
+         <el-tooltip effect="dark" content="执行SQL" placement="top-start">
+            <a
+              v-if="desbel === true"
+              :loading="$store.state.graphQL.sqlBtnLoading"
+              @click="fromChild"
+            >
+              <i class="el-icon-video-play" />运行
+            </a>
+            <a
+              v-else
+              :loading="$store.state.graphQL.sqlBtnLoading"
+              @click="interrupt"
+            >
+              <i class="el-icon-video-pause" /> 停止
+            </a>
+          </el-tooltip>
         </li>
         <li>
-          <a @click="saveQuery"> <i class="el-icon-s-claim" />保存 </a>
+          <el-tooltip effect="dark" content="保存任务" placement="top-start">
+            <a @click="saveQuery"> <i class="el-icon-s-claim" />保存 </a>
+          </el-tooltip>
         </li>
       </ul>
     </div>
@@ -87,7 +91,7 @@ export default {
 -- 备注信息:
 -- 脚本版本: 修改人\t修改日期\t修改内容
 -- v1
--- =================================================================================================== 
+-- ===================================================================================================
     `,
       code: '',
       sqlLoading: false,

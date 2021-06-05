@@ -15,7 +15,7 @@
         <el-menu-item style="text-align: left;">
           <template slot="title">
             <img v-show="!isCollapse" slot="title" src="@/assets/LogoTit.png" alt="">
-            <span class="sider-menu-logo">Data Elit</span>
+            <span class="sider-menu-logo">Dataelit</span>
           </template>
           <svg-icon v-show="isCollapse" style="fontSize: 20px;text-align: center;" icon-class="logo1" />
         </el-menu-item>
@@ -234,7 +234,7 @@ img {
 .sider-menu-logo {
     color: #fff;
     font-size: 30px;
-    margin: 0 0 0 20px;
+    margin: 0 0 0 6px;
     font-family: Avenir,Helvetica Neue,Arial,Helvetica,sans-serif;
     font-weight: 600;
     vertical-align: middle;

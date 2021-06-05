@@ -101,7 +101,7 @@
             active-text="物理"
             inactive-text="逻辑"
             @change="changswitch"
-            width="32"
+            :width="32"
           />
         </div>
 
@@ -536,6 +536,7 @@ export default {
      * @description: 根据项目获取数据源
      */
     getDataSourceList() {
+      this.schemaTreeLoading = true
       if (localStorage.getItem('userId') === '1') {
         // for (let i = 0; i < this.projectArray.length; i++) {
         //   if (this.projectArray[i].name === this.selectValue) {
@@ -564,9 +565,9 @@ export default {
         // this.datasourceSelectedId = ''
         this.schemaTreeData = []
         this.schemaTree = ''
-        this.schemaTreeLoading = false
         this.sourceList = res.records // 传给子组件的数据
         this.getSchemas(this.datasourceSelectedId)
+        this.schemaTreeLoading = false
       })
     },
 
@@ -663,7 +664,7 @@ export default {
   display: flex;
   height: calc(100vh - 50px);
   .aside {
-    width: 360px;
+    width: 325px;
     min-height: 600px;
     overflow: scroll;
     overflow-x: auto;
@@ -710,7 +711,7 @@ export default {
       margin: 0px;
       .el-tabs__nav-wrap {
         height: 32px;
-        line-height: 32px;
+        // line-height: 32px;
       }
     }
     .el-tabs--border-card {
@@ -745,7 +746,7 @@ export default {
 .el-tabs--border-card > .el-tabs__header .el-tabs__item {
   height: 32px;
   line-height: 32px;
-  font-size: 13px;
+  // font-size: 13px;
   box-shadow: none;
   border-left: none;
   border-bottom: none;
@@ -799,7 +800,7 @@ export default {
     cursor: default;
     background: #f8f8fa;
     color: black;
-    margin: -10px 0px 0 -8px;
+    margin: -10px 0 0 0;
     font-size: 14px;
 }
 .header .aside .top {
