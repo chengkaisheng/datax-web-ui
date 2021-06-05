@@ -99,7 +99,7 @@
             />
           </el-tab-pane>
           <el-tab-pane
-            v-for="(item, index) in editableTabs"
+            v-for="item in editableTabs"
             :key="item.name"
             :label="item.title"
             :name="item.name"
@@ -132,8 +132,8 @@
         </div>
       </el-dialog>
       <!-- 工作流重命名 -->
-      <el-dialog :visible.sync="ReETLdialog" width="40%" title="重命名工作流">
-        <span style="margin-left: 20px">名称：</span><el-input v-model="reWorkflowName" style="width: 80%; margin-left: 20px" />
+      <el-dialog :visible.sync="ReETLdialog" width="30%" title="重命名工作流">
+        <span style="margin-left: 20px">名称：</span><el-input v-model="reWorkflowName" style="width: 70%; margin-left: 20px" />
         <div slot="footer" class="dialog-footer">
           <el-button size="small" @click="cancelDialog"> 取消 </el-button>
           <el-button type="goon" size="small" @click="ReNameWorkflow"> 确定 </el-button>
@@ -147,6 +147,7 @@
 <script>
 import * as jobProjectApi from '@/api/datax-job-project'
 import * as workFlowApi from '@/api/datax-job-info'
+// import * as updateWorkflow from '@/api/datax-job-info'
 import * as datasourceApi from '@/api/datax-jdbcDatasource'
 import * as job from '@/api/datax-job-info'
 import Workflow from './workflow.vue'
@@ -635,6 +636,7 @@ export default {
     // 点击左侧工作流列表
     handleWorkFlow(e) {
       console.log(e, e.name)
+      this.reWorkflowName = e.name
       this.$store.commit('currentData', e)
       this.nowObject = e
       if (e.type === 2) {
@@ -972,11 +974,11 @@ export default {
     },
     allowDrop(draggingNode, dropNode, type) {
       console.log(dropNode)
-      // if (dropNode.data.type === '2') {
-      //   return type !== 'inner'
-      // } else {
-      return true
-      // }
+      if (dropNode.data.type === 1) {
+        return type === 'inner'
+      } else {
+        return false
+      }
     },
     allowDrag(draggingNode) {
       console.log(draggingNode, 'draggingNode')
@@ -985,8 +987,8 @@ export default {
     handleDrop(draggingNode, dropNode, dropType, ev) {
       console.log('...', dropNode)
       if (dropNode.data.type === 1) {
-        job
-          .dragReName({
+        workFlowApi
+          .updateWorkflow({
             id: this.dropId,
             parentId: this.targetId
           })

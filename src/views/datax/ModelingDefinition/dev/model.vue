@@ -604,12 +604,12 @@
   </div>
 </template>
 <script id="code">
-import go from 'gojs'
+// import go from 'gojs'
 import * as modeling from '@/api/datax-job-modeling'
 import { pinyin } from 'pinyin-pro'
-import * as workFlowApi from '@/api/datax-job-info'
-import * as logApi from '@/api/datax-job-log'
-import { fromTextArea } from 'codemirror'
+// import * as workFlowApi from '@/api/datax-job-info'
+// import * as logApi from '@/api/datax-job-log'
+// import { fromTextArea } from 'codemirror'
 export default {
   name: 'Flow',
   props: ['tabledata', 'tableType'],
@@ -827,18 +827,18 @@ export default {
   },
   mounted() {},
   methods: {
-    handlePreview(file) {
-      // console.log('file---->', file)
-    },
-    handleRemove(file) {
-      // console.log('file----->', file)
-    },
-    update(val) {
-      // console.log('val----', val.file)
-    },
-    handleExceed(val) {
-      console.log(val)
-    },
+    // handlePreview(file) {
+    //   // console.log('file---->', file)
+    // },
+    // handleRemove(file) {
+    //   // console.log('file----->', file)
+    // },
+    // update(val) {
+    //   // console.log('val----', val.file)
+    // },
+    // handleExceed(val) {
+    //   console.log(val)
+    // },
     submitForm(formName, data) {
       this.$refs[formName].validate((valid) => {
         if (valid) {

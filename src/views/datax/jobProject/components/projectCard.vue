@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { ContextMenuTool } from 'gojs'
+// import { ContextMenuTool } from 'gojs'
 export default {
   name: 'ProjectCard',
   props: {

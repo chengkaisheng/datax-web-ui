@@ -132,7 +132,7 @@ export default {
         jobGroup: 0,
         jobId: this.id,
         logStatus: -1,
-        filterTime: '',
+        filterTime: ''
       },
       // 日志内容
       logContent: '',
@@ -145,27 +145,27 @@ export default {
         executorAddress: '',
         triggerTime: '',
         id: '',
-        fromLineNum: 1,
+        fromLineNum: 1
       },
       // handleViewJobLog: false,
       statusList: [
         {
           value: 500,
-          label: '失败',
+          label: '失败'
         },
         {
           value: 502,
-          label: '失败(超时)',
+          label: '失败(超时)'
         },
         {
           value: 200,
-          label: '成功',
+          label: '成功'
         },
         {
           value: 0,
-          label: '无',
-        },
-      ],
+          label: '无'
+        }
+      ]
     }
   },
 
@@ -197,7 +197,10 @@ export default {
         this.logShow = true
       }
       // window.open(`#/data/log?executorAddress=${this.jobLogQuery.executorAddress}&triggerTime=${this.jobLogQuery.triggerTime}&id=${this.jobLogQuery.id}&fromLineNum=${this.jobLogQuery.fromLineNum}`)
-      this.loadLog()
+      // this.loadLog()
+      setTimeout(() => {
+        this.loadLog()
+      }, 2000)
     },
     // 获取日志
     loadLog() {
@@ -231,9 +234,9 @@ export default {
             if (response.content.end === true) {
               // this.jobLogQuery.fromLineNum = response.toLineNum - 20;
               // 重新加载
-              // setTimeout(() => {
-              //   this.loadLog()
-              // }, 2000)
+              setTimeout(() => {
+                this.loadLog()
+              }, 2000)
             } else {
               this.logContent = response.content.logContent
             }
@@ -266,8 +269,8 @@ export default {
     },
     test(info) {
       console.log(info)
-    },
-  },
+    }
+  }
 }
 </script>
 

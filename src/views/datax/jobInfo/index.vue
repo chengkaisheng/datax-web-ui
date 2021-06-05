@@ -1535,6 +1535,7 @@ export default {
     },
     // 文件夹重命名
     resetName(name) {
+      console.log(name)
       // clearTimeout(time)
       this.dialogRenameVisible = true
     },
@@ -1659,6 +1660,7 @@ export default {
     },
     // 新增命名文件夹
     showAllName(type) {
+      console.log(type)
       if (typeof type === 'string') {
         this.dialogNameVisible = true
         this.currentJob = type
@@ -1741,8 +1743,9 @@ export default {
       console.log('tree drop: ', dropNode.label, dropType, draggingNode)
     },
     allowDrop(draggingNode, dropNode, type) {
-
       if (dropNode.data.jobType !== '"wenjianjia"') {
+    //  console.log(dropNode)
+    //  console.log(type)
         return type == 'inner'
       } else {
         return false
@@ -1980,6 +1983,7 @@ export default {
     // 点击tree控件方法
     handleNodeClick(data) {
       console.log('任务数据', data)
+      this.Rename=data.name
       this.selectRow = data
       this.delType = data.type === 1 ? '文件夹' : '任务'
       this.$store.commit('Singledata', data)

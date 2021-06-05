@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export function Getlist(id) {
   return request({
     url: '/api/jobModel/tree',

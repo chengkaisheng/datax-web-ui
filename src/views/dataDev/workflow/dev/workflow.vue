@@ -214,11 +214,11 @@ rkJggg=="
           </el-form-item>
           <!-- <div>HIVE配置参数：</div> -->
           <el-form-item label="" prop="subTask">
-            <div style="padding-left: 26px">
+            <div v-for="(itme, index) in parameters1" :key="index" style="padding-left: 26px">
               <div
-                v-for="(itme, index) in parameters1"
+
                 v-show="isshow"
-                :key="index"
+
                 style="margin-top: 20px"
                 class="DraWer"
               >
@@ -418,28 +418,30 @@ rkJggg=="
           </span>
         </div>
       </div>
-      <div
-        v-for="(itme, index) in ReplaceParameters1"
-        v-show="isshow"
-        :key="index"
-        style="margin-top: 20px"
-        class="DraWer"
-      >
-        <div class="parameter">
-          <span
-            style="font-size: 14px; color: #ccc"
-          ><i
-             class="Configurable"
-             style="color: #000; padding-right: 60px"
-           >HIVE可配置参数：{{ itme.parameter }}</i>
-            <el-input
-              v-show="isshow"
-              v-model="itme.parameters"
-              style="width: 260px"
-              size="mini"
-              placeholder="请输入参数"
-            />
-          </span>
+      <div>
+        <div
+          v-for="(itme, index) in ReplaceParameters1"
+          v-show="isshow"
+          :key="index"
+          style="margin-top: 20px"
+          class="DraWer"
+        >
+          <div class="parameter">
+            <span
+              style="font-size: 14px; color: #ccc"
+            ><i
+               class="Configurable"
+               style="color: #000; padding-right: 60px"
+             >HIVE可配置参数：{{ itme.parameter }}</i>
+              <el-input
+                v-show="isshow"
+                v-model="itme.parameters"
+                style="width: 260px"
+                size="mini"
+                placeholder="请输入参数"
+              />
+            </span>
+          </div>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -1144,7 +1146,7 @@ export default {
         }
       )
       this.SaveParameter()
-      this.SaveParameter2()
+      this.SaveParameter1()
     },
     // 选择任务
     sure() {
