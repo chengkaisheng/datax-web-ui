@@ -55,7 +55,7 @@
           @node-drag-start="handleDragStart"
           @node-click="handleWorkFlow"
         >
-<!--        style="
+          <!--        style="
           height: 32px;
           line-height: 32px;
           position: relative;
@@ -68,7 +68,7 @@
             class="custom-tree-node"
             style="font-size: 14px;"
           >
-            <p >
+            <p>
               <svg-icon
                 v-if="data.type === 1"
                 :icon-class="data.jobType"
@@ -207,8 +207,7 @@
       </el-dialog>
       <!-- 工作流重命名 -->
       <el-dialog :visible.sync="ReETLdialog" width="40%" title="重命名模型">
-        <span style="margin-left: 20px">名称：</span
-        ><el-input
+        <span style="margin-left: 20px">名称：</span><el-input
           v-model="reWorkflowName"
           style="width: 80%; margin-left: 20px"
         />
@@ -1223,6 +1222,63 @@ export default {
       ) {
         this.navActive = '0'
       }
+    },
+    // 拖拽tree
+    handleDragStart(node, ev) {
+      this.dropId = node.data.id
+      console.log('节点开始拖拽时触发的事件', node)
+    },
+    handleDragEnter(draggingNode, dropNode, ev) {
+      this.targetId = dropNode.key
+      console.log('拖拽进入其他节点时触发的事件', this.targetId)
+      console.log('拖拽进入其他节点时触发的事件', dropNode)
+    },
+    handleDragLeave(draggingNode, dropNode, ev) {
+      console.log('拖拽离开某个节点时触发的事件')
+    },
+    handleDragOver(draggingNode, dropNode, ev) {
+      console.log('拖拽结束时（可能未成功）触发的事件')
+    },
+    handleDragEnd(draggingNode, dropNode, dropType, ev) {
+      console.log('拖拽成功完成时触发的事件')
+    },
+    allowDrop(draggingNode, dropNode, type) {
+      console.log(dropNode)
+
+      if (dropNode.data.type === 2) {
+        return type !== 'inner'
+      } else {
+        return type === 'inner'
+      }
+    },
+    allowDrag(draggingNode) {
+      console.log(draggingNode, 'draggingNode')
+      return draggingNode.data.name.indexOf('三级 3-2-2') === -1
+    },
+    handleDrop(draggingNode, dropNode, dropType, ev) {
+      console.log('...', dropNode)
+      if (dropNode.data.type === 1) {
+        modeling
+          .Update({
+            id: this.dropId,
+            parentId: this.targetId
+          })
+          .then((res) => {
+            console.log(res)
+            if (res.code === 200) {
+              console.log(res.msg)
+            } else {
+              this.$message.err(res.msg)
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      } else {
+        this.$message.error('拖拽失败，目标必须是文件夹')
+        this.serachWorkFlowList(this.$store.state.project.currentItem.split('/')[0])
+      }
+      console.log('tree drop: ', dropNode.label, dropType, draggingNode)
     }
   }
 }

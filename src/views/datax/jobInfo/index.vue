@@ -1725,6 +1725,7 @@ export default {
       // console.log('拖拽结束时（可能未成功）触发的事件')
     },
     handleDragEnd(draggingNode, dropNode, dropType, ev) {
+      console.log(dropNode)
       // console.log('拖拽成功完成时触发的事件')
     },
     handleDrop(draggingNode, dropNode, dropType, ev) {
@@ -1758,7 +1759,7 @@ export default {
     //  console.log(type)
         return type == 'inner'
       } else {
-        return false
+        return type === 'inner'
       }
     },
     allowDrag(draggingNode) {

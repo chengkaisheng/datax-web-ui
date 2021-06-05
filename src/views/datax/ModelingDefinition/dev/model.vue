@@ -1263,6 +1263,7 @@ export default {
   overflow-y: hidden;
   padding: 8px 0;
   border-bottom: 1px solid rgba(235, 235, 235, 1);
+  height: 37px;
 }
 .header_action {
   font-size: 14px;

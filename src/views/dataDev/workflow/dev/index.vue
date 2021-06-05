@@ -974,10 +974,15 @@ export default {
     },
     allowDrop(draggingNode, dropNode, type) {
       console.log(dropNode)
-      if (dropNode.data.type === 1) {
-        return type === 'inner'
+      // if (dropNode.data.type === 1) {
+      //   return type === 'inner'
+      // } else {
+      //   return false
+      // }
+      if (dropNode.data.type === 2) {
+        return type !== 'inner'
       } else {
-        return false
+        return type === 'inner'
       }
     },
     allowDrag(draggingNode) {
