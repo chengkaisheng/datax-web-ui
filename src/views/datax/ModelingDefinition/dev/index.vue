@@ -61,7 +61,7 @@
           @node-drag-end="handleDragEnd"
           @node-drop="handleDrop"
         >
-<!--        style="
+          <!--        style="
           height: 32px;
           line-height: 32px;
           position: relative;
@@ -74,7 +74,7 @@
             class="custom-tree-node"
             style="font-size: 14px;"
           >
-            <p >
+            <p>
               <svg-icon
                 v-if="data.type === 1"
                 :icon-class="data.jobType"
@@ -212,8 +212,7 @@
       </el-dialog>
       <!-- 工作流重命名 -->
       <el-dialog :visible.sync="ReETLdialog" width="40%" title="重命名模型">
-        <span style="margin-left: 20px">名称：</span
-        ><el-input
+        <span style="margin-left: 20px">名称：</span><el-input
           v-model="reWorkflowName"
           style="width: 80%; margin-left: 20px"
         />
@@ -1225,10 +1224,11 @@ export default {
     },
     allowDrop(draggingNode, dropNode, type) {
       console.log(dropNode)
-      if (dropNode.data.type === 1) {
-        return type === 'inner'
+
+      if (dropNode.data.type === 2) {
+        return type !== 'inner'
       } else {
-        return false
+        return type === 'inner'
       }
     },
     allowDrag(draggingNode) {

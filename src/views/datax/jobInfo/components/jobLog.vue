@@ -189,7 +189,7 @@ export default {
       // const str = location.href.split('#')[0]
       // window.open(`${str}#/ router的name `)
       this.dialogVisible = true
-
+      this.logContent = ''
       this.jobLogQuery.executorAddress = row.executorAddress
       this.jobLogQuery.id = row.id
       this.jobLogQuery.triggerTime = Date.parse(row.triggerTime)
@@ -197,10 +197,10 @@ export default {
         this.logShow = true
       }
       // window.open(`#/data/log?executorAddress=${this.jobLogQuery.executorAddress}&triggerTime=${this.jobLogQuery.triggerTime}&id=${this.jobLogQuery.id}&fromLineNum=${this.jobLogQuery.fromLineNum}`)
-      // this.loadLog()
-      setTimeout(() => {
-        this.loadLog()
-      }, 2000)
+      this.loadLog()
+      // setTimeout(() => {
+      //   this.loadLog()
+      // }, 2000)
     },
     // 获取日志
     loadLog() {

@@ -43,7 +43,7 @@
         <span class="new_lookup">
           <span
             class="el-icon-arrow-right"
-            @click="() => { this.ReplaceBox = !ReplaceBox}"
+            @click="() => { ReplaceBox = !ReplaceBox}"
           />
           <input
             id="key"
@@ -54,7 +54,6 @@
             placeholder="查找内容"
           >
           <span @click="LookUp">查找</span>
-          <!-- <span v-if="isdata">{{ DataLength }}</span> -->
         </span>
         <i class="el-icon-bottom" @click="previous" />
         <i class="el-icon-top" @click="next" />
