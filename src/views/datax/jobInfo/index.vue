@@ -281,7 +281,7 @@ rkJggg=="
     <div class="rt">
       <el-tabs
         v-model="jobDetailIdx"
-        type="card"
+        type="editable-card"
         closable
         class="el-bar-tab"
         @tab-remove="removeJobTab"
@@ -1741,6 +1741,7 @@ export default {
       console.log('tree drop: ', dropNode.label, dropType, draggingNode)
     },
     allowDrop(draggingNode, dropNode, type) {
+
       if (dropNode.data.jobType !== '"wenjianjia"') {
         return type == 'inner'
       } else {
@@ -2823,6 +2824,7 @@ export default {
 ::v-deep .el-scrollbar__wrap {
   overflow-x: hidden !important;
 }
+
 
 .el-tabs--card>.el-tabs__header .el-tabs__nav {
     border: 0px solid #dfe4ed;

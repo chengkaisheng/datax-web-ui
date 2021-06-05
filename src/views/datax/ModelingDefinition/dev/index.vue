@@ -1,5 +1,15 @@
 <template>
   <div class="app-container">
+      <div class="head-container">
+        <el-card class="box-card">
+          <div class="text item">
+            <div class="left">模型定义</div>
+            <el-col class="left-description">
+              数据开发人员根据指标定义设计维度模型后，进行模型的新建、编辑、查看和修改操作，方便管理。
+            </el-col>
+          </div>
+        </el-card>
+      </div>
     <div class="main">
       <!-- <vue-draggable-resizable
         style="z-index: 999"
@@ -170,7 +180,7 @@
               style="width: 100%; height: calc(100vh - 50px); margin-top: 25px"
               icon-class="fengdie"
             />
-            <Flow
+            <Model
               v-if="item.name !== '首页' && item.jobType !== 'wenjianjia'"
               :tabs-ids="item.id"
               :table-type="item.jobType"
@@ -226,14 +236,14 @@ import * as modeling from '@/api/datax-job-modeling'
 import * as workFlowApi from '@/api/datax-job-info'
 import * as datasourceApi from '@/api/datax-jdbcDatasource'
 import * as jobProjectApi from '@/api/datax-job-project'
-import Flow from './workflow.vue'
+import Model from './model.vue'
 import { component as VueContextMenu } from '@xunlei/vue-context-menu'
 import { getTableSchema, getTableListWithComment } from '@/api/metadata-query'
 
 export default {
   name: 'DDLTransform',
   components: {
-    Flow,
+    Model,
     'vue-context-menu': VueContextMenu
   },
   data() {
@@ -1665,5 +1675,13 @@ export default {
   text-align: center;
   line-height: 30px;
   background: rgb(16, 167, 132);
+}
+
+.el-tabs--card>.el-tabs__header .el-tabs__nav {
+    border: 0px solid #dfe4ed;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
 }
 </style>

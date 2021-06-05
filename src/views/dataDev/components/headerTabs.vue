@@ -97,10 +97,11 @@
         <div style="height: 20px">
           <el-switch
             v-model="value1"
-            style="float: right"
+            style="float: right;"
             active-text="物理"
             inactive-text="逻辑"
             @change="changswitch"
+            width="32"
           />
         </div>
 
@@ -817,5 +818,18 @@ export default {
     cursor: pointer;
     color: black;
     font-size: 12px;
+}
+
+.header {
+    overflow: hidden;
+    background: #f6f9fb;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.el-switch.is-checked .el-switch__core {
+    border-color: white;
+    background-color: #3D5FFF;
 }
 </style>

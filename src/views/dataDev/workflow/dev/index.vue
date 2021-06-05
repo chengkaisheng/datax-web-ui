@@ -18,6 +18,7 @@
         <el-input
           v-model="search"
           class="input_serach"
+          style="margin-top: 24px;"
           prefix-icon="el-icon-search"
           placeholder="文件夹或工作流名称"
           clearable
@@ -1045,7 +1046,7 @@ export default {
     padding: 0px 24px 0px 0;
     background-color: #fff;
     overflow: hidden;
-    margin: 20px 20px 0 20px;
+    // margin: 20px 20px 0 20px;
     display: flex;
     .el-form {
       margin: 15px 0;
@@ -1074,9 +1075,9 @@ export default {
       }
     }
     .lt {
-      width: 360px;
+      width: 320px;
       padding: 10px;
-      height: calc(100vh - 181px);
+      // height: calc(100vh - 181px);
       background: #f8f8fa;
       .el-input {
         margin-bottom: 20px;
@@ -1142,73 +1143,73 @@ export default {
     // overflow-x: scroll;
     // overflow-x: hidden;
     overflow-y: hidden;
-    .el-tabs {
-      .el-tabs__header {
-        width: 100%;
-        height: 32px;
-        line-height: 32px;
-        margin: 0;
-        .el-tabs__nav-wrap {
-          // padding: 0 10px;
-          // .is-scrollable{
-          //   padding:0 10px;
-          // }
-          // background-color: #f8f8fa;
-          .el-tabs__nav-next,
-          .el-tabs__nav-prev {
-            height: 32px;
-            line-height: 32px;
-             background-color: #ccc;
-          }
-        }
+    // .el-tabs {
+    //   .el-tabs__header {
+    //     width: 100%;
+    //     height: 32px;
+    //     line-height: 32px;
+    //     margin: 0;
+    //     .el-tabs__nav-wrap {
+    //       // padding: 0 10px;
+    //       // .is-scrollable{
+    //       //   padding:0 10px;
+    //       // }
+    //       // background-color: #f8f8fa;
+    //       .el-tabs__nav-next,
+    //       .el-tabs__nav-prev {
+    //         height: 32px;
+    //         line-height: 32px;
+    //          background-color: #ccc;
+    //       }
+    //     }
 
-        .el-tabs__nav {
-          // border: 1px solid #dfe4ed;
-          // width: 200px;
-          border-top: 1px solid #f8f8fa;
-          .el-tabs__item {
-            // width: 100%;
-             width: 200px;
-            border: none;
-            border-top: 1px solid #f8f8fa;
-            border-radius: 6px 6px 0px 0px;
-            height: 32px;
-            line-height: 32px;
-            position: relative;
-            overflow: hidden;
-            vertical-align: bottom;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            .el-icon-close {
-              position: absolute;
-              right: 10px;
-              top: 50%;
-              transform: translateY(-50%);
-            }
-          }
-        }
-      }
-      .el-tabs__item.is-active {
-        background-color: #ffffff;
-        // border-bottom-color:  #3d5eff;
-      }
-      .el-tab-pane {
-        // padding: 10px;
-        height: 100%;
-        position: relative;
-        .job_detail {
-          height: 100%;
-        }
-        .title_h3 {
-          position: absolute;
-          font-size: 24px;
-          font-weight: 700;
-          font-family: '楷体';
-          left: 24px;
-          top: 30px;
-        }
-      }
-    }
+    //     .el-tabs__nav {
+    //       // border: 1px solid #dfe4ed;
+    //       // width: 200px;
+    //       border-top: 1px solid #f8f8fa;
+    //       .el-tabs__item {
+    //         // width: 100%;
+    //          // width: 200px;
+    //         border: none;
+    //         border-top: 1px solid #f8f8fa;
+    //         border-radius: 6px 6px 0px 0px;
+    //         height: 32px;
+    //         line-height: 32px;
+    //         position: relative;
+    //         overflow: hidden;
+    //         vertical-align: bottom;
+    //         text-overflow: ellipsis;
+    //         white-space: nowrap;
+    //         .el-icon-close {
+    //           position: absolute;
+    //           right: 10px;
+    //           top: 50%;
+    //           transform: translateY(-50%);
+    //         }
+    //       }
+    //     }
+    //   }
+    //   .el-tabs__item.is-active {
+    //     background-color: #ffffff;
+    //     // border-bottom-color:  #3d5eff;
+    //   }
+    //   .el-tab-pane {
+    //     // padding: 10px;
+    //     height: 100%;
+    //     position: relative;
+    //     .job_detail {
+    //       height: 100%;
+    //     }
+    //     .title_h3 {
+    //       position: absolute;
+    //       font-size: 24px;
+    //       font-weight: 700;
+    //       font-family: '楷体';
+    //       left: 24px;
+    //       top: 30px;
+    //     }
+    //   }
+    // }
   }
     .rg {
       // width: 100px;
@@ -1281,7 +1282,7 @@ export default {
   }
 
   .el-dialog {
-    border-radius: 8px;
+    border-radius: 4px;
 
     .el-dialog__header {
       font-size: 24px;
@@ -1357,5 +1358,52 @@ export default {
   // >>> .el-main {
   //   border-left: 1px solid #e6e6e6;
   // }
+}
+.el-input .el-input__inner {
+    height: 32px;
+    line-height: 32px;
+}
+
+.el-tabs__item {
+    padding: 0 20px;
+    height: 32px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    line-height: 32px;
+    display: inline-block;
+    list-style: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #303133;
+    position: relative;
+}
+
+.el-tree {
+    position: relative;
+    cursor: default;
+    background: #f8f8fa;
+    color: #606266;
+}
+
+.el-tabs__header {
+    padding: 0;
+    position: relative;
+    margin: 0 0 0px;
+}
+
+.el-tree-node__expand-icon {
+    cursor: pointer;
+    color: black;
+    font-size: 18px;
+}
+
+.el-tree-node__expand-icon.is-leaf {
+    color: transparent;
+    cursor: default;
+    margin-left: -7px;
+}
+
+.el-tree-node__content {
+    height: 32px;
 }
 </style>

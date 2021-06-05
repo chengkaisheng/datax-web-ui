@@ -36,7 +36,7 @@
       <i class="el-icon-rank" />
       <span>自动布局</span>
     </div> -->
-    <div id="parentDiv" style="width: 100%; display: flex; border: solid 1px lightgray;">
+    <div id="parentDiv" style="width: 100%; display: flex;">
       <div :id="'myPaletteDiv' + myId" style="width: 100px; margin-right: 2px; " />
       <div :id="'myDiagramDiv' + myId" style="flex-grow: 1; height: 589px;" />
 
