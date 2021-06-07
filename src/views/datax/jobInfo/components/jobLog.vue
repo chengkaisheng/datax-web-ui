@@ -117,8 +117,8 @@
 
 <script>
 import * as log from '@/api/datax-job-log'
-import * as job from '@/api/datax-job-info'
-import moment from 'moment'
+// import * as job from '@/api/datax-job-info'
+// import moment from 'moment'
 export default {
   props: ['id'],
   data() {

@@ -1,15 +1,15 @@
 <template>
   <div class="app-container">
-      <div class="head-container">
-        <el-card class="box-card">
-          <div class="text item">
-            <div class="left">模型定义</div>
-            <el-col class="left-description">
-              数据开发人员根据指标定义设计维度模型后，进行模型的新建、编辑、查看和修改操作，方便管理。
-            </el-col>
-          </div>
-        </el-card>
-      </div>
+    <div class="head-container">
+      <el-card class="box-card">
+        <div class="text item">
+          <div class="left">模型定义</div>
+          <el-col class="left-description">
+            数据开发人员根据指标定义设计维度模型后，进行模型的新建、编辑、查看和修改操作，方便管理。
+          </el-col>
+        </div>
+      </el-card>
+    </div>
     <div class="main">
       <div id="menu_lt" class="lt" :style="{ width: width + 'px' }">
         <!-- <ul>
@@ -148,13 +148,13 @@
           @tab-click="handleTabs"
         >
           <el-tab-pane
-            v-for="(item, index) in editableTabs"
+            v-for="(item) in editableTabs"
             :key="item.id"
+            v-loading="tabDelLoading"
             :label="item.name"
             :name="item.name"
             closable
             tab-position="left"
-            v-loading="tabDelLoading"
           >
             <!-- <span slot="label" style="user-select: none">
               <svg-icon
@@ -588,15 +588,10 @@ export default {
         this.width = this.CurrentWidth + pixel
       }
     },
+    // 移动鼠标放大
     mouseUp() {
       this.CurrentWidth = this.width
       document.removeEventListener('mousemove', this.mouseMove)
-    },
-    // 移动鼠标放大
-
-    // 拖拽tree
-    handleDragStart(node, ev) {
-      console.log('节点开始拖拽时触发的事件', node, ev)
     },
     gettree(data) {
       this.getlist(data)
@@ -647,7 +642,7 @@ export default {
               }
             }
             this.lastdata = newarr.flat(Infinity).filter((itme) => {
-              return itme.id == newtask.id
+              return itme.id === newtask.id
             })
             console.log('新建工作流-=-=-=newtask', this.lastdata[0])
             this.handleWorkFlow(this.lastdata[0])

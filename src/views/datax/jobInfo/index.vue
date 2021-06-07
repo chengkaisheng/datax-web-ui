@@ -289,10 +289,10 @@ rkJggg=="
       >
         <el-tab-pane
           v-if="!lasttab || !$store.state.taskAdmin.taskDetailList.length"
+          v-loading="tabLoading"
           style="user-select: none"
           label="欢迎"
           name="欢迎"
-          v-loading="tabLoading"
         >
           <div style="user-select: none" class="title_h3">
             一站式数据开发解决方案
@@ -306,9 +306,9 @@ rkJggg=="
         <el-tab-pane
           v-for="item in tablist"
           :key="item.content.id"
+          v-loading="tabLoading"
           :label="item.title"
           :name="item.content.id + ''"
-          v-loading="tabLoading"
         >
           <span slot="label" style="user-select: none">
             <el-tooltip class="item" effect="dark" placement="top-end">
@@ -730,18 +730,24 @@ rkJggg=="
           <el-col :span="16" style="margin-top: 0">
             {{ detailData.name }}
           </el-col>
+        </el-row>
+        <el-row :gutter="20">
           <el-col :span="8">
             <span>任务类型:</span>
           </el-col>
           <el-col :span="16">
             {{ $store.state.taskAdmin.allTabType[detailData.jobType] }}
           </el-col>
+        </el-row>
+        <el-row :gutter="20">
           <el-col :span="8">
             <span>创建日期:</span>
           </el-col>
           <el-col :span="16">
             {{ detailData.addTime }}
           </el-col>
+        </el-row>
+        <el-row :gutter="20">
           <el-col :span="8">
             <span>最近修改日期:</span>
           </el-col>
@@ -1993,7 +1999,7 @@ export default {
     },
     // 点击tree控件方法
     handleNodeClick(data) {
-      this.tabLoading = true
+     
       console.log('任务数据', data)
       this.Rename=data.name
       this.selectRow = data
@@ -2002,6 +2008,7 @@ export default {
       this.$store.commit('SETPJTID', data.projectId)
       this.$store.commit('SETCODE', '')
       if (data.type === 2) {
+        this.tabLoading = true
         this.jobType = data.jobType
         this.$store.commit('changeGroupData', data)
         this.$store.commit('changeGroupName', data.name)
@@ -2504,7 +2511,7 @@ export default {
                 background: #fff;
                 border: 1px solid rgba(0, 0, 0, 0.2);
                 border-radius: 3px;
-                z-index: 999;
+                z-index: 9999;
                 display: none;
                 padding: 2px;
                 box-shadow: 5px 5px 10px gray;
@@ -2746,7 +2753,7 @@ export default {
       height: 100%;
       padding: 20px;
       .el-row {
-        text-align: left;
+        text-align: center;
         .el-col {
           margin-top: 20px;
           overflow: hidden;

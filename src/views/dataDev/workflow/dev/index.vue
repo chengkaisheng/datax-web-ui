@@ -149,7 +149,7 @@ import * as jobProjectApi from '@/api/datax-job-project'
 import * as workFlowApi from '@/api/datax-job-info'
 // import * as updateWorkflow from '@/api/datax-job-info'
 import * as datasourceApi from '@/api/datax-jdbcDatasource'
-import * as job from '@/api/datax-job-info'
+// import * as job from '@/api/datax-job-info'
 import Workflow from './workflow.vue'
 import { component as VueContextMenu } from '@xunlei/vue-context-menu'
 import {

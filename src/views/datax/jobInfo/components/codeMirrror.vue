@@ -136,7 +136,7 @@ export default {
     // },
     '$store.state.taskAdmin.setcode': {
       deep: true,
-      handler: function (newValue) {
+      handler(newValue) {
         // if (newValue !== oldValue) {
         //   console.log(newValue, 'newValue12')
         //   this.removeJobTab(newValue)
@@ -144,7 +144,7 @@ export default {
         if (newValue) {
           this.editor.setValue(newValue)
         } else this.editor.setValue(this.notes)
-      },
+      }
     },
     code(val) {
       if (this.$store.state.taskAdmin.setcode !== val) {

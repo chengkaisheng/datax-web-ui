@@ -411,19 +411,19 @@ import * as infoApi from '@/api/datax-job-info'
 import { getList as logGetList, viewJobLog } from '@/api/datax-job-log'
 import waves from '@/directive/waves' // waves directive
 import Cron from '@/components/Cron'
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+// import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import JsonEditor from '@/components/JsonEditor'
-import ShellEditor from '@/components/ShellEditor'
-import PythonEditor from '@/components/PythonEditor'
-import PowershellEditor from '@/components/PowershellEditor'
+// import ShellEditor from '@/components/ShellEditor'
+// import PythonEditor from '@/components/PythonEditor'
+// import PowershellEditor from '@/components/PowershellEditor'
 import { getDataSourceList } from '@/api/datax-jdbcDatasource'
 import { getJobProjectList } from '@/api/datax-job-project'
-import { updateJob, updateTask } from '@/api/datax-job-info'
-import reader from '@/views/datax/json-build/reader'
-import writer from '@/views/datax/json-build/writer'
-import qualityReader from '../../jsonQuality/reader'
-import qualityWriter from '../../jsonQuality/writer'
-import mapper from '@/views/datax/json-build/mapper'
+import { updateTask } from '@/api/datax-job-info'
+// import reader from '@/views/datax/json-build/reader'
+// import writer from '@/views/datax/json-build/writer'
+// import qualityReader from '../../jsonQuality/reader'
+// import qualityWriter from '../../jsonQuality/writer'
+// import mapper from '@/views/datax/json-build/mapper'
 // import { isJSON } from '@/utils/validate'
 import jobLog from './jobLog'
 import jobResult from './jobResult'
@@ -444,25 +444,25 @@ import Description from '@/components/Description/index'
 import DescriptionItems from '@/components/Description/components/items'
 import go from 'gojs'
 import JobDetailProEdit from './editDialog/jobDetailProEdit'
-import moment from 'moment'
+// import moment from 'moment'
 let timer = null
 
 export default {
   name: 'SimpleJob',
   components: {
-    Pagination,
+    // Pagination,
     JsonEditor,
-    ShellEditor,
-    PythonEditor,
-    PowershellEditor,
+    // ShellEditor,
+    // PythonEditor,
+    // PowershellEditor,
     Cron,
     jobLog,
     jobResult,
-    reader,
-    writer,
-    qualityReader,
-    qualityWriter,
-    mapper,
+    // reader,
+    // writer,
+    // qualityReader,
+    // qualityWriter,
+    // mapper,
     Description,
     DescriptionItems,
     JobDetailProEdit

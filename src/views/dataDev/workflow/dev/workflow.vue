@@ -453,12 +453,12 @@ rkJggg=="
 </template>
 
 <script id="code" text='text/javasript' >
-import go, { List } from 'gojs'
+import go from 'gojs'
 import * as workFlowApi from '@/api/datax-job-info'
 import * as job from '@/api/datax-job-info'
 import * as logApi from '@/api/datax-job-log'
 import Cron from '@/components/Cron'
-import { countColumn } from 'codemirror'
+// import { countColumn } from 'codemirror'
 export default {
   name: 'Flow',
   components: { Cron },

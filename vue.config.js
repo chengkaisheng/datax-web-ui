@@ -36,7 +36,6 @@ module.exports = {
       warnings: false,
       errors: true
     },
-
     proxy: {
       [process.env.VUE_APP_API]: {
         ws: false,
