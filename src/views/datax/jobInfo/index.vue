@@ -291,8 +291,8 @@ rkJggg=="
           v-if="!lasttab || !$store.state.taskAdmin.taskDetailList.length"
           v-loading="tabLoading"
           style="user-select: none"
-          label="欢迎"
-          name="欢迎"
+          label="首页"
+          name="首页"
         >
           <div style="user-select: none" class="title_h3">
             一站式数据开发解决方案
@@ -537,7 +537,7 @@ rkJggg=="
 
     <!-- 重命名对话框 -->
     <el-dialog :visible.sync="dialogRenameVisible" width="40%" title="重命名">
-      <span style="margin-left: 20px">名称：</span><el-input v-model="Rename" style="width: 60%; margin-left: 20px" />
+      <span style="margin-left: 20px">名称：</span><el-input v-model="Rename" type="text" style="width: 60%; margin-left: 20px" />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelDialog"> 取消 </el-button>
         <el-button type="goon" size="small" :disabled="isdisabled" @click="sureRe"> 确定 </el-button>
@@ -677,7 +677,7 @@ rkJggg=="
           type="selection"
           width="55"
         /> -->
-        <el-table-column prop="name" label="任务名称" />
+        <el-table-column prop="jobDesc" label="任务名称" />
         <el-table-column prop="jobType" label="任务类型" />
         <el-table-column prop="versionTime" label="版本创建时间" width="200" />
         <el-table-column label="操作" width="100">
@@ -706,6 +706,7 @@ rkJggg=="
               >代码</el-button>
             </el-popover>
             <el-button
+              style="float:right"
               type="text"
               size="small"
               @click="rollback(row)"
@@ -721,7 +722,7 @@ rkJggg=="
       </div>
     </el-dialog>
     <!-- 查看文件信息 -->
-    <el-dialog width="40%" title="查看" :visible.sync="dialogViewVisible">
+    <el-dialog width="40%" title="查看文件信息" :visible.sync="dialogViewVisible">
       <div class="box">
         <el-row :gutter="20">
           <el-col :span="8" style="margin-top: 0">
@@ -736,7 +737,8 @@ rkJggg=="
             <span>任务类型:</span>
           </el-col>
           <el-col :span="16">
-            {{ $store.state.taskAdmin.allTabType[detailData.jobType] }}
+            <!-- {{ $store.state.taskAdmin.allTabType[detailData.jobType] }} -->
+            {{ detailData.jobType }}
           </el-col>
         </el-row>
         <el-row :gutter="20">
@@ -861,7 +863,7 @@ export default {
       },
       /** 任务类型 */
       jobType: '',
-      jobDetailIdx: '欢迎',
+      jobDetailIdx: '首页',
       jobTypeMap: '',
       jobDetailLoading: true,
       firstTime: true,
@@ -973,7 +975,7 @@ export default {
     Rename(val) {
       this.isdisabled = false
       console.log(val)
-      if (val === '') {
+      if (val.replace(/^ +| +$/g,'')) {
         this.isdisabled = true
       }
     },
@@ -1205,7 +1207,7 @@ export default {
       console.log(targetId, 'targetId关闭')
       console.log('关闭', this.$store.state.taskAdmin.taskDetailList)
       if (this.$store.state.taskAdmin.taskDetailList.length === 0) {
-        this.jobDetailIdx = '欢迎'
+        this.jobDetailIdx = '首页'
       }
       const removeIndex = this.$store.state.taskAdmin.taskDetailList.findIndex(
         (ele) => ele.content.id === targetIdInt
@@ -1225,7 +1227,7 @@ export default {
       } else {
         this.$store.commit('DELETE_TASKDETAIL', removeIndex)
         if (this.$store.state.taskAdmin.taskDetailList.length === 0) {
-          this.jobDetailIdx = '欢迎'
+          this.jobDetailIdx = '首页'
         }
       }
     },
@@ -1390,9 +1392,9 @@ export default {
           this.$store.commit('changeTreeId', t[0].projectGroupId)
         }
       }
-      this.$store.commit('SETCODE', '')
+      // this.$store.commit('SETCODE', '')
       this.$nextTick(() => {
-        if (ele.label === '欢迎') {
+        if (ele.label === '首页') {
           console.log('欢迎不需要')
         } else {
           job
@@ -1613,6 +1615,7 @@ export default {
       console.log(this.copyObj)
       if (this.copyObj) {
         const pid = this.selectRow.id
+        this.copyObj.name=this.copyObj.name +'-副本'
         job
           .pasteObj(pid, this.copyObj)
           .then((res) => {
@@ -1972,7 +1975,7 @@ export default {
                 this.tablist.splice(index, 1)
                 if (this.tablist.length === 0) {
                   this.getDataTree()
-                  this.jobDetailIdx = '欢迎'
+                  this.jobDetailIdx = '首页'
                 }
                 if (this.tablist.length !== 0) {
                   console.log('是个啥玩意', this.tablist)
@@ -2111,6 +2114,7 @@ export default {
       }
     },
     getJobDetail(data) {
+      console.log('获取详细数据',data)
       this.$store.commit('SET_JOB_INFO', data)
       this.$store.commit('getJobDetail', data)
       this.$store.commit('SET_TASKDETAIL_ID', data.id + '')
@@ -2331,7 +2335,7 @@ export default {
       this.jobType = ''
       this.$store.commit('SET_TAB_TYPE', '')
       if (this.$store.state.taskAdmin.taskDetailList.length <= 0) {
-        this.jobDetailIdx = '欢迎'
+        this.jobDetailIdx = '首页'
       } else {
         this.jobDetailIdx =
           this.$store.state.taskAdmin.taskDetailList[0].content.id + ''
@@ -2494,13 +2498,13 @@ export default {
               .right-menu1 {
                 border: 1px solid #eee;
                 box-shadow: 0 0.5em 1em 0 rgba(0, 0, 0, 0.1);
-                height: 200px;
-                width: 355px;
-                overflow-y: auto;
+                // height: 200px;
+                // width: 355px;
+                // overflow-y: auto;
                 border-radius: 1px;
                 display: block;
                 margin-left: 116px;
-                margin-top: 28px;
+                margin-top: -165px;
                 font-family: Microsoft Yahei, Avenir, Helvetica, Arial,
                   sans-serif;
                 -webkit-font-smoothing: antialiased;
@@ -2511,7 +2515,7 @@ export default {
                 background: #fff;
                 border: 1px solid rgba(0, 0, 0, 0.2);
                 border-radius: 3px;
-                z-index: 9999;
+                z-index: 99;
                 display: none;
                 padding: 2px;
                 box-shadow: 5px 5px 10px gray;
@@ -2560,7 +2564,7 @@ export default {
                     background: #fff;
                     border: 1px solid rgba(0, 0, 0, 0.2);
                     border-radius: 3px;
-                    z-index: 999;
+                    z-index: 99999;
                     display: block;
                     padding: 2px;
                     box-shadow: 5px 5px 10px gray;
@@ -2756,7 +2760,7 @@ export default {
         text-align: center;
         .el-col {
           margin-top: 20px;
-          overflow: hidden;
+          // overflow: hidden;
           text-overflow: ellipsis;
         }
       }
