@@ -501,8 +501,11 @@ export default {
 
     // 展示新建文件夹对话框
     newFolder() {
+      if (this.folderName === '') {
+        this.isdisabled = true
+      }
       if (this.nowObject.type === 2) {
-        this.$message.info('请选择文件夹')
+        this.$message.error('请选择文件夹')
       } else {
         this.newFolderDialog = true
       }
@@ -523,7 +526,7 @@ export default {
     // 新建工作流
     newWorkFlow(val) {
       if (this.nowObject.type === 2) {
-        this.$message.info('请选择文件夹')
+        this.$message.error('请选择文件夹')
       } else {
         this.newETLdialog = true
       }

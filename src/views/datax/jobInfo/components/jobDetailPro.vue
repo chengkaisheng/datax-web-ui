@@ -1737,7 +1737,8 @@ export default {
 
 .log_container {
   padding-left: 24px;
-  height: calc(50vh - 157px);
+  // height: calc(50vh - 157px);
+  height: 100%;
   overflow: scroll;
   background: white;
   font-size: 13px;
@@ -1761,7 +1762,7 @@ export default {
 }
 
 .el-bar-tab .el-tabs__content {
-    height: calc(100vh - 200px);
+    // height: calc(100vh - 200px);
     overflow-y: scroll;
     padding: 0;
 }
@@ -1823,7 +1824,7 @@ export default {
 }
 
 .json_content {
-  height: calc(50vh - 157px);
+  // height: calc(50vh - 157px);
   overflow: auto;
 }
 

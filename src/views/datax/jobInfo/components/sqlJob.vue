@@ -44,9 +44,10 @@
           <cron v-model="temp.jobCron" />
           <span slot="footer" class="dialog-footer">
             <el-button @click="showCronBox = false">关闭</el-button>
-            <el-button type="primary" @click="showCronBox = false"
-              >确 定</el-button
-            >
+            <el-button
+              type="primary"
+              @click="showCronBox = false"
+            >确 定</el-button>
           </span>
         </el-dialog>
         <el-form-item label="Cron：" prop="jobCron">
@@ -184,10 +185,10 @@ import * as executor from '@/api/datax-executor'
 import * as job from '@/api/datax-job-info'
 import waves from '@/directive/waves' // waves directive
 import Cron from '@/components/Cron'
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import ShellEditor from '@/components/ShellEditor'
-import PythonEditor from '@/components/PythonEditor'
-import PowershellEditor from '@/components/PowershellEditor'
+// import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+// import ShellEditor from '@/components/ShellEditor'
+// import PythonEditor from '@/components/PythonEditor'
+// import PowershellEditor from '@/components/PowershellEditor'
 import * as datasourceApi from '@/api/datax-jdbcDatasource'
 import * as jobProjectApi from '@/api/datax-job-project'
 import { isJSON } from '@/utils/validate'
@@ -196,7 +197,7 @@ import { getTableSchema } from '@/api/metadata-query'
 import 'codemirror/theme/ambiance.css'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/addon/hint/show-hint.css'
-import { ContextMenuTool } from 'gojs'
+// import { ContextMenuTool } from 'gojs'
 
 const CodeMirror = require('codemirror/lib/codemirror')
 require('codemirror/addon/edit/matchbrackets')
@@ -208,11 +209,11 @@ require('codemirror/addon/hint/sql-hint')
 export default {
   name: 'SqlJob',
   components: {
-    Pagination,
-    ShellEditor,
-    PythonEditor,
-    PowershellEditor,
-    Cron,
+    // Pagination,
+    // ShellEditor,
+    // PythonEditor,
+    // PowershellEditor,
+    Cron
   },
   directives: { waves },
   filters: {
@@ -220,10 +221,10 @@ export default {
       const statusMap = {
         published: 'success',
         draft: 'gray',
-        deleted: 'danger',
+        deleted: 'danger'
       }
       return statusMap[status]
-    },
+    }
   },
   props: ['jobType', 'jobTypeLabel'],
   data() {
@@ -257,7 +258,7 @@ export default {
         projectIds: '',
         triggerStatus: -1,
         jobDesc: '',
-        glueType: '',
+        glueType: ''
       },
       showCronBox: false,
       dialogPluginVisible: false,
@@ -266,52 +267,52 @@ export default {
       dialogStatus: '',
       textMap: {
         update: 'Edit',
-        create: 'Create',
+        create: 'Create'
       },
       rules: {
         jobGroup: [
           {
             required: true,
             message: 'jobGroup is required',
-            trigger: 'change',
-          },
+            trigger: 'change'
+          }
         ],
         executorRouteStrategy: [
           {
             required: true,
             message: 'executorRouteStrategy is required',
-            trigger: 'change',
-          },
+            trigger: 'change'
+          }
         ],
         executorBlockStrategy: [
           {
             required: true,
             message: 'executorBlockStrategy is required',
-            trigger: 'change',
-          },
+            trigger: 'change'
+          }
         ],
         glueType: [
-          { required: true, message: 'jobType is required', trigger: 'change' },
+          { required: true, message: 'jobType is required', trigger: 'change' }
         ],
         projectId: [
           {
             required: true,
             message: 'projectId is required',
-            trigger: 'change',
-          },
+            trigger: 'change'
+          }
         ],
         jobDesc: [
-          { required: true, message: 'jobDesc is required', trigger: 'blur' },
+          { required: true, message: 'jobDesc is required', trigger: 'blur' }
         ],
         jobProject: [
           {
             required: true,
             message: 'jobProject is required',
-            trigger: 'blur',
-          },
+            trigger: 'blur'
+          }
         ],
         jobCron: [
-          { required: true, message: 'jobCron is required', trigger: 'blur' },
+          { required: true, message: 'jobCron is required', trigger: 'blur' }
         ],
         incStartId: [{ trigger: 'blur', validator: validateIncParam }],
         replaceParam: [{ trigger: 'blur', validator: validateIncParam }],
@@ -319,10 +320,10 @@ export default {
         incStartTime: [{ trigger: 'change', validator: validateIncParam }],
         replaceParamType: [{ trigger: 'change', validator: validateIncParam }],
         partitionField: [
-          { trigger: 'blur', validator: validatePartitionParam },
+          { trigger: 'blur', validator: validatePartitionParam }
         ],
         datasourceId: [{ trigger: 'change', validator: validateIncParam }],
-        readerTable: [{ trigger: 'blur', validator: validateIncParam }],
+        readerTable: [{ trigger: 'blur', validator: validateIncParam }]
       },
       temp: {
         id: undefined,
@@ -352,7 +353,7 @@ export default {
         primaryKey: '',
         projectId: '',
         datasourceId: '',
-        readerTable: '',
+        readerTable: ''
       },
       resetTemp() {
         this.temp = this.$options.data().temp
@@ -376,12 +377,12 @@ export default {
         { value: 'LEAST_FREQUENTLY_USED', label: '最不经常使用' },
         { value: 'LEAST_RECENTLY_USED', label: '最近最久未使用' },
         { value: 'FAILOVER', label: '故障转移' },
-        { value: 'BUSYOVER', label: '忙碌转移' },
+        { value: 'BUSYOVER', label: '忙碌转移' }
         // { value: 'SHARDING_BROADCAST', label: '分片广播' }
       ],
       glueTypes: [
         // { value: 'BEAN', label: 'DataX任务' },
-        { value: 'GLUE_SHELL', label: 'Shell任务' },
+        { value: 'GLUE_SHELL', label: 'Shell任务' }
         // { value: 'GLUE_PYTHON', label: 'Python任务' },
         // { value: 'GLUE_POWERSHELL', label: 'PowerShell任务' }
       ],
@@ -389,7 +390,7 @@ export default {
         { value: 0, label: '无' },
         { value: 1, label: '主键自增' },
         { value: 2, label: '时间自增' },
-        { value: 3, label: 'HIVE分区' },
+        { value: 3, label: 'HIVE分区' }
       ],
       triggerNextTimes: '',
       registerNode: [],
@@ -401,7 +402,7 @@ export default {
       timeFormatTypes: [
         { value: 'yyyy-MM-dd', label: 'yyyy-MM-dd' },
         { value: 'yyyyMMdd', label: 'yyyyMMdd' },
-        { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' },
+        { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' }
       ],
       replaceFormatTypes: [
         { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' },
@@ -409,27 +410,27 @@ export default {
         { value: 'HH:mm:ss', label: 'HH:mm:ss' },
         { value: 'yyyy/MM/dd HH:mm:ss', label: 'yyyy/MM/dd HH:mm:ss' },
         { value: 'yyyy-MM-dd HH:mm:ss', label: 'yyyy-MM-dd HH:mm:ss' },
-        { value: 'Timestamp', label: '时间戳' },
+        { value: 'Timestamp', label: '时间戳' }
       ],
       statusList: [
         { value: 500, label: '失败' },
         { value: 502, label: '失败(超时)' },
         { value: 200, label: '成功' },
-        { value: 0, label: '无' },
-      ],
+        { value: 0, label: '无' }
+      ]
     }
   },
 
   computed: {
     datasourceIdSchema() {
       return this.temp.datasourceId
-    },
+    }
   },
 
   watch: {
     datasourceIdSchema() {
       this.getSchemaList()
-    },
+    }
   },
   created() {
     this.fetchData()
@@ -565,7 +566,7 @@ export default {
                   title: '成功',
                   message: '新建成功',
                   type: 'success',
-                  duration: 2000,
+                  duration: 2000
                 })
               })
             })
@@ -621,7 +622,7 @@ export default {
           title: 'Fail',
           message: 'json格式错误',
           type: 'error',
-          duration: 2000,
+          duration: 2000
         })
         return
       }
@@ -652,7 +653,7 @@ export default {
               title: 'Success',
               message: 'Update Successfully',
               type: 'success',
-              duration: 2000,
+              duration: 2000
             })
           })
         }
@@ -662,7 +663,7 @@ export default {
       this.$confirm('确定删除吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning',
+        type: 'warning'
       }).then(() => {
         job.removeJob(row.id).then((response) => {
           this.fetchData()
@@ -670,7 +671,7 @@ export default {
             title: 'Success',
             message: 'Delete Successfully',
             type: 'success',
-            duration: 2000,
+            duration: 2000
           })
         })
       })
@@ -681,7 +682,7 @@ export default {
       this.$confirm('确定执行吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning',
+        type: 'warning'
       }).then(() => {
         const param = {}
         param.jobId = row.id
@@ -691,7 +692,7 @@ export default {
             title: 'Success',
             message: 'Execute Successfully',
             type: 'success',
-            duration: 2000,
+            duration: 2000
           })
         })
       })
@@ -700,7 +701,7 @@ export default {
     handlerViewLog(row) {
       this.$router.push({
         path: '/datax/log/jobLog',
-        query: { jobId: row.id },
+        query: { jobId: row.id }
       })
     },
     handlerStart(row) {
@@ -709,7 +710,7 @@ export default {
           title: 'Success',
           message: 'Start Successfully',
           type: 'success',
-          duration: 2000,
+          duration: 2000
         })
       })
     },
@@ -719,7 +720,7 @@ export default {
           title: 'Success',
           message: 'Start Successfully',
           type: 'success',
-          duration: 2000,
+          duration: 2000
         })
       })
     },
@@ -762,7 +763,7 @@ export default {
       // FileReader读取文件内容
       const reader = new FileReader()
       reader.readAsText(file.raw, 'UTF-8')
-      reader.onload = function (e) {
+      reader.onload = function(e) {
         // urlData就是对应的文件内容
         const urlData = this.result
         _this.jsonContent = urlData
@@ -773,15 +774,15 @@ export default {
     // 数据源列表
     fetchSourceData() {
       datasourceApi.getDataSourceList().then((response) => {
-        const { records } = response
-        const { total } = response
+        // const { records } = response
+        // const { total } = response
         this.blockStrategies = response
       })
     },
     // schema列表
     async getSchemaList() {
       const schemaList = await getTableSchema({
-        datasourceId: this.temp.datasourceId,
+        datasourceId: this.temp.datasourceId
       })
       console.log(schemaList)
       this.schemaList = schemaList
@@ -804,20 +805,20 @@ export default {
         // extraKeys: { Ctrl: 'delCharBefore' }, // 自定义快捷键
         hintOptions: {
           // 自定义提示选项,
-          completeSingle: false,
+          completeSingle: false
           // tables: _this.tips,
         },
         configureMouse() {
           console.log(window.getSelection())
           return {
-            unit: 'word',
+            unit: 'word'
           }
-        },
+        }
       })
-    },
+    }
   },
 
-  editor: null,
+  editor: null
 }
 </script>
 
