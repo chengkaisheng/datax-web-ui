@@ -187,7 +187,7 @@
         <span>文件夹名称：</span><el-input v-model="folderName" style="width: 71%; margin-left: 20px" />
         <div slot="footer" class="dialog-footer">
           <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-          <el-button type="goon" size="small" @click="createFolder">
+          <el-button type="goon" size="small" :disabled="isdisabled" @click="createFolder">
             确定
           </el-button>
         </div>
@@ -200,7 +200,7 @@
         />
         <div slot="footer" class="dialog-footer">
           <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-          <el-button type="goon" size="small" @click="createWorkflow">
+          <el-button type="goon" size="small" :disabled="isdisabled" @click="createWorkflow">
             确定
           </el-button>
         </div>
@@ -210,10 +210,11 @@
         <span style="margin-left: 20px">名称：</span><el-input
           v-model="reWorkflowName"
           style="width: 80%; margin-left: 20px"
+          oninput="this.value = this.val.replace(/^ +| +$/g, '')"
         />
         <div slot="footer" class="dialog-footer">
           <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-          <el-button type="goon" size="small" @click="ReNameWorkflow">
+          <el-button type="goon" size="small" :disabled="isdisabled" @click="ReNameWorkflow">
             确定
           </el-button>
         </div>
@@ -224,8 +225,8 @@
 
 <script>
 import * as modeling from '@/api/datax-job-modeling'
-import * as workFlowApi from '@/api/datax-job-info'
-import * as datasourceApi from '@/api/datax-jdbcDatasource'
+// import * as workFlowApi from '@/api/datax-job-info'
+// import * as datasourceApi from '@/api/datax-jdbcDatasource'
 import * as jobProjectApi from '@/api/datax-job-project'
 import Model from './model.vue'
 import { component as VueContextMenu } from '@xunlei/vue-context-menu'
@@ -239,6 +240,7 @@ export default {
   },
   data() {
     return {
+      isdisabled: true,
       tabDelLoading: false,
       icon: 'el-icon-arrow-left',
       width: 325,
@@ -440,6 +442,29 @@ export default {
     }
   },
   watch: {
+    reWorkflowName(val) {
+      console.log(val)
+      this.isdisabled = false
+      var rel = /^ +| +$/g
+      if (rel.test(val) || val === '') {
+        this.isdisabled = true
+      }
+    },
+    folderName(val) {
+      this.isdisabled = false
+      var rel = /^ +| +$/g
+      if (rel.test(val) || val === '') {
+        this.isdisabled = true
+      }
+    },
+    workflowName(val) {
+      this.isdisabled = false
+      var rel = /^ +| +$/g
+      if (rel.test(val) || val === '') {
+        this.isdisabled = true
+      }
+    },
+
     'form.tableNamePattern_o'(val) {
       this.form.tableNamePattern = '%s' + val
     },
@@ -501,18 +526,7 @@ export default {
     // 右击显示菜单 区域位置
     this.contextMenuTarget = myChartContainer
     this.contextMenu1Target = myChartContainer
-    const a = document.getElementById('newFile')
-    const b = document.getElementsByClassName('right-menu1')
-    // a.onmouseover = function() {
-    //   for (var i = 0; i < b.length; i++) {
-    //     b[i].style.display = 'block'
-    //   }
-    // }
-    a.onmouseout = function() {
-      for (var i = 0; i < b.length; i++) {
-        b[i].style.display = 'none'
-      }
-    }
+
     const menu = document.getElementsByClassName('right-menu')
 
     // 关闭浏览器右击默认菜单
@@ -532,6 +546,21 @@ export default {
 
     //   return false
     // }
+    const a = document.getElementById('newFile')
+    const b = document.getElementsByClassName('right-menu1')
+    for (var i = 0; i < b.length; i++) {
+      b[i].style.display = 'none'
+    }
+    a.onmouseover = function() {
+      for (var i = 0; i < b.length; i++) {
+        b[i].style.display = 'block'
+      }
+    }
+    a.onmouseout = function() {
+      for (var i = 0; i < b.length; i++) {
+        b[i].style.display = 'none'
+      }
+    }
   },
   created() {
     document.addEventListener('mouseup', this.mouseUp)
@@ -855,6 +884,7 @@ export default {
       console.log('任务数据', data)
       this.$store.commit('TABLEDATA', data)
       this.$store.commit('Singledata', data)
+      this.reWorkflowName = data.name
       this.nowObject = data
       if (data.jobType === 'wenjianjia') {
         return
@@ -1279,7 +1309,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" >
 #newFile {
   position: relative;
   .right-menu1 {
@@ -1306,7 +1336,7 @@ export default {
     box-shadow: 5px 5px 10px gray;
     a {
       padding: 2px 15px;
-      width: 176px;
+      width: 150px;
       height: 28px;
       line-height: 28px;
       text-align: left;
@@ -1318,63 +1348,7 @@ export default {
         margin-left: 20px;
       }
     }
-    #level3 {
-      padding: 2px 15px;
-      width: 176px;
-      height: 28px;
-      line-height: 28px;
-      text-align: left;
-      display: block;
-      color: #1a1a1a;
-      text-decoration: none;
-      font-size: 13px;
-      position: relative;
-      .right-menu2 {
-        border: 1px solid #eee;
-        box-shadow: 0 0.5em 1em 0 rgba(0, 0, 0, 0.1);
-        height: 90px;
-        border-radius: 1px;
-        display: block;
-        margin-left: 116px;
-        margin-top: 28px;
-        left: 60px;
-        top: -28px;
-        font-family: Microsoft Yahei, Avenir, Helvetica, Arial, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        text-align: center;
-        color: #2c3e50;
-        position: absolute;
-        background: #fff;
-        border: 1px solid rgba(0, 0, 0, 0.2);
-        border-radius: 3px;
-        z-index: 999;
-        display: block;
-        padding: 2px;
-        box-shadow: 5px 5px 10px gray;
-        a {
-          padding: 2px 15px;
-          width: 176px;
-          height: 28px;
-          line-height: 28px;
-          text-align: left;
-          display: block;
-          color: #1a1a1a;
-          text-decoration: none;
-          font-size: 13px;
-          i {
-            margin-left: 20px;
-          }
-        }
-        a:hover {
-          background: #42b983;
-          color: #fff;
-        }
-        hr {
-          color: #eee;
-        }
-      }
-    }
+
     a:hover {
       background: #42b983;
       color: #fff;

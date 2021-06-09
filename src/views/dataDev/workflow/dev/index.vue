@@ -111,32 +111,36 @@
               style="width: 100%; height: 600px; margin-top: 25px"
               icon-class="fengdie"
             /> -->
-            <Workflow v-if="item.name !== '首页'" :tabs-ids="item.content.id" />
+            <!-- <svg-icon
+              icon-class="workflow_dev"
+              style="font-size: 15px; margin-right: 3px"
+            /> -->
+            <Workflow v-if="item.name !== '首页'" :tabs-ids="item.content.id" class="rg" />
           </el-tab-pane>
         </el-tabs>
       </div>
       <!-- 新建文件夹对话框 -->
       <el-dialog :visible.sync="newFolderDialog" width="40%" title="新建文件夹">
-        <span style="margin-left: 20px">名称：</span><el-input v-model="folderName" style="width: 80%; margin-left: 20px" />
+        <span style="margin-left: 20px">名称：</span><el-input v-model="folderName" style="width: 80%; margin-left: 20px" placeholder="请输入名称" />
         <div slot="footer" class="dialog-footer">
           <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-          <el-button type="goon" size="small" @click="createFolder"> 确定 </el-button>
+          <el-button type="goon" size="small" :disabled="isdisabled" @click="createFolder"> 确定 </el-button>
         </div>
       </el-dialog>
       <!-- 新建工作流对话框 -->
       <el-dialog :visible.sync="newETLdialog" width="40%" title="新建工作流">
-        <span style="margin-left: 20px">名称：</span><el-input v-model="workflowName" style="width: 80%; margin-left: 20px" />
+        <span style="margin-left: 20px">名称：</span><el-input v-model="workflowName" style="width: 80%; margin-left: 20px" placeholder="请输入名称" />
         <div slot="footer" class="dialog-footer">
           <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-          <el-button type="goon" size="small" @click="createWorkflow"> 确定 </el-button>
+          <el-button type="goon" size="small" :disabled="isdisabled" @click="createWorkflow"> 确定 </el-button>
         </div>
       </el-dialog>
       <!-- 工作流重命名 -->
       <el-dialog :visible.sync="ReETLdialog" width="30%" title="重命名工作流">
-        <span style="margin-left: 20px">名称：</span><el-input v-model="reWorkflowName" style="width: 70%; margin-left: 20px" />
+        <span style="margin-left: 20px">名称：</span><el-input v-model="reWorkflowName" style="width: 70%; margin-left: 20px" placeholder="请输入名称" />
         <div slot="footer" class="dialog-footer">
           <el-button size="small" @click="cancelDialog"> 取消 </el-button>
-          <el-button type="goon" size="small" @click="ReNameWorkflow"> 确定 </el-button>
+          <el-button type="goon" size="small" :disabled="isdisabled" @click="ReNameWorkflow"> 确定 </el-button>
         </div>
       </el-dialog>
     </div>
@@ -168,6 +172,7 @@ export default {
   },
   data() {
     return {
+      isdisabled: true,
       loading: true,
       fieldTermChecked: false,
       collectionTermChecked: false,
@@ -318,6 +323,27 @@ export default {
     }
   },
   watch: {
+    reWorkflowName(val) {
+      this.isdisabled = false
+      var rel = /^ +| +$/g
+      if (rel.test(val) || val === '') {
+        this.isdisabled = true
+      }
+    },
+    workflowName(val) {
+      this.isdisabled = false
+      var rel = /^ +| +$/g
+      if (rel.test(val) || val === '') {
+        this.isdisabled = true
+      }
+    },
+    folderName(val) {
+      this.isdisabled = false
+      var rel = /^ +| +$/g
+      if (rel.test(val) || val === '') {
+        this.isdisabled = true
+      }
+    },
     'form.tableNamePattern_o'(val) {
       this.form.tableNamePattern = '%s' + val
     },
@@ -662,9 +688,9 @@ export default {
         const indexTabs = this.editableTabs.map(item => item.title).indexOf(obj.name)
         console.log(indexTabs)
         if (indexTabs !== -1) {
-          // this.$nextTick(() => {
-          this.editableTabsValue = indexTabs + ''
-          // })
+          this.$nextTick(() => {
+            this.editableTabsValue = indexTabs + ''
+          })
 
           console.log('this.editableTabsValue', this.editableTabsValue)
         } else {
@@ -956,21 +982,21 @@ export default {
     // 拖拽tree
     handleDragStart(node, ev) {
       this.dropId = node.data.id
-      console.log('节点开始拖拽时触发的事件', node)
+      // console.log('节点开始拖拽时触发的事件', node)
     },
     handleDragEnter(draggingNode, dropNode, ev) {
       this.targetId = dropNode.key
-      console.log('拖拽进入其他节点时触发的事件', this.targetId)
-      console.log('拖拽进入其他节点时触发的事件', dropNode)
+      // console.log('拖拽进入其他节点时触发的事件', this.targetId)
+      // console.log('拖拽进入其他节点时触发的事件', dropNode)
     },
     handleDragLeave(draggingNode, dropNode, ev) {
       console.log('拖拽离开某个节点时触发的事件')
     },
     handleDragOver(draggingNode, dropNode, ev) {
-      console.log('拖拽结束时（可能未成功）触发的事件')
+      // console.log('拖拽结束时（可能未成功）触发的事件')
     },
     handleDragEnd(draggingNode, dropNode, dropType, ev) {
-      console.log('拖拽成功完成时触发的事件')
+      // console.log('拖拽成功完成时触发的事件')
     },
     allowDrop(draggingNode, dropNode, type) {
       console.log(dropNode)
@@ -1000,13 +1026,14 @@ export default {
           .then((res) => {
             console.log(res)
             if (res.code === 200) {
-              console.log(res.msg)
-            } else {
+              // console.log(res.msg)
               this.$message.err(res.msg)
             }
+            this.getAllWorkflow()
           })
           .catch((err) => {
             console.log(err)
+            this.$message.err(err.msg)
           })
       } else {
         this.$message.error('拖拽失败，目标必须是文件夹')
@@ -1018,7 +1045,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" >
 .app-container {
   padding: 0;
   .head-container {
@@ -1144,80 +1171,76 @@ export default {
         }
       }
     }
-    .rt {
+     .rt {
     width: 100%;
     flex: 1;
+
     // overflow-x: scroll;
     // overflow-x: hidden;
     overflow-y: hidden;
-    // .el-tabs {
-    //   .el-tabs__header {
-    //     width: 100%;
-    //     height: 32px;
-    //     line-height: 32px;
-    //     margin: 0;
-    //     .el-tabs__nav-wrap {
-    //       // padding: 0 10px;
-    //       // .is-scrollable{
-    //       //   padding:0 10px;
-    //       // }
-    //       // background-color: #f8f8fa;
-    //       .el-tabs__nav-next,
-    //       .el-tabs__nav-prev {
-    //         height: 32px;
-    //         line-height: 32px;
-    //          background-color: #ccc;
-    //       }
-    //     }
+    .el-tabs {
+      .el-tabs__header {
+        width: 100%;
+        height: 32px;
+        line-height: 32px;
+        margin: 0;
+        .el-tabs__nav-wrap {
+          background-color: #f8f8fa;
+          .el-tabs__nav-next,
+          .el-tabs__nav-prev {
+            height: 32px;
+            line-height: 32px;
+          }
+        }
 
-    //     .el-tabs__nav {
-    //       // border: 1px solid #dfe4ed;
-    //       // width: 200px;
-    //       border-top: 1px solid #f8f8fa;
-    //       .el-tabs__item {
-    //         // width: 100%;
-    //          // width: 200px;
-    //         border: none;
-    //         border-top: 1px solid #f8f8fa;
-    //         border-radius: 6px 6px 0px 0px;
-    //         height: 32px;
-    //         line-height: 32px;
-    //         position: relative;
-    //         overflow: hidden;
-    //         vertical-align: bottom;
-    //         text-overflow: ellipsis;
-    //         white-space: nowrap;
-    //         .el-icon-close {
-    //           position: absolute;
-    //           right: 10px;
-    //           top: 50%;
-    //           transform: translateY(-50%);
-    //         }
-    //       }
-    //     }
-    //   }
-    //   .el-tabs__item.is-active {
-    //     background-color: #ffffff;
-    //     // border-bottom-color:  #3d5eff;
-    //   }
-    //   .el-tab-pane {
-    //     // padding: 10px;
-    //     height: 100%;
-    //     position: relative;
-    //     .job_detail {
-    //       height: 100%;
-    //     }
-    //     .title_h3 {
-    //       position: absolute;
-    //       font-size: 24px;
-    //       font-weight: 700;
-    //       font-family: '楷体';
-    //       left: 24px;
-    //       top: 30px;
-    //     }
-    //   }
-    // }
+        .el-tabs__nav {
+          // width: 200px;
+          // border-top: 1px solid #f8f8fa;
+          .el-tabs__item {
+            // width: 100%;
+            width: 200px;
+            border: none;
+            // border-top: 1px solid #f8f8fa;
+            border-radius: 6px 6px 0px 0px;
+            height: 32px;
+            line-height: 29px;
+            position: relative;
+            overflow: hidden;
+            vertical-align: bottom;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            .el-icon-close {
+              position: absolute;
+              right: 4px;
+              top: 46%;
+              transform: translateY(-50%);
+            }
+          }
+        }
+      }
+      .el-tabs__item.is-active {
+        background-color: #ffffff;
+        // border-bottom-color:  #3d5eff;
+      }
+      .el-tab-pane {
+        // padding: 10px;
+        height: 100%;
+        position: relative;
+        .job_detail {
+          height: 100%;
+        }
+        .title_h3 {
+          position: absolute;
+          font-size: 24px;
+          font-weight: 700;
+          font-family: '楷体';
+          left: 24px;
+          top: 30px;
+        }
+      }
+    }
   }
+
     .rg {
       // width: 100px;
       flex: 1;

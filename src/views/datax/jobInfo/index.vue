@@ -567,6 +567,7 @@ rkJggg=="
             v-model="ruleForm.chineseName"
             autocomplete="off"
             size="mini"
+            placeholder="请输入名称"
           />
         </el-form-item>
         <el-form-item
@@ -577,6 +578,7 @@ rkJggg=="
             v-model="ruleForm.englishName"
             autocomplete="off"
             size="mini"
+            placeholder="请输入名称"
           />
         </el-form-item>
         <el-form-item
@@ -587,6 +589,7 @@ rkJggg=="
             v-model="ruleForm.task"
             autocomplete="off"
             size="mini"
+            placeholder="请输入名称"
           />
         </el-form-item>
         <el-form-item>
@@ -959,25 +962,32 @@ export default {
   },
   watch: {
     chineseName(val) {
-      this.isdisabled = false
-      console.log(val)
-      if (val === '') {
+      var rel = /^ +| +$/g
+      if (rel.test(val) || val === '') {
         this.isdisabled = true
+      }else{
+        this.isdisabled = false
       }
     },
     allName(val) {
-      this.isdisabled = false
-      console.log(val)
-      if (val === '') {
+      
+      var rel = /^ +| +$/g
+      if (rel.test(val)||val === '') {
         this.isdisabled = true
+      }else{
+        this.isdisabled = false
       }
+      
     },
     Rename(val) {
       this.isdisabled = false
-      console.log(val)
-      if (val.replace(/^ +| +$/g,'')) {
+      var rel = /^ +| +$/g
+      if (rel.test(val) || val === '') {
         this.isdisabled = true
+      }else{
+        this.isdisabled = false
       }
+      // this.isdisabled = false
     },
     editableTabs(val) {
       console.log(val)
@@ -2344,7 +2354,7 @@ export default {
   },
 }
 </script>
-<style lang="scss">
+<style lang="scss" >
   .el-tabs--card>.el-tabs__header .el-tabs__nav {
       border: 0px solid #dfe4ed;
       border-bottom: none;
