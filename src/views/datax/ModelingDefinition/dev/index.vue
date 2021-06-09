@@ -192,7 +192,7 @@
           </el-button>
         </div>
       </el-dialog>
-      <!-- 新建工作流对话框 -->
+      <!-- 新建模型对话框 -->
       <el-dialog :visible.sync="newETLdialog" width="40%" title="新建表">
         <span style="margin-left: 20px">表名称：</span><el-input
           v-model="workflowName"
@@ -205,7 +205,7 @@
           </el-button>
         </div>
       </el-dialog>
-      <!-- 工作流重命名 -->
+      <!-- 模型重命名 -->
       <el-dialog :visible.sync="ReETLdialog" width="40%" title="重命名模型">
         <span style="margin-left: 20px">名称：</span><el-input
           v-model="reWorkflowName"

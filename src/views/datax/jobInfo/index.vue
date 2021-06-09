@@ -548,6 +548,7 @@ rkJggg=="
       <span style="margin-left: 50px; font-size: 12px">名称：</span><el-input
         v-model="allName"
         style="width: 60%; height: 30px; margin-left: 20px"
+        placeholder="请输入名称"
       />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelDialog"> 取消 </el-button>
@@ -557,7 +558,7 @@ rkJggg=="
       </div>
     </el-dialog>
     <!--新增Hive任务-->
-    <el-dialog width="40%" title="新建" :visible.sync="showHive">
+    <el-dialog width="40%" title="新建任务" :visible.sync="showHive">
       <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm">
         <el-form-item
           label="任务中文名："
@@ -589,7 +590,7 @@ rkJggg=="
             v-model="ruleForm.task"
             autocomplete="off"
             size="mini"
-            placeholder="请输入名称"
+            placeholder="请输入说明"
           />
         </el-form-item>
         <el-form-item>
@@ -680,7 +681,7 @@ rkJggg=="
           type="selection"
           width="55"
         /> -->
-        <el-table-column prop="jobDesc" label="任务名称" />
+        <el-table-column prop="jobDesc" label="任务描述" />
         <el-table-column prop="jobType" label="任务类型" />
         <el-table-column prop="versionTime" label="版本创建时间" width="200" />
         <el-table-column label="操作" width="100">
@@ -970,9 +971,10 @@ export default {
       }
     },
     allName(val) {
-      
+      console.log(val)
+        this.isdisabled = false
       var rel = /^ +| +$/g
-      if (rel.test(val)||val === '') {
+      if (rel.test(val)||val === ''||this.allName==='') {
         this.isdisabled = true
       }else{
         this.isdisabled = false
@@ -1690,6 +1692,9 @@ export default {
     // 新增命名文件夹
     showAllName(type) {
       console.log(type)
+      if(this.allName===''){
+        this.isdisabled=true
+      }
       if (typeof type === 'string') {
         this.dialogNameVisible = true
         this.currentJob = type

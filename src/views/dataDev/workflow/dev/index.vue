@@ -1249,8 +1249,9 @@ export default {
       }
       .el-tabs {
         .el-tabs__content {
-          height: calc(100vh - 80px);
-          overflow-y: auto;
+          // height: calc(100vh - 80px);
+           height: 100%;
+          // overflow-y: auto;
           // overflow-x: auto;
         }
         .el-tabs__header {

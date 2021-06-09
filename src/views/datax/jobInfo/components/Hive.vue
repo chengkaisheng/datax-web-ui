@@ -174,8 +174,8 @@
 
 <script>
 import moment from 'moment'
-import JsonEditor from '@/components/JsonEditor'
-import MarddownEditor from '@/components/MarkdownEditor'
+// import JsonEditor from '@/components/JsonEditor'
+// import MarddownEditor from '@/components/MarkdownEditor'
 import CodeMirror from './codeMirrror'
 import * as job from '@/api/datax-job-info'
 import * as JOB from '@/api/datax-jdbcDatasource'
@@ -187,12 +187,12 @@ import {
   getAsyncTaskInfo,
   getSqlExecuteTaskResults
 } from '@/graphQL/graphQL'
-import jsonFormatVue from '../../../tool/jsonFormat.vue'
+// import jsonFormatVue from '../../../tool/jsonFormat.vue'
 export default {
   name: 'Hive',
   components: {
-    JsonEditor,
-    MarddownEditor,
+    // JsonEditor,
+    // MarddownEditor,
     CodeMirror
   },
   data() {

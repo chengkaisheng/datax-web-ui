@@ -1602,6 +1602,7 @@ export default {
 </style>
 <style lang="scss" scoped>
 .header {
+  height: 38px;
   overflow: hidden;
   padding: 8px 0;
   border-bottom: 1px solid rgba(235, 235, 235, 1);
