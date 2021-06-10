@@ -704,11 +704,12 @@ export default {
             name: newTabName,
             content: obj
           })
+
+          // this.editableTabsValue = newTabName
+          this.$store.commit('SET_WFDEV_TABS', this.editableTabs)
           this.$nextTick(() => {
             this.editableTabsValue = newTabName
           })
-          // this.editableTabsValue = newTabName
-          this.$store.commit('SET_WFDEV_TABS', this.editableTabs)
           console.log('add', this.editableTabs, newTabName)
         }
       } else {
