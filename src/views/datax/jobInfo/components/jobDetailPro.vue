@@ -1625,6 +1625,7 @@ export default {
   // overflow: hidden;
   padding: 10px 0;
   border-bottom: 1px solid rgba(215, 215, 215, 1);
+  background-color: #fff;
 }
 
 .header_action {
@@ -1766,8 +1767,6 @@ export default {
     overflow-y: scroll;
     padding: 0;
 }
-</style>
-<style lang="scss" scoped>
 .el-dialog {
   h3 {
     font-size: 20px;

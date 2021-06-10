@@ -202,8 +202,7 @@
                   v-model="writerColumnsParam.checkAll"
                   :indeterminate="writerColumnsParam.isIndeterminate"
                   @change="wHandleCheckAllChange"
-                  >全选</el-checkbox
-                >
+                >全选</el-checkbox>
                 <div style="margin: 15px 0" />
                 <el-checkbox-group
                   v-model="taskParam.writerColumns"
@@ -213,8 +212,7 @@
                     v-for="(item, index) in fromColumnList"
                     :key="index"
                     :label="item"
-                    >{{ item }}</el-checkbox
-                  >
+                  >{{ item }}</el-checkbox>
                 </el-checkbox-group>
               </el-form-item>
             </el-col>
@@ -387,9 +385,10 @@
               <cron v-model="temp.jobCron" />
               <span slot="footer" class="dialog-footer">
                 <el-button @click="showCronBox = false">关闭</el-button>
-                <el-button type="primary" @click="showCronBox = false"
-                  >确 定</el-button
-                >
+                <el-button
+                  type="primary"
+                  @click="showCronBox = false"
+                >确 定</el-button>
               </span>
             </el-dialog>
             <el-form-item label="Cron" prop="jobCron">
@@ -701,7 +700,7 @@ import qualityWriter from '@/views/datax/jsonQuality/reader'
 import {
   getTables as dsQueryGetTables,
   getColumns as dsQueryGetColumns,
-  getTableSchema as dsQueryGetSchema,
+  getTableSchema as dsQueryGetSchema
 } from '@/api/metadata-query'
 import { updateJob, updateTask } from '@/api/datax-job-info'
 import { isJSON } from '@/utils/validate'
@@ -715,12 +714,12 @@ export default {
     qualityReader,
     writer,
     qualityWriter,
-    Cron,
+    Cron
   },
   props: {
     title: { type: String, default: '' },
     show: { type: Boolean, default: false },
-    jobId: { type: Number, default: 0 },
+    jobId: { type: Number, default: 0 }
   },
   data() {
     return {
@@ -738,7 +737,7 @@ export default {
         syncType: 0, // 同步方式
         incSetting: 0, // 增量配置模式
         incExtract: '', // 根据日期字段
-        incExtractText: '', // 增量抽取条件
+        incExtractText: '' // 增量抽取条件
       },
 
       currentTask: {},
@@ -751,38 +750,38 @@ export default {
       showCronBox: false,
       rules: {
         jobGroup: [
-          { required: true, message: '执行器不能为空', trigger: 'change' },
+          { required: true, message: '执行器不能为空', trigger: 'change' }
         ],
         executorRouteStrategy: [
-          { required: true, message: '路由策略不能为空', trigger: 'change' },
+          { required: true, message: '路由策略不能为空', trigger: 'change' }
         ],
         executorBlockStrategy: [
-          { required: true, message: '阻塞处理不能为空', trigger: 'change' },
+          { required: true, message: '阻塞处理不能为空', trigger: 'change' }
         ],
         glueType: [
-          { required: true, message: 'jobType is required', trigger: 'change' },
+          { required: true, message: 'jobType is required', trigger: 'change' }
         ],
         projectId: [
           {
             required: true,
             message: 'projectId is required',
-            trigger: 'change',
-          },
+            trigger: 'change'
+          }
         ],
         // name: [{ required: true, message: '任务名称不能为空', trigger: 'blur' }],
         jobDesc: [
-          { required: true, message: '任务描述不能为空', trigger: 'blur' },
+          { required: true, message: '任务描述不能为空', trigger: 'blur' }
         ],
         jobProject: [
           {
             required: true,
             message: 'jobProject is required',
-            trigger: 'blur',
-          },
+            trigger: 'blur'
+          }
         ],
         jobCron: [
-          { required: true, message: 'cron表达式不能为空', trigger: 'blur' },
-        ],
+          { required: true, message: 'cron表达式不能为空', trigger: 'blur' }
+        ]
       },
       temp: {
         id: undefined,
@@ -813,7 +812,7 @@ export default {
         primaryKey: '',
         projectId: '',
         datasourceId: '',
-        readerTable: '',
+        readerTable: ''
       },
       executorList: '',
       jobIdList: '',
@@ -822,7 +821,7 @@ export default {
       blockStrategies: [
         { value: 'SERIAL_EXECUTION', label: '单机串行' },
         { value: 'DISCARD_LATER', label: '丢弃后续调度' },
-        { value: 'COVER_EARLY', label: '覆盖之前调度' },
+        { value: 'COVER_EARLY', label: '覆盖之前调度' }
       ],
       routeStrategies: [
         { value: 'FIRST', label: '第一个' },
@@ -833,14 +832,14 @@ export default {
         { value: 'LEAST_FREQUENTLY_USED', label: '最不经常使用' },
         { value: 'LEAST_RECENTLY_USED', label: '最近最久未使用' },
         { value: 'FAILOVER', label: '故障转移' },
-        { value: 'BUSYOVER', label: '忙碌转移' },
+        { value: 'BUSYOVER', label: '忙碌转移' }
       ],
       glueTypes: [{ value: 'GLUE_SHELL', label: 'Shell任务' }],
       incrementTypes: [
         { value: 0, label: '无' },
         { value: 1, label: '主键自增' },
         { value: 2, label: '时间自增' },
-        { value: 3, label: 'HIVE分区' },
+        { value: 3, label: 'HIVE分区' }
       ],
       triggerNextTimes: '',
       registerNode: [],
@@ -852,7 +851,7 @@ export default {
       timeFormatTypes: [
         { value: 'yyyy-MM-dd', label: 'yyyy-MM-dd' },
         { value: 'yyyyMMdd', label: 'yyyyMMdd' },
-        { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' },
+        { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' }
       ],
       replaceFormatTypes: [
         { value: 'yyyy/MM/dd', label: 'yyyy/MM/dd' },
@@ -860,26 +859,26 @@ export default {
         { value: 'HH:mm:ss', label: 'HH:mm:ss' },
         { value: 'yyyy/MM/dd HH:mm:ss', label: 'yyyy/MM/dd HH:mm:ss' },
         { value: 'yyyy-MM-dd HH:mm:ss', label: 'yyyy-MM-dd HH:mm:ss' },
-        { value: 'Timestamp', label: '时间戳' },
+        { value: 'Timestamp', label: '时间戳' }
       ],
       statusList: [
         { value: 500, label: '失败' },
         { value: 502, label: '失败(超时)' },
         { value: 200, label: '成功' },
-        { value: 0, label: '无' },
+        { value: 0, label: '无' }
       ],
       /** 源列 */
       fromColumnList: [],
       writerColumnsParam: {
         checkAll: false,
         isIndeterminate: true,
-        ifCreateTable: false,
+        ifCreateTable: false
         // partition: 0, // 分区配置
         // partitionText: '' // 分区字段
       },
       writerPartition: {
         partition: 0, // 分区配置
-        partitionText: '', // 分区字段
+        partitionText: '' // 分区字段
       },
       /** schema */
       schemaList: [],
@@ -891,12 +890,12 @@ export default {
         // rules: [],
         lcheckAll: false,
         rcheckAll: false,
-        isIndeterminate: true,
+        isIndeterminate: true
       },
       /** 源表列 */
       fromColumnsList: [],
       /** 目标表列 */
-      toColumnsList: [],
+      toColumnsList: []
     }
   },
   computed: {
@@ -939,7 +938,7 @@ export default {
             : ''
         }
         return ''
-      },
+      }
     },
     readerTablesText() {
       if (this.taskParam.hasOwnProperty('readerTables')) {
@@ -955,7 +954,7 @@ export default {
       },
       get() {
         return this.taskParam.rdbmsWriter?.preSql
-      },
+      }
     },
     postSQL: {
       set(val) {
@@ -963,7 +962,7 @@ export default {
       },
       get() {
         return this.taskParam.rdbmsWriter?.postSql
-      },
+      }
     },
     writerPath: {
       set(val) {
@@ -971,7 +970,7 @@ export default {
       },
       get() {
         return this.taskParam.hiveWriter?.writerPath
-      },
+      }
     },
     writerDefaultFS: {
       set(val) {
@@ -979,7 +978,7 @@ export default {
       },
       get() {
         return this.taskParam.hiveWriter?.writerDefaultFS
-      },
+      }
     },
     writerFileName: {
       set(val) {
@@ -987,7 +986,7 @@ export default {
       },
       get() {
         return this.taskParam.hiveWriter?.writerFileName
-      },
+      }
     },
     writerFileType: {
       set(val) {
@@ -995,7 +994,7 @@ export default {
       },
       get() {
         return this.taskParam.hiveWriter?.writerFileType
-      },
+      }
     },
     writeMode: {
       set(val) {
@@ -1003,7 +1002,7 @@ export default {
       },
       get() {
         return this.taskParam.hiveWriter?.writeMode
-      },
+      }
     },
     writeFieldDelimiter: {
       set(val) {
@@ -1011,7 +1010,7 @@ export default {
       },
       get() {
         return this.taskParam.hiveWriter?.writeFieldDelimiter
-      },
+      }
     },
     readerColumns() {
       return this.$store.state.taskAdmin.selectReaderColumn
@@ -1019,7 +1018,7 @@ export default {
     },
     writerColumns() {
       return this.taskParam.writerColumns
-    },
+    }
   },
   watch: {
     show(val) {
@@ -1080,7 +1079,7 @@ export default {
       val.forEach((row, index) => {
         const obj = {
           column: row,
-          index,
+          index
         }
         this.mappingTable.push(obj)
       })
@@ -1089,7 +1088,7 @@ export default {
       console.log(val)
       this.tableForm.rcolumns = JSON.parse(JSON.stringify(val))
       this.toColumnsList = val
-    },
+    }
   },
   created() {
     this.getExecutor()
@@ -1284,7 +1283,7 @@ export default {
      */
     getSchema() {
       dsQueryGetSchema({
-        datasourceId: this.taskParam.writerDatasourceId,
+        datasourceId: this.taskParam.writerDatasourceId
       }).then((response) => {
         this.schemaList = response
       })
@@ -1317,13 +1316,13 @@ export default {
       this.taskParam.rdbmsReader = {
         readerSplitPk: readerData.splitPk,
         whereParams: readerData.where,
-        querySql: readerData.querySql,
+        querySql: readerData.querySql
       }
       this.taskParam.readerSync = {
         syncType: readerData.syncType,
         incSetting: readerData.incSetting,
         incExtract: readerData.incExtract,
-        incExtractText: readerData.incExtractText,
+        incExtractText: readerData.incExtractText
       }
       const jobParam = {
         readerDatasourceId: this.$store.state.taskAdmin.readerDataSourceID,
@@ -1348,7 +1347,7 @@ export default {
         mongoDBReader: this.taskParam.mongoDBReader,
         mongoDBWriter: this.taskParam.mongoDBWriter,
         writerPartition: this.writerPartition,
-        readerSync: this.taskParam.readerSync,
+        readerSync: this.taskParam.readerSync
       }
       // console.log(jobParam)
       if (
@@ -1359,7 +1358,7 @@ export default {
           title: 'Fail',
           message: 'json格式错误',
           type: 'error',
-          duration: 2000,
+          duration: 2000
         })
         return
       }
@@ -1404,7 +1403,7 @@ export default {
           title: 'Success',
           message: '修改成功',
           type: 'success',
-          duration: 2000,
+          duration: 2000
         })
       })
     },
@@ -1464,11 +1463,11 @@ export default {
           title: 'Success',
           message: '修改成功',
           type: 'success',
-          duration: 2000,
+          duration: 2000
         })
       })
-    },
-  },
+    }
+  }
 }
 </script>
 

@@ -2404,11 +2404,12 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .header {
   overflow: hidden;
   padding: 10px 0;
   border-bottom: 1px solid rgba(215, 215, 215, 1);
+  background-color: #fff;
 }
 
 .header_action {
@@ -2588,8 +2589,6 @@ export default {
 .log_detail_window >>> .el-dialog__body {
   padding: 20px 40px;
 }
-</style>
-<style lang="scss" scoped>
 .el-dialog {
   h3 {
     font-size: 20px;
