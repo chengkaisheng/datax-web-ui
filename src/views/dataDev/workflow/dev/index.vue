@@ -369,6 +369,19 @@ export default {
         this.getAllWorkflow(this.project_id, 'workflow')
       }
     },
+    '$store.state.taskAdmin.wfdevTabs'(val) {
+      // this.loadProject(val)
+      console.log(val, '当前项目')
+      if (val.length === 0) {
+        this.editableTabsValue = '首页'
+      }
+      this.editableTabs = val
+      // if (typeof val === 'string') {
+      //   this.project_id = parseInt(val.split('/')[0])
+      //   this.serachWorkFlowList(parseInt(val.split('/')[0]))
+      //   this.getAllWorkflow(this.project_id, 'workflow')
+      // }
+    },
     // 快速检索工作流
     search: function(val) {
       this.$refs.tree.filter(val)
@@ -425,6 +438,7 @@ export default {
     this.getProjectList()
     // this.loadProject(this.$store.state.project.currentItem)
     this.editableTabs = this.$store.state.taskAdmin.wfdevTabs
+    console.log(this.$store.state.taskAdmin.wfdevTabs)
     // this.handleWorkFlow(this.$store.state.workflow.currentData)
   },
   beforeDestroy() {

@@ -288,7 +288,7 @@ rkJggg=="
         @tab-click="JobTabClick"
       >
         <el-tab-pane
-          v-if="!lasttab || !$store.state.taskAdmin.taskDetailList.length"
+          v-if="lasttab || !$store.state.taskAdmin.taskDetailList.length"
           v-loading="tabLoading"
           style="user-select: none"
           label="首页"
@@ -1015,8 +1015,19 @@ export default {
         }, 100)
       }
     },
-    taskList(val) {
-      this.List = val
+    // taskList(val) {
+    //   // deep: true,
+    //   console.log(val)
+    //   this.List = val
+    // },
+    taskList: {
+      deep: true,
+      handler(newValue){
+         
+      console.log(newValue)
+      this.List = newValue
+      }
+     
     },
     taskDetailID(val) {
       this.jobDetailIdx = val
@@ -1092,7 +1103,25 @@ export default {
         //   console.log(newValue, 'newValue12')
         //   this.removeJobTab(newValue)
         // }
+        if(newValue===[]){
+          this.$nextTick(()=>{
+            this.jobDetailIdx = '首页'
+          })
+          console.log(newValue, '3333333333333')
+        }
+         
         this.tablist = newValue
+      },
+    },
+    '$store.state.taskAdmin.taskList': {
+      deep: true,
+      handler: function (newValue) {
+        // if (newValue !== oldValue) {
+        //   console.log(newValue, 'newValue12')
+        //   this.removeJobTab(newValue)
+        // }
+         console.log(newValue, '4444444')
+        // this.tablist = newValue
       },
     },
     search: function (val) {
@@ -1293,6 +1322,12 @@ export default {
     // 获取tree数据结构
     getDataTree(data) {
       this.loading = true
+      if(this.tablist.length === 0){
+         this.$nextTick(()=>{
+        this.jobDetailIdx = '首页'
+      })
+      console.log(11111111111)
+      }
       if (this.$store.state.project.currentItem) {
         let id = sessionStorage.getItem('strParam')
         console.log('_+++++++', this.$store.state.project.currentItem)
@@ -1407,6 +1442,7 @@ export default {
       // this.$store.commit('SETCODE', '')
       this.$nextTick(() => {
         if (ele.label === '首页') {
+          this.jobDetailIdx = '首页'
           console.log('欢迎不需要')
         } else {
           job
@@ -2029,7 +2065,7 @@ export default {
         this.tabLoading = true
         this.jobType = data.jobType
         this.$store.commit('changeGroupData', data)
-        this.$store.commit('changeGroupName', data.name)
+        // this.$store.commit('changeGroupName', data.name)
         this.$store.commit('changeTreeId', data.id)
         this.currentJobName = data.name
         if (data.jobId) {
@@ -2068,6 +2104,7 @@ export default {
               this.tabLoading = false
             })
         } else {
+          this.$store.commit('changeGroupName', data.name)
           this.$store.commit('changeJobId', '')
           this.createNewJob(data.jobType)
         }
@@ -2710,7 +2747,7 @@ export default {
         }
 
         .el-tabs__nav {
-          width: 200px;
+          // width: 200px;
           border-top: 1px solid #f8f8fa;
           .el-tabs__item {
             // width: 100%;

@@ -649,6 +649,10 @@ export default {
     getlist(val, newtask) {
       this.loading = true
       const projectId = { projectId: val }
+      console.log(projectId)
+      // if (projectId.projectId !== projectId.projectId) {
+      //   this.editableTabs.length = 0
+      // }
       modeling
         .Getlist(projectId)
         .then((res) => {

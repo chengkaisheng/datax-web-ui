@@ -1586,10 +1586,10 @@ export default {
           console.log(this.scheduleForm)
           console.log(this.$store.state.taskAdmin.jobDataDetail, 'data')
         } else {
-          return false
+          // return false
         }
+        this.scheduleShow = false
       })
-      this.scheduleShow = false
     },
     resetScheduleForm(formName) {
       console.log(this.scheduleForm.cron)
@@ -1740,7 +1740,7 @@ export default {
   padding-left: 24px;
   // height: calc(50vh - 157px);
   height: 100%;
-  overflow: scroll;
+  // overflow: scroll;
   background: white;
   font-size: 13px;
 }
@@ -1824,7 +1824,7 @@ export default {
 
 .json_content {
   // height: calc(50vh - 157px);
-  overflow: auto;
+  // overflow: auto;
 }
 
 .taskRelation {

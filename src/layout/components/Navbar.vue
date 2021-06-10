@@ -38,8 +38,7 @@
             v-for="item in options"
             :key="item.id"
             :command="item.id + '/' + item.name"
-            >{{ item.name }}</el-dropdown-item
-          >
+          >{{ item.name }}</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
       <el-dropdown
@@ -47,7 +46,7 @@
         trigger="click"
       >
         <div class="avatar-wrapper">
-          <img src="../../../public/avatar.jpg" class="user-avatar" />
+          <img src="../../../public/avatar.jpg" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -125,7 +124,7 @@ export default {
   components: {
     Breadcrumb,
     Hamburger,
-    ErrorLog,
+    ErrorLog
   },
   data() {
     var validatePass = (rule, value, callback) => {
@@ -142,13 +141,13 @@ export default {
       pswForm: {
         oldPsw: '',
         newPsw: '',
-        VerifyPsw: '',
+        VerifyPsw: ''
       },
       options: [], // 项目数组
       listQuery: {
         pageNo: 1,
         pageSize: 99999,
-        userId: '',
+        userId: ''
       },
       dropdownText: '请选择',
       showCurrent: false,
@@ -157,42 +156,42 @@ export default {
           {
             required: true,
             message: '密码不能为空',
-            trigger: ['blur', 'change'],
+            trigger: ['blur', 'change']
           },
           {
             min: 6,
             max: 16,
             message: '密码必须是6-20位',
-            trigger: ['blur', 'change'],
-          },
+            trigger: ['blur', 'change']
+          }
           // { pattern: /(?!.*\s)(?!^[\u4e00-\u9fa5]+$)(?!^[0-9]+$)(?!^[A-z]+$)(?!^[^A-z0-9]+$)^.{6,16}$/, message: '请输入至少有数组、字母、字符两种组合的6-16位的密码' }
         ],
         newPsw: [
           {
             required: true,
             message: '密码不能为空',
-            trigger: ['blur', 'change'],
+            trigger: ['blur', 'change']
           },
           {
             min: 6,
             max: 16,
             message: '密码必须是6-20位',
-            trigger: ['blur', 'change'],
-          },
+            trigger: ['blur', 'change']
+          }
         ],
         VerifyPsw: [
           {
             required: true,
             message: '密码不能为空',
-            trigger: ['blur', 'change'],
+            trigger: ['blur', 'change']
           },
-          { validator: validatePass, trigger: 'blur' },
-        ],
-      },
+          { validator: validatePass, trigger: 'blur' }
+        ]
+      }
     }
   },
   computed: {
-    ...mapGetters(['sidebar', 'avatar', 'device']),
+    ...mapGetters(['sidebar', 'avatar', 'device'])
   },
   created() {
     this.getProjectList()
@@ -221,6 +220,11 @@ export default {
       this.dropdownText = commandName
       sessionStorage.setItem('strParam', command)
       this.$store.commit('changeCurrent', command)
+      // 切换项目清空任务开发详情列表
+      this.$store.commit('SPLICE_TASKDETAIL', 0)
+      this.$store.commit('SET_TAB_TYPE', '')
+      // 切换项目清空工作流详情列表
+      this.$store.commit('SET_WFDEV_TABS', [])
       console.log(this.$store.state.project.currentItem, 'item')
     },
     // 获取项目列表
@@ -245,7 +249,7 @@ export default {
           const params = {
             userId: parseInt(localStorage.getItem('userId')),
             passWorld: this.pswForm.oldPsw,
-            newPassWorld: this.pswForm.newPsw,
+            newPassWorld: this.pswForm.newPsw
           }
           updatePsw(params)
             .then((res) => {
@@ -264,8 +268,8 @@ export default {
           this.$message.error('验证未通过')
         }
       })
-    },
-  },
+    }
+  }
 }
 </script>
 

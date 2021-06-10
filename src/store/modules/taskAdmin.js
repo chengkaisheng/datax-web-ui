@@ -233,6 +233,9 @@ const mutations = {
   DELETE_TASKDETAIL: (state, removeIndex) => {
     state.taskDetailList.splice(removeIndex, 1)
   },
+  SPLICE_TASKDETAIL: (state, removeIndex) => {
+    state.taskDetailList.splice(removeIndex)
+  },
 
   ADD_TASKDETAIL: (state, ele) => {
     state.taskDetailList.push(ele)

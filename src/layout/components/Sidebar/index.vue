@@ -19,7 +19,7 @@
           </template>
           <svg-icon v-show="isCollapse" style="fontSize: 20px;text-align: center;" icon-class="logo1" />
         </el-menu-item>
-        <mySide :list="userRouter"></mySide>
+        <mySide :list="userRouter" />
         <!-- <el-menu-item style="text-align: center;">
           <template slot="title">
             <img v-show="!isCollapse" slot="title" src="@/assets/LogoTit.png" alt="">
@@ -103,7 +103,7 @@ export default {
       beforeRouter: [],
       arr: [],
       children: [],
-      openeds: ['0','1','2','0','3','4']
+      openeds: ['0', '1', '2', '0', '3', '4']
     }
   },
   created() {
