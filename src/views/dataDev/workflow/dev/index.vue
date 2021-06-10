@@ -686,6 +686,7 @@ export default {
     },
     // 添加或查找tabs页面
     changeTabs(obj) {
+      console.log(obj.name)
       console.log(this.editableTabs)
       if (this.editableTabs.length > 0) {
         const indexTabs = this.editableTabs.map(item => item.title).indexOf(obj.name)
@@ -703,7 +704,10 @@ export default {
             name: newTabName,
             content: obj
           })
-          this.editableTabsValue = newTabName
+          this.$nextTick(() => {
+            this.editableTabsValue = newTabName
+          })
+          // this.editableTabsValue = newTabName
           this.$store.commit('SET_WFDEV_TABS', this.editableTabs)
           console.log('add', this.editableTabs, newTabName)
         }

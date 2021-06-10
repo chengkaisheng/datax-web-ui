@@ -100,8 +100,8 @@
             style="float: right;"
             active-text="物理"
             inactive-text="逻辑"
-            @change="changswitch"
             :width="32"
+            @change="changswitch"
           />
         </div>
 
@@ -672,7 +672,7 @@ export default {
 
     .top {
       height: 42px;
-      line-height: 26px;
+      line-height: 42px;
       margin-bottom: 20px;
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     }
@@ -803,12 +803,12 @@ export default {
     margin: -10px 0 0 0;
     font-size: 14px;
 }
-.header .aside .top {
-    height: 25px;
-    line-height: 19px;
-    margin-bottom: 7px;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-}
+// .header .aside .top {
+//     height: 25px;
+//     line-height: 19px;
+//     margin-bottom: 7px;
+//     border-bottom: 1px solid rgba(0,0,0,0.1);
+// }
 
 .el-input .el-input__inner {
     height: 32px;
