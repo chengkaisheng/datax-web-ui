@@ -14,9 +14,9 @@
       <div id="menu_lt" class="lt" :style="{ width: width + 'px' }">
         <!-- <ul>
           <li
-            v-for="item in workflowList"
+            v-for="item in ModelList"
             :key="item.id"
-            @click="handleWorkFlow(item)"
+            @click="handleModelList(item)"
           >
             {{ item.name }}
           </li>
@@ -45,7 +45,7 @@
           id="main_span"
           ref="tree"
           v-loading="loading"
-          :data="workflowList"
+          :data="ModelList"
           highlight-current
           default-expand-all
           draggable
@@ -53,7 +53,7 @@
           :expand-on-click-node="false"
           :filter-node-method="filterNode"
           @node-drag-start="handleDragStart"
-          @node-click="handleWorkFlow"
+          @node-click="handleModelList"
         >
           <!--        style="
           height: 32px;
@@ -148,6 +148,21 @@
           @tab-click="handleTabs"
         >
           <el-tab-pane
+            v-if="editableTabs.length===0"
+            v-loading="tabDelLoading"
+            style="user-select: none"
+            label="首页"
+            name="首页"
+          >
+            <div style="user-select: none" class="title_h3">
+              一站式数据开发解决方案
+            </div>
+            <svg-icon
+              style="width: 100%; height: calc(100vh - 50px); margin-top: 25px"
+              icon-class="fengdie"
+            />
+          </el-tab-pane>
+          <el-tab-pane
             v-for="(item) in editableTabs"
             :key="item.id"
             v-loading="tabDelLoading"
@@ -164,19 +179,18 @@
               />
               {{ item.name }}
             </span> -->
-            <div v-if="item.name === '首页'" class="title_h3">
+            <!-- <div v-if="item.name === '首页'" class="title_h3">
               一站式数据开发解决方案
             </div>
             <svg-icon
               v-if="item.name === '首页'"
               style="width: 100%; height: calc(100vh - 50px); margin-top: 25px"
               icon-class="fengdie"
-            />
+            /> -->
             <Model
               v-if="item.name !== '首页' && item.jobType !== 'wenjianjia'"
               :tabs-ids="item.id"
               :table-type="item.jobType"
-              :tabledata="nowObject"
               @getTree="gettree"
             />
           </el-tab-pane>
@@ -257,13 +271,13 @@ export default {
       editableTabsValue: '首页',
       tabIndex: 0,
       editableTabs: [
-        {
-          title: '首页',
-          name: '首页',
-          content: ''
-        }
+        // {
+        //   // title: '首页',
+        //   // name: '首页',
+        //   // content: ''
+        // }
       ],
-      workflowList: [
+      ModelList: [
         // {
         //   id: 1,
         //   type: 1,
@@ -303,10 +317,10 @@ export default {
         //   ],
         // },
       ],
-      workflowName: '', // 新建工作流名称
-      reWorkflowName: '', // 重命名工作流名称
-      newETLdialog: false, // 新建工作流对话框显示与否
-      ReETLdialog: false, // 重命名工作流对话框
+      workflowName: '', // 新建名称
+      reWorkflowName: '', // 重命名工名称
+      newETLdialog: false, // 新建对话框显示与否
+      ReETLdialog: false, // 重命名对话框
       newFolderDialog: false, // 文件夹对话框
       folderName: '', // 文件夹名称
       nowObject: {}, // 当前选择的工作流数据对象
@@ -478,10 +492,13 @@ export default {
         this.form.dbNamePattern = '%s'
       }
     },
-    '$store.state.project.currentItem'(val) {
+    '$store.state.project.currentItem'(val, oldval) {
+      console.log('valllll', oldval)
+
       if (val === undefined) {
         return
       }
+      // if (!val !== oldval) { this.editableTabs = [] }
       console.log('valllll', val)
       localStorage.setItem('project_id', JSON.stringify(val))
       const project_id = JSON.parse(localStorage.getItem('project_id'))
@@ -491,15 +508,19 @@ export default {
         this.project_id = parseInt(val.split('/')[0])
         this.getlist(this.project_id)
       }
+      if (val !== oldval) {
+        this.editableTabs.splice(0)
+        this.editableTabsValue = '首页'
+      }
     },
     // 快速检索工作流
     search: function(val) {
       this.$refs.tree.filter(val)
     },
     // 当前选择的工作流节点数据
-    nowObject: function(val) {
-      this.$store.commit('changeCurrent', val)
-    },
+    // nowObject: function(val) {
+    //   this.$store.commit('changeCurrent', val)
+    // },
     Ycoords(val) {
       const menu = document.getElementsByClassName('right-menu')
       const menu1 = document.getElementsByClassName('right-menu1')
@@ -656,30 +677,30 @@ export default {
       modeling
         .Getlist(projectId)
         .then((res) => {
-          this.workflowList = res.content
+          this.ModelList = res.content
           this.loading = false
           // this.lastdata =
           //   res.content[0].children[res.content[0].children.length - 1]
-          if (newtask && newtask.name === 'newtask') {
-            const newarr = []
-            for (var i in res.content[0].children) {
-              if (res.content[0].children[i].children) {
-                newarr.push(res.content[0].children[i].children)
-              } else {
-                newarr.push(res.content[0].children)
-              }
-              if (res.content[0].children[i].children) {
-                for (var j in res.content[0].children[i].children) {
-                  newarr.push(res.content[0].children[i].children[j])
-                }
-              }
-            }
-            this.lastdata = newarr.flat(Infinity).filter((itme) => {
-              return itme.id === newtask.id
-            })
-            console.log('新建工作流-=-=-=newtask', this.lastdata[0])
-            this.handleWorkFlow(this.lastdata[0])
-          }
+          // if (newtask && newtask.name === 'newtask') {
+          //   const newarr = []
+          //   for (var i in res.content[0].children) {
+          //     if (res.content[0].children[i].children) {
+          //       newarr.push(res.content[0].children[i].children)
+          //     } else {
+          //       newarr.push(res.content[0].children)
+          //     }
+          //     if (res.content[0].children[i].children) {
+          //       for (var j in res.content[0].children[i].children) {
+          //         newarr.push(res.content[0].children[i].children[j])
+          //       }
+          //     }
+          //   }
+          //   this.lastdata = newarr.flat(Infinity).filter((itme) => {
+          //     return itme.id === newtask.id
+          //   })
+          //   console.log('新建工作流-=-=-=newtask', this.lastdata[0])
+          //   this.handleModelList(this.lastdata[0])
+          // }
         })
         .catch((err) => {
           console.log(err)
@@ -832,7 +853,7 @@ export default {
                 }
                 const lastdata = this.editableTabs[this.editableTabs.length - 1]
                 console.log('lastdata--->', lastdata)
-                this.handleWorkFlow(lastdata)
+                this.handleModelList(lastdata)
                 this.$message.success('删除成功')
               }
               this.tabDelLoading = false
@@ -880,11 +901,14 @@ export default {
       this.tabIndex -= 1
       this.editableTabsValue = activeName
       this.editableTabs = tabs.filter((tab) => tab.name !== targetName)
+      if (this.editableTabs.length === 0) {
+        this.editableTabsValue = '首页'
+      }
     },
     // ———————————— 右键菜单方法 ————————————end
 
     // 点击左侧工作流列表
-    handleWorkFlow(data) {
+    handleModelList(data) {
       console.log('任务数据', data)
       this.$store.commit('TABLEDATA', data)
       this.$store.commit('Singledata', data)
@@ -937,6 +961,9 @@ export default {
             content: obj
           })
           this.editableTabsValue = newTabName
+          if (this.editableTabs.length === 0) {
+            this.editableTabsValue = '首页'
+          }
           console.log('add', this.editableTabs, newTabName)
         }
       } else {

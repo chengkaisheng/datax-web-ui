@@ -1571,7 +1571,7 @@ export default {
           updateTask(this.temp)
             .then((res) => {
               console.log(res, '任务调度。。。。')
-              this.$store.commit('setScheduleId', this.temp.id)
+              // this.$store.commit('setScheduleId', this.temp.id)
               this.$notify({
                 title: '成功',
                 message: '调度修改成功',
@@ -1586,7 +1586,7 @@ export default {
           console.log(this.scheduleForm)
           console.log(this.$store.state.taskAdmin.jobDataDetail, 'data')
         } else {
-          // return false
+          return false
         }
         this.scheduleShow = false
       })

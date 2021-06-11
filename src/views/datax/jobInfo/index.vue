@@ -288,7 +288,7 @@ rkJggg=="
         @tab-click="JobTabClick"
       >
         <el-tab-pane
-          v-if="lasttab || !$store.state.taskAdmin.taskDetailList.length"
+          v-if="!lasttab || !$store.state.taskAdmin.taskDetailList.length"
           v-loading="tabLoading"
           style="user-select: none"
           label="首页"

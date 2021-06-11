@@ -45,7 +45,7 @@
         <el-col :span="12">
           <el-form-item label="数据库表名" prop="tableName">
             <el-select
-              v-model="$store.state.taskAdmin.readerTableName"
+              v-model="readerForm.tableName"
               allow-create
               default-first-option
               filterable
@@ -135,9 +135,9 @@
 
 <script>
 import * as dsQueryApi from '@/api/metadata-query'
-import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
+// import { list as jdbcDsList } from '@/api/datax-jdbcDatasource'
 import Bus from '../busReader'
-import { finder, dashOrValue } from '../private'
+// import { finder, dashOrValue } from '../private'
 
 export default {
   name: 'RDBMSReader',
